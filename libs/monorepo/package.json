@@ -1,0 +1,17 @@
+{
+  "name": "@mono/monorepo",
+  "version": "0.0.0",
+  "packageManager": "yarn@4.3.1",
+  "type": "module",
+  "module": "src/index.ts",
+  "sideEffects": false,
+  "private": true,
+  "scripts": {
+    "lint": "yarn eslint . --fix",
+    "indexts": "node ../../s/indexts.mjs",
+    "build": "node esbuild.mjs"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}

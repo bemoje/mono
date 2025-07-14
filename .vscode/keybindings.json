@@ -1,0 +1,24 @@
+[
+  {
+    "key": "Control+Shift+Alt+Enter",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Run TSRUN"
+  },
+  {
+    "key": "ctrl+shift+alt+i",
+    "command": "runCommands",
+    "args": {
+      "commands": ["eslint.executeAutofix", "typescript.removeUnusedImports"]
+    }
+  },
+  {
+    "key": "shift+alt+i",
+    "command": "workbench.action.tasks.runTask",
+    "args": "FIXIMPORTS"
+  },
+  {
+    "key": "ctrl+shift+alt+enter",
+    "command": "workbench.action.tasks.runTask",
+    "args": "TSRUN"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "name": "devkit",
+  "description": "Development utilities for the monorepo.",
+  "version": "0.0.1",
+  "packageManager": "yarn@4.3.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "yarn eslint . --fix",
+    "build": "node esbuild.mjs",
+    "buildScript": "node esbuildScript.mjs",
+    "buildPackage": "node ../../s/buildcli.mjs devkit"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}

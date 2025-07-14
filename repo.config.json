@@ -1,0 +1,50 @@
+{
+  "templates": {
+    "commands": {
+      "openFileInIDE": "code {{filepath}}",
+      "addDependency": "yarn add {{dependency}}",
+      "addDevDependency": "yarn add {{dependency}} --dev",
+      "removeDependency": "yarn workspace {{workspace}} remove {{dependency}}"
+    },
+    "files": {
+      "eslintConfigJs": [
+        "import eslintConfig from '../../eslint.config.js'",
+        "export default [...eslintConfig]",
+        ""
+      ],
+      "packageJson": {
+        "name": "{{libraryName}}",
+        "version": "0.0.1",
+        "packageManager": "yarn@4.3.1",
+        "type": "module",
+        "private": true,
+        "module": "src/index.ts",
+        "sideEffects": false,
+        "scripts": {
+          "lint": "yarn eslint . --fix",
+          "indexts": "node ../../s/indexts.mjs",
+          "build": "node esbuild.mjs"
+        },
+        "devDependencies": {
+          "eslint": "^8.57.0"
+        }
+      },
+      "esbuild": [
+        "import { buildLibsWorkspace } from '../../s/util/buildLibsWorkspace.mjs'",
+        "",
+        "await buildLibsWorkspace(import.meta.dirname, { debug: false })",
+        ""
+      ],
+      "readmeMd": [
+        "# {{libraryName}}",
+        ""
+      ],
+      "tsconfigJson": {
+        "extends": "../../tsconfig.json"
+      },
+      "indexTs": [
+        ""
+      ]
+    }
+  }
+}

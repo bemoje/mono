@@ -1,0 +1,93 @@
+{
+  "search.exclude": {
+    "**/.yarn/": true,
+    "**/.git/": true,
+    "**/.dist/": true,
+    "**/.coverage/": true,
+    "**/node_modules/": true,
+    // "**/yarn.lock": true,
+    "**/LICENSE": true
+  },
+  "files.exclude": {
+    // "**/.yarn/": true,
+    "**/.git/": true,
+    // "**/.coverage/": true,
+    // "**/node_modules/": true,
+    // "**/yarn.lock": true,
+
+    "**/LICENSE": true
+  },
+  "workbench.settings.showAISearchToggle": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs",
+  "eslint.nodePath": ".yarn/sdks",
+  "types-autoinstaller.useYarn": true,
+  "markdown-preview-enhanced.previewTheme": "github-light.css",
+  "chat.instructionsFilesLocations": {
+    ".github/copilot/instructions": true
+  },
+  "github.copilot.chat.agent.terminal.allowList": {
+    "/^yarn (test|lint|build|precommit|typecheck|format|ts|t)/": true,
+    "/^git (status|log)$/": true,
+    "echo": true,
+    "cd": true,
+    "ls": true,
+    "cat": true,
+    "pwd": true,
+    "Write-Host": true,
+    "Set-Location": true,
+    "Get-ChildItem": true,
+    "Get-Content": true,
+    "Get-Location": true
+  },
+  "github.copilot.chat.agent.terminal.denyList": {
+    "rm": true,
+    "rmdir": true,
+    "del": true,
+    "kill": true,
+    "curl": true,
+    "wget": true,
+    "eval": true,
+    "chmod": true,
+    "chown": true,
+    "Remove-Item": true
+  },
+
+  "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [
+    {
+      "file": ".github/copilot/instructions/pullRequestDescriptionGeneration.instructions.md"
+    }
+  ],
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": ".github/copilot/instructions/commitMessageGeneration.instructions.md"
+    }
+  ],
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "file": ".github/copilot/instructions/codeGeneration.instructions.md"
+    }
+  ],
+  "github.copilot.chat.testGeneration.instructions": [
+    {
+      "file": ".github/copilot/instructions/testGeneration.instructions.md"
+    }
+  ],
+  "github.copilot.chat.reviewSelection.instructions": [
+    {
+      "file": ".github/copilot/instructions/reviewSelection.instructions.md"
+    }
+  ],
+  "json.schemas": [
+    {
+      "url": "https://json.schemastore.org/package.json",
+      "fileMatch": ["package.json"]
+    },
+    {
+      "fileMatch": ["tsconfig.json", "tsconfig.json", "tsconfig.paths.json"],
+      "url": "http://json.schemastore.org/tsconfig"
+    }
+  ],
+  "vitest.disableWorkspaceWarning": true
+}

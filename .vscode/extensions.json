@@ -1,0 +1,21 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "arcanis.vscode-zipfs",
+    "GitHub.copilot",
+    "artydeveloperduck.save-as-snippet",
+    "donjayamanne.githistory",
+    "yzhang.markdown-all-in-one",
+    "yoavbls.pretty-ts-errors",
+    "pmneo.tsimporter",
+    "kimuson.ts-type-expand",
+    "foxundermoon.shell-format",
+    "christian-kohler.npm-intellisense",
+    "christian-kohler.path-intellisense",
+    "jvitor83.types-autoinstaller",
+    "shd101wyy.markdown-preview-enhanced",
+    "MylesMurphy.prettify-ts",
+    "vitest.explorer"
+  ]
+}
