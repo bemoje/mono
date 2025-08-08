@@ -12,6 +12,7 @@ temp
 tmp
 .tmp
 .yarn/install-state.gz
+s\devkit_v0.0.0.cjs
 
 
 # Logs
