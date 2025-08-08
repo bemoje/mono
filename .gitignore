@@ -13,6 +13,7 @@ tmp
 .tmp
 .yarn/install-state.gz
 s/**/*.cjs
+s/*.cjs
 
 
 # Logs
