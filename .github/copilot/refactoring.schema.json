@@ -1,0 +1,74 @@
+{
+  "$ref": "#/definitions/Copilot",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Copilot": {
+      "additionalProperties": false,
+      "properties": {
+        "categories": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "problemsFound": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "categoryId": {
+                "type": ["string"]
+              },
+              "fileAndLineNum": {
+                "type": "string"
+              },
+              "impact": {
+                "enum": ["low", "medium", "high"],
+                "type": "string"
+              },
+              "todo": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": ["fileAndLineNum", "categoryId", "impact", "todo"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "suggestions": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "approvedByUser": {
+                "type": "boolean"
+              },
+              "categoryId": {
+                "type": ["string"]
+              },
+              "fileAndLineNum": {
+                "type": "string"
+              },
+              "impact": {
+                "enum": ["low", "medium", "high"],
+                "type": "string"
+              },
+              "todo": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": ["approvedByUser", "categoryId", "fileAndLineNum", "impact", "todo"],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": ["categories", "problemsFound", "suggestions"],
+      "type": "object"
+    }
+  }
+}

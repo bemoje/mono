@@ -1,0 +1,24 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "RUN",
+      "type": "shell",
+      "command": "node s/run.mjs ${relativeFile}",
+      "args": [],
+      "detail": "Run file (.ts, .test.ts, .js, .ps1, .mjs)",
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "showReuseMessage": true,
+        // "close": true,
+        "focus": true,
+        "panel": "dedicated"
+        // "clear": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

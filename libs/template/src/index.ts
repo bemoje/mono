@@ -1,0 +1,5 @@
+export * from './Template/Template'
+export * from './interfaces/TemplateStrategy'
+export * from './strategies/JsonFileTemplateStrategy'
+export * from './strategies/StringTemplateStrategy'
+export * from './strategies/TextFileTemplateStrategy'
