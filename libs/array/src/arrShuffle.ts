@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash-es'
 import { arrSwap } from './arrSwap'
 
 /**
@@ -22,7 +21,7 @@ export function arrShuffle<T>(input: Array<T>): Array<T> {
       const newIndex = Math.floor(Math.random() * input.length)
       arrSwap(input, i, newIndex)
     }
-    equal = isEqual(input, original)
+    equal = input.join(',') === original.join(',')
   }
   return input
 }
