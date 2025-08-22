@@ -1,11 +1,12 @@
 {
   "name": "mono",
-  "description": "This is a private for-fun-only TypeScript monorepo with internal libraries, utils, cli tools and apps. Do not rely on any of the contained code for production use.",
+  "description": "Private for-fun-only mono-repo with TypeScript utility libraries used by other private projects.",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "private": true,
   "workspaces": [
     "libs/*",
+    "packages/libs",
     "apps/*"
   ],
   "scripts": {
@@ -104,6 +105,7 @@
     "walkdir": "^0.4.1",
     "zustand": "^5.0.7"
   },
+  "license": "MIT",
   "author": {
     "name": "Benjamin Møller Jensen",
     "email": "bemoje@bemoje.net",

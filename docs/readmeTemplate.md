@@ -2,6 +2,8 @@
 
 <!-- REPO_DESCRIPTION -->
 
+This mono-repo also uses various custom repo management CLI tools, scripts and automated tasks.
+
 ### Status
 
 **Libs Test Coverage**
@@ -54,7 +56,7 @@ When styles and patterns are more established, this will need a lot of refactori
 
 ## Workspaces
 
-Workspaces are discovered from glob patterns defined in [(`package.json`).workspaces](../package.json):
+Workspaces are discovered from glob patterns defined in [(`package.json`).workspaces](/package.json):
 
 ### Documentation
 
