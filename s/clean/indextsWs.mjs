@@ -2,14 +2,14 @@
  * Generates a barrel export index.ts file for a single workspace.
  * Creates exports for all TypeScript files while filtering out test/temp/example files.
  */
-// npm script
 import { glob } from 'glob'
-import fs from 'fs-extra'
 import upath from 'upath'
 import { getRepoRootDirpath } from '../util/getRepoRootDirpath.mjs'
+import { outputFileIfChanged } from '../util/outputFileIfChanged.mjs'
 
 const repoRoot = getRepoRootDirpath()
 const OUTFILE = 'src/index.ts'
+const TEST_OUTFILE = 'src/index.test.ts'
 const WS_ROOT = process.argv[2] ? upath.joinSafe(repoRoot, process.argv[2]) : process.cwd()
 
 const filepaths = (await glob('src/**/*.ts', { cwd: WS_ROOT }))
@@ -32,6 +32,22 @@ const lines = [...exportDirpaths, ...exportFilepaths] //
   .map((fp) => `export * from '${fp}'`)
   .concat('')
 
-// console.debug({ filepaths, exportDirpaths, exportFilepaths, lines })
+const testLines = [
+  `import { describe, expect, it } from 'vitest'`,
+  `import * as EXPORTS from './index'`,
+  ``,
+  `describe('index.ts', () => {`,
+  `  it('should load modules', () => {`,
+  `    for (const [key, value] of Object.entries(EXPORTS)) {`,
+  `      expect(key).toBeTypeOf('string')`,
+  `      expect(value).not.toBeUndefined()`,
+  `    }`,
+  `  })`,
+  `})`,
+  ``,
+]
 
-await fs.outputFile(upath.joinSafe(WS_ROOT, OUTFILE), lines.join('\n'))
+// console.debug({ filepaths, exportDirpaths, exportFilepaths, lines, testLines })
+
+await outputFileIfChanged(upath.joinSafe(WS_ROOT, OUTFILE), lines.join('\n'))
+await outputFileIfChanged(upath.joinSafe(WS_ROOT, TEST_OUTFILE), testLines.join('\n'))

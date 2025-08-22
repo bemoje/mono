@@ -20,8 +20,6 @@ export default defineConfig({
         'apps',
         'libs/types',
         'libs/monorepo',
-        'apps/playground',
-        '**/index.ts',
         '**/*.{wip,examples,example,temp,benchmark}.*',
         '**/{temp,wip}/*',
       ],
