@@ -6,7 +6,6 @@
   "private": true,
   "workspaces": [
     "libs/*",
-    "packages/libs",
     "apps/*"
   ],
   "scripts": {

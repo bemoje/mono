@@ -54,6 +54,8 @@ export async function buildFile(filepath, outfile, tsconfig, optionsOverride = {
   // remove the temporary file and rename the output file
   await fs.remove(outfile)
   await fs.rename(outfileTemp, outfile)
+  await fs.remove(outfile + '.map')
+  await fs.rename(outfileTemp + '.map', outfile + '.map')
 
   return result
 }
