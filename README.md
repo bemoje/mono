@@ -1,6 +1,8 @@
 # mono
 
-This is a private for-fun-only TypeScript monorepo with internal libraries, utils, cli tools and apps. Do not rely on any of the contained code for production use.
+Private for-fun-only mono-repo with TypeScript utility libraries used by other private projects.
+
+This mono-repo also uses various custom repo management CLI tools, scripts and automated tasks.
 
 ### Status
 
@@ -8,7 +10,7 @@ This is a private for-fun-only TypeScript monorepo with internal libraries, util
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 4502  | 4374    | 97.15%     |
+| Lines     | 4500  | 4372    | 97.15%     |
 | Functions | 588   | 564     | 95.91%     |
 | Branches  | 1698  | 1623    | 95.58%     |
 
@@ -16,10 +18,10 @@ This is a private for-fun-only TypeScript monorepo with internal libraries, util
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 520   | 7406          |
+| source    | 520   | 7404          |
 | test      | 361   | 21849         |
 | examples  | 13    | 492           |
-| script    | 42    | 1212          |
+| script    | 42    | 1214          |
 | total     | 936   | 30959         |
 
 ## Table of Contents
@@ -88,7 +90,7 @@ When styles and patterns are more established, this will need a lot of refactori
 
 ## Workspaces
 
-Workspaces are discovered from glob patterns defined in [(`package.json`).workspaces](../package.json):
+Workspaces are discovered from glob patterns defined in [(`package.json`).workspaces](/package.json):
 
 ### Documentation
 
