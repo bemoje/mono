@@ -16,7 +16,7 @@ export default defineConfig({
       enabled: false,
       reporter: ['html', 'json-summary', 'text-summary'],
       include: ['{libs,packages}/*/src/**/*.ts'],
-      exclude: ['apps', 'libs/types', 'libs/monorepo', '**/*.{temp,wip,examples,benchmark}.*'],
+      exclude: ['apps/playground', 'libs/types', 'libs/monorepo', '**/*.{temp,wip,examples,benchmark}.*'],
       reportsDirectory: `.coverage/html`,
     },
   },

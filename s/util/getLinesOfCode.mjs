@@ -7,12 +7,12 @@ import strip from 'strip-comments'
  */
 export async function getLinesOfCode() {
   const ts = (await glob('{libs,apps,packages}/*/src/**/*.ts')).filter(
-    (p) => !/[./\\](wip|old|temp)[./\\]/.test(p),
+    (p) => !/[./\\](wip|old|temp|playground)[./\\]/.test(p),
   )
   const script = countLines(await glob('s/**/*.mjs'))
-  const source = countLines(ts.filter((p) => !/[./\\](test|examples|benchmark|playground)[./\\]/.test(p)))
+  const source = countLines(ts.filter((p) => !/[./\\](test|examples|benchmark)[./\\]/.test(p)))
   const test = countLines(ts.filter((p) => p.endsWith('.test.ts')))
-  const examples = countLines(ts.filter((p) => /[./\\](examples|benchmark|playground)[./\\]/.test(p)))
+  const examples = countLines(ts.filter((p) => /[./\\](examples|benchmark)[./\\]/.test(p)))
   const total = {
     files: source.files + test.files + examples.files + script.files,
     lines: source.lines + test.lines + examples.lines + script.lines,
@@ -23,7 +23,7 @@ export async function getLinesOfCode() {
 function countLines(paths) {
   const arr = paths.flatMap((p) => {
     const code = fs.readFileSync(p, 'utf8')
-    const noComments = strip(code)
+    const noComments = strip(code, { block: true, line: true, shebang: true, keepProtected: false })
     const compact = noComments
       .split('\n')
       .map((line) => line.trim())

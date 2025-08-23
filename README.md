@@ -20,9 +20,9 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 | --------- | ----- | ------------- |
 | source    | 519   | 7498          |
 | test      | 387   | 22079         |
-| examples  | 8     | 319           |
+| examples  | 0     | 0             |
 | script    | 43    | 1242          |
-| total     | 957   | 31138         |
+| total     | 949   | 30819         |
 
 ## Table of Contents
 
