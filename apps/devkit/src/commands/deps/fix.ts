@@ -5,6 +5,9 @@ import { Command, Option } from 'commander'
 import { confirmPrompt } from '@mono/terminal'
 import { MonoRepo } from '@mono/monorepo'
 import { Workspace } from '@mono/monorepo'
+import templates from '../../core/templates/templates'
+import { execSync } from 'node:child_process'
+import path from 'upath'
 
 //
 
@@ -19,7 +22,7 @@ export function fixDeps() {
   )
   cmd.addOption(
     new Option('-f, --fixes [names...]', 'Fixes to apply. Defaults to all.') //
-      .choices(['imports']),
+      .choices(['unused', 'missing', 'missingDev', 'imports']),
   )
   addDefaultsOptions(cmd)
 
@@ -32,8 +35,8 @@ export function fixDeps() {
 
 interface FixDepsOptions extends DefaultOptions {
   workspaces?: string[]
-  fixes?: 'imports'[]
-  // fixes?: ('unused' | 'missing' | 'missingDev' | 'imports')[]
+  // fixes?: 'imports'[]
+  fixes?: ('unused' | 'missing' | 'missingDev' | 'imports')[]
 }
 
 //
@@ -51,9 +54,10 @@ async function action(options: FixDepsOptions) {
     if (options.workspaces && !options.workspaces.includes(ws.name)) continue
     if (!options.fixes || options.fixes.includes('imports'))
       await fixIncorrectlyImportedRepoWorkspaces(ws, options, fixed)
-    // if (!options.fixes || options.fixes.includes('unused')) await uninstallUnusedDependencies(ws, options, fixed)
-    // if (!options.fixes || options.fixes.includes('missing')) await installMissingDependencies(ws, options, fixed)
-    // if (!options.fixes || options.fixes.includes('missingDev')) await installMissingDevDependencies(ws, options, fixed)
+    if (!options.fixes || options.fixes.includes('unused')) await uninstallUnusedDependencies(ws, options, fixed)
+    if (!options.fixes || options.fixes.includes('missingDev'))
+      await installMissingDevDependencies(ws, options, fixed)
+    if (!options.fixes || options.fixes.includes('missing')) await installMissingDependencies(ws, options, fixed)
   }
 
   if (!options.silent) {
@@ -93,116 +97,116 @@ async function fixIncorrectlyImportedRepoWorkspaces(
   }
 }
 
-// async function uninstallUnusedDependencies(
-//   workspace: Workspace,
-//   options: FixDepsOptions,
-//   fixed: { count: number },
-// ) {
-//   for (const dep of workspace.unusedDependencies) {
-//     if (!options.silent) {
-//       console.info(`\nUnused dependency in ${colors.magenta(workspace.name)}. Uninstall '${colors.red(dep)}'`)
-//     }
+async function uninstallUnusedDependencies(
+  workspace: Workspace,
+  options: FixDepsOptions,
+  fixed: { count: number },
+) {
+  for (const dep of workspace.unusedDependencies) {
+    if (!options.silent) {
+      console.info(`\nUnused dependency in ${colors.magenta(workspace.name)}. Uninstall '${colors.red(dep)}'`)
+    }
 
-//     if (!options.yes && !(await confirmPrompt('Proceed?'))) {
-//       continue
-//     }
+    if (!options.yes && !(await confirmPrompt('Proceed?'))) {
+      continue
+    }
 
-//     const command = templates.commands.removeDependency.render({
-//       workspace: workspace.name, //
-//       dependency: dep,
-//     })
+    const command = templates.commands.removeDependency.render({
+      workspace: workspace.name, //
+      dependency: dep,
+    })
 
-//     if (options.dryRun) {
-//       console.log('dryRun. Command skipped: ' + command)
-//       continue
-//     }
+    if (options.dryRun) {
+      console.log('dryRun. Command skipped: ' + command)
+      continue
+    }
 
-//     try {
-//       execSync(command, {
-//         stdio: options.quiet ? 'ignore' : 'inherit',
-//         cwd: path.resolve(workspace.parent.path),
-//       })
-//       fixed.count++
-//     } catch (error) {
-//       console.error(error)
-//       console.error(`Failed to uninstall ${dep} from ${workspace.name}`)
-//     }
-//   }
-// }
+    try {
+      execSync(command, {
+        stdio: options.quiet ? 'ignore' : 'inherit',
+        cwd: path.resolve(workspace.parent.path),
+      })
+      fixed.count++
+    } catch (error) {
+      console.error(error)
+      console.error(`Failed to uninstall ${dep} from ${workspace.name}`)
+    }
+  }
+}
 
-// async function installMissingDependencies(
-//   workspace: Workspace,
-//   options: FixDepsOptions,
-//   fixed: { count: number },
-// ) {
-//   for (const dep of workspace.missingDependencies) {
-//     if (!options.silent) {
-//       console.info(`\nMissing dependency in ${colors.magenta(workspace.name)}. Install '${colors.green(dep)}'`)
-//     }
+async function installMissingDependencies(
+  workspace: Workspace,
+  options: FixDepsOptions,
+  fixed: { count: number },
+) {
+  for (const dep of workspace.missingDependencies) {
+    if (!options.silent) {
+      console.info(`\nMissing dependency in ${colors.magenta(workspace.name)}. Install '${colors.green(dep)}'`)
+    }
 
-//     if (!options.yes && !(await confirmPrompt('Proceed?'))) {
-//       continue
-//     }
+    if (!options.yes && !(await confirmPrompt('Proceed?'))) {
+      continue
+    }
 
-//     let version =
-//       workspace.parent.packageJson.dependencies?.[dep] ?? workspace.parent.packageJson.devDependencies?.[dep]
+    let version =
+      workspace.parent.packageJson.dependencies?.[dep] ?? workspace.parent.packageJson.devDependencies?.[dep]
 
-//     version = version && version.includes('.') ? `@${version}` : ''
+    version = version && version.includes('.') ? `@${version}` : ''
 
-//     const command = templates.commands.addDependency.render({
-//       dependency: dep + version,
-//     })
+    const command = templates.commands.addDependency.render({
+      dependency: dep + version,
+    })
 
-//     if (options.dryRun) {
-//       console.log('dryRun. Command skipped: ' + command)
-//       continue
-//     }
+    if (options.dryRun) {
+      console.log('dryRun. Command skipped: ' + command)
+      continue
+    }
 
-//     try {
-//       execSync(command, {
-//         stdio: options.quiet ? 'ignore' : 'inherit',
-//         cwd: path.resolve(workspace.parent.path),
-//       })
-//       fixed.count++
-//     } catch (error) {
-//       console.error(error)
-//       console.error(`Failed to install ${dep} in ${workspace.name}`)
-//     }
-//   }
-// }
+    try {
+      execSync(command, {
+        stdio: options.quiet ? 'ignore' : 'inherit',
+        cwd: path.resolve(workspace.parent.path),
+      })
+      fixed.count++
+    } catch (error) {
+      console.error(error)
+      console.error(`Failed to install ${dep} in ${workspace.name}`)
+    }
+  }
+}
 
-// async function installMissingDevDependencies(
-//   workspace: Workspace,
-//   options: FixDepsOptions,
-//   fixed: { count: number },
-// ) {
-//   for (const dep of workspace.missingDevDependencies) {
-//     if (!options.silent) {
-//       console.info(`\nMissing devDependency in ${colors.magenta(workspace.name)}. Install '${colors.green(dep)}'`)
-//     }
+async function installMissingDevDependencies(
+  workspace: Workspace,
+  options: FixDepsOptions,
+  fixed: { count: number },
+) {
+  for (const dep of workspace.missingDevDependencies) {
+    if (!options.silent) {
+      console.info(`\nMissing devDependency in ${colors.magenta(workspace.name)}. Install '${colors.green(dep)}'`)
+    }
 
-//     if (!options.yes && !(await confirmPrompt('Proceed?'))) {
-//       continue
-//     }
+    if (!options.yes && !(await confirmPrompt('Proceed?'))) {
+      continue
+    }
 
-//     const command = templates.commands.addDevDependency.render({
-//       dependency: dep,
-//     })
+    const command = templates.commands.addDevDependency.render({
+      dependency: dep,
+    })
 
-//     if (options.dryRun) {
-//       console.log('dryRun. Command skipped: ' + command)
-//       continue
-//     }
+    if (options.dryRun) {
+      console.log('dryRun. Command skipped: ' + command)
+      continue
+    }
 
-//     try {
-//       execSync(command, {
-//         stdio: options.quiet ? 'ignore' : 'inherit',
-//         cwd: path.resolve(workspace.parent.path),
-//       })
-//       fixed.count++
-//     } catch (error) {
-//       console.error(error)
-//       console.error(`Failed to install ${dep} in ${workspace.name}`)
-//     }
-//   }
-// }
+    try {
+      execSync(command, {
+        stdio: options.quiet ? 'ignore' : 'inherit',
+        cwd: path.resolve(workspace.parent.path),
+      })
+      fixed.count++
+    } catch (error) {
+      console.error(error)
+      console.error(`Failed to install ${dep} in ${workspace.name}`)
+    }
+  }
+}
