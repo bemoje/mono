@@ -2,7 +2,7 @@
  * Utility for measuring and logging execution time of tasks.
  * Provides consistent timing output with logger integration.
  */
-import { isPromise } from 'util/types'
+import { isPromise } from 'node:util/types'
 import { createLogger } from './createLogger.mjs'
 
 /**

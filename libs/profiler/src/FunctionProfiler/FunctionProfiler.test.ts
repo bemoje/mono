@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
 import { FunctionProfiler } from './FunctionProfiler'
-import { inspect } from 'util'
+import { inspect } from 'node:util'
 import { StandaloneFunctionIdentifier } from '../FunctionIdentifier/StandaloneFunctionIdentifier'
 
 describe(FunctionProfiler.name, () => {

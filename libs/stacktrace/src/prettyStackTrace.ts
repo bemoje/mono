@@ -2,7 +2,7 @@ import colors from 'ansi-colors'
 import path from 'path'
 import { parse } from 'stacktrace-parser'
 import { StackFrame } from 'stacktrace-parser'
-import { inspect } from 'util'
+import { inspect } from 'node:util'
 
 /**
  * Formats stack traces with colors and improved readability for debugging.

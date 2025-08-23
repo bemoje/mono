@@ -11,10 +11,10 @@ import strip from 'strip-comments'
  * const multilineImport = `import {
  *   foo,
  *   bar
- * } from 'module'`
+ * } from 'node:module'`
  *
  * importStatementToOneLiner(multilineImport)
- * // 'import { foo, bar } from 'module''
+ * // 'import { foo, bar } from 'node:module''
  * ```
  */
 export function importStatementToOneLiner(code: string) {

@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import upath from 'upath'
-import util from 'util'
+import util from 'node:util'
 import { spawn } from 'node:child_process'
 import { isWindows } from './isWindows'
 

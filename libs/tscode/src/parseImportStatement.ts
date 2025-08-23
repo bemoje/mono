@@ -1,6 +1,6 @@
 import { rexec } from '@mono/regex'
 import { importStatementToFormattedOneLiner } from './importStatementToFormattedOneLiner'
-import { isBuiltin } from 'module'
+import { isBuiltin } from 'node:module'
 import upath from 'upath'
 
 /**

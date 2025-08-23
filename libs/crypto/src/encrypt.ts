@@ -1,4 +1,4 @@
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 
 /**
  * Encrypts a string using AES-256-CBC with a random IV.

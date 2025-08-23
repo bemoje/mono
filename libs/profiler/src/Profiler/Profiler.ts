@@ -1,7 +1,7 @@
 import type { TFunction } from '@mono/types'
 import { FunctionProfiler, FunctionProfilerResult } from '../FunctionProfiler/FunctionProfiler'
 import type { FunctionPrototype } from '@mono/types'
-import { inspect, InspectOptions } from 'util'
+import { inspect, InspectOptions } from 'node:util'
 import { isFunction } from 'lodash-es'
 import { ModuleMethodProfilerFactory } from '../ProfilerFactory/ModuleMethodProfilerFactory'
 import { profilerWrap } from '../FunctionProfiler/profilerWrap'

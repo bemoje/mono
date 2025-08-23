@@ -4,7 +4,7 @@ import { ClassInspectorMixin, IgnoreValuesOptions, InspectorOptions } from './ty
 import { defineLazyProperty, defineMethod, defineValue, hasOwnProperty, hasProperty } from '@mono/object'
 import { ignoreValuesFilterDefaults } from './defaults/ignoreValuesFilterDefaults'
 import { inspectorDefaults } from './defaults/inspectorDefaults'
-import { inspect, InspectOptions as NativeInspectOptions } from 'util'
+import { inspect, InspectOptions as NativeInspectOptions } from 'node:util'
 import { getClassChain } from '@mono/object'
 import { View } from '../View'
 

@@ -9,14 +9,14 @@ import { PackageJson } from '@mono/types'
 import path from 'upath'
 import * as fsExtra from 'fs-extra/esm'
 import * as fs from '@mono/fs'
-import { promisify } from 'util'
+import { promisify } from 'node:util'
 import commandExists from 'command-exists'
 
 // Mock dependencies
 vi.mock('fs-extra/esm')
 vi.mock('@mono/fs')
 vi.mock('node:child_process')
-vi.mock('util')
+vi.mock('node:util')
 vi.mock('command-exists')
 vi.mock('upath', () => ({
   default: {

@@ -1,4 +1,4 @@
-import { parseArgs } from 'util'
+import { parseArgs } from 'node:util'
 
 const { values, positionals } = parseArgs({
   options: {

@@ -1,7 +1,7 @@
 import { AbstractFunctionIdentifier } from './AbstractFunctionIdentifier'
 import { AbstractMethodIdentifier } from './AbstractMethodIdentifier'
 import { describe, expect, it } from 'vitest'
-import { inspect } from 'util'
+import { inspect } from 'node:util'
 import { ModuleMethodIdentifier } from './ModuleMethodIdentifier'
 
 describe(ModuleMethodIdentifier.name, () => {

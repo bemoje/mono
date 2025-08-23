@@ -9,22 +9,27 @@ describe(tsExtractImports.name, () => {
   })
 
   it('should correctly extract a single import statement without braces', () => {
-    const code = "import { module } from 'module'"
+    const code = "import { module } from 'node:module'"
     const result: TsExtractImportsResult[] = [
       {
         start: 0,
         end: 1,
-        match: "import { module } from 'module'",
-        matchOneLine: "import { module } from 'module'",
+        match: "import { module } from 'node:module'",
+        matchOneLine: "import { module } from 'node:module'",
       },
     ]
     expect(tsExtractImports(code)).toEqual(result)
   })
 
   it('should correctly extract a single import statement with braces', () => {
-    const code = "import module from 'module'"
+    const code = "import module from 'node:module'"
     const result: TsExtractImportsResult[] = [
-      { start: 0, end: 1, match: "import module from 'module'", matchOneLine: "import module from 'module'" },
+      {
+        start: 0,
+        end: 1,
+        match: "import module from 'node:module'",
+        matchOneLine: "import module from 'node:module'",
+      },
     ]
     expect(tsExtractImports(code)).toEqual(result)
   })

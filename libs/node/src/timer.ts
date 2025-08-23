@@ -1,6 +1,6 @@
 import { round } from '@mono/number'
 import { Any } from '@mono/types'
-import { isPromise } from 'util/types'
+import { isPromise } from 'node:util/types'
 
 /**
  * Executes a task and logs the execution time with the specified name.

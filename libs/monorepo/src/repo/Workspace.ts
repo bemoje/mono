@@ -1,6 +1,6 @@
 import { Results } from 'depcheck'
 import { exec } from 'node:child_process'
-import { promisify } from 'util'
+import { promisify } from 'node:util'
 import { readJsonSync } from 'fs-extra/esm'
 import path from 'upath'
 import { AbstractBase } from '../common/AbstractBase'

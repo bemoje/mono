@@ -20,7 +20,7 @@ import { mapGetOrDefault } from './mapGetOrDefault'
 import { mapReverse } from './mapReverse'
 import { View, inheritProxifiedPrototype } from '@mono/composition'
 import { entriesOf, defineMethod } from '@mono/object'
-import { inspect, InspectOptions } from 'util'
+import { inspect, InspectOptions } from 'node:util'
 
 declare module './ExtMap' {
   export interface ExtMap<K, V> extends Map<K, V> {

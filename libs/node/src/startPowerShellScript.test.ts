@@ -18,7 +18,7 @@ vi.mock('node:child_process', async () => {
   }
 })
 
-vi.mock('util', async () => {
+vi.mock('node:util', async () => {
   return {
     promisify: vi.fn(() => mockExecAsync),
   }

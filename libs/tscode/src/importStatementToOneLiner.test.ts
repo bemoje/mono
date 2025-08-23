@@ -14,9 +14,9 @@ describe(importStatementToOneLiner.name, () => {
       const multiLine = `import {
         foo,
         bar
-      } from 'module'`
+      } from 'node:module'`
       const result2 = importStatementToOneLiner(multiLine)
-      assert.strictEqual(result2, "import { foo, bar } from 'module'")
+      assert.strictEqual(result2, "import { foo, bar } from 'node:module'")
 
       // Import with comments
       const withComments = `import { /* comment */ foo } from 'bar'`
@@ -47,8 +47,8 @@ describe(importStatementToOneLiner.name, () => {
       const input = `import {
         foo,
         bar
-      } from 'module'`
-      const expected = "import { foo, bar } from 'module'"
+      } from 'node:module'`
+      const expected = "import { foo, bar } from 'node:module'"
       expect(importStatementToOneLiner(input)).toBe(expected)
     })
 
@@ -56,8 +56,8 @@ describe(importStatementToOneLiner.name, () => {
       const input = `import {
         foo   ,
         bar
-      } from 'module'`
-      const expected = "import { foo, bar } from 'module'"
+      } from 'node:module'`
+      const expected = "import { foo, bar } from 'node:module'"
       expect(importStatementToOneLiner(input)).toBe(expected)
     })
   })
@@ -74,8 +74,8 @@ describe(importStatementToOneLiner.name, () => {
         foo, /* multi
         line comment */
         bar
-      } from 'module'`
-      const expected = "import { foo, bar } from 'module'"
+      } from 'node:module'`
+      const expected = "import { foo, bar } from 'node:module'"
       expect(importStatementToOneLiner(input)).toBe(expected)
     })
   })

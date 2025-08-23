@@ -117,7 +117,7 @@ describe(parseImportStatement.name, () => {
 
   describe('quote types', () => {
     it('should handle single quotes', () => {
-      const result = parseImportStatement("import foo from 'module'")
+      const result = parseImportStatement("import foo from 'node:module'")
       expect(result.modulePath.quote).toBe("'")
     })
 

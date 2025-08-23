@@ -1,4 +1,4 @@
-import { builtinModules } from 'module'
+import { builtinModules } from 'node:module'
 import { CodeBlock } from '../CodeBlock'
 import { ImportStatement } from './ImportStatement'
 import { Inspector, Parenting } from '@mono/composition'

@@ -1,7 +1,7 @@
 import type { AnyAsyncFunction } from '@mono/types'
 import type { TFunction } from '@mono/types'
 import type { Any } from '@mono/types'
-import { isAsyncFunction } from 'util/types'
+import { isAsyncFunction } from 'node:util/types'
 import { preserveNameAndLength } from './preserveNameAndLength'
 
 /**
