@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 4903  | 4778    | 97.45%     |
-| Functions | 586   | 562     | 95.9%      |
-| Branches  | 1696  | 1622    | 95.63%     |
+| Lines     | 4890  | 4765    | 97.44%     |
+| Functions | 585   | 561     | 95.89%     |
+| Branches  | 1693  | 1619    | 95.62%     |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 520   | 7391          |
-| test      | 388   | 22136         |
-| examples  | 11    | 479           |
+| source    | 519   | 7389          |
+| test      | 387   | 22079         |
+| examples  | 11    | 506           |
 | script    | 43    | 1242          |
-| total     | 962   | 31248         |
+| total     | 960   | 31216         |
 
 ## Table of Contents
 
@@ -458,7 +458,6 @@ describe(ClassToTest.name, () => {
 
 **iter**
 
-- `countUniques`: Count unique occurrences of values in an iterable, returning a sorted map by count descending.
 - `filterIterable`: Filter map entries based on a predicate function.
 - `forEachIterable`: Execute a callback function for each entry in a map-like iterable.
 - `mapIterable`: Transform both keys and values of map entries.

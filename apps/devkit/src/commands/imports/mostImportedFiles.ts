@@ -1,4 +1,6 @@
-import { countUniques } from '@mono/iter'
+import { ExtMap } from '@mono/map'
+import { MultiSet } from 'mnemonist'
+import { reduce } from 'iter-tools'
 import { MonoRepo, getAllImports, resolveModuleImportPath } from '@mono/monorepo'
 import { Command } from 'commander'
 
@@ -20,4 +22,17 @@ export function mostImportedFiles() {
       res.forEach(([v, c]) => console.log(c, v))
       console.log(`Elapsed time: ${elapsed}ms`)
     })
+}
+
+/**
+ * Count unique occurrences of values in an iterable, returning a sorted map by count descending.
+ */
+function countUniques<V>(arr: Iterable<V>) {
+  return new ExtMap<V, number>(
+    reduce(
+      new MultiSet<V>(), //
+      (acc, imp) => acc.add(imp),
+      arr,
+    ).multiplicities(),
+  ).sortByValues((a, b) => b - a)
 }

@@ -1,4 +1,3 @@
-export * from './countUniques'
 export * from './filterIterable'
 export * from './forEachIterable'
 export * from './mapIterable'

@@ -2,7 +2,8 @@ import { DefaultMap, MultiSet } from 'mnemonist'
 import { globSync } from 'glob'
 import { tsExtractImports } from '@mono/tscode'
 import fs from 'fs-extra'
-import { countUniques } from '@mono/iter'
+import { ExtMap } from '@mono/map'
+import { reduce } from 'iter-tools'
 import cp from 'child_process'
 
 function parseNameFromImportStatement(line: string): string {
@@ -122,3 +123,16 @@ console.log()
 console.log('lines', lines.length)
 console.log('nameToStatementMap', nameToStatementMap.size)
 console.log('result', result.length)
+
+/**
+ * Count unique occurrences of values in an iterable, returning a sorted map by count descending.
+ */
+function countUniques<V>(arr: Iterable<V>) {
+  return new ExtMap<V, number>(
+    reduce(
+      new MultiSet<V>(), //
+      (acc, imp) => acc.add(imp),
+      arr,
+    ).multiplicities(),
+  ).sortByValues((a, b) => b - a)
+}
