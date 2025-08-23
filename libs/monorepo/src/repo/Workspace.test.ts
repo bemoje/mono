@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import assert from 'node:assert'
 import { Workspace } from './Workspace'
-import { MonoRepo } from './MonoRepo'
+import { MonoRepo } from '../MonoRepo'
 import { TsFile } from '../file/TsFile'
 import { TestFile } from '../file/TestFile'
 import { PackageJson } from '@mono/types'
@@ -15,7 +15,7 @@ import commandExists from 'command-exists'
 // Mock dependencies
 vi.mock('fs-extra/esm')
 vi.mock('@mono/fs')
-vi.mock('child_process')
+vi.mock('node:child_process')
 vi.mock('util')
 vi.mock('command-exists')
 vi.mock('upath', () => ({

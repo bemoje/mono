@@ -11,9 +11,11 @@ const repoRoot = getRepoRootDirpath()
 const OUTFILE = 'src/index.ts'
 const TEST_OUTFILE = 'src/index.test.ts'
 const WS_ROOT = process.argv[2] ? upath.joinSafe(repoRoot, process.argv[2]) : process.cwd()
+const IGNORE_DIRS = process.argv[3] ? process.argv[3].split(',') : []
 
 const filepaths = (await glob('src/**/*.ts', { cwd: WS_ROOT }))
   .map((fp) => upath.normalizeSafe(fp))
+  .filter((fp) => IGNORE_DIRS.every((dir) => !fp.includes('src/' + dir + '/')))
   .filter((fp) => !/[./](test|wip|old|examples?|benchmark|temp|internal)[./]/.test(fp))
 
 const exportDirpaths = filepaths

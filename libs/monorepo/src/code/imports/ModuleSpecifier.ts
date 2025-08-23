@@ -2,7 +2,7 @@ import { builtinModules } from 'module'
 import { CodeBlock } from '../CodeBlock'
 import { ImportStatement } from './ImportStatement'
 import { Inspector, Parenting } from '@mono/composition'
-import { MonoRepo } from '../../repo/MonoRepo'
+import { MonoRepo } from '../../MonoRepo'
 import { Workspace } from '../../repo/Workspace'
 
 @Parenting.compose

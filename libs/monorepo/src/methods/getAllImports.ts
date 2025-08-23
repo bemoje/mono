@@ -1,4 +1,4 @@
-import { MonoRepo } from '../repo/MonoRepo'
+import { MonoRepo } from '../MonoRepo'
 
 /**
  * Retrieves all import statements from TypeScript source files across all workspaces in the monorepo.

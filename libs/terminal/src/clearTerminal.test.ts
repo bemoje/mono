@@ -1,9 +1,9 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { execSync } from 'child_process'
+import { execSync } from 'node:child_process'
 import { clearTerminal } from './clearTerminal'
 
 // Mock child_process module
-vi.mock('child_process', () => ({
+vi.mock('node:child_process', () => ({
   execSync: vi.fn(),
 }))
 

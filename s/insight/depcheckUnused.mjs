@@ -17,7 +17,7 @@ await timer(
     const repoPkgPath = upath.join(repoPath, 'package.json')
     const pkg = await fs.readJson(repoPkgPath, { throws: false })
 
-    const wspaths = await glob('{apps,libs,packages}/*/', { cwd: repoPath })
+    const wspaths = await glob('{apps,packages}/*/', { cwd: repoPath })
 
     const promises = wspaths.map((wsPath) => {
       wsPath = upath.normalize(wsPath)

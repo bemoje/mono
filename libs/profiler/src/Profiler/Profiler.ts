@@ -1,5 +1,5 @@
 import type { TFunction } from '@mono/types'
-import { FunctionProfiler, IFunctionProfilerResult } from '../FunctionProfiler/FunctionProfiler'
+import { FunctionProfiler, FunctionProfilerResult } from '../FunctionProfiler/FunctionProfiler'
 import type { FunctionPrototype } from '@mono/types'
 import { inspect, InspectOptions } from 'util'
 import { isFunction } from 'lodash-es'
@@ -120,10 +120,10 @@ export class Profiler {
       return [profiler.id.name, profiler.getResult()]
     })
 
-    const sortkey1 = options?.sortBy ?? ('calls' as keyof IFunctionProfilerResult)
+    const sortkey1 = options?.sortBy ?? ('calls' as keyof FunctionProfilerResult)
     const sortValue1 = (entry: ProfilerResultReadableEntry) => entry[1][sortkey1] ?? -1
 
-    const sortKey2: keyof IFunctionProfilerResult = sortkey1 === 'calls' ? 'totalTimeUs' : 'calls'
+    const sortKey2: keyof FunctionProfilerResult = sortkey1 === 'calls' ? 'totalTimeUs' : 'calls'
     const sortValue2 = (entry: ProfilerResultReadableEntry) => entry[1][sortKey2] ?? -1
 
     return results.sort((a: ProfilerResultReadableEntry, b: ProfilerResultReadableEntry) => {
@@ -163,20 +163,19 @@ export class Profiler {
   }
 }
 
-export default Profiler
-
-export interface ProfilerClassOptions {
+type ProfilerClassOptions = {
   ignoreStaticKeys?: Iterable<string | symbol>
   ignorePrototypeKeys?: Iterable<string | symbol>
 }
 
-export interface GetProfilerResultsOptions {
-  sortBy?: keyof IFunctionProfilerResult
+type GetProfilerResultsOptions = {
+  sortBy?: keyof FunctionProfilerResult
 }
 
-export interface PrintProfilerResultsOptions extends GetProfilerResultsOptions {
+type PrintProfilerResultsOptions = {
+  sortBy?: keyof FunctionProfilerResult
   update?: (entries: ProfilerResultReadableEntry[]) => ProfilerResultReadableEntry[]
   noColor?: boolean
 }
 
-export type ProfilerResultReadableEntry = [string, IFunctionProfilerResult]
+type ProfilerResultReadableEntry = [string, FunctionProfilerResult]

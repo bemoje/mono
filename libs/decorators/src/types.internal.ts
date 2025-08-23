@@ -1,6 +1,6 @@
 import memoizee from 'memoizee'
 
-export interface MemoizeExtendedOptions {
+interface MemoizeExtendedOptions {
   /**
    * Whether to share the cache between instances of the class.
    * If true, one instance can cause other instances to return the same memoized value.

@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 4917  | 4791    | 97.43%     |
-| Functions | 583   | 559     | 95.88%     |
-| Branches  | 1692  | 1618    | 95.62%     |
+| Lines     | 4903  | 4778    | 97.45%     |
+| Functions | 586   | 562     | 95.9%      |
+| Branches  | 1696  | 1622    | 95.63%     |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 520   | 7404          |
-| test      | 388   | 22119         |
-| examples  | 13    | 492           |
-| script    | 43    | 1240          |
-| total     | 964   | 31255         |
+| source    | 520   | 7391          |
+| test      | 388   | 22131         |
+| examples  | 11    | 479           |
+| script    | 43    | 1242          |
+| total     | 962   | 31243         |
 
 ## Table of Contents
 
@@ -367,7 +367,6 @@ describe(ClassToTest.name, () => {
 
 **decorators**
 
-- `assertDescriptorValueIsFunction`: Asserts that a property descriptor contains a function value.
 - `lazyProp`: Decorator to memoize a method or getter accessor property.
 - `memoizeAsync`: Decorator to memoize an async method. Uses memoizee library, so if params are objects, the decorator needs a normalizer function.
 - `memoizeSync`: Decorator to memoize a sync method.
@@ -651,19 +650,7 @@ describe(ClassToTest.name, () => {
 
 **profiler**
 
-- `AbstractFunctionIdentifier`: Abstract base class for identifying and naming functions in profiling contexts.
-- `AbstractMethodIdentifier`: Abstract base class for identifying and naming method functions in profiling contexts.
-- `FunctionProfiler`: Profiler for functions, measuring execution time and call counts.
-- `ModuleMethodIdentifier`: Identifies methods within module objects for profiling purposes.
-- `ModuleMethodProfilerFactory`: Factory for creating profilers for module method functions using the Factory pattern.
 - `Profiler`: A utility class for profiling functions, classes, and modules to measure execution time and other performance metrics.
-- `ProfilerWrapMethodsStrategy`: Strategy for wrapping object methods with profiling capabilities using the Strategy pattern.
-- `PrototypeMethodIdentifier`: Identifies methods on class prototypes for profiling purposes.
-- `PrototypeMethodProfilerFactory`: Factory for creating profilers for prototype method functions using the Factory pattern.
-- `StandaloneFunctionIdentifier`: Identifies standalone functions for profiling purposes.
-- `StaticMethodIdentifier`: Identifies static methods on classes for profiling purposes.
-- `StaticMethodProfilerFactory`: Factory for creating profilers for static method functions using the Factory pattern.
-- `profilerWrap`: Wraps a function with a
 
 **regex**
 

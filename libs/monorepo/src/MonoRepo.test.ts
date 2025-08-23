@@ -3,11 +3,11 @@ import { afterEach, beforeEach, describe, it, vi, expect } from 'vitest'
 import { MonoRepo } from './MonoRepo'
 import * as fs from 'fs'
 import * as fse from 'fs-extra/esm'
-import { Workspace } from './Workspace'
+import { Workspace } from './repo/Workspace'
 import path from 'upath'
 
-vi.mock('./Workspace')
-vi.mock('../util/getRepoRootDirpath')
+vi.mock('./repo/Workspace')
+vi.mock('./util/getRepoRootDirpath')
 
 // Mock dependencies
 vi.mock('fs')

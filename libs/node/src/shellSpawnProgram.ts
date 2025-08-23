@@ -1,4 +1,4 @@
-import { spawn } from 'child_process'
+import { spawn } from 'node:child_process'
 
 /**
  * Spawns a program using child_process.spawn with promise-based interface and optional stdio inheritance control.

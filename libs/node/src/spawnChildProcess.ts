@@ -1,4 +1,4 @@
-import cp, { SpawnOptions } from 'child_process'
+import cp, { SpawnOptions } from 'node:child_process'
 
 /**
  * Spawn a child process.

@@ -1,6 +1,6 @@
 import { Command } from 'commander'
 import { configFile, dataPath } from '../../core/config/config'
-import { execSync } from 'child_process'
+import { execSync } from 'node:child_process'
 import templates from '../../core/templates/templates'
 
 export function configPath() {

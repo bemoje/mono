@@ -1,10 +1,10 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import assert from 'node:assert'
-import readline from 'readline'
+import readline from 'node:readline'
 import { confirmPrompt } from './confirmPrompt'
 
 // Mock readline module
-vi.mock('readline', () => ({
+vi.mock('node:readline', () => ({
   default: {
     createInterface: vi.fn(),
   },

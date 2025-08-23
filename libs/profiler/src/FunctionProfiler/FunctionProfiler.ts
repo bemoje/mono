@@ -27,7 +27,7 @@ export class FunctionProfiler<T extends object> implements IFunctionSpyStrategy<
   /**
    * Get the result of the profiling
    */
-  getResult(): IFunctionProfilerResult {
+  getResult(): FunctionProfilerResult {
     return {
       calls: this.calls,
       totalTimeUs: this.totalTimeNs ? this.nsToUs(this.totalTimeNs) : undefined,
@@ -79,7 +79,7 @@ export class FunctionProfiler<T extends object> implements IFunctionSpyStrategy<
   }
 }
 
-export interface IFunctionProfilerResult {
+export type FunctionProfilerResult = {
   /**
    * Number of method calls
    */

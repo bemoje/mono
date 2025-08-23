@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import readline from 'readline'
+import readline from 'node:readline'
 
 /**
  * Reads the first line of a file asynchronously.

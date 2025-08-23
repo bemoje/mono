@@ -42,6 +42,20 @@ describe(tsExtractImports.name, () => {
     expect(tsExtractImports(code)).toEqual(result)
   })
 
+  it('should correctly ignore import statements inside string literals', () => {
+    expect(tsExtractImports("const str = `import f from 'm'`")).toEqual([])
+    expect(tsExtractImports(`const str = "import f from 'm'"`)).toEqual([])
+    expect(tsExtractImports(`const str = 'import f from "m"'`)).toEqual([])
+  })
+
+  it('should correctly ignore import statements inside block comments', () => {
+    expect(tsExtractImports(['/**', "import { something } from 'somewhere'", ' */'].join('\n'))).toEqual([])
+    expect(tsExtractImports(['/**', " * import { something } from 'somewhere'", ' */'].join('\n'))).toEqual([])
+    expect(tsExtractImports(['/*', "import { something } from 'somewhere'", '*/'].join('\n'))).toEqual([])
+    expect(tsExtractImports(['  /*', "import { something } from 'somewhere'", '  */'].join('\n'))).toEqual([])
+    expect(tsExtractImports(['  /*', "  import { something } from 'somewhere'", '  */'].join('\n'))).toEqual([])
+  })
+
   it('should correctly extract multiple import statements', () => {
     const code = [
       "import { module1 } from 'module1'",

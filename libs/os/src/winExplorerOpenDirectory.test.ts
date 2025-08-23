@@ -10,7 +10,7 @@ vi.mock('fs-extra', () => ({
   exists: vi.fn(),
   stat: vi.fn(),
 }))
-vi.mock('child_process', () => ({
+vi.mock('node:child_process', () => ({
   spawn: vi.fn(),
 }))
 vi.mock('util', () => ({
@@ -35,7 +35,7 @@ describe('winExplorerOpenDirectory', () => {
 
     // Get fresh mocks
     const fs = await import('fs-extra')
-    const { spawn } = await import('child_process')
+    const { spawn } = await import('node:child_process')
     const util = await import('util')
     const { isWindows } = await import('./isWindows')
 

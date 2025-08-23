@@ -1,6 +1,6 @@
 import colors from 'ansi-colors'
 import upath from 'upath'
-import { execSync } from 'child_process'
+import { execSync } from 'node:child_process'
 
 /**
  * Execute one or multiple shell commands.

@@ -1,7 +1,7 @@
 import memoizee from 'memoizee'
 import { ms } from 'enhanced-ms'
-import { MemoizeAsyncOptions, SomeAsyncFunction } from './types'
-import { assertDescriptorValueIsFunction } from './assertDescriptorValueIsFunction'
+import { MemoizeAsyncOptions, SomeAsyncFunction } from './types.internal'
+import assertDescriptorValueIsFunction from './assertDescriptorValueIsFunction'
 import { mapGetOrDefault } from '@mono/map'
 
 /**

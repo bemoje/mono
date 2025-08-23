@@ -1,12 +1,12 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import assert from 'node:assert'
-import { execSync } from 'child_process'
+import { execSync } from 'node:child_process'
 import colors from 'ansi-colors'
 import upath from 'upath'
 import { execute } from './execute'
 
 // Mock dependencies
-vi.mock('child_process', () => ({
+vi.mock('node:child_process', () => ({
   execSync: vi.fn(),
 }))
 

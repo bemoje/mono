@@ -9,7 +9,7 @@ const { mockCreateInterface } = vi.hoisted(() => {
 })
 
 // Mock readline
-vi.mock('readline', async () => {
+vi.mock('node:readline', async () => {
   return {
     default: {
       createInterface: mockCreateInterface,

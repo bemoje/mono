@@ -1,4 +1,4 @@
-import { exec, execSync } from 'child_process'
+import { exec, execSync } from 'node:child_process'
 
 export function cliExec(
   command: string,
