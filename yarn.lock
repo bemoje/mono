@@ -808,7 +808,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mono/is@workspace:libs/is":
+"@mono/is@workspace:^, @mono/is@workspace:libs/is":
   version: 0.0.0-use.local
   resolution: "@mono/is@workspace:libs/is"
   dependencies:
@@ -816,7 +816,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mono/iter@workspace:libs/iter":
+"@mono/iter@workspace:^, @mono/iter@workspace:libs/iter":
   version: 0.0.0-use.local
   resolution: "@mono/iter@workspace:libs/iter"
   dependencies:
@@ -863,7 +863,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mono/object@workspace:libs/object"
   dependencies:
+    "@mono/is": "workspace:^"
+    "@mono/iter": "workspace:^"
+    "@mono/types": "workspace:^"
+    "@sinclair/typebox": "npm:^0.34.37"
     eslint: "npm:^8.57.0"
+    lodash-es: "npm:^4.17.21"
+    type-fest: "npm:4.41.0"
+    vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
 
@@ -955,7 +962,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mono/types@workspace:libs/types":
+"@mono/types@workspace:^, @mono/types@workspace:libs/types":
   version: 0.0.0-use.local
   resolution: "@mono/types@workspace:libs/types"
   dependencies:

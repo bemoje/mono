@@ -9,23 +9,24 @@ example1()
 example2
 
 function example1() {
-  const fps = globSync('libs/*/src/**/*.ts') //
-    .filter((p) => !p.endsWith('.test.ts'))
-
-  const isWorkspacePath = (p: string) => p.startsWith('@mono/')
+  const repoLibScope = '@mono'
+  const isTestFile = (p: string) => p.endsWith('.test.ts')
+  const isWorkspacePath = (p: string) => p.startsWith(repoLibScope + '/')
   const getWsDirname = (p: string) => p.split(/[\\/]/)[1]
   const getImportType = (i: ImportStatement) => i.modulePath.type
   const toSortedModulePaths = (arr: ImportStatement[]) => {
     return Array.from(new Set(arr.map((i) => i.modulePath.path))).sort()
   }
 
+  const fps = globSync('libs/*/src/**/*.ts').filter((p) => !isTestFile(p))
   const entries = Object.entries(lodash.groupBy(fps, getWsDirname)).map(([ws, fps]) => {
     const arr = fps
       .flatMap((p) => tsExtractImports(fs.readFileSync(p, 'utf8')))
       .map((m) => parseImportStatement(m.matchOneLine, { isWorkspacePath }))
       .filter((i) => i.modulePath.type !== 'relative')
-
-    return ['@mono/' + ws, mapObject(lodash.groupBy(arr, getImportType), toSortedModulePaths)] as const
+    const wsName = repoLibScope + '/' + ws
+    const depsByType = mapObject(lodash.groupBy(arr, getImportType), toSortedModulePaths)
+    return [wsName, depsByType] as const
   })
 
   console.log(new Map(entries.sort()))
