@@ -1,4 +1,4 @@
-import { setTimeout as setTimeoutPromise } from 'timers/promises'
+import { setTimeout as setTimeoutPromise } from 'node:timers/promises'
 import { lazyProp } from './lazyProp'
 import { describe, expect, it } from 'vitest'
 

@@ -1,7 +1,7 @@
 // persistentRegistry.ts
 import { createStore } from 'zustand/vanilla'
 import { writeFileSync, readFileSync, existsSync } from 'fs-extra'
-import { join } from 'path'
+import { join } from 'node:path'
 import { Constructor } from 'type-fest'
 import { ExtMap } from '@mono/map'
 

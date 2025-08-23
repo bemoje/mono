@@ -97,9 +97,9 @@ describe(parseImportStatement.name, () => {
     })
 
     it('should correctly identify builtin modules', () => {
-      const result = parseImportStatement("import fs from 'fs'")
+      const result = parseImportStatement("import fs from 'node:fs'")
       expect(result.modulePath.type).toBe('builtin')
-      expect(result.modulePath.path).toBe('fs')
+      expect(result.modulePath.path).toBe('node:fs')
     })
 
     it('should correctly identify node: prefixed builtin modules', () => {

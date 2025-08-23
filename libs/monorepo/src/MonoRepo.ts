@@ -1,5 +1,5 @@
 import { MultiSet } from 'mnemonist'
-import fs from 'fs'
+import fs from 'node:fs'
 import { readJsonSync } from 'fs-extra/esm'
 import path from 'upath'
 import { AbstractBase } from './common/AbstractBase'

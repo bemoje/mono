@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { afterEach, beforeEach, describe, it, vi, expect } from 'vitest'
 import { MonoRepo } from './MonoRepo'
-import * as fs from 'fs'
+import * as fs from 'node:fs'
 import * as fse from 'fs-extra/esm'
 import { Workspace } from './repo/Workspace'
 import path from 'upath'
@@ -10,7 +10,7 @@ vi.mock('./repo/Workspace')
 vi.mock('./util/getRepoRootDirpath')
 
 // Mock dependencies
-vi.mock('fs')
+vi.mock('node:fs')
 vi.mock('fs-extra/esm')
 vi.mock('upath', () => ({
   default: {

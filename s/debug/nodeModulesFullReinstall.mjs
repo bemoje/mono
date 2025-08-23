@@ -3,7 +3,7 @@
  * Useful for debugging dependency issues by starting with a clean slate.
  */
 import { glob } from 'glob'
-import fs from 'fs'
+import fs from 'node:fs'
 import upath from 'upath'
 import { execSync } from 'node:child_process'
 import { getRepoRootDirpath } from '../util/getRepoRootDirpath.mjs'
