@@ -746,73 +746,54 @@ __metadata:
 "@mono/array@workspace:libs/array":
   version: 0.0.0-use.local
   resolution: "@mono/array@workspace:libs/array"
-  dependencies:
-    eslint: "npm:^8.57.0"
-    vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
 
 "@mono/composition@workspace:libs/composition":
   version: 0.0.0-use.local
   resolution: "@mono/composition@workspace:libs/composition"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/config@workspace:libs/config":
   version: 0.0.0-use.local
   resolution: "@mono/config@workspace:libs/config"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/crypto@workspace:libs/crypto":
   version: 0.0.0-use.local
   resolution: "@mono/crypto@workspace:libs/crypto"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/date@workspace:libs/date":
   version: 0.0.0-use.local
   resolution: "@mono/date@workspace:libs/date"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/decorators@workspace:libs/decorators":
   version: 0.0.0-use.local
   resolution: "@mono/decorators@workspace:libs/decorators"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/fn@workspace:libs/fn":
   version: 0.0.0-use.local
   resolution: "@mono/fn@workspace:libs/fn"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/fs@workspace:libs/fs":
   version: 0.0.0-use.local
   resolution: "@mono/fs@workspace:libs/fs"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/is@workspace:^, @mono/is@workspace:libs/is":
   version: 0.0.0-use.local
   resolution: "@mono/is@workspace:libs/is"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
@@ -821,7 +802,6 @@ __metadata:
   resolution: "@mono/iter@workspace:libs/iter"
   dependencies:
     "@mono/map": "workspace:*"
-    eslint: "npm:^8.57.0"
     iter-tools: "npm:^7.5.4"
     mnemonist: "npm:^0.39.8"
   languageName: unknown
@@ -830,32 +810,24 @@ __metadata:
 "@mono/map@workspace:*, @mono/map@workspace:libs/map":
   version: 0.0.0-use.local
   resolution: "@mono/map@workspace:libs/map"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/monorepo@workspace:libs/monorepo":
   version: 0.0.0-use.local
   resolution: "@mono/monorepo@workspace:libs/monorepo"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/node@workspace:libs/node":
   version: 0.0.0-use.local
   resolution: "@mono/node@workspace:libs/node"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/number@workspace:libs/number":
   version: 0.0.0-use.local
   resolution: "@mono/number@workspace:libs/number"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
@@ -877,96 +849,72 @@ __metadata:
 "@mono/os@workspace:libs/os":
   version: 0.0.0-use.local
   resolution: "@mono/os@workspace:libs/os"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/path@workspace:libs/path":
   version: 0.0.0-use.local
   resolution: "@mono/path@workspace:libs/path"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/profiler@workspace:libs/profiler":
   version: 0.0.0-use.local
   resolution: "@mono/profiler@workspace:libs/profiler"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/regex@workspace:libs/regex":
   version: 0.0.0-use.local
   resolution: "@mono/regex@workspace:libs/regex"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/stacktrace@workspace:libs/stacktrace":
   version: 0.0.0-use.local
   resolution: "@mono/stacktrace@workspace:libs/stacktrace"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/string@workspace:libs/string":
   version: 0.0.0-use.local
   resolution: "@mono/string@workspace:libs/string"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/table@workspace:libs/table":
   version: 0.0.0-use.local
   resolution: "@mono/table@workspace:libs/table"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/template@workspace:libs/template":
   version: 0.0.0-use.local
   resolution: "@mono/template@workspace:libs/template"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/terminal@workspace:libs/terminal":
   version: 0.0.0-use.local
   resolution: "@mono/terminal@workspace:libs/terminal"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/tschema@workspace:libs/tschema":
   version: 0.0.0-use.local
   resolution: "@mono/tschema@workspace:libs/tschema"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/tscode@workspace:libs/tscode":
   version: 0.0.0-use.local
   resolution: "@mono/tscode@workspace:libs/tscode"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
 "@mono/types@workspace:^, @mono/types@workspace:libs/types":
   version: 0.0.0-use.local
   resolution: "@mono/types@workspace:libs/types"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
@@ -2375,8 +2323,6 @@ __metadata:
 "devkit@workspace:apps/devkit":
   version: 0.0.0-use.local
   resolution: "devkit@workspace:apps/devkit"
-  dependencies:
-    eslint: "npm:^8.57.0"
   languageName: unknown
   linkType: soft
 
@@ -4717,8 +4663,6 @@ __metadata:
 "playground@workspace:apps/playground":
   version: 0.0.0-use.local
   resolution: "playground@workspace:apps/playground"
-  dependencies:
-    zustand: "npm:^5.0.7"
   languageName: unknown
   linkType: soft
 

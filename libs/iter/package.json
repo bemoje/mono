@@ -7,7 +7,6 @@
   "module": "src/index.ts",
   "sideEffects": false,
   "scripts": {
-    "lint": "yarn eslint . --fix",
     "indexts": "node ../../s/clean/indextsWs.mjs",
     "build": "node esbuild.mjs"
   },
@@ -15,8 +14,5 @@
     "@mono/map": "workspace:*",
     "iter-tools": "^7.5.4",
     "mnemonist": "^0.39.8"
-  },
-  "devDependencies": {
-    "eslint": "^8.57.0"
   }
 }

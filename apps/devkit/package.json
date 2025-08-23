@@ -6,11 +6,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "yarn eslint . --fix",
     "build": "node esbuild.mjs",
     "buildPackage": "node ../../s/util/buildcli.mjs devkit"
-  },
-  "devDependencies": {
-    "eslint": "^8.57.0"
   }
 }

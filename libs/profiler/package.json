@@ -7,10 +7,6 @@
   "module": "src/index.ts",
   "sideEffects": false,
   "scripts": {
-    "lint": "yarn eslint . --fix",
     "build": "node esbuild.mjs"
-  },
-  "devDependencies": {
-    "eslint": "^8.57.0"
   }
 }
