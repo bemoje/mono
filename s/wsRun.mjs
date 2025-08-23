@@ -11,7 +11,7 @@
  * - Times the execution and logs the duration
  * - Runs the command with stdio inherited, allowing for interactive commands
  */
-import { execSync } from 'child_process'
+import { execSync } from 'node:child_process'
 import { getRepoRootDirpath } from './util/getRepoRootDirpath.mjs'
 import { timer } from './util/timer.mjs'
 import { findWorkspacePackageName } from './util/findWorkspacePackageName.mjs'

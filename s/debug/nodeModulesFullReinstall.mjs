@@ -5,7 +5,7 @@
 import { glob } from 'glob'
 import fs from 'fs'
 import upath from 'upath'
-import { execSync } from 'child_process'
+import { execSync } from 'node:child_process'
 import { getRepoRootDirpath } from '../util/getRepoRootDirpath.mjs'
 import { timer } from '../util/timer.mjs'
 

@@ -4,7 +4,7 @@
  * creates executable entry points, and prepares distribution packages.
  */
 import esbuild from 'esbuild'
-import cp from 'child_process'
+import cp from 'node:child_process'
 import upath from 'upath'
 import fs from 'fs-extra'
 import { getRepoRootDirpath } from './getRepoRootDirpath.mjs'

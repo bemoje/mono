@@ -7,7 +7,7 @@ import upath from 'upath'
 import fs from 'fs-extra'
 import { getRepoRootDirpath } from './getRepoRootDirpath.mjs'
 import { relativeImportPath } from './relativeImportPath.mjs'
-import cp from 'child_process'
+import cp from 'node:child_process'
 
 const cwd = process.cwd()
 

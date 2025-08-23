@@ -3,7 +3,7 @@
  * Scans all workspaces and reports dependency issues to help maintain clean package.json files.
  */
 import colors from 'ansi-colors'
-import { exec } from 'child_process'
+import { exec } from 'node:child_process'
 import { glob } from 'glob'
 import upath from 'upath'
 import fs from 'fs-extra'

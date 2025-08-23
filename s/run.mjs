@@ -4,7 +4,7 @@
  * For TS files, automatically adds source map support and pretty stack traces for better debugging.
  * Used by the `yarn run` command to run .ts files without needing to build them first.
  */
-import cp from 'child_process'
+import cp from 'node:child_process'
 import * as esbuild from 'esbuild'
 import fs from 'fs-extra'
 import path from 'upath'

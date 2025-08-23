@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import cp from 'child_process'
+import cp from 'node:child_process'
 import { glob } from 'glob'
 import upath from 'upath'
 import colors from 'ansi-colors'
