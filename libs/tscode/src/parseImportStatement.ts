@@ -18,7 +18,10 @@ import upath from 'upath'
  * console.log(parsed.getNames()) // ['Foo', 'Baz']
  * ```
  */
-export function parseImportStatement(statement: string) {
+export function parseImportStatement(
+  statement: string,
+  options?: { isWorkspacePath?: (p: string) => boolean },
+): ImportStatement {
   const code = statement
   const oneliner = importStatementToFormattedOneLiner(code)
 
@@ -83,13 +86,15 @@ export function parseImportStatement(statement: string) {
     code: groups.mod!,
     type: ((): ImportPathType => {
       const p = groups.path!
-      return upath.isAbsolute(p)
-        ? 'absolute'
-        : p.startsWith('.')
-          ? 'relative'
-          : isBuiltin(p)
-            ? 'builtin'
-            : 'package'
+      return options?.isWorkspacePath?.(p)
+        ? 'workspace'
+        : upath.isAbsolute(p)
+          ? 'absolute'
+          : p.startsWith('.')
+            ? 'relative'
+            : isBuiltin(p)
+              ? 'builtin'
+              : 'package'
     })(),
     quote: groups.quote!,
     path: groups.path!,
@@ -160,7 +165,7 @@ class ImportStatementParser implements ImportStatement {
 /**
  * The type of path used in an import statement.
  */
-type ImportPathType = 'relative' | 'absolute' | 'builtin' | 'package'
+type ImportPathType = 'relative' | 'absolute' | 'builtin' | 'package' | 'workspace'
 
 /**
  * The type of import specifier.
@@ -227,7 +232,7 @@ interface ImportModulePath {
  * This interface enforces consistent structure for analyzing and manipulating
  * import statements in TypeScript source files.
  */
-interface ImportStatement {
+export interface ImportStatement {
   /** The original import statement code */
   readonly code: string
   /** The import statement as a formatted single line */

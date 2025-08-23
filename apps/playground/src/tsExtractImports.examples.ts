@@ -1,34 +1,34 @@
-import { tsExtractImports } from './tsExtractImports'
-import { parseImportStatement } from './parseImportStatement'
+import { ImportStatement, tsExtractImports } from '@mono/tscode'
+import { parseImportStatement } from '@mono/tscode'
 import { globSync } from 'glob'
 import fs from 'fs-extra'
 import lodash from 'lodash-es'
+import { mapObject } from '@mono/object'
 
 example1()
+example2
 
 function example1() {
   const fps = globSync('libs/*/src/**/*.ts') //
-    .filter((p) => !/[./\\](test|wip|old|examples?|benchmark|temp|playground)[./\\]/.test(p))
+    .filter((p) => !p.endsWith('.test.ts'))
 
-  const entries = Object.entries(lodash.groupBy(fps, (p) => p.split(/[\\/]/)[1]))
-    .map(([ws, fps]) => {
-      const deps = new Set(
-        fps
-          .flatMap((p) => {
-            const code = fs.readFileSync(p, 'utf8')
-            return tsExtractImports(code)
-          })
-          .map((m) => parseImportStatement(m.matchOneLine))
-          .filter((i) => i.modulePath.type !== 'relative')
-          .filter((i) => i.modulePath.type === 'package')
-          .filter((i) => i.modulePath.path.startsWith('@mono/'))
-          .filter((i) => !i.modulePath.path.startsWith('@mono/types'))
-          .map((i) => i.modulePath.path),
-      )
-      return ['@mono/' + ws, Array.from(deps).sort()]
-    })
-    .sort()
-  console.log(Object.fromEntries(entries))
+  const isWorkspacePath = (p: string) => p.startsWith('@mono/')
+  const getWsDirname = (p: string) => p.split(/[\\/]/)[1]
+  const getImportType = (i: ImportStatement) => i.modulePath.type
+  const toSortedModulePaths = (arr: ImportStatement[]) => {
+    return Array.from(new Set(arr.map((i) => i.modulePath.path))).sort()
+  }
+
+  const entries = Object.entries(lodash.groupBy(fps, getWsDirname)).map(([ws, fps]) => {
+    const arr = fps
+      .flatMap((p) => tsExtractImports(fs.readFileSync(p, 'utf8')))
+      .map((m) => parseImportStatement(m.matchOneLine, { isWorkspacePath }))
+      .filter((i) => i.modulePath.type !== 'relative')
+
+    return ['@mono/' + ws, mapObject(lodash.groupBy(arr, getImportType), toSortedModulePaths)] as const
+  })
+
+  console.log(new Map(entries.sort()))
 }
 
 function example2() {
@@ -45,13 +45,13 @@ function example2() {
     .join('\n\n')
 
   const p = tsExtractImports(lines)
-    .filter((m) => {
-      return (
-        !/^import ['"]/.test(m.matchOneLine) &&
-        !/from ['"](path|fs|typescript|depcheck|extract-zip|stacktrace-parser)['"];?$/.test(m.matchOneLine) &&
-        !/\} from ['"](node:)?(u?path|fs-extra|fs|child_process)/.test(m.matchOneLine)
-      )
-    })
+    // .filter((m) => {
+    //   return (
+    //     !/^import ['"]/.test(m.matchOneLine) &&
+    //     !/from ['"](path|fs|typescript|depcheck|extract-zip|stacktrace-parser)['"];?$/.test(m.matchOneLine) &&
+    //     !/\} from ['"](node:)?(u?path|fs-extra|fs|child_process)/.test(m.matchOneLine)
+    //   )
+    // })
     .map((m) => parseImportStatement(m.matchOneLine))
     .filter((i) => i.modulePath.type !== 'relative')
   // .filter((i) => !(i.modulePath.type === 'package' && i.modulePath.path.startsWith('@mono/')))
