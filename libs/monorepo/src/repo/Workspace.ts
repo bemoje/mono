@@ -13,7 +13,6 @@ import { arrRemoveDuplicates } from '@mono/array'
 import { TestFile } from '../file/TestFile'
 import { TsFile } from '../file/TsFile'
 import { walkDirectory } from '@mono/fs'
-import commandExists from 'command-exists'
 import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
 import { hasParentDirname } from '@mono/path'
 import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
@@ -263,9 +262,6 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
 
   async depcheck() {
     try {
-      if (!(await commandExists('depcheck'))) {
-        throw new Error('"depcheck" optional dependency not installed.')
-      }
       const rootPkg = this.parent.packageJson
       const dependencies = rootPkg.dependencies || {}
       const devDependencies = rootPkg.devDependencies || {}

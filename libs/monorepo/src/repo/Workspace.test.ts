@@ -10,14 +10,12 @@ import path from 'upath'
 import * as fsExtra from 'fs-extra/esm'
 import * as fs from '@mono/fs'
 import { promisify } from 'node:util'
-import commandExists from 'command-exists'
 
 // Mock dependencies
 vi.mock('fs-extra/esm')
 vi.mock('@mono/fs')
 vi.mock('node:child_process')
 vi.mock('node:util')
-vi.mock('command-exists')
 vi.mock('upath', () => ({
   default: {
     normalize: vi.fn(),
@@ -35,7 +33,6 @@ const mockPath = vi.mocked(path)
 const mockFsExtra = vi.mocked(fsExtra)
 const mockFs = vi.mocked(fs)
 const mockPromisify = vi.mocked(promisify)
-const mockCommandExists = vi.mocked(commandExists)
 const mockTestFile = vi.mocked(TestFile)
 
 // Mock resolveModuleImportPath
@@ -537,15 +534,12 @@ describe(Workspace.name, () => {
 
   describe(Workspace.prototype.depcheck.name, () => {
     const mockExecPromise = vi.fn()
-    // const mockCommandExists = vi.fn()
 
     beforeEach(() => {
       mockPromisify.mockReturnValue(mockExecPromise as any)
-      // mockCommandExists.mockResolvedValue(true as any)
     })
 
     it('should run depcheck command successfully', async () => {
-      mockCommandExists.mockResolvedValue(true as any)
       mockExecPromise.mockResolvedValue({
         stdout: JSON.stringify({
           dependencies: ['unused-dep'],
@@ -559,13 +553,11 @@ describe(Workspace.name, () => {
 
       const result = await workspace.depcheck()
 
-      expect(mockCommandExists).toHaveBeenCalledWith('depcheck')
       expect(mockExecPromise).toHaveBeenCalledWith(expect.stringContaining(`yarn depcheck ${normalizedPath}`))
       expect(result.dependencies).toEqual(['unused-dep'])
     })
 
     it('should handle execution errors with stdout', async () => {
-      mockCommandExists.mockResolvedValue(true as any)
       const error = new Error('Command failed') as any
       error.stdout = JSON.stringify({
         dependencies: [],
@@ -590,7 +582,6 @@ describe(Workspace.name, () => {
     })
 
     it('should handle execution errors without stdout', async () => {
-      mockCommandExists.mockResolvedValue(true as any)
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
       mockExecPromise.mockRejectedValue(new Error('Command failed'))
 
@@ -610,7 +601,6 @@ describe(Workspace.name, () => {
     })
 
     it('should build correct ignores flag', async () => {
-      mockCommandExists.mockResolvedValue(true as any)
       mockExecPromise.mockResolvedValue({ stdout: '{}' })
 
       await workspace.depcheck()

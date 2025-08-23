@@ -3,6 +3,7 @@ import { MonoRepo } from '@mono/monorepo'
 import fs from 'fs-extra'
 import strip from 'strip-comments'
 import { tsExtractImports, tsSortImports } from '@mono/tscode'
+import { topImports } from './internal/topImports'
 
 export function insertImports() {
   return new Command('insertImports')
@@ -12,7 +13,7 @@ export function insertImports() {
     .action(async (filepath, options) => {
       const origCode = fs.readFileSync(filepath, 'utf-8')
       let noComments = strip(origCode)
-      const newImports = new MonoRepo().topImports(50000).map((o) => o.code)
+      const newImports = topImports(new MonoRepo(), 50000).map((o) => o.code)
 
       const getImportedNames = (importLine: string) => {
         return importLine

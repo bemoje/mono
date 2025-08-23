@@ -1,4 +1,3 @@
-import { MultiSet } from 'mnemonist'
 import fs from 'node:fs'
 import { readJsonSync } from 'fs-extra/esm'
 import path from 'upath'
@@ -9,7 +8,6 @@ import { PackageJson } from '@mono/types'
 import { Workspace } from './repo/Workspace'
 import { TsConfigJson, SetFieldType } from 'type-fest'
 import { CompilerOptions } from 'typescript'
-import { getAllImports } from './methods/getAllImports'
 import { getRepoRootDirpath } from './util/getRepoRootDirpath'
 
 /**
@@ -109,27 +107,5 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
     return this.workspacePaths.map((dirpath) => {
       return new Workspace(this, dirpath)
     })
-  }
-
-  topImports(n: number = 50, normalize: (line: string) => string = (line) => line) {
-    const imports = getAllImports(this)
-
-    const counters = imports
-      .filter((imp) => path.parse(imp.path).name !== 'index')
-      .filter((imp) => imp.module.isDependency)
-      .flatMap((imp) => {
-        return imp.split().map((s) => {
-          return normalize(s.replace(/^import type /, 'import ').replace('import * as ', 'import '))
-        })
-      })
-      .filter(Boolean)
-      .reduce((acc, line) => {
-        return acc.add(line)
-      }, new MultiSet<string>())
-
-    return Array.from(counters.multiplicities())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, n)
-      .map(([code, count]) => ({ count, code }))
   }
 }

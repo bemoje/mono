@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 4895  | 4769    | 97.42%     |
-| Functions | 585   | 561     | 95.89%     |
-| Branches  | 1695  | 1619    | 95.51%     |
+| Lines     | 4888  | 4762    | 97.42%     |
+| Functions | 583   | 559     | 95.88%     |
+| Branches  | 1692  | 1616    | 95.5%      |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 519   | 7498          |
-| test      | 387   | 22079         |
+| source    | 519   | 7491          |
+| test      | 386   | 22054         |
 | examples  | 0     | 0             |
 | script    | 43    | 1242          |
-| total     | 949   | 30819         |
+| total     | 948   | 30787         |
 
 ## Table of Contents
 
@@ -397,7 +397,6 @@ describe(ClassToTest.name, () => {
 - `getFirstFileInDir`: Get the name of the first file (not directory) found in a directory.
 - `readFileFirstLine`: Reads the first line of a file asynchronously.
 - `removeDataUrlSchemePrefix`: Removes the data URL scheme prefix from a given string.
-- `unzip`: Extract contents of a zip file at a given filerpath into a given directory
 - `updateFile`: Updates a file by reading its content, applying a transformation function, and writing back the result. Creates the file and directories if they don't exist.
 - `updateFileLines`: Updates a file by applying a transformation function to an array of lines. The transformation can return either a string (the entire new content) or an array of lines. Creates the file and directories if they don't exist.
 - `updateFileLinesSync`: Synchronous version of `updateFileLines`.
