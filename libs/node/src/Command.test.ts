@@ -1,0 +1,495 @@
+import { describe, expect, it } from 'vitest'
+import assert from 'node:assert'
+import { Command } from './Command'
+
+describe(Command.name, () => {
+  it('examples', () => {
+    expect(() => {
+      // Basic command setup
+      const cmd = new Command('myapp', '1.0.0', 'A test application')
+        .argument('<input>', 'input file')
+        .argument('[output]', 'output file', 'out.txt')
+        .option('-v, --verbose', 'verbose output')
+        .option('-f, --format <type>', 'output format')
+
+      assert.deepStrictEqual(cmd.name, 'myapp')
+      assert.deepStrictEqual(cmd.version, '1.0.0')
+      assert.deepStrictEqual(cmd.description, 'A test application')
+
+      // Test parsing
+      const result = cmd.parse(['input.txt', '-v', '-f', 'json'])
+      assert.deepStrictEqual(result.arguments, ['input.txt', 'out.txt'])
+      assert.deepStrictEqual(result.options.verbose, true)
+      assert.deepStrictEqual(result.options.format, 'json')
+
+      // Variadic arguments
+      const cmd2 = new Command('myapp2')
+        .argument('<files...>', 'input files')
+        .option('-o, --output [dir]', 'output directory', 'dist')
+
+      const result2 = cmd2.parse(['file1.txt', 'file2.txt', 'file3.txt'])
+      assert.deepStrictEqual(result2.arguments, [['file1.txt', 'file2.txt', 'file3.txt']])
+      assert.deepStrictEqual(result2.options.output, 'dist')
+
+      // Variadic options
+      const cmd3 = new Command('myapp3')
+        .argument('<input>', 'input file')
+        .option('-i, --include <patterns...>', 'include patterns')
+        .option('-e, --exclude [patterns...]', 'exclude patterns', ['node_modules'])
+
+      const result3 = cmd3.parse(['input.txt', '-i', 'src', 'lib', '-e', 'test'])
+      assert.deepStrictEqual(result3.arguments, ['input.txt'])
+      assert.deepStrictEqual(result3.options.include, ['src', 'lib'])
+      assert.deepStrictEqual(result3.options.exclude, ['test'])
+    }).not.toThrow()
+  })
+
+  describe('constructor', () => {
+    it('should create command with all parameters', () => {
+      const cmd = new Command('testapp', '2.0.0', 'Test application')
+      expect(cmd.name).toBe('testapp')
+      expect(cmd.version).toBe('2.0.0')
+      expect(cmd.description).toBe('Test application')
+      expect(cmd.arguments).toEqual([])
+      expect(cmd.options).toEqual([])
+    })
+
+    it('should use default version and description', () => {
+      const cmd = new Command('testapp')
+      expect(cmd.name).toBe('testapp')
+      expect(cmd.version).toBe('0.0.0')
+      expect(cmd.description).toBe('')
+    })
+
+    it('should use default description when only version provided', () => {
+      const cmd = new Command('testapp', '1.5.0')
+      expect(cmd.name).toBe('testapp')
+      expect(cmd.version).toBe('1.5.0')
+      expect(cmd.description).toBe('')
+    })
+  })
+
+  describe(Command.prototype.argument.name, () => {
+    describe('required arguments', () => {
+      it('should add required argument', () => {
+        const cmd = new Command('test')
+        const result = cmd.argument('<input>', 'input file')
+
+        expect(result).toBe(cmd) // Should return this for chaining
+        expect(cmd.arguments).toHaveLength(1)
+        expect(cmd.arguments[0]).toEqual({
+          name: 'input',
+          description: 'input file',
+          required: true,
+          multiple: false,
+        })
+      })
+
+      it('should add multiple required arguments in order', () => {
+        const cmd = new Command('test')
+          .argument('<first>', 'first argument')
+          .argument('<second>', 'second argument')
+
+        expect(cmd.arguments).toHaveLength(2)
+        expect(cmd.arguments[0].name).toBe('first')
+        expect(cmd.arguments[1].name).toBe('second')
+      })
+
+      it('should throw error when adding required after optional', () => {
+        const cmd = new Command('test').argument('[optional]', 'optional argument')
+
+        expect(() => {
+          cmd.argument('<required>', 'required argument')
+        }).toThrow('Cannot add required argument after optional or variadic arguments')
+      })
+
+      it('should throw error when adding required after variadic', () => {
+        const cmd = new Command('test').argument('[files...]', 'variadic argument')
+
+        expect(() => {
+          cmd.argument('<required>', 'required argument')
+        }).toThrow('Cannot add required argument after optional or variadic arguments')
+      })
+    })
+
+    describe('optional arguments', () => {
+      it('should add optional argument with default', () => {
+        const cmd = new Command('test')
+          .argument('<required>', 'required argument')
+          .argument('[optional]', 'optional argument', 'default')
+
+        expect(cmd.arguments).toHaveLength(2)
+        expect(cmd.arguments[1]).toEqual({
+          name: 'optional',
+          description: 'optional argument',
+          required: false,
+          multiple: false,
+          default: 'default',
+        })
+      })
+
+      it('should use empty string as default when not provided', () => {
+        const cmd = new Command('test').argument('[optional]', 'optional argument')
+
+        expect(cmd.arguments[0].default).toBe('')
+      })
+
+      it('should throw error when adding optional after variadic', () => {
+        const cmd = new Command('test').argument('<files...>', 'variadic argument')
+
+        expect(() => {
+          cmd.argument('[optional]', 'optional argument')
+        }).toThrow('Cannot add optional argument after variadic argument')
+      })
+    })
+
+    describe('variadic arguments', () => {
+      it('should add required variadic argument', () => {
+        const cmd = new Command('test').argument('<files...>', 'input files')
+
+        expect(cmd.arguments).toHaveLength(1)
+        expect(cmd.arguments[0]).toEqual({
+          name: 'files',
+          description: 'input files',
+          required: true,
+          multiple: true,
+        })
+      })
+
+      it('should add optional variadic argument with default', () => {
+        const cmd = new Command('test').argument('[files...]', 'input files', ['default.txt'])
+
+        expect(cmd.arguments).toHaveLength(1)
+        expect(cmd.arguments[0]).toEqual({
+          name: 'files',
+          description: 'input files',
+          required: false,
+          multiple: true,
+          default: ['default.txt'],
+        })
+      })
+
+      it('should use empty array as default when not provided', () => {
+        const cmd = new Command('test').argument('[files...]', 'input files')
+
+        expect(cmd.arguments[0].default).toEqual([])
+      })
+
+      it('should throw error when adding multiple variadic arguments', () => {
+        const cmd = new Command('test').argument('<files...>', 'first variadic')
+
+        expect(() => {
+          cmd.argument('<more...>', 'second variadic')
+        }).toThrow('Cannot add more than one variadic argument')
+      })
+    })
+
+    describe('validation', () => {
+      it('should throw error for invalid argument format', () => {
+        const cmd = new Command('test')
+
+        expect(() => {
+          cmd.argument('invalid' as any, 'description')
+        }).toThrow('Invalid argument format: invalid')
+      })
+
+      it('should throw error for duplicate argument names', () => {
+        const cmd = new Command('test').argument('<duplicate>', 'first')
+
+        expect(() => {
+          cmd.argument('<duplicate>', 'second')
+        }).toThrow('Argument name already in use: duplicate')
+      })
+
+      it('should throw error when argument name conflicts with option name', () => {
+        const cmd = new Command('test').option('-f, --file', 'file option')
+
+        expect(() => {
+          cmd.argument('<file>', 'file argument')
+        }).toThrow('Argument name already in use: file')
+      })
+    })
+  })
+
+  describe(Command.prototype.option.name, () => {
+    describe('boolean options', () => {
+      it('should add boolean option', () => {
+        const cmd = new Command('test')
+        const result = cmd.option('-v, --verbose', 'verbose output')
+
+        expect(result).toBe(cmd) // Should return this for chaining
+        expect(cmd.options).toHaveLength(1)
+        expect(cmd.options[0]).toEqual({
+          type: 'boolean',
+          short: 'v',
+          name: 'verbose',
+          description: 'verbose output',
+          required: false,
+          multiple: false,
+          default: false,
+        })
+      })
+    })
+
+    describe('string options', () => {
+      it('should add required string option', () => {
+        const cmd = new Command('test').option('-f, --format <type>', 'output format')
+
+        expect(cmd.options[0]).toEqual({
+          type: 'string',
+          short: 'f',
+          name: 'format',
+          description: 'output format',
+          required: true,
+          multiple: false,
+        })
+      })
+
+      it('should add optional string option with default', () => {
+        const cmd = new Command('test').option('-o, --output [path]', 'output path', 'dist')
+
+        expect(cmd.options[0]).toEqual({
+          type: 'string',
+          short: 'o',
+          name: 'output',
+          description: 'output path',
+          required: false,
+          multiple: false,
+          default: 'dist',
+        })
+      })
+
+      it('should use undefined as default when not provided for optional', () => {
+        const cmd = new Command('test').option('-o, --output [path]', 'output path')
+
+        expect(cmd.options[0].default).toBeUndefined()
+      })
+    })
+
+    describe('variadic options', () => {
+      it('should add required variadic option', () => {
+        const cmd = new Command('test').option('-i, --include <patterns...>', 'include patterns')
+
+        expect(cmd.options[0]).toEqual({
+          type: 'string',
+          short: 'i',
+          name: 'include',
+          description: 'include patterns',
+          required: true,
+          multiple: true,
+          default: undefined,
+        })
+      })
+
+      it('should add optional variadic option with default', () => {
+        const cmd = new Command('test').option('-e, --exclude [patterns...]', 'exclude patterns', ['node_modules'])
+
+        expect(cmd.options[0]).toEqual({
+          type: 'string',
+          short: 'e',
+          name: 'exclude',
+          description: 'exclude patterns',
+          required: false,
+          multiple: true,
+          default: ['node_modules'],
+        })
+      })
+
+      it('should use empty array as default when not provided', () => {
+        const cmd = new Command('test').option('-e, --exclude [patterns...]', 'exclude patterns')
+
+        expect(cmd.options[0].default).toEqual([])
+      })
+    })
+
+    describe('validation', () => {
+      it('should throw error for invalid option format', () => {
+        const cmd = new Command('test')
+
+        expect(() => {
+          cmd.option('invalid' as any, 'description')
+        }).toThrow('Invalid option format: invalid')
+      })
+
+      it('should throw error for invalid short name', () => {
+        const cmd = new Command('test')
+
+        expect(() => {
+          cmd.option('-12, --invalid', 'description')
+        }).toThrow('Invalid short option name: 1. Must be a single letter.')
+      })
+
+      it('should throw error for duplicate option names', () => {
+        const cmd = new Command('test').option('-v, --verbose', 'first')
+
+        expect(() => {
+          cmd.option('-d, --verbose', 'second')
+        }).toThrow('Option name already in use: verbose or d')
+      })
+
+      it('should throw error for duplicate short names', () => {
+        const cmd = new Command('test').option('-v, --verbose', 'first')
+
+        expect(() => {
+          cmd.option('-v, --debug', 'second')
+        }).toThrow('Option name already in use: debug or v')
+      })
+    })
+  })
+
+  describe(Command.prototype.parse.name, () => {
+    describe('argument parsing', () => {
+      it('should parse required arguments', () => {
+        const cmd = new Command('test').argument('<input>', 'input file').argument('<output>', 'output file')
+
+        const result = cmd.parse(['in.txt', 'out.txt'])
+        expect(result.arguments).toEqual(['in.txt', 'out.txt'])
+      })
+
+      it('should use defaults for missing optional arguments', () => {
+        const cmd = new Command('test')
+          .argument('<input>', 'input file')
+          .argument('[output]', 'output file', 'default.txt')
+
+        const result = cmd.parse(['in.txt'])
+        expect(result.arguments).toEqual(['in.txt', 'default.txt'])
+      })
+
+      it('should parse variadic arguments', () => {
+        const cmd = new Command('test').argument('<files...>', 'input files')
+
+        const result = cmd.parse(['file1.txt', 'file2.txt', 'file3.txt'])
+        expect(result.arguments).toEqual([['file1.txt', 'file2.txt', 'file3.txt']])
+      })
+
+      it('should handle mixed arguments and variadic', () => {
+        const cmd = new Command('test').argument('<command>', 'command name').argument('<files...>', 'input files')
+
+        const result = cmd.parse(['build', 'src/index.ts', 'src/utils.ts'])
+        expect(result.arguments).toEqual(['build', ['src/index.ts', 'src/utils.ts']])
+      })
+    })
+
+    describe('option parsing', () => {
+      it('should parse boolean options', () => {
+        const cmd = new Command('test')
+          .option('-v, --verbose', 'verbose output')
+          .option('-d, --debug', 'debug mode')
+
+        const result = cmd.parse(['-v'])
+        expect(result.options).toEqual({ verbose: true, debug: false })
+      })
+
+      it('should parse string options', () => {
+        const cmd = new Command('test').option('-f, --format <type>', 'output format')
+
+        const result = cmd.parse(['-f', 'json'])
+        expect(result.options).toEqual({ format: 'json' })
+      })
+
+      it('should parse long options', () => {
+        const cmd = new Command('test').option('-f, --format <type>', 'output format')
+
+        const result = cmd.parse(['--format', 'xml'])
+        expect(result.options).toEqual({ format: 'xml' })
+      })
+
+      it('should handle optional string options with defaults', () => {
+        const cmd = new Command('test').option('-o, --output [path]', 'output path', 'dist')
+
+        const result1 = cmd.parse([])
+        expect(result1.options).toEqual({ output: 'dist' })
+
+        const result2 = cmd.parse(['-o', 'build'])
+        expect(result2.options).toEqual({ output: 'build' })
+      })
+    })
+
+    describe('combined parsing', () => {
+      it('should parse arguments and options together', () => {
+        const cmd = new Command('test')
+          .argument('<input>', 'input file')
+          .argument('[output]', 'output file', 'out.txt')
+          .option('-v, --verbose', 'verbose output')
+          .option('-f, --format <type>', 'output format')
+
+        const result = cmd.parse(['in.txt', '-v', '-f', 'json'])
+        expect(result.arguments).toEqual(['in.txt', 'out.txt'])
+        expect(result.options).toEqual({ verbose: true, format: 'json' })
+      })
+
+      it('should handle complex command with all types', () => {
+        const cmd = new Command('test')
+          .argument('<command>', 'command name')
+          .argument('[target]', 'target directory', 'src')
+          .argument('[files...]', 'additional files', [])
+          .option('-v, --verbose', 'verbose output')
+          .option('-o, --output <dir>', 'output directory')
+          .option('-e, --exclude [patterns...]', 'exclude patterns', ['node_modules'])
+
+        const result = cmd.parse([
+          'build',
+          'dist',
+          'extra1.js',
+          'extra2.js',
+          '-v',
+          '-o',
+          'build',
+          '-e',
+          'test',
+          'docs',
+        ])
+
+        expect(result.arguments).toEqual(['build', 'dist', ['extra1.js', 'extra2.js']])
+        expect(result.options).toEqual({
+          verbose: true,
+          output: 'build',
+          exclude: ['test', 'docs'],
+        })
+      })
+    })
+
+    describe('edge cases', () => {
+      it('should handle empty argv', () => {
+        const cmd = new Command('test')
+          .argument('[optional]', 'optional arg', 'default')
+          .option('-v, --verbose', 'verbose')
+
+        const result = cmd.parse([])
+        expect(result.arguments).toEqual(['default'])
+        expect(result.options).toEqual({ verbose: false })
+      })
+
+      it('should handle no arguments provided', () => {
+        const cmd = new Command('test').option('-v, --verbose', 'verbose')
+
+        const result = cmd.parse()
+        expect(result.options).toEqual({ verbose: false })
+      })
+    })
+  })
+
+  describe('argument ordering enforcement', () => {
+    it('should allow correct ordering: required -> optional -> variadic', () => {
+      expect(() => {
+        new Command('test')
+          .argument('<required1>', 'first required')
+          .argument('<required2>', 'second required')
+          .argument('[optional]', 'optional arg')
+          .argument('[variadic...]', 'variadic arg')
+      }).not.toThrow()
+    })
+
+    it('should prevent required after optional', () => {
+      expect(() => {
+        new Command('test').argument('[optional]', 'optional arg').argument('<required>', 'required arg')
+      }).toThrow('Cannot add required argument after optional or variadic arguments')
+    })
+
+    it('should prevent multiple variadic arguments', () => {
+      expect(() => {
+        new Command('test').argument('<first...>', 'first variadic').argument('<second...>', 'second variadic')
+      }).toThrow('Cannot add more than one variadic argument')
+    })
+  })
+})
