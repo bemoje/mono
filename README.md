@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 4888  | 4762    | 97.42%     |
-| Functions | 583   | 559     | 95.88%     |
-| Branches  | 1692  | 1616    | 95.5%      |
+| Lines     | 5131  | 4999    | 97.42%     |
+| Functions | 603   | 579     | 96.01%     |
+| Branches  | 1768  | 1687    | 95.41%     |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 519   | 7491          |
-| test      | 386   | 22054         |
+| source    | 520   | 7869          |
+| test      | 387   | 22456         |
 | examples  | 0     | 0             |
 | script    | 43    | 1242          |
-| total     | 948   | 30787         |
+| total     | 950   | 31567         |
 
 ## Table of Contents
 
@@ -508,6 +508,7 @@ describe(ClassToTest.name, () => {
 
 **node**
 
+- `Command`: Command-line argument parser with fluent API and type-safe validation. Enforces CLI argument ordering rules and provides structured parsing results.
 - `StringStream`: Extension of Node's native Readable class for converting a string into a Readable stream.
 - `argvHasHelpFlag`: Checks if the command line arguments contain a help flag (--help or -h).
 - `execInherit`: Executes a command synchronously with inherited stdio, returning a promise with the output.

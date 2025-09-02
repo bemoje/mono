@@ -1,3 +1,4 @@
+export * from './Command'
 export * from './StringStream'
 export * from './argvHasHelpFlag'
 export * from './execInherit'
