@@ -11,7 +11,7 @@ export default defineConfig({
     root: getRepoRootDirpath(),
     include: ['{libs,packages,apps}/*/src/**/*.test.ts'],
     exclude: ['**/{temp,wip}/**/*', 'apps/playground'],
-    reporters: ['dot', 'hanging-process'],
+    reporters: ['dot'],
     coverage: {
       enabled: false,
       reporter: ['html', 'json-summary', 'text-summary'],

@@ -3,16 +3,23 @@
  * Scans test files and automatically adds missing Vitest import statements.
  */
 import fs from 'fs-extra'
-import { globSync } from 'glob'
+import { glob } from 'glob'
 import upath from 'upath'
 import { timer } from '../util/timer.mjs'
+import { parseArgs } from 'node:util'
+
+const parsed = parseArgs({
+  options: {
+    fileGlob: { type: 'string', short: 'f', default: '{libs,apps,packages}/*/src/**/*.test.{ts,tsx}' },
+  },
+})
 
 await timer(['ensureVitestImports', 'Fixing Vitest imports in test files...'], async (log) => {
-  //
-  const fileGlob = process.argv[2] ?? '{libs,apps,packages}/*/src/**/*.test.{ts,tsx}'
+  await ensureVitestImports({ ...parsed.values, log })
+})
 
-  //
-  let filepaths = globSync(fileGlob, { cwd: process.cwd() }) //
+async function ensureVitestImports(fileGlob, log = console) {
+  let filepaths = await glob(fileGlob, { cwd: process.cwd() }) //
     .map((filepath) => upath.normalizeSafe(filepath))
 
   log.info(`Found ${filepaths.length} files matching glob: ${fileGlob}`)
@@ -43,4 +50,4 @@ await timer(['ensureVitestImports', 'Fixing Vitest imports in test files...'], a
     fs.outputFileSync(o.filepath, `${importLine}\n\n${o.code}`, 'utf-8')
     log.info(`Added Vitest imports to: ${o.filepath}`)
   })
-})
+}
