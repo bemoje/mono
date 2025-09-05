@@ -44,7 +44,7 @@ export class Command implements CommandDescriptor {
   /** Help system configuration */
   helpConfiguration: Partial<IHelp>
 
-  constructor(name: string, parent: Command | null = null) {
+  constructor(name: string = '', parent: Command | null = null) {
     this.name = name
     this.parent = parent
     this.aliases = []
@@ -55,17 +55,15 @@ export class Command implements CommandDescriptor {
     this.helpConfiguration = { showGlobalOptions: true, sortOptions: true, sortSubcommands: true }
 
     // Make parent non-enumerable for toJSON compatibility
-    Object.defineProperty(this, 'parent', {
-      value: parent,
-      writable: true,
-      enumerable: false,
-      configurable: true,
-    })
+    Object.defineProperty(this, 'parent', { enumerable: false })
   }
 
   /** Updates multiple command properties at once */
   setState(state: Partial<CommandDescriptor>) {
     Object.assign(this, state)
+    if (state.commands) {
+      state.commands = state.commands.map((cmd) => new Command(cmd.name, this).setState(cmd))
+    }
     return this
   }
 
@@ -281,20 +279,19 @@ export class Command implements CommandDescriptor {
     description: string,
     opts: T = {} as T,
   ) {
-    // First try to match the general pattern to extract parts
     const match = usage.match(/^-(.+?), --([a-zA-Z][\w-]*)(?:\s*(<(.+?)>|\[(.+?)\]))?$/)
     if (!match) throw new Error(`Invalid option format: ${usage}`)
     const short = match[1]
-    const name = match[2]
     this.assertOptionShortNameIsValid(short)
     this.assertOptionShortNameNotInUse(short)
+    const name = match[2]
+    const argName = (match[4] || match[5])?.replace(/\.\.\.$/, '')
     this.assertOptionNameNotInUse(name)
 
-    const argName = (match[4] || match[5])?.replace(/\.\.\.$/, '')
     if (!argName) {
       this.options.push({
         type: 'boolean',
-        short: short,
+        short,
         name,
         description,
         required: false,
@@ -351,7 +348,6 @@ export class Command implements CommandDescriptor {
         })
       }
     }
-
     return this
   }
 
@@ -372,42 +368,36 @@ export class Command implements CommandDescriptor {
     arguments: (string | string[])[]
     options: { [x: string]: string | boolean | (string | boolean)[] | undefined }
   } {
-    // check if should parse subcommand
-    const maybeSub = parseArgs({
+    // navigate to subcommand if found
+    const maybeSubArg = parseArgs({
       args: argv,
       allowPositionals: true,
       tokens: false,
       strict: false,
       allowNegative: true,
     }).positionals[0]
-    const sub = this.commands.find((sub) => {
-      return [sub.name, ...sub.aliases].includes(maybeSub)
-    })
+    const sub = this.findCommand(maybeSubArg)
     if (sub) {
+      // recurse into subcommand
       return sub.parse(
-        argv?.filter((a) => a !== maybeSub),
+        argv?.filter((a) => a !== maybeSubArg),
         [...globalOptions, ...this.options],
       )
     }
 
-    // parse current command
-    const optionsConfig = Object.fromEntries(
-      [...globalOptions, ...this.options].map((o) => {
-        return [o.name, o]
-      }),
-    )
+    // parse
     const parsed = parseArgs({
       args: argv,
-      options: optionsConfig,
+      options: Object.fromEntries(
+        [...globalOptions, ...this.options].map((o) => {
+          return [o.name, o] as const
+        }),
+      ),
       allowPositionals: true,
       tokens: true,
       strict: true,
       allowNegative: true,
     })
-
-    // Process tokens to handle variadic options that should consume multiple consecutive arguments
-    const processedValues = { ...parsed.values }
-    const processedPositionals = [...parsed.positionals]
 
     // Find variadic options and collect their consecutive arguments
     for (let i = 0; i < parsed.tokens.length; i++) {
@@ -425,17 +415,16 @@ export class Command implements CommandDescriptor {
             if (positionalToken.kind === 'positional') {
               values.push(positionalToken.value)
               // Remove from processed positionals
-              const posIndex = processedPositionals.indexOf(positionalToken.value)
+              const posIndex = parsed.positionals.indexOf(positionalToken.value)
               if (posIndex !== -1) {
-                processedPositionals.splice(posIndex, 1)
+                parsed.positionals.splice(posIndex, 1)
               }
             }
             j++
           }
-
           // Update the option value with all collected values (filter out undefined)
           Reflect.set(
-            processedValues,
+            parsed.values,
             token.name,
             values.filter((v): v is string => v !== undefined),
           )
@@ -447,26 +436,29 @@ export class Command implements CommandDescriptor {
     const parsedArguments = this.arguments.map((arg, index) => {
       if (arg.multiple) {
         // Variadic argument gets all remaining positionals
-        const remainingArgs = processedPositionals.slice(index)
+        const remainingArgs = parsed.positionals.slice(index)
         return remainingArgs.length > 0 ? remainingArgs : (arg.defaultValue ?? [])
       } else {
         // Regular argument gets positional at index or default
-        return processedPositionals[index] ?? arg.defaultValue
+        return parsed.positionals[index] ?? arg.defaultValue
       }
     })
 
-    // Merge default option values with processed values
-    const optionValues = { ...processedValues }
+    // Merge default option values with parsed options
     for (const option of this.options) {
-      if (!(option.name in optionValues) && 'defaultValue' in option) {
-        Reflect.set(optionValues, option.name, option.defaultValue)
+      if (!(option.name in parsed.values) && 'defaultValue' in option) {
+        Reflect.set(parsed.values, option.name, option.defaultValue)
       }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this
     return {
-      command: this,
+      get command() {
+        return self
+      },
       arguments: parsedArguments,
-      options: optionValues,
+      options: { ...parsed.values },
     }
   }
 

@@ -1,6 +1,6 @@
 import type { Command as Commander } from 'commander'
 import { Help, type ICommandHelp, type IHelp } from './Help'
-import { lazyProp } from '@mono/decorators'
+import lazyProp from './internal/lazyProp'
 import { renderHelp } from './renderHelp'
 
 /**

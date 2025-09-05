@@ -1,4 +1,4 @@
-import { lazyProp } from '@mono/decorators'
+import lazyProp from './internal/lazyProp'
 import { Command, ArgumentDescriptor, ArgumentUsage, OptionDescriptor, OptionUsage } from './Command'
 import { Help, type ICommandHelp, type IHelp } from './Help'
 import { renderHelp } from './renderHelp'

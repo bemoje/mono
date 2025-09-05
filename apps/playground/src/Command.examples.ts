@@ -17,7 +17,7 @@ cmd.subcommand('sub').setDescription('A subcommand')
 
 /////////////
 
-const parsedRoot = cmd.parse(['input.txt', '--verbose', '--format', 'json'])
+const parsedRoot = cmd.parse(['input.txt', '--no-verbose', '--format', 'json'])
 console.log(parsedRoot)
 console.log('--------------')
 console.log(parsedRoot.command.renderHelp(new Help()))
