@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 5131  | 4999    | 97.42%     |
-| Functions | 603   | 579     | 96.01%     |
-| Branches  | 1768  | 1687    | 95.41%     |
+| Lines     | 5638  | 5045    | 89.48%     |
+| Functions | 606   | 571     | 94.22%     |
+| Branches  | 1768  | 1685    | 95.3%      |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 520   | 7869          |
-| test      | 387   | 22456         |
+| source    | 521   | 8626          |
+| test      | 387   | 22461         |
 | examples  | 0     | 0             |
 | script    | 43    | 1242          |
-| total     | 950   | 31567         |
+| total     | 951   | 32329         |
 
 ## Table of Contents
 
@@ -509,6 +509,7 @@ describe(ClassToTest.name, () => {
 **node**
 
 - `Command`: Command-line argument parser with fluent API and type-safe validation. Enforces CLI argument ordering rules and provides structured parsing results.
+- `CommandHelpDefinition`: Although this is a class, methods are static in style to allow override using subclass or just functions.
 - `StringStream`: Extension of Node's native Readable class for converting a string into a Readable stream.
 - `argvHasHelpFlag`: Checks if the command line arguments contain a help flag (--help or -h).
 - `execInherit`: Executes a command synchronously with inherited stdio, returning a promise with the output.
@@ -516,6 +517,7 @@ describe(ClassToTest.name, () => {
 - `execute`: Execute one or multiple shell commands.
 - `formatTableForTerminal`: Formats a 2D array of strings as a terminal table with optional headers and styling.
 - `getCurrentMemoryUsage`: Get the current heap memory usage in megabytes.
+- `humanReadableArgName`: ?
 - `isTerminalColorSupported`: Check if colored terminal output is (probably) supported.
 - `memoryUsage`: Returns the memory usage of the Node.js process with values converted from bytes to megabytes and rounded to the specified precision.
 - `prompt`: Prompt the user for input.
@@ -524,6 +526,7 @@ describe(ClassToTest.name, () => {
 - `spawnNodeProcess`: Spawn a child node process.
 - `startPowerShellScript`: Executes a PowerShell script with arguments and returns stdout/stderr.
 - `streamToString`: Drain a Readable into a string.
+- `stripColor`: ?
 - `timer`: Executes a task and logs the execution time with the specified name.
 - `toError`: Converts the given value to an Error object. If the value is already an Error object, it is returned as is. If the value is not an Error object, it is converted to a string and used as the error message.
 
