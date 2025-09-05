@@ -73,11 +73,7 @@ interface OptionalVariadicArgumentDescriptor extends ArgumentDescriptorBase {
   defaultValueDescription?: string
 }
 
-/**
- * Base descriptor for command-line options with shared properties
- *
- * Properties needed to parse args: `name`, `type`, `multiple`, `short`, `default`.
- */
+/** Base descriptor for command-line options with shared properties */
 interface OptionDescriptorBase extends ParseArgsOptionDescriptor {
   type: 'boolean' | 'string'
   short: string
@@ -212,7 +208,21 @@ export type CommandTypes = {
  * ```
  */
 export class Command implements CommandDescriptor {
-  protected state: CommandDescriptor
+  state: CommandDescriptor
+
+  constructor(name: string, parent: Command | null = null) {
+    this.state = {
+      name,
+      parent,
+      aliases: [],
+      description: '',
+      commands: [],
+      arguments: [],
+      options: [],
+      helpConfiguration: { showGlobalOptions: true, sortOptions: true, sortSubcommands: true },
+    }
+    Object.defineProperty(this.state, 'parent', { enumerable: false })
+  }
 
   get name() {
     return this.state.name
@@ -251,17 +261,8 @@ export class Command implements CommandDescriptor {
     return this.state.helpConfiguration
   }
 
-  constructor(name: string, parent: Command | null = null) {
-    this.state = {
-      name,
-      parent,
-      aliases: [],
-      description: '',
-      commands: [],
-      arguments: [],
-      options: [],
-      helpConfiguration: { showGlobalOptions: true },
-    }
+  toJSON() {
+    return this.state
   }
 
   setName(name: string) {
@@ -308,10 +309,7 @@ export class Command implements CommandDescriptor {
     return this
   }
 
-  get optionsInclAncestors() {
-    return this.getCommandAndAncestors().flatMap((cmd) => cmd.options)
-  }
-
+  /** Creates and adds a subcommand */
   command(name: string): Command {
     const sub = new Command(name, this)
     this.commands.push(sub)
@@ -336,8 +334,7 @@ export class Command implements CommandDescriptor {
   ): this
 
   /**
-   * Adds a positional argument to the command with automatic type inference.
-   * Enforces proper CLI argument ordering (required before optional before variadic).
+   * Adds positional argument with type inference and CLI ordering validation.
    */
   argument<T extends ArgOpts<ArgumentDescriptor>, U extends ArgumentUsage>(
     usage: U,
@@ -425,8 +422,7 @@ export class Command implements CommandDescriptor {
   option(usage: `-${string}, --${string}`, description: string, options?: OptOpts<BooleanOptionDescriptor>): this
 
   /**
-   * Adds a command-line option with automatic type inference.
-   * Parses format: `-s, --long [<value>|[value]|<value...>|[value...]]`
+   * Adds command-line option with type inference. Parses format: `-s, --long [<value>|[value]|<value...>|[value...]]`
    */
   option<T extends OptOpts<OptionDescriptor>, U extends OptionUsage>(
     usage: U,
@@ -510,8 +506,7 @@ export class Command implements CommandDescriptor {
   }
 
   /**
-   * Parses command-line arguments using Node.js parseArgs.
-   * Returns structured object with parsed arguments and options.
+   * Parses command-line arguments with subcommand support and type-safe validation.
    *
    * @example
    * ```typescript
@@ -625,14 +620,14 @@ export class Command implements CommandDescriptor {
     }
   }
 
-  /** Validates CLI argument ordering: required args must come before optional/variadic */
+  /** Validates CLI argument ordering */
   protected assertNoOptionalOrVariadicArguments() {
-    if (this.arguments.some((arg) => !arg.required || 'defaultValue' in arg)) {
+    if (this.arguments.some((arg) => !arg.required)) {
       throw new Error('Cannot add required argument after optional or variadic arguments')
     }
   }
 
-  /** Validates that optional args don't follow variadic args */
+  /** Validates optional args don't follow variadic args */
   protected assertNoVariadicArgument() {
     if (this.arguments.some((arg) => arg.multiple)) {
       throw new Error('Cannot add optional argument after variadic argument')
@@ -646,7 +641,7 @@ export class Command implements CommandDescriptor {
     }
   }
 
-  /** Validates argument names are unique across arguments and options */
+  /** Ensures unique argument names across arguments and options */
   protected assertArgumentNameNotInUse(name: string) {
     if (this.arguments.some((arg) => arg.name === name)) {
       throw new Error(`Argument name already in use: ${name}`)
@@ -656,7 +651,7 @@ export class Command implements CommandDescriptor {
     }
   }
 
-  /** Assert option short name is single alpha-numeric character. */
+  /** Validates option short names are single alphanumeric characters */
   protected assertOptionShortNameIsValid(short: string) {
     const isSingleAlphaNumericChar = /^[a-zA-Z0-9]$/.test(short)
     if (!isSingleAlphaNumericChar) {
@@ -664,7 +659,7 @@ export class Command implements CommandDescriptor {
     }
   }
 
-  /** Validates option names and short names are unique */
+  /** Validates option short names are unique across command hierarchy */
   protected assertOptionShortNameNotInUse(short: string) {
     for (const opt of this.options) {
       if (opt.short === short) {
@@ -674,7 +669,7 @@ export class Command implements CommandDescriptor {
     this.parent?.assertOptionShortNameNotInUse(short)
   }
 
-  /** Validates option names and short names are unique */
+  /** Validates option names are unique across command hierarchy */
   protected assertOptionNameNotInUse(name: string) {
     if (this.options.some((opt) => opt.name === name)) {
       throw new Error(`Option name already in use: --${name}`)
@@ -682,6 +677,7 @@ export class Command implements CommandDescriptor {
     this.parent?.assertOptionNameNotInUse(name)
   }
 
+  /** Returns command and all ancestor commands in hierarchy */
   getCommandAndAncestors(): Command[] {
     const result = []
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -692,32 +688,33 @@ export class Command implements CommandDescriptor {
     return result
   }
 
+  /** Returns all ancestor commands excluding this command */
   getAncestors(): Command[] {
     return this.getCommandAndAncestors().slice(1)
   }
 
-  /**
-   * Find matching command.
-   */
+  /** Returns all options from this command and ancestors */
+  getOptionsInclAncestors() {
+    return this.getCommandAndAncestors().flatMap((cmd) => cmd.options)
+  }
+
+  /** Finds subcommand by name or alias */
   findCommand(this: Command, name: string) {
     if (!name) return undefined
     return this.commands.find((cmd) => cmd.name === name || cmd.aliases.includes(name))
   }
 
-  /**
-   * Return an option matching `arg` if any.
-   */
+  /** Finds option by short or long name */
   findOption(this: Command, arg: string): OptionDescriptor | undefined {
     return this.options.find((option) => this.optionsIs(option, arg))
   }
 
-  /**
-   * Check if `nameOrShortName` matches the short or long flag.
-   */
+  /** Checks if option matches name or short name */
   protected optionsIs(option: OptionDescriptor, nameOrShortName: string) {
     return option.short === nameOrShortName || option.name === nameOrShortName
   }
 
+  /** Renders formatted help text using provided help definition */
   renderHelp(help: ICommandHelpDefinition): string {
     const helper = Object.assign(help, this.helpConfiguration ?? {})
     return helper.formatHelp(commandHelp(this), helper)

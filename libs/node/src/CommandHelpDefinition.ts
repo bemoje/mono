@@ -562,7 +562,7 @@ export class CommandHelpDefinition implements ICommandHelpDefinition {
 /**
  * Strip style ANSI escape sequences from the string. In particular, SGR (Select Graphic Rendition) codes.
  */
-export function stripColor(str: string): string {
+function stripColor(str: string): string {
   // eslint-disable-next-line no-control-regex
   const sgrPattern = /\x1b\[\d*(;\d*)*m/g
   return str.replace(sgrPattern, '')
@@ -571,7 +571,7 @@ export function stripColor(str: string): string {
 /**
  * Takes an argument and returns its human readable equivalent for help usage.
  */
-export function humanReadableArgName(arg: ArgumentHelp): string {
+function humanReadableArgName(arg: ArgumentHelp): string {
   const nameOutput = arg.name + (arg.variadic === true ? '...' : '')
 
   return arg.required ? '<' + nameOutput + '>' : '[' + nameOutput + ']'
@@ -671,71 +671,3 @@ export interface ICommandHelpDefinition {
   ): Map<string, T[]>
   formatHelp(cmd: CommandHelp, helper: ICommandHelpDefinition): string
 }
-
-// /**
-//  * Convert string from kebab-case to camelCase.
-//  *
-//  * @param {string} str
-//  * @return {string}
-//  * @private
-//  */
-
-// function camelcase(str: string) {
-//   return str.split('-').reduce((str, word) => {
-//     return str + word[0].toUpperCase() + word.slice(1)
-//   })
-// }
-
-// /**
-//  * Split the short and long flag out of something like '-m,--mixed <value>'
-//  *
-//  * @private
-//  */
-
-// function splitOptionFlags(flags: string) {
-//   let shortFlag
-//   let longFlag
-//   // short flag, single dash and single character
-//   const shortFlagExp = /^-[^-]$/
-//   // long flag, double dash and at least one character
-//   const longFlagExp = /^--[^-]/
-
-//   const flagParts = flags.split(/[ |,]+/).concat('guard')
-//   // Normal is short and/or long.
-//   if (shortFlagExp.test(flagParts[0])) shortFlag = flagParts.shift()
-//   if (longFlagExp.test(flagParts[0])) longFlag = flagParts.shift()
-//   // Long then short. Rarely used but fine.
-//   if (!shortFlag && shortFlagExp.test(flagParts[0])) shortFlag = flagParts.shift()
-//   // Allow two long flags, like '--ws, --workspace'
-//   // This is the supported way to have a shortish option flag.
-//   if (!shortFlag && longFlagExp.test(flagParts[0])) {
-//     shortFlag = longFlag
-//     longFlag = flagParts.shift()
-//   }
-
-//   // Check for unprocessed flag. Fail noisily rather than silently ignore.
-//   if (flagParts[0].startsWith('-')) {
-//     const unsupportedFlag = flagParts[0]
-//     const baseError = `option creation failed due to '${unsupportedFlag}' in option flags '${flags}'`
-//     if (/^-[^-][^-]/.test(unsupportedFlag))
-//       throw new Error(
-//         `${baseError}
-// - a short flag is a single dash and a single character
-//   - either use a single dash and a single character (for a short flag)
-//   - or use a double dash for a long option (and can have two, like '--ws, --workspace')`,
-//       )
-//     if (shortFlagExp.test(unsupportedFlag))
-//       throw new Error(`${baseError}
-// - too many short flags`)
-//     if (longFlagExp.test(unsupportedFlag))
-//       throw new Error(`${baseError}
-// - too many long flags`)
-
-//     throw new Error(`${baseError}
-// - unrecognised flag format`)
-//   }
-//   if (shortFlag === undefined && longFlag === undefined)
-//     throw new Error(`option creation failed due to no flags found in '${flags}'.`)
-
-//   return { shortFlag, longFlag }
-// }
