@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import assert from 'node:assert'
 import { Command } from './Command'
-import { CommandHelpDefinition } from './CommandHelpDefinition'
+import { Help } from './Help'
 
 describe(Command.name, () => {
   it('examples', () => {
@@ -1346,7 +1346,7 @@ describe(Command.name, () => {
     it('should render basic help with command info', () => {
       const cmd = new Command('myapp')
       cmd.setVersion('1.0.0')
-      const helpDefinition = new CommandHelpDefinition()
+      const helpDefinition = new Help()
 
       const help = cmd.renderHelp(helpDefinition)
 
@@ -1362,7 +1362,7 @@ describe(Command.name, () => {
         .option('-v, --verbose', 'verbose output')
         .option('-f, --format <type>', 'output format')
 
-      const helpDefinition = new CommandHelpDefinition()
+      const helpDefinition = new Help()
       const help = cmd.renderHelp(helpDefinition)
 
       expect(help).toContain('<input>')
@@ -1377,7 +1377,7 @@ describe(Command.name, () => {
       parent.subcommand('build')
       parent.subcommand('test')
 
-      const helpDefinition = new CommandHelpDefinition()
+      const helpDefinition = new Help()
       const help = parent.renderHelp(helpDefinition)
 
       expect(help).toContain('build')
@@ -1388,7 +1388,7 @@ describe(Command.name, () => {
       const cmd = new Command('myapp').option('-v, --verbose', 'verbose output')
       cmd.extendHelpConfiguration({ sortOptions: true })
 
-      const helpDefinition = new CommandHelpDefinition()
+      const helpDefinition = new Help()
       const help = cmd.renderHelp(helpDefinition)
 
       // Should not throw and should include the option
@@ -1402,7 +1402,7 @@ describe(Command.name, () => {
         .option('-i, --include <patterns...>', 'include patterns')
         .option('-e, --exclude [patterns...]', 'exclude patterns')
 
-      const helpDefinition = new CommandHelpDefinition()
+      const helpDefinition = new Help()
       const help = cmd.renderHelp(helpDefinition)
 
       expect(help).toContain('<files...>')
@@ -1427,7 +1427,7 @@ describe(Command.name, () => {
       build.setSummary('Build the project')
       build.argument('<source>', 'source directory')
 
-      const helpDefinition = new CommandHelpDefinition()
+      const helpDefinition = new Help()
       const help = cmd.renderHelp(helpDefinition)
 
       expect(help).toContain('myapp')
@@ -1444,7 +1444,7 @@ describe(Command.name, () => {
       cmd.option('-z, --zebra', 'zebra option')
       cmd.option('-a, --alpha', 'alpha option')
 
-      const helpDefinition = new CommandHelpDefinition()
+      const helpDefinition = new Help()
       const help = cmd.renderHelp(helpDefinition)
 
       expect(help).toContain('-z, --zebra')

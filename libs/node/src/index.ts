@@ -1,5 +1,3 @@
-export * from './Command'
-export * from './CommandHelpDefinition'
 export * from './StringStream'
 export * from './argvHasHelpFlag'
 export * from './execInherit'

@@ -1,211 +1,6 @@
-import { parseArgs, ParseArgsOptionDescriptor } from 'node:util'
-import {
-  type ArgumentHelp,
-  type CommandHelp,
-  type ICommandHelpDefinition,
-  type OptionHelp,
-} from './CommandHelpDefinition'
-
-/** Usage patterns for boolean flag options */
-type BooleanOptionUsage = `-${string}, --${string}`
-/** Usage patterns for required string options */
-type RequiredOptionUsage = `-${string}, --${string} <${string}>`
-/** Usage patterns for optional string options */
-type OptionalOptionUsage = `-${string}, --${string} [${string}]`
-/** Usage patterns for required variadic options */
-type RequiredVariadicOptionUsage = `-${string}, --${string} <${string}...>`
-/** Usage patterns for optional variadic options */
-type OptionalVariadicOptionUsage = `-${string}, --${string} [${string}...]`
-
-/** Union of all option usage pattern types */
-type OptionUsage =
-  | BooleanOptionUsage
-  | RequiredOptionUsage
-  | OptionalOptionUsage
-  | RequiredVariadicOptionUsage
-  | OptionalVariadicOptionUsage
-
-/** Usage pattern for required positional arguments */
-type RequiredArgumentUsage = `<${string}>`
-/** Usage pattern for optional positional arguments */
-type OptionalArgumentUsage = `[${string}]`
-/** Usage pattern for required variadic arguments */
-type RequiredVariadicArgumentUsage = `<${string}...>`
-/** Usage pattern for optional variadic arguments */
-type OptionalVariadicArgumentUsage = `[${string}...]`
-
-/** Union of all argument usage pattern types */
-type ArgumentUsage =
-  | RequiredArgumentUsage //
-  | OptionalArgumentUsage
-  | RequiredVariadicArgumentUsage
-  | OptionalVariadicArgumentUsage
-
-/** Base descriptor for command-line arguments with shared properties */
-interface ArgumentDescriptorBase {
-  name: string
-  required: boolean
-  description: string
-  multiple: boolean
-  choices?: string[]
-  defaultValue?: string | string[] | never
-  defaultValueDescription?: string | never
-}
-
-/** Required positional argument descriptor. Usage: `<name>` */
-interface RequiredArgumentDescriptor extends ArgumentDescriptorBase {
-  multiple: false
-  required: true
-  defaultValue?: never
-  defaultValueDescription?: never
-}
-
-/** Optional positional argument with string default. Usage: `[name]` */
-interface OptionalArgumentDescriptor extends ArgumentDescriptorBase {
-  required: false
-  multiple: false
-  defaultValue?: string
-  defaultValueDescription?: string
-}
-
-/** Required variadic argument accepting multiple values. Usage: `<name...>` */
-interface RequiredVariadicArgumentDescriptor extends ArgumentDescriptorBase {
-  required: true
-  multiple: true
-  defaultValue?: never
-  defaultValueDescription?: never
-}
-
-/** Optional variadic argument with array default. Usage: `[name...]` */
-interface OptionalVariadicArgumentDescriptor extends ArgumentDescriptorBase {
-  required: false
-  multiple: true
-  defaultValue?: string[]
-  defaultValueDescription?: string
-}
-
-/** Base descriptor for command-line options with shared properties */
-interface OptionDescriptorBase extends ParseArgsOptionDescriptor {
-  type: 'boolean' | 'string'
-  short: string
-  name: string
-  argName?: string | never
-  description: string
-  required: boolean
-  multiple: boolean
-  defaultValue?: boolean | string | string[] | never
-  defaultValueDescription?: string | never
-  env?: string
-  hidden?: boolean
-  choices?: string[]
-  group?: string
-}
-
-/** Boolean flag option. Usage: `-v, --verbose` */
-interface BooleanOptionDescriptor extends OptionDescriptorBase {
-  type: 'boolean'
-  argName?: never
-  required: false
-  multiple: false
-  defaultValue?: boolean
-  defaultValueDescription?: string
-}
-
-/** Required string option. Usage: `-f, --file <path>` */
-interface RequiredOptionDescriptor extends OptionDescriptorBase {
-  type: 'string'
-  argName: string
-  required: true
-  multiple: false
-  defaultValue?: never
-  defaultValueDescription?: never
-}
-
-/** Optional string option with default. Usage: `-o, --output [path]` */
-interface OptionalOptionDescriptor extends OptionDescriptorBase {
-  type: 'string'
-  argName: string
-  required: false
-  multiple: false
-  defaultValue?: string
-  defaultValueDescription?: string
-}
-
-/** Required option accepting multiple values. Usage: `-i, --include <patterns...>` */
-interface RequiredVariadicOptionDescriptor extends OptionDescriptorBase {
-  type: 'string'
-  argName: string
-  required: true
-  multiple: true
-  defaultValue?: never
-  defaultValueDescription?: never
-}
-
-/** Optional option accepting multiple values with defaults. Usage: `-e, --exclude [patterns...]` */
-interface OptionalVariadicOptionDescriptor extends OptionDescriptorBase {
-  type: 'string'
-  argName: string
-  required: false
-  multiple: true
-  defaultValue?: string[]
-  defaultValueDescription?: string
-}
-
-/** Complete command configuration including all properties and substructures */
-interface CommandDescriptor {
-  name: string
-  version?: string
-  aliases: string[]
-  summary?: string
-  description: string
-  hidden?: boolean
-  group?: string
-  parent: Command | null
-  commands: Command[]
-  arguments: ArgumentDescriptor[]
-  options: OptionDescriptor[]
-  helpConfiguration: Partial<ICommandHelpDefinition>
-}
-
-/** Union type for all argument descriptor variants */
-type ArgumentDescriptor =
-  | RequiredArgumentDescriptor
-  | OptionalArgumentDescriptor
-  | RequiredVariadicArgumentDescriptor
-  | OptionalVariadicArgumentDescriptor
-
-/** Union type for all option descriptor variants */
-type OptionDescriptor =
-  | BooleanOptionDescriptor
-  | RequiredOptionDescriptor
-  | OptionalOptionDescriptor
-  | RequiredVariadicOptionDescriptor
-  | OptionalVariadicOptionDescriptor
-
-/** Helper type for extracting argument configuration options */
-type ArgOpts<T extends ArgumentDescriptor> = Omit<T, 'name' | 'description' | 'required' | 'multiple'>
-/** Helper type for extracting option configuration options */
-type OptOpts<T extends OptionDescriptor> = Omit<
-  T,
-  'name' | 'description' | 'required' | 'multiple' | 'type' | 'argName' | 'short' | 'long'
->
-
-/** Export type map for external type access and testing */
-export type CommandTypes = {
-  ArgumentDescriptorBase: ArgumentDescriptorBase
-  RequiredArgumentDescriptor: RequiredArgumentDescriptor
-  OptionalArgumentDescriptor: OptionalArgumentDescriptor
-  RequiredVariadicArgumentDescriptor: RequiredVariadicArgumentDescriptor
-  OptionalVariadicArgumentDescriptor: OptionalVariadicArgumentDescriptor
-  OptionalDescriptorBase: OptionDescriptorBase
-  BooleanOptionDescriptor: BooleanOptionDescriptor
-  RequiredOptionDescriptor: RequiredOptionDescriptor
-  OptionalOptionDescriptor: OptionalOptionDescriptor
-  RequiredVariadicOptionDescriptor: RequiredVariadicOptionDescriptor
-  OptionalVariadicOptionDescriptor: OptionalVariadicOptionDescriptor
-  ArgumentDescriptor: ArgumentDescriptor
-  OptionDescriptor: OptionDescriptor
-}
+import { parseArgs } from 'node:util'
+import type { ParseArgsOptionDescriptor } from 'node:util'
+import type { ArgumentHelp, CommandHelp, IHelp, OptionHelp } from './Help'
 
 /**
  * Command-line argument parser with fluent API and type-safe validation.
@@ -246,7 +41,7 @@ export class Command implements CommandDescriptor {
   /** Named options/flags */
   options: OptionDescriptor[]
   /** Help system configuration */
-  helpConfiguration: Partial<ICommandHelpDefinition>
+  helpConfiguration: Partial<IHelp>
 
   constructor(name: string, parent: Command | null = null) {
     this.name = name
@@ -354,13 +149,13 @@ export class Command implements CommandDescriptor {
   }
 
   /** Extends existing help configuration with new settings */
-  extendHelpConfiguration(config: Partial<ICommandHelpDefinition>) {
+  extendHelpConfiguration(config: Partial<IHelp>) {
     this.helpConfiguration = { ...this.helpConfiguration, ...config }
     return this
   }
 
   /** Sets help configuration, using defaults if not provided */
-  setHelpConfiguration(config?: Partial<ICommandHelpDefinition>) {
+  setHelpConfiguration(config?: Partial<IHelp>) {
     this.helpConfiguration = config
       ? { ...config }
       : { showGlobalOptions: true, sortOptions: true, sortSubcommands: true }
@@ -769,7 +564,7 @@ export class Command implements CommandDescriptor {
   }
 
   /** Renders formatted help text using provided help definition */
-  renderHelp(help: ICommandHelpDefinition): string {
+  renderHelp(help: IHelp): string {
     const helper = Object.assign(help, this.helpConfiguration ?? {})
     return helper.formatHelp(commandHelp(this), helper)
 
@@ -862,3 +657,215 @@ export class Command implements CommandDescriptor {
     }
   }
 }
+
+/** Usage patterns for boolean flag options */
+type BooleanOptionUsage = `-${string}, --${string}`
+/** Usage patterns for required string options */
+type RequiredOptionUsage = `-${string}, --${string} <${string}>`
+/** Usage patterns for optional string options */
+type OptionalOptionUsage = `-${string}, --${string} [${string}]`
+/** Usage patterns for required variadic options */
+type RequiredVariadicOptionUsage = `-${string}, --${string} <${string}...>`
+/** Usage patterns for optional variadic options */
+type OptionalVariadicOptionUsage = `-${string}, --${string} [${string}...]`
+
+/** Union of all option usage pattern types */
+type OptionUsage =
+  | BooleanOptionUsage
+  | RequiredOptionUsage
+  | OptionalOptionUsage
+  | RequiredVariadicOptionUsage
+  | OptionalVariadicOptionUsage
+
+/** Usage pattern for required positional arguments */
+type RequiredArgumentUsage = `<${string}>`
+/** Usage pattern for optional positional arguments */
+type OptionalArgumentUsage = `[${string}]`
+/** Usage pattern for required variadic arguments */
+type RequiredVariadicArgumentUsage = `<${string}...>`
+/** Usage pattern for optional variadic arguments */
+type OptionalVariadicArgumentUsage = `[${string}...]`
+
+/** Union of all argument usage pattern types */
+type ArgumentUsage =
+  | RequiredArgumentUsage //
+  | OptionalArgumentUsage
+  | RequiredVariadicArgumentUsage
+  | OptionalVariadicArgumentUsage
+
+/** Base descriptor for command-line arguments with shared properties */
+interface ArgumentDescriptorBase {
+  name: string
+  required: boolean
+  description: string
+  multiple: boolean
+  choices?: string[]
+  defaultValue?: string | string[] | never
+  defaultValueDescription?: string | never
+}
+
+/** Required positional argument descriptor. Usage: `<name>` */
+interface RequiredArgumentDescriptor extends ArgumentDescriptorBase {
+  multiple: false
+  required: true
+  defaultValue?: never
+  defaultValueDescription?: never
+}
+
+/** Optional positional argument with string default. Usage: `[name]` */
+interface OptionalArgumentDescriptor extends ArgumentDescriptorBase {
+  required: false
+  multiple: false
+  defaultValue?: string
+  defaultValueDescription?: string
+}
+
+/** Required variadic argument accepting multiple values. Usage: `<name...>` */
+interface RequiredVariadicArgumentDescriptor extends ArgumentDescriptorBase {
+  required: true
+  multiple: true
+  defaultValue?: never
+  defaultValueDescription?: never
+}
+
+/** Optional variadic argument with array default. Usage: `[name...]` */
+interface OptionalVariadicArgumentDescriptor extends ArgumentDescriptorBase {
+  required: false
+  multiple: true
+  defaultValue?: string[]
+  defaultValueDescription?: string
+}
+
+/** Base descriptor for command-line options with shared properties */
+interface OptionDescriptorBase extends ParseArgsOptionDescriptor {
+  type: 'boolean' | 'string'
+  short: string
+  name: string
+  argName?: string | never
+  description: string
+  required: boolean
+  multiple: boolean
+  defaultValue?: boolean | string | string[] | never
+  defaultValueDescription?: string | never
+  env?: string
+  hidden?: boolean
+  choices?: string[]
+  group?: string
+}
+
+/** Boolean flag option. Usage: `-v, --verbose` */
+interface BooleanOptionDescriptor extends OptionDescriptorBase {
+  type: 'boolean'
+  argName?: never
+  required: false
+  multiple: false
+  defaultValue?: boolean
+  defaultValueDescription?: string
+}
+
+/** Required string option. Usage: `-f, --file <path>` */
+interface RequiredOptionDescriptor extends OptionDescriptorBase {
+  type: 'string'
+  argName: string
+  required: true
+  multiple: false
+  defaultValue?: never
+  defaultValueDescription?: never
+}
+
+/** Optional string option with default. Usage: `-o, --output [path]` */
+interface OptionalOptionDescriptor extends OptionDescriptorBase {
+  type: 'string'
+  argName: string
+  required: false
+  multiple: false
+  defaultValue?: string
+  defaultValueDescription?: string
+}
+
+/** Required option accepting multiple values. Usage: `-i, --include <patterns...>` */
+interface RequiredVariadicOptionDescriptor extends OptionDescriptorBase {
+  type: 'string'
+  argName: string
+  required: true
+  multiple: true
+  defaultValue?: never
+  defaultValueDescription?: never
+}
+
+/** Optional option accepting multiple values with defaults. Usage: `-e, --exclude [patterns...]` */
+interface OptionalVariadicOptionDescriptor extends OptionDescriptorBase {
+  type: 'string'
+  argName: string
+  required: false
+  multiple: true
+  defaultValue?: string[]
+  defaultValueDescription?: string
+}
+
+/** Complete command configuration including all properties and substructures */
+interface CommandDescriptor {
+  name: string
+  version?: string
+  aliases: string[]
+  summary?: string
+  description: string
+  hidden?: boolean
+  group?: string
+  parent: Command | null
+  commands: Command[]
+  arguments: ArgumentDescriptor[]
+  options: OptionDescriptor[]
+  helpConfiguration: Partial<IHelp>
+}
+
+/** Union type for all argument descriptor variants */
+export type ArgumentDescriptor =
+  | RequiredArgumentDescriptor
+  | OptionalArgumentDescriptor
+  | RequiredVariadicArgumentDescriptor
+  | OptionalVariadicArgumentDescriptor
+
+/** Union type for all option descriptor variants */
+export type OptionDescriptor =
+  | BooleanOptionDescriptor
+  | RequiredOptionDescriptor
+  | OptionalOptionDescriptor
+  | RequiredVariadicOptionDescriptor
+  | OptionalVariadicOptionDescriptor
+
+/** Export type map for external type access and testing */
+export type CommandTypes = {
+  RequiredArgumentUsage: RequiredArgumentUsage
+  OptionalArgumentUsage: OptionalArgumentUsage
+  RequiredVariadicArgumentUsage: RequiredVariadicArgumentUsage
+  OptionalVariadicArgumentUsage: OptionalVariadicArgumentUsage
+  ArgumentDescriptorBase: ArgumentDescriptorBase
+  RequiredArgumentDescriptor: RequiredArgumentDescriptor
+  OptionalArgumentDescriptor: OptionalArgumentDescriptor
+  RequiredVariadicArgumentDescriptor: RequiredVariadicArgumentDescriptor
+  OptionalVariadicArgumentDescriptor: OptionalVariadicArgumentDescriptor
+  ArgumentDescriptor: ArgumentDescriptor
+
+  BooleanOptionUsage: BooleanOptionUsage
+  RequiredOptionUsage: RequiredOptionUsage
+  OptionalOptionUsage: OptionalOptionUsage
+  RequiredVariadicOptionUsage: RequiredVariadicOptionUsage
+  OptionalVariadicOptionUsage: OptionalVariadicOptionUsage
+  OptionalDescriptorBase: OptionDescriptorBase
+  BooleanOptionDescriptor: BooleanOptionDescriptor
+  RequiredOptionDescriptor: RequiredOptionDescriptor
+  OptionalOptionDescriptor: OptionalOptionDescriptor
+  RequiredVariadicOptionDescriptor: RequiredVariadicOptionDescriptor
+  OptionalVariadicOptionDescriptor: OptionalVariadicOptionDescriptor
+  OptionDescriptor: OptionDescriptor
+}
+
+/** Helper type for extracting argument configuration options */
+type ArgOpts<T extends ArgumentDescriptor> = Omit<T, 'name' | 'description' | 'required' | 'multiple'>
+
+/** Helper type for extracting option configuration options */
+type OptOpts<T extends OptionDescriptor> = Omit<
+  T,
+  'name' | 'description' | 'required' | 'multiple' | 'type' | 'argName' | 'short' | 'long'
+>

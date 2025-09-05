@@ -1,7 +1,7 @@
 /**
  * Although this is a class, methods are static in style to allow override using subclass or just functions.
  */
-export class CommandHelpDefinition implements ICommandHelpDefinition {
+export class Help implements IHelp {
   /** output helpWidth, long lines are wrapped to fit */
   helpWidth: number = process.stdout.isTTY ? process.stdout.columns : 80
   minWidthToWrap: number = 40
@@ -52,7 +52,7 @@ export class CommandHelpDefinition implements ICommandHelpDefinition {
   visibleGlobalOptions(cmd: CommandHelp): OptionHelp[] {
     if (!this.showGlobalOptions) return []
 
-    const globalOptions: OptionHelp[] = cmd.options.filter((option) => !option.hidden)
+    const globalOptions: OptionHelp[] = []
     for (let ancestorCmd = cmd.parent; ancestorCmd; ancestorCmd = ancestorCmd.parent) {
       const visibleOptions = ancestorCmd.options.filter((option: OptionHelp) => !option.hidden)
       globalOptions.push(...visibleOptions)
@@ -105,7 +105,7 @@ export class CommandHelpDefinition implements ICommandHelpDefinition {
   /**
    * Get the longest command term length.
    */
-  longestSubcommandTermLength(cmd: CommandHelp, helper: CommandHelpDefinition): number {
+  longestSubcommandTermLength(cmd: CommandHelp, helper: Help): number {
     return helper.visibleCommands(cmd).reduce((max: number, command: CommandHelp) => {
       return Math.max(max, this.displayWidth(helper.styleSubcommandTerm(helper.subcommandTerm(command))))
     }, 0)
@@ -114,7 +114,7 @@ export class CommandHelpDefinition implements ICommandHelpDefinition {
   /**
    * Get the longest option term length.
    */
-  longestOptionTermLength(cmd: CommandHelp, helper: CommandHelpDefinition): number {
+  longestOptionTermLength(cmd: CommandHelp, helper: Help): number {
     return helper.visibleOptions(cmd).reduce((max: number, option: OptionHelp) => {
       return Math.max(max, this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option))))
     }, 0)
@@ -123,7 +123,7 @@ export class CommandHelpDefinition implements ICommandHelpDefinition {
   /**
    * Get the longest global option term length.
    */
-  longestGlobalOptionTermLength(cmd: CommandHelp, helper: CommandHelpDefinition): number {
+  longestGlobalOptionTermLength(cmd: CommandHelp, helper: Help): number {
     return helper.visibleGlobalOptions(cmd).reduce((max: number, option: OptionHelp) => {
       return Math.max(max, this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option))))
     }, 0)
@@ -132,7 +132,7 @@ export class CommandHelpDefinition implements ICommandHelpDefinition {
   /**
    * Get the longest argument term length.
    */
-  longestArgumentTermLength(cmd: CommandHelp, helper: CommandHelpDefinition): number {
+  longestArgumentTermLength(cmd: CommandHelp, helper: Help): number {
     return helper.visibleArguments(cmd).reduce((max: number, argument: ArgumentHelp) => {
       return Math.max(max, this.displayWidth(helper.styleArgumentTerm(helper.argumentTerm(argument))))
     }, 0)
@@ -233,7 +233,7 @@ export class CommandHelpDefinition implements ICommandHelpDefinition {
   /**
    * Format a list of items, given a heading and an array of formatted items.
    */
-  formatItemList(heading: string, items: string[], helper: CommandHelpDefinition): string[] {
+  formatItemList(heading: string, items: string[], helper: Help): string[] {
     if (items.length === 0) return []
 
     return [helper.styleTitle(heading), ...items, '']
@@ -267,7 +267,7 @@ export class CommandHelpDefinition implements ICommandHelpDefinition {
   /**
    * Generate the built-in help text.
    */
-  formatHelp(cmd: CommandHelp, helper: ICommandHelpDefinition): string {
+  formatHelp(cmd: CommandHelp, helper: IHelp): string {
     const termWidth = helper.padWidth(cmd, helper)
     const helpWidth = helper.helpWidth
 
@@ -466,7 +466,7 @@ export class CommandHelpDefinition implements ICommandHelpDefinition {
   /**
    * Calculate the pad width from the maximum term length.
    */
-  padWidth(cmd: CommandHelp, helper: CommandHelpDefinition): number {
+  padWidth(cmd: CommandHelp, helper: Help): number {
     return Math.max(
       helper.longestOptionTermLength(cmd, helper),
       helper.longestGlobalOptionTermLength(cmd, helper),
@@ -489,7 +489,7 @@ export class CommandHelpDefinition implements ICommandHelpDefinition {
    *   TTT  DDD DDDD
    *        DD DDD
    */
-  formatItem(term: string, termWidth: number, description: string, helper: CommandHelpDefinition): string {
+  formatItem(term: string, termWidth: number, description: string, helper: Help): string {
     const itemIndent = 2
     const itemIndentStr = ' '.repeat(itemIndent)
     if (!description) return itemIndentStr + term
@@ -589,7 +589,7 @@ export type CommandHelp = {
   options: OptionHelp[]
   arguments: ArgumentHelp[]
   parent: CommandHelp | null
-  helpConfiguration?: Partial<ICommandHelpDefinition>
+  helpConfiguration?: Partial<IHelp>
 }
 
 export type ArgumentHelp = {
@@ -620,7 +620,7 @@ export type OptionHelp = {
   global?: boolean
 }
 
-export interface ICommandHelpDefinition {
+export interface IHelp {
   helpWidth: number
   minWidthToWrap: number
   sortSubcommands?: boolean
@@ -639,10 +639,10 @@ export interface ICommandHelpDefinition {
   visibleOptions(cmd: CommandHelp): OptionHelp[]
   visibleGlobalOptions(cmd: CommandHelp): OptionHelp[]
   visibleArguments(cmd: CommandHelp): ArgumentHelp[]
-  longestSubcommandTermLength(cmd: CommandHelp, helper: ICommandHelpDefinition): number
-  longestOptionTermLength(cmd: CommandHelp, helper: ICommandHelpDefinition): number
-  longestGlobalOptionTermLength(cmd: CommandHelp, helper: ICommandHelpDefinition): number
-  longestArgumentTermLength(cmd: CommandHelp, helper: ICommandHelpDefinition): number
+  longestSubcommandTermLength(cmd: CommandHelp, helper: IHelp): number
+  longestOptionTermLength(cmd: CommandHelp, helper: IHelp): number
+  longestGlobalOptionTermLength(cmd: CommandHelp, helper: IHelp): number
+  longestArgumentTermLength(cmd: CommandHelp, helper: IHelp): number
   displayWidth(str: string): number
   styleTitle(title: string): string
   styleUsage(str: string): string
@@ -659,15 +659,15 @@ export interface ICommandHelpDefinition {
   styleSubcommandText(str: string): string
   styleArgumentText(str: string): string
   compareOptions(a: OptionHelp, b: OptionHelp): number
-  padWidth(cmd: CommandHelp, helper: ICommandHelpDefinition): number
+  padWidth(cmd: CommandHelp, helper: IHelp): number
   boxWrap(str: string, width: number): string
   preformatted(str: string): boolean
-  formatItem(term: string, termWidth: number, description: string, helper: ICommandHelpDefinition): string
-  formatItemList(heading: string, items: string[], helper: ICommandHelpDefinition): string[]
+  formatItem(term: string, termWidth: number, description: string, helper: IHelp): string
+  formatItemList(heading: string, items: string[], helper: IHelp): string[]
   groupItems<T extends CommandHelp | OptionHelp>(
     unsortedItems: T[],
     visibleItems: T[],
     getGroup: (item: T) => string,
   ): Map<string, T[]>
-  formatHelp(cmd: CommandHelp, helper: ICommandHelpDefinition): string
+  formatHelp(cmd: CommandHelp, helper: IHelp): string
 }

@@ -1,0 +1,13 @@
+{
+  "name": "@mono/cli",
+  "version": "0.0.1",
+  "packageManager": "yarn@4.3.1",
+  "type": "module",
+  "private": true,
+  "module": "src/index.ts",
+  "sideEffects": false,
+  "scripts": {
+    "indexts": "node ../../s/clean/indextsWs.mjs",
+    "build": "node esbuild.mjs"
+  }
+}

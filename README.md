@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 5716  | 5547    | 97.04%     |
-| Functions | 667   | 640     | 95.95%     |
-| Branches  | 1955  | 1852    | 94.73%     |
+| Lines     | 5712  | 5553    | 97.21%     |
+| Functions | 667   | 643     | 96.4%      |
+| Branches  | 1955  | 1854    | 94.83%     |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 521   | 8684          |
-| test      | 387   | 23119         |
+| source    | 522   | 8685          |
+| test      | 388   | 23249         |
 | examples  | 0     | 0             |
 | script    | 43    | 1242          |
-| total     | 951   | 33045         |
+| total     | 953   | 33176         |
 
 ## Table of Contents
 
@@ -324,6 +324,11 @@ describe(ClassToTest.name, () => {
 - `arrTableToObjects`: Converts a 2D array representing a table into an array of objects.
 - `arrayToString`: Short and condensed string representation of an array, easy to read for error outputs or similar.
 
+**cli**
+
+- `Command`: Command-line argument parser with fluent API and type-safe validation. Enforces CLI argument ordering rules and provides structured parsing results.
+- `Help`: Although this is a class, methods are static in style to allow override using subclass or just functions.
+
 **composition**
 
 - `Inspector`: Interface that target objects must implement to be inspectable. Provides standard inspection methods for debugging and serialization.
@@ -508,8 +513,6 @@ describe(ClassToTest.name, () => {
 
 **node**
 
-- `Command`: Command-line argument parser with fluent API and type-safe validation. Enforces CLI argument ordering rules and provides structured parsing results.
-- `CommandHelpDefinition`: Although this is a class, methods are static in style to allow override using subclass or just functions.
 - `StringStream`: Extension of Node's native Readable class for converting a string into a Readable stream.
 - `argvHasHelpFlag`: Checks if the command line arguments contain a help flag (--help or -h).
 - `execInherit`: Executes a command synchronously with inherited stdio, returning a promise with the output.

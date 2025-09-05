@@ -1,4 +1,4 @@
-import { Command, CommandHelpDefinition } from '@mono/node'
+import { Command, Help } from '@mono/cli'
 
 const cmd = new Command('myapp')
   .setVersion('1.0.0')
@@ -17,4 +17,4 @@ const parsed = cmd.parse(['input.txt', '--verbose', '--format', 'json'])
 console.log(parsed)
 
 console.log('--------------')
-console.log(parsed.command.renderHelp(new CommandHelpDefinition()))
+console.log(parsed.command.renderHelp(new Help()))

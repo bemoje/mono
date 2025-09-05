@@ -647,6 +647,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@mono/cli@workspace:libs/cli":
+  version: 0.0.0-use.local
+  resolution: "@mono/cli@workspace:libs/cli"
+  languageName: unknown
+  linkType: soft
+
 "@mono/composition@workspace:libs/composition":
   version: 0.0.0-use.local
   resolution: "@mono/composition@workspace:libs/composition"
