@@ -208,7 +208,7 @@ export type CommandTypes = {
  * ```
  */
 export class Command implements CommandDescriptor {
-  state: CommandDescriptor
+  protected state: CommandDescriptor
 
   constructor(name: string, parent: Command | null = null) {
     this.state = {
@@ -222,6 +222,11 @@ export class Command implements CommandDescriptor {
       helpConfiguration: { showGlobalOptions: true, sortOptions: true, sortSubcommands: true },
     }
     Object.defineProperty(this.state, 'parent', { enumerable: false })
+  }
+
+  setState(state: Partial<CommandDescriptor>) {
+    Object.assign(this.state, state)
+    return this
   }
 
   get name() {
@@ -274,6 +279,11 @@ export class Command implements CommandDescriptor {
     return this
   }
 
+  addAliases(...aliases: (string | string[])[]) {
+    this.state.aliases.push(...aliases.flat())
+    return this
+  }
+
   setVersion(version?: string) {
     this.state.version = version
     return this
@@ -304,13 +314,20 @@ export class Command implements CommandDescriptor {
     return this
   }
 
-  setHelpConfiguration(config: Partial<ICommandHelpDefinition>) {
+  extendHelpConfiguration(config: Partial<ICommandHelpDefinition>) {
     this.state.helpConfiguration = { ...this.helpConfiguration, ...config }
     return this
   }
 
+  setHelpConfiguration(config?: Partial<ICommandHelpDefinition>) {
+    this.state.helpConfiguration = config
+      ? { ...config }
+      : { showGlobalOptions: true, sortOptions: true, sortSubcommands: true }
+    return this
+  }
+
   /** Creates and adds a subcommand */
-  command(name: string): Command {
+  subcommand(name: string): Command {
     const sub = new Command(name, this)
     this.commands.push(sub)
     return sub

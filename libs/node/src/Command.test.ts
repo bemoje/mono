@@ -93,7 +93,7 @@ describe(Command.name, () => {
 
     it('should exclude parent from serialization', () => {
       const parent = new Command('parent')
-      const child = parent.command('child')
+      const child = parent.subcommand('child')
       const json = child.toJSON()
 
       expect(json).toHaveProperty('parent')
@@ -244,10 +244,10 @@ describe(Command.name, () => {
       })
     })
 
-    describe(Command.prototype.setHelpConfiguration.name, () => {
+    describe(Command.prototype.extendHelpConfiguration.name, () => {
       it('should merge help configuration with existing config', () => {
         const cmd = new Command('test')
-        const result = cmd.setHelpConfiguration({ showGlobalOptions: false })
+        const result = cmd.extendHelpConfiguration({ showGlobalOptions: false })
         expect(cmd.helpConfiguration.showGlobalOptions).toBe(false)
         expect(cmd.helpConfiguration.sortOptions).toBe(true) // Should preserve existing
         expect(result).toBe(cmd) // Should return this for chaining
@@ -255,7 +255,7 @@ describe(Command.name, () => {
 
       it('should override specific configuration properties', () => {
         const cmd = new Command('test')
-        cmd.setHelpConfiguration({
+        cmd.extendHelpConfiguration({
           showGlobalOptions: false,
           sortOptions: false,
           sortSubcommands: false,
@@ -736,11 +736,11 @@ describe(Command.name, () => {
     })
   })
 
-  describe(Command.prototype.command.name, () => {
+  describe(Command.prototype.subcommand.name, () => {
     it('should create subcommand with proper parent-child relationship', () => {
       const parent = new Command('parent')
       parent.setVersion('1.0.0')
-      const child = parent.command('child')
+      const child = parent.subcommand('child')
 
       expect(child.name).toBe('child')
       expect(child.version).toBeUndefined() // Does not inherit parent version
@@ -750,7 +750,7 @@ describe(Command.name, () => {
 
     it('should use empty description when not provided', () => {
       const parent = new Command('parent')
-      const child = parent.command('child')
+      const child = parent.subcommand('child')
 
       expect(child.description).toBe('')
     })
@@ -759,8 +759,8 @@ describe(Command.name, () => {
   describe('globalOptions getter', () => {
     it('should return options from command and all ancestors', () => {
       const grandparent = new Command('grandparent').option('-a, --all', 'all flag')
-      const parent = grandparent.command('parent').option('-v, --verbose', 'verbose flag')
-      const child = parent.command('child').option('-d, --debug', 'debug flag')
+      const parent = grandparent.subcommand('parent').option('-v, --verbose', 'verbose flag')
+      const child = parent.subcommand('child').option('-d, --debug', 'debug flag')
 
       const globalOptions = child.getOptionsInclAncestors()
       expect(globalOptions).toHaveLength(3)
@@ -776,8 +776,8 @@ describe(Command.name, () => {
   describe(Command.prototype.getOptionsInclAncestors.name, () => {
     it('should return options from command and all ancestors', () => {
       const grandparent = new Command('grandparent').option('-a, --all', 'all flag')
-      const parent = grandparent.command('parent').option('-v, --verbose', 'verbose flag')
-      const child = parent.command('child').option('-d, --debug', 'debug flag')
+      const parent = grandparent.subcommand('parent').option('-v, --verbose', 'verbose flag')
+      const child = parent.subcommand('child').option('-d, --debug', 'debug flag')
 
       const globalOptions = child.getOptionsInclAncestors()
       expect(globalOptions).toHaveLength(3)
@@ -799,9 +799,9 @@ describe(Command.name, () => {
 
     it('should include global options from multiple ancestor levels', () => {
       const root = new Command('root').option('-r, --root', 'root flag')
-      const level1 = root.command('level1').option('-a, --level1', 'level1 flag')
-      const level2 = level1.command('level2').option('-b, --level2', 'level2 flag')
-      const leaf = level2.command('leaf').option('-c, --leaf', 'leaf flag')
+      const level1 = root.subcommand('level1').option('-a, --level1', 'level1 flag')
+      const level2 = level1.subcommand('level2').option('-b, --level2', 'level2 flag')
+      const leaf = level2.subcommand('leaf').option('-c, --leaf', 'leaf flag')
 
       const options = leaf.getOptionsInclAncestors()
       expect(options).toHaveLength(4)
@@ -821,7 +821,7 @@ describe(Command.name, () => {
       cmd.setGroup('utilities')
       cmd.argument('<input>', 'input file')
       cmd.option('-v, --verbose', 'verbose output')
-      const child = cmd.command('child')
+      const child = cmd.subcommand('child')
 
       expect(cmd.name).toBe('test')
       expect(cmd.version).toBe('1.0.0')
@@ -853,7 +853,10 @@ describe(Command.name, () => {
   describe('subcommand parsing', () => {
     it('should parse subcommand when present', () => {
       const parent = new Command('parent').option('-v, --verbose', 'verbose flag')
-      const child = parent.command('child').argument('<input>', 'input file').option('-d, --debug', 'debug flag')
+      const child = parent
+        .subcommand('child')
+        .argument('<input>', 'input file')
+        .option('-d, --debug', 'debug flag')
 
       const result = parent.parse(['child', 'input.txt', '-d'])
 
@@ -864,7 +867,7 @@ describe(Command.name, () => {
 
     it('should pass global options to subcommand', () => {
       const parent = new Command('parent').option('-v, --verbose', 'verbose flag')
-      const child = parent.command('child').argument('<input>', 'input file')
+      const child = parent.subcommand('child').argument('<input>', 'input file')
 
       const result = parent.parse(['child', 'input.txt', '-v'])
 
@@ -877,7 +880,7 @@ describe(Command.name, () => {
       const parent = new Command('parent')
         .argument('<input>', 'input file')
         .option('-v, --verbose', 'verbose flag')
-      parent.command('child')
+      parent.subcommand('child')
 
       const result = parent.parse(['input.txt', '-v'])
 
@@ -924,14 +927,14 @@ describe(Command.name, () => {
   describe(Command.prototype.findCommand.name, () => {
     it('should find command by name', () => {
       const parent = new Command('parent')
-      const child = parent.command('child')
+      const child = parent.subcommand('child')
 
       expect(parent.findCommand('child')).toBe(child)
     })
 
     it('should find command by alias', () => {
       const parent = new Command('parent')
-      const child = parent.command('child')
+      const child = parent.subcommand('child')
       child.setAliases(['c', 'ch'])
 
       expect(parent.findCommand('c')).toBe(child)
@@ -940,14 +943,14 @@ describe(Command.name, () => {
 
     it('should return undefined for non-existent command', () => {
       const parent = new Command('parent')
-      parent.command('child')
+      parent.subcommand('child')
 
       expect(parent.findCommand('nonexistent')).toBeUndefined()
     })
 
     it('should return undefined for empty name', () => {
       const parent = new Command('parent')
-      parent.command('child')
+      parent.subcommand('child')
 
       expect(parent.findCommand('')).toBeUndefined()
     })
@@ -978,8 +981,8 @@ describe(Command.name, () => {
   describe(Command.prototype.getCommandAndAncestors.name, () => {
     it('should return command and all ancestors in order', () => {
       const grandparent = new Command('grandparent')
-      const parent = grandparent.command('parent')
-      const child = parent.command('child')
+      const parent = grandparent.subcommand('parent')
+      const child = parent.subcommand('child')
 
       const ancestors = child.getCommandAndAncestors()
       expect(ancestors).toEqual([child, parent, grandparent])
@@ -995,8 +998,8 @@ describe(Command.name, () => {
   describe(Command.prototype.getAncestors.name, () => {
     it('should return only ancestors, excluding self', () => {
       const grandparent = new Command('grandparent')
-      const parent = grandparent.command('parent')
-      const child = parent.command('child')
+      const parent = grandparent.subcommand('parent')
+      const child = parent.subcommand('child')
 
       const ancestors = child.getAncestors()
       expect(ancestors).toEqual([parent, grandparent])
@@ -1098,7 +1101,7 @@ describe(Command.name, () => {
 
     it('should validate short option names in parent-child hierarchy', () => {
       const parent = new Command('parent').option('-v, --verbose', 'verbose flag')
-      const child = parent.command('child')
+      const child = parent.subcommand('child')
 
       expect(() => {
         child.option('-v, --debug', 'debug flag')
@@ -1107,7 +1110,7 @@ describe(Command.name, () => {
 
     it('should validate long option names in parent-child hierarchy', () => {
       const parent = new Command('parent').option('-v, --verbose', 'verbose flag')
-      const child = parent.command('child')
+      const child = parent.subcommand('child')
 
       expect(() => {
         child.option('-d, --verbose', 'debug flag')
@@ -1140,8 +1143,8 @@ describe(Command.name, () => {
 
     it('should validate option names do not conflict across deep hierarchy', () => {
       const grandparent = new Command('grandparent').option('-g, --global', 'global flag')
-      const parent = grandparent.command('parent')
-      const child = parent.command('child')
+      const parent = grandparent.subcommand('parent')
+      const child = parent.subcommand('child')
 
       expect(() => {
         child.option('-l, --global', 'local flag')
@@ -1150,8 +1153,8 @@ describe(Command.name, () => {
 
     it('should validate short option names do not conflict across deep hierarchy', () => {
       const grandparent = new Command('grandparent').option('-g, --global', 'global flag')
-      const parent = grandparent.command('parent')
-      const child = parent.command('child')
+      const parent = grandparent.subcommand('parent')
+      const child = parent.subcommand('child')
 
       expect(() => {
         child.option('-g, --local', 'local flag')
@@ -1162,7 +1165,7 @@ describe(Command.name, () => {
   describe('command hierarchy edge cases', () => {
     it('should handle commands with aliases in subcommand parsing', () => {
       const parent = new Command('parent')
-      const child = parent.command('child')
+      const child = parent.subcommand('child')
       child.setAliases(['c', 'ch'])
       child.argument('<input>', 'input file')
 
@@ -1177,14 +1180,14 @@ describe(Command.name, () => {
 
     it('should handle empty command name in findCommand', () => {
       const parent = new Command('parent')
-      parent.command('child')
+      parent.subcommand('child')
 
       expect(parent.findCommand('')).toBeUndefined()
     })
 
     it('should handle null command name in findCommand', () => {
       const parent = new Command('parent')
-      parent.command('child')
+      parent.subcommand('child')
 
       expect(parent.findCommand(null as any)).toBeUndefined()
     })
@@ -1198,7 +1201,7 @@ describe(Command.name, () => {
 
     it('should allow custom help configuration', () => {
       const cmd = new Command('test')
-      cmd.setHelpConfiguration({ showGlobalOptions: false, sortOptions: true })
+      cmd.extendHelpConfiguration({ showGlobalOptions: false, sortOptions: true })
 
       expect(cmd.helpConfiguration.showGlobalOptions).toBe(false)
       expect(cmd.helpConfiguration.sortOptions).toBe(true)
@@ -1237,8 +1240,8 @@ describe(Command.name, () => {
     it('should render help with subcommands', () => {
       const parent = new Command('myapp')
       parent.setVersion('1.0.0')
-      parent.command('build')
-      parent.command('test')
+      parent.subcommand('build')
+      parent.subcommand('test')
 
       const helpDefinition = new CommandHelpDefinition()
       const help = parent.renderHelp(helpDefinition)
@@ -1249,7 +1252,7 @@ describe(Command.name, () => {
 
     it('should handle help configuration options', () => {
       const cmd = new Command('myapp').option('-v, --verbose', 'verbose output')
-      cmd.setHelpConfiguration({ sortOptions: true })
+      cmd.extendHelpConfiguration({ sortOptions: true })
 
       const helpDefinition = new CommandHelpDefinition()
       const help = cmd.renderHelp(helpDefinition)
@@ -1286,7 +1289,7 @@ describe(Command.name, () => {
         .option('-f, --format <type>', 'output format', { choices: ['json', 'xml'] })
         .option('-o, --output [path]', 'output path', { defaultValue: 'dist' })
 
-      const build = cmd.command('build')
+      const build = cmd.subcommand('build')
       build.setSummary('Build the project')
       build.argument('<source>', 'source directory')
 
@@ -1300,7 +1303,7 @@ describe(Command.name, () => {
 
     it('should handle help configuration merging', () => {
       const cmd = new Command('myapp')
-      cmd.setHelpConfiguration({
+      cmd.extendHelpConfiguration({
         showGlobalOptions: false,
         sortOptions: false,
       })
