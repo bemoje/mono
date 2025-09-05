@@ -137,6 +137,43 @@ describe(Command.name, () => {
       })
     })
 
+    describe(Command.prototype.addAliases.name, () => {
+      it('should add aliases to existing ones', () => {
+        const cmd = new Command('test')
+        cmd.setAliases(['t', 'tst'])
+        const result = cmd.addAliases(['test-cmd', 'tc'])
+        expect(cmd.aliases).toEqual(['t', 'tst', 'test-cmd', 'tc'])
+        expect(result).toBe(cmd) // Should return this for chaining
+      })
+
+      it('should add aliases from nested arrays', () => {
+        const cmd = new Command('test')
+        cmd.setAliases(['t'])
+        cmd.addAliases(['tst'], ['test-cmd', 'tc'])
+        expect(cmd.aliases).toEqual(['t', 'tst', 'test-cmd', 'tc'])
+      })
+
+      it('should add aliases from mixed string and array arguments', () => {
+        const cmd = new Command('test')
+        cmd.setAliases(['t'])
+        cmd.addAliases('tst', ['test-cmd'], 'tc')
+        expect(cmd.aliases).toEqual(['t', 'tst', 'test-cmd', 'tc'])
+      })
+
+      it('should handle adding empty aliases', () => {
+        const cmd = new Command('test')
+        cmd.setAliases(['t', 'tst'])
+        cmd.addAliases()
+        expect(cmd.aliases).toEqual(['t', 'tst'])
+      })
+
+      it('should add to empty aliases array', () => {
+        const cmd = new Command('test')
+        cmd.addAliases(['first', 'second'])
+        expect(cmd.aliases).toEqual(['first', 'second'])
+      })
+    })
+
     describe(Command.prototype.setVersion.name, () => {
       it('should set version when provided', () => {
         const cmd = new Command('test')
@@ -263,6 +300,103 @@ describe(Command.name, () => {
         expect(cmd.helpConfiguration.showGlobalOptions).toBe(false)
         expect(cmd.helpConfiguration.sortOptions).toBe(false)
         expect(cmd.helpConfiguration.sortSubcommands).toBe(false)
+      })
+    })
+
+    describe(Command.prototype.setHelpConfiguration.name, () => {
+      it('should set help configuration to provided value', () => {
+        const cmd = new Command('test')
+        const config = { showGlobalOptions: false, sortOptions: false }
+        const result = cmd.setHelpConfiguration(config)
+        expect(cmd.helpConfiguration).toEqual(config)
+        expect(result).toBe(cmd) // Should return this for chaining
+      })
+
+      it('should reset to defaults when no config provided', () => {
+        const cmd = new Command('test')
+        cmd.extendHelpConfiguration({ showGlobalOptions: false })
+        cmd.setHelpConfiguration()
+        expect(cmd.helpConfiguration).toEqual({
+          showGlobalOptions: true,
+          sortOptions: true,
+          sortSubcommands: true,
+        })
+      })
+
+      it('should replace entire configuration, not merge', () => {
+        const cmd = new Command('test')
+        cmd.extendHelpConfiguration({
+          showGlobalOptions: false,
+          sortOptions: false,
+          sortSubcommands: false,
+        })
+        cmd.setHelpConfiguration({ showGlobalOptions: true })
+        expect(cmd.helpConfiguration).toEqual({ showGlobalOptions: true })
+        expect(cmd.helpConfiguration.sortOptions).toBeUndefined()
+      })
+
+      it('should handle undefined config by resetting to defaults', () => {
+        const cmd = new Command('test')
+        cmd.extendHelpConfiguration({ showGlobalOptions: false })
+        cmd.setHelpConfiguration(undefined)
+        expect(cmd.helpConfiguration).toEqual({
+          showGlobalOptions: true,
+          sortOptions: true,
+          sortSubcommands: true,
+        })
+      })
+    })
+
+    describe(Command.prototype.setState.name, () => {
+      it('should update multiple properties at once', () => {
+        const cmd = new Command('test')
+        const result = cmd.setState({
+          version: '2.0.0',
+          summary: 'Updated summary',
+          description: 'Updated description',
+          hidden: true,
+        })
+        expect(cmd.version).toBe('2.0.0')
+        expect(cmd.summary).toBe('Updated summary')
+        expect(cmd.description).toBe('Updated description')
+        expect(cmd.hidden).toBe(true)
+        expect(result).toBe(cmd) // Should return this for chaining
+      })
+
+      it('should update only provided properties', () => {
+        const cmd = new Command('test')
+        cmd.setVersion('1.0.0')
+        cmd.setSummary('Original summary')
+        cmd.setState({ version: '2.0.0' })
+        expect(cmd.version).toBe('2.0.0')
+        expect(cmd.summary).toBe('Original summary') // Should remain unchanged
+      })
+
+      it('should handle empty state object', () => {
+        const cmd = new Command('test')
+        cmd.setVersion('1.0.0')
+        cmd.setState({})
+        expect(cmd.version).toBe('1.0.0') // Should remain unchanged
+      })
+
+      it('should update aliases and commands arrays', () => {
+        const cmd = new Command('test')
+        const subcommand = new Command('sub')
+        cmd.setState({
+          aliases: ['t', 'tst'],
+          commands: [subcommand],
+        })
+        expect(cmd.aliases).toEqual(['t', 'tst'])
+        expect(cmd.commands).toEqual([subcommand])
+      })
+
+      it('should update complex nested properties', () => {
+        const cmd = new Command('test')
+        const helpConfig = { showGlobalOptions: false, sortOptions: false }
+        cmd.setState({
+          helpConfiguration: helpConfig,
+        })
+        expect(cmd.helpConfiguration).toEqual(helpConfig)
       })
     })
   })
