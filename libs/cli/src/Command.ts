@@ -378,7 +378,7 @@ export class Command implements CommandDescriptor {
       allowPositionals: true,
       tokens: false,
       strict: false,
-      allowNegative: false,
+      allowNegative: true,
     }).positionals[0]
     const sub = this.commands.find((sub) => {
       return [sub.name, ...sub.aliases].includes(maybeSub)
@@ -402,7 +402,7 @@ export class Command implements CommandDescriptor {
       allowPositionals: true,
       tokens: true,
       strict: true,
-      allowNegative: false,
+      allowNegative: true,
     })
 
     // Process tokens to handle variadic options that should consume multiple consecutive arguments

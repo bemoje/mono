@@ -29,10 +29,12 @@ export class CommanderHelpAdapter implements ICommandHelp {
 
   @lazyProp
   get summary() {
-    return (
-      this.cmd.summary() ??
-      (this.cmd.description().includes('\n') ? this.cmd.description().split('\n')[0] : undefined)
-    )
+    const cmdSummary = this.cmd.summary()
+    return cmdSummary && cmdSummary.trim() !== ''
+      ? cmdSummary
+      : this.cmd.description().includes('\n')
+        ? this.cmd.description().split('\n')[0]
+        : undefined
   }
 
   get description() {
