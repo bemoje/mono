@@ -1,5 +1,10 @@
 import { parseArgs, ParseArgsOptionDescriptor } from 'node:util'
-import { type ArgumentHelp, type CommandHelp, type IHelp, type OptionHelp } from './CommandHelp'
+import {
+  type ArgumentHelp,
+  type CommandHelp,
+  type ICommandHelpDefinition,
+  type OptionHelp,
+} from './CommandHelpDefinition'
 
 type BooleanOptionUsage = `-${string}, --${string}`
 type RequiredOptionUsage = `-${string}, --${string} <${string}>`
@@ -87,7 +92,6 @@ interface OptionDescriptorBase extends ParseArgsOptionDescriptor {
   hidden?: boolean
   choices?: string[]
   group?: string
-  global?: boolean
 }
 
 /** Boolean flag option. Usage: `-v, --verbose` */
@@ -208,7 +212,7 @@ export class Command {
   /** Collected option descriptors */
   options: OptionDescriptor[] = []
 
-  helpConfiguration: Partial<IHelp> = {
+  helpConfiguration: Partial<ICommandHelpDefinition> = {
     showGlobalOptions: true,
   }
 
@@ -217,34 +221,16 @@ export class Command {
     this.version = version
     this.description = description
 
-    this.enableHelpOption()
-    this.enableVersionOption()
     Object.defineProperty(this, 'parent', { enumerable: false })
   }
 
   get globalOptions() {
-    return this.getCommandAndAncestors().flatMap((cmd) => cmd.options.filter((opt) => opt.global))
-  }
-
-  get reservedOptionNames() {
-    return { short: ['h', 'V'], long: ['help', 'version'] }
-  }
-
-  enableHelpOption() {
-    return this.option('-h, --help', 'display help', { global: true })
-  }
-  enableVersionOption() {
-    return this.option('-V, --version', 'display version', { global: true })
-  }
-
-  setParent(parent: Command) {
-    this.options = this.options.filter((opt) => opt.name !== 'help' && opt.name !== 'version')
-    this.parent = parent
+    return this.getCommandAndAncestors().flatMap((cmd) => cmd.options)
   }
 
   command(name: string, description = ''): Command {
     const sub = new Command(name, this.version, description)
-    sub.setParent(this)
+    sub.parent = this
     this.commands.push(sub)
     return sub
   }
@@ -627,7 +613,29 @@ export class Command {
     return this.getCommandAndAncestors().slice(1)
   }
 
-  renderHelp(help: IHelp): string {
+  /**
+   * Find matching command.
+   */
+  findCommand(this: Command, name: string) {
+    if (!name) return undefined
+    return this.commands.find((cmd) => cmd.name === name || cmd.aliases.includes(name))
+  }
+
+  /**
+   * Return an option matching `arg` if any.
+   */
+  findOption(this: Command, arg: string): OptionDescriptor | undefined {
+    return this.options.find((option) => this.optionsIs(option, arg))
+  }
+
+  /**
+   * Check if `nameOrShortName` matches the short or long flag.
+   */
+  protected optionsIs(option: OptionDescriptor, nameOrShortName: string) {
+    return option.short === nameOrShortName || option.name === nameOrShortName
+  }
+
+  renderHelp(help: ICommandHelpDefinition): string {
     const helper = Object.assign(help, this.helpConfiguration ?? {})
     return helper.formatHelp(commandHelp(this), helper)
 
