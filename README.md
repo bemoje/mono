@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 5782  | 5638    | 97.5%      |
-| Functions | 692   | 668     | 96.53%     |
-| Branches  | 2003  | 1906    | 95.15%     |
+| Lines     | 5802  | 5656    | 97.48%     |
+| Functions | 694   | 670     | 96.54%     |
+| Branches  | 2007  | 1909    | 95.11%     |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 525   | 8734          |
+| source    | 526   | 8754          |
 | test      | 392   | 24429         |
 | examples  | 0     | 0             |
-| script    | 43    | 1242          |
-| total     | 960   | 34405         |
+| script    | 43    | 1249          |
+| total     | 961   | 34432         |
 
 ## Table of Contents
 
@@ -57,29 +57,29 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 **package.json**
 
 ```bash
-yarn ws # Execute a command inside a workspace, eg. `yarn ws "@mono/regex" "build"`
-yarn r # Execute/run a file (.ts, .test.ts, .js, .ps1, .mjs)
+yarn ws                         # Execute a command inside a workspace, eg. `yarn ws "@mono/regex" "build"`
+yarn r                          # Execute/run a file (.ts, .test.ts, .js, .ps1, .mjs)
 yarn clean
-yarn clean:fixOwnWsImports # Fixes imports statements where a path alias is used to reference its own workspace (can cause build problems due to circular references)
-yarn clean:indextsAll # Generate barrel export files at src/index.ts (runs script defined in each workspace package.json)
-yarn clean:ensureVitestImports # Ensures that all test files have the necessary Vitest imports
-yarn clean:removeEmptyWsFiles # Removes any files that have size 0 bytes for all workspaces
-yarn build # Builds all workspaces
-yarn insigh
-yarn insight:depcheckUnused # Runs depcheck on all workspaces and outputs unused dependencies
-yarn insight:checkLibsTsDoc # Validates TSDoc documentation for all library exports
-yarn insight:linesOfCode # Counts lines of code across the monorepo by category
-yarn docs # Generates and writes the README.md file with auto-generated documentation
-yarn lint # Runs eslint on all workspaces
-yarn format # Formats all files in the monorepo using prettier
-yarn typecheck # Runs tsc typecheck on all workspaces
-yarn test # Run vitest normally without coverage or watch mode
-yarn test:watch # Run vitest in watch mode without coverage
-yarn test-coverage # Run vitest on all workspaces and emit coverage (html, json summary) (ONLY) for workspaces in libs/ dir
-yarn test-coverage:open # Open the coverage index html file with OS default app
-yarn precommit # Runs all pre-commit checks (clean, typecheck, lint, test-coverage, build, insight repots, docs, format)
-yarn dk # build, then run devkit CLI (apps/devkit)
-yarn DK # run devkit CLI (apps/devkit) without building first
+yarn clean:fixOwnWsImports      # Fixes imports statements where a path alias is used to reference its own workspace (can cause build problems due to circular references)
+yarn clean:indextsAll           # Generate barrel export files at src/index.ts (runs script defined in each workspace package.json)
+yarn clean:ensureVitestImports  # Ensures that all test files have the necessary Vitest imports
+yarn clean:removeEmptyWsFiles   # Removes any files that have size 0 bytes for all workspaces
+yarn build                      # Builds all workspaces
+yarn insight
+yarn insight:depcheckUnused     # Runs depcheck on all workspaces and outputs unused dependencies
+yarn insight:checkLibsTsDoc     # Validates TSDoc documentation for all library exports
+yarn insight:linesOfCode        # Counts lines of code across the monorepo by category
+yarn docs                       # Generates and writes the README.md file with auto-generated documentation
+yarn lint                       # Runs eslint on all workspaces
+yarn format                     # Formats all files in the monorepo using prettier
+yarn typecheck                  # Runs tsc typecheck on all workspaces
+yarn test                       # Run vitest normally without coverage or watch mode
+yarn test:watch                 # Run vitest in watch mode without coverage
+yarn test-coverage              # Run vitest on all workspaces and emit coverage (html, json summary) (ONLY) for workspaces in libs/ dir
+yarn test-coverage:open         # Open the coverage index html file with OS default app
+yarn precommit                  # Runs all pre-commit checks (clean, typecheck, lint, test-coverage, build, insight repots, docs, format)
+yarn dk                         # build, then run devkit CLI (apps/devkit)
+yarn DK                         # run devkit CLI (apps/devkit) without building first
 ```
 
 **`./s/` directory**
