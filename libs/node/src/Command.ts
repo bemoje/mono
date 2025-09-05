@@ -6,12 +6,18 @@ import {
   type OptionHelp,
 } from './CommandHelpDefinition'
 
+/** Usage patterns for boolean flag options */
 type BooleanOptionUsage = `-${string}, --${string}`
+/** Usage patterns for required string options */
 type RequiredOptionUsage = `-${string}, --${string} <${string}>`
+/** Usage patterns for optional string options */
 type OptionalOptionUsage = `-${string}, --${string} [${string}]`
+/** Usage patterns for required variadic options */
 type RequiredVariadicOptionUsage = `-${string}, --${string} <${string}...>`
+/** Usage patterns for optional variadic options */
 type OptionalVariadicOptionUsage = `-${string}, --${string} [${string}...]`
 
+/** Union of all option usage pattern types */
 type OptionUsage =
   | BooleanOptionUsage
   | RequiredOptionUsage
@@ -19,11 +25,16 @@ type OptionUsage =
   | RequiredVariadicOptionUsage
   | OptionalVariadicOptionUsage
 
+/** Usage pattern for required positional arguments */
 type RequiredArgumentUsage = `<${string}>`
+/** Usage pattern for optional positional arguments */
 type OptionalArgumentUsage = `[${string}]`
+/** Usage pattern for required variadic arguments */
 type RequiredVariadicArgumentUsage = `<${string}...>`
+/** Usage pattern for optional variadic arguments */
 type OptionalVariadicArgumentUsage = `[${string}...]`
 
+/** Union of all argument usage pattern types */
 type ArgumentUsage =
   | RequiredArgumentUsage //
   | OptionalArgumentUsage
@@ -140,6 +151,7 @@ interface OptionalVariadicOptionDescriptor extends OptionDescriptorBase {
   defaultValueDescription?: string
 }
 
+/** Complete command configuration including all properties and substructures */
 interface CommandDescriptor {
   name: string
   version?: string
@@ -170,12 +182,15 @@ type OptionDescriptor =
   | RequiredVariadicOptionDescriptor
   | OptionalVariadicOptionDescriptor
 
+/** Helper type for extracting argument configuration options */
 type ArgOpts<T extends ArgumentDescriptor> = Omit<T, 'name' | 'description' | 'required' | 'multiple'>
+/** Helper type for extracting option configuration options */
 type OptOpts<T extends OptionDescriptor> = Omit<
   T,
   'name' | 'description' | 'required' | 'multiple' | 'type' | 'argName' | 'short' | 'long'
 >
 
+/** Export type map for external type access and testing */
 export type CommandTypes = {
   ArgumentDescriptorBase: ArgumentDescriptorBase
   RequiredArgumentDescriptor: RequiredArgumentDescriptor
@@ -208,119 +223,145 @@ export type CommandTypes = {
  * ```
  */
 export class Command implements CommandDescriptor {
-  protected state: CommandDescriptor
+  /** Command name used for invocation */
+  name: string
+  /** Optional version string */
+  version?: string
+  /** Alternative names for this command */
+  aliases: string[]
+  /** Brief single-line description */
+  summary?: string
+  /** Full command description */
+  description: string
+  /** Whether command should be hidden from help */
+  hidden?: boolean
+  /** Group name for organizing commands in help */
+  group?: string
+  /** Parent command if this is a subcommand */
+  parent: Command | null
+  /** Child subcommands */
+  commands: Command[]
+  /** Positional arguments */
+  arguments: ArgumentDescriptor[]
+  /** Named options/flags */
+  options: OptionDescriptor[]
+  /** Help system configuration */
+  helpConfiguration: Partial<ICommandHelpDefinition>
 
   constructor(name: string, parent: Command | null = null) {
-    this.state = {
-      name,
-      parent,
-      aliases: [],
-      description: '',
-      commands: [],
-      arguments: [],
-      options: [],
-      helpConfiguration: { showGlobalOptions: true, sortOptions: true, sortSubcommands: true },
-    }
-    Object.defineProperty(this.state, 'parent', { enumerable: false })
+    this.name = name
+    this.parent = parent
+    this.aliases = []
+    this.description = ''
+    this.commands = []
+    this.arguments = []
+    this.options = []
+    this.helpConfiguration = { showGlobalOptions: true, sortOptions: true, sortSubcommands: true }
+
+    // Make parent non-enumerable for toJSON compatibility
+    Object.defineProperty(this, 'parent', {
+      value: parent,
+      writable: true,
+      enumerable: false,
+      configurable: true,
+    })
   }
 
+  /** Updates multiple command properties at once */
   setState(state: Partial<CommandDescriptor>) {
-    Object.assign(this.state, state)
+    Object.assign(this, state)
     return this
   }
 
-  get name() {
-    return this.state.name
-  }
-  get version() {
-    return this.state.version
-  }
-  get aliases() {
-    return this.state.aliases
-  }
-  get summary() {
-    return this.state.summary
-  }
-  get description() {
-    return this.state.description
-  }
-  get hidden() {
-    return this.state.hidden
-  }
-  get group() {
-    return this.state.group
-  }
-  get parent() {
-    return this.state.parent
-  }
-  get commands() {
-    return this.state.commands
-  }
-  get arguments() {
-    return this.state.arguments
-  }
-  get options() {
-    return this.state.options
-  }
-  get helpConfiguration() {
-    return this.state.helpConfiguration
-  }
-
+  /** Serializes command to JSON, maintaining compatibility with previous state-based structure */
   toJSON() {
-    return this.state
+    const result = {
+      name: this.name,
+      version: this.version,
+      aliases: this.aliases,
+      summary: this.summary,
+      description: this.description,
+      hidden: this.hidden,
+      group: this.group,
+      commands: this.commands,
+      arguments: this.arguments,
+      options: this.options,
+      helpConfiguration: this.helpConfiguration,
+    }
+
+    // Make parent non-enumerable to maintain compatibility
+    Object.defineProperty(result, 'parent', {
+      value: this.parent,
+      writable: true,
+      enumerable: false,
+      configurable: true,
+    })
+
+    return result
   }
 
+  /** Sets the command name */
   setName(name: string) {
-    this.state.name = name
+    this.name = name
   }
 
+  /** Sets command aliases, flattening nested arrays */
   setAliases(...aliases: (string | string[])[]) {
-    this.state.aliases = aliases.flat()
+    this.aliases = aliases.flat()
     return this
   }
 
+  /** Adds aliases to existing ones */
   addAliases(...aliases: (string | string[])[]) {
-    this.state.aliases.push(...aliases.flat())
+    this.aliases.push(...aliases.flat())
     return this
   }
 
+  /** Sets the command version */
   setVersion(version?: string) {
-    this.state.version = version
+    this.version = version
     return this
   }
 
+  /** Sets the command summary */
   setSummary(summary?: string) {
-    this.state.summary = summary
+    this.summary = summary
     return this
   }
 
+  /** Sets command description, joining multiple lines */
   setDescription(...lines: string[]) {
-    this.state.description = lines.join('\n')
+    this.description = lines.join('\n')
     return this
   }
 
+  /** Sets whether command is hidden from help */
   setHidden(hidden: boolean | undefined = true) {
-    this.state.hidden = hidden
+    this.hidden = hidden
     return this
   }
 
+  /** Sets the command group for help organization */
   setGroup(group?: Exclude<string, 'Options' | 'Global Options'>) {
-    this.state.group = group
+    this.group = group
     return this
   }
 
+  /** Sets the parent command */
   setParent(parent: Command | null) {
-    this.state.parent = parent
+    this.parent = parent
     return this
   }
 
+  /** Extends existing help configuration with new settings */
   extendHelpConfiguration(config: Partial<ICommandHelpDefinition>) {
-    this.state.helpConfiguration = { ...this.helpConfiguration, ...config }
+    this.helpConfiguration = { ...this.helpConfiguration, ...config }
     return this
   }
 
+  /** Sets help configuration, using defaults if not provided */
   setHelpConfiguration(config?: Partial<ICommandHelpDefinition>) {
-    this.state.helpConfiguration = config
+    this.helpConfiguration = config
       ? { ...config }
       : { showGlobalOptions: true, sortOptions: true, sortSubcommands: true }
     return this
@@ -405,8 +446,6 @@ export class Command implements CommandDescriptor {
           ...(options as ArgOpts<OptionalArgumentDescriptor>),
         })
       }
-    } else {
-      throw new Error(`Invalid argument format: ${usage}`)
     }
     return this
   }
@@ -515,8 +554,6 @@ export class Command implements CommandDescriptor {
           ...(opts as OptOpts<OptionalOptionDescriptor>),
         })
       }
-    } else {
-      throw new Error(`Invalid option format: ${usage}`)
     }
 
     return this
