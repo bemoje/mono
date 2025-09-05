@@ -12,13 +12,19 @@ const cmd = new Command('myapp')
     group: 'Output Options',
   })
   .option('-h, --help', 'display help')
+
 cmd.subcommand('sub').setDescription('A subcommand')
 
-// console.log(cmd)
-// console.log('--------------')
-const parsed = cmd.parse(['sub', '-h'])
-// const parsed = cmd.parse(['input.txt', '--verbose', '--format', 'json'])
-console.log(parsed)
+/////////////
 
+const parsedRoot = cmd.parse(['input.txt', '--verbose', '--format', 'json'])
+console.log(parsedRoot)
 console.log('--------------')
-console.log(parsed.command.renderHelp(new Help()))
+console.log(parsedRoot.command.renderHelp(new Help()))
+
+console.log('------------------------------------------')
+
+const parsedSub = cmd.parse(['sub', '-h'])
+console.log(parsedSub)
+console.log('--------------')
+console.log(parsedSub.command.renderHelp(new Help()))

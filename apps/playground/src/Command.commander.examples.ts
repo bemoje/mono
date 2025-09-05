@@ -10,14 +10,7 @@ const cmd = new Command('myapp')
   .argument('[output]', 'output file', 'out.txt')
   .option('-v, --verbose', 'verbose output')
   .option('-f, --format <type>', 'output format')
+
 cmd.command('sub').description('A subcommand')
-
-// console.log(cmd)
-// console.log('--------------')
-// const parsed = cmd.parse(['sub', '-h'])
-// const parsed = cmd.parse(['input.txt', '--verbose', '--format', 'json'])
-// console.log(parsed)
-
-// console.log('--------------')
 
 console.log(new CommanderHelpAdapter(cmd).renderHelp())
