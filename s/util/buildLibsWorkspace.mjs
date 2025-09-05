@@ -12,11 +12,16 @@ import upath from 'upath'
  * Builds a library workspace from its import.meta.dirname.
  * @param {string} importMetaDirname - The __dirname of the calling script
  */
-export async function buildLibsWorkspace(importMetaDirname) {
+export async function buildLibsWorkspace(importMetaDirname, optionsOverride = {}) {
   console.info(`Building lib: ${upath.basename(importMetaDirname)}`)
   importMetaDirname = upath.normalizeSafe(importMetaDirname)
   const wsPaths = getWsPaths(importMetaDirname)
-  await buildFile(wsPaths.indexTs, wsPaths.indexCjs, wsPaths.tsconfig, {})
+  await buildFile(
+    wsPaths.indexTs,
+    optionsOverride.format === 'esm' ? wsPaths.indexMjs : wsPaths.indexCjs,
+    wsPaths.tsconfig,
+    optionsOverride,
+  )
   if (argvHasFlag('--debug')) {
     console.debug({
       workspace: wsPaths.toRelative(importMetaDirname),

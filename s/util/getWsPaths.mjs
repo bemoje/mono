@@ -20,6 +20,7 @@ export function getWsPaths(importMetaDirname) {
   const distDir = upath.joinSafe(repoRootDir, '.dist', 'libs')
   const indexTs = upath.joinSafe(srcDir, 'index.ts')
   const indexCjs = upath.joinSafe(distDir, wsDirname + '.cjs')
+  const indexMjs = upath.joinSafe(distDir, wsDirname + '.mjs')
   const toRelative = (path) => upath.relative(repoRootDir, path)
   return {
     wsDir: importMetaDirname,
@@ -29,6 +30,7 @@ export function getWsPaths(importMetaDirname) {
     srcDir,
     indexTs,
     indexCjs,
+    indexMjs,
     toRelative,
   }
 }
