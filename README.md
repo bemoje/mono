@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 5701  | 5502    | 96.5%      |
-| Functions | 674   | 645     | 95.69%     |
-| Branches  | 1940  | 1832    | 94.43%     |
+| Lines     | 5705  | 5547    | 97.23%     |
+| Functions | 676   | 652     | 96.44%     |
+| Branches  | 1968  | 1865    | 94.76%     |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 521   | 8694          |
-| test      | 387   | 22740         |
+| source    | 521   | 8672          |
+| test      | 387   | 23116         |
 | examples  | 0     | 0             |
 | script    | 43    | 1242          |
-| total     | 951   | 32676         |
+| total     | 951   | 33030         |
 
 ## Table of Contents
 
@@ -517,7 +517,6 @@ describe(ClassToTest.name, () => {
 - `execute`: Execute one or multiple shell commands.
 - `formatTableForTerminal`: Formats a 2D array of strings as a terminal table with optional headers and styling.
 - `getCurrentMemoryUsage`: Get the current heap memory usage in megabytes.
-- `humanReadableArgName`: ?
 - `isTerminalColorSupported`: Check if colored terminal output is (probably) supported.
 - `memoryUsage`: Returns the memory usage of the Node.js process with values converted from bytes to megabytes and rounded to the specified precision.
 - `prompt`: Prompt the user for input.
@@ -526,7 +525,6 @@ describe(ClassToTest.name, () => {
 - `spawnNodeProcess`: Spawn a child node process.
 - `startPowerShellScript`: Executes a PowerShell script with arguments and returns stdout/stderr.
 - `streamToString`: Drain a Readable into a string.
-- `stripColor`: ?
 - `timer`: Executes a task and logs the execution time with the specified name.
 - `toError`: Converts the given value to an Error object. If the value is already an Error object, it is returned as is. If the value is not an Error object, it is converted to a string and used as the error message.
 
