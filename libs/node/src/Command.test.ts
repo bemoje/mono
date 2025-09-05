@@ -7,7 +7,9 @@ describe(Command.name, () => {
   it('examples', () => {
     expect(() => {
       // Basic command setup
-      const cmd = new Command('myapp', '1.0.0', 'A test application')
+      const cmd = new Command('myapp').setDescription('A test application')
+      cmd.setVersion('1.0.0')
+      cmd
         .argument('<input>', 'input file')
         .argument('[output]', 'output file', { defaultValue: 'out.txt' })
         .option('-v, --verbose', 'verbose output')
@@ -47,24 +49,17 @@ describe(Command.name, () => {
 
   describe('constructor', () => {
     it('should create command with all parameters', () => {
-      const cmd = new Command('testapp', '2.0.0', 'Test application')
+      const cmd = new Command('testapp')
+      cmd.setVersion('2.0.0')
       expect(cmd.name).toBe('testapp')
       expect(cmd.version).toBe('2.0.0')
-      expect(cmd.description).toBe('Test application')
       expect(cmd.arguments).toEqual([])
     })
 
-    it('should use default version and description', () => {
+    it('should use default description and undefined version', () => {
       const cmd = new Command('testapp')
       expect(cmd.name).toBe('testapp')
-      expect(cmd.version).toBe('0.0.0')
-      expect(cmd.description).toBe('')
-    })
-
-    it('should use default description when only version provided', () => {
-      const cmd = new Command('testapp', '1.5.0')
-      expect(cmd.name).toBe('testapp')
-      expect(cmd.version).toBe('1.5.0')
+      expect(cmd.version).toBeUndefined()
       expect(cmd.description).toBe('')
     })
   })
@@ -501,12 +496,12 @@ describe(Command.name, () => {
 
   describe(Command.prototype.command.name, () => {
     it('should create subcommand with proper parent-child relationship', () => {
-      const parent = new Command('parent', '1.0.0', 'Parent command')
-      const child = parent.command('child', 'Child command')
+      const parent = new Command('parent')
+      parent.setVersion('1.0.0')
+      const child = parent.command('child')
 
       expect(child.name).toBe('child')
-      expect(child.version).toBe('1.0.0') // Inherits parent version
-      expect(child.description).toBe('Child command')
+      expect(child.version).toBeUndefined() // Does not inherit parent version
       expect(child.parent).toBe(parent)
       expect(parent.commands).toContain(child)
     })
@@ -525,14 +520,14 @@ describe(Command.name, () => {
       const parent = grandparent.command('parent').option('-v, --verbose', 'verbose flag')
       const child = parent.command('child').option('-d, --debug', 'debug flag')
 
-      const globalOptions = child.globalOptions
+      const globalOptions = child.optionsInclAncestors
       expect(globalOptions).toHaveLength(3)
       expect(globalOptions.map((o) => o.name)).toEqual(['debug', 'verbose', 'all'])
     })
 
     it('should return empty array for command with no options or parents', () => {
       const cmd = new Command('test')
-      expect(cmd.globalOptions).toEqual([])
+      expect(cmd.optionsInclAncestors).toEqual([])
     })
   })
 
@@ -610,15 +605,15 @@ describe(Command.name, () => {
   describe(Command.prototype.findCommand.name, () => {
     it('should find command by name', () => {
       const parent = new Command('parent')
-      const child = parent.command('child', 'Child command')
+      const child = parent.command('child')
 
       expect(parent.findCommand('child')).toBe(child)
     })
 
     it('should find command by alias', () => {
       const parent = new Command('parent')
-      const child = parent.command('child', 'Child command')
-      child.aliases = ['c', 'ch']
+      const child = parent.command('child')
+      child.setAliases(['c', 'ch'])
 
       expect(parent.findCommand('c')).toBe(child)
       expect(parent.findCommand('ch')).toBe(child)
@@ -726,28 +721,28 @@ describe(Command.name, () => {
   describe('additional command properties', () => {
     it('should handle command aliases', () => {
       const cmd = new Command('test')
-      cmd.aliases = ['t', 'tst']
+      cmd.setAliases(['t', 'tst'])
 
       expect(cmd.aliases).toEqual(['t', 'tst'])
     })
 
     it('should handle command summary', () => {
       const cmd = new Command('test')
-      cmd.summary = 'Test command summary'
+      cmd.setSummary('Test command summary')
 
       expect(cmd.summary).toBe('Test command summary')
     })
 
     it('should handle hidden commands', () => {
       const cmd = new Command('test')
-      cmd.hidden = true
+      cmd.setHidden(true)
 
       expect(cmd.hidden).toBe(true)
     })
 
     it('should handle command groups', () => {
       const cmd = new Command('test')
-      cmd.group = 'utilities'
+      cmd.setGroup('utilities')
 
       expect(cmd.group).toBe('utilities')
     })
@@ -809,36 +804,28 @@ describe(Command.name, () => {
 
     it('should allow custom help configuration', () => {
       const cmd = new Command('test')
-      cmd.helpConfiguration = { showGlobalOptions: false, sortOptions: true }
+      cmd.setHelpConfiguration({ showGlobalOptions: false, sortOptions: true })
 
       expect(cmd.helpConfiguration.showGlobalOptions).toBe(false)
       expect(cmd.helpConfiguration.sortOptions).toBe(true)
     })
   })
 
-  describe('parent property', () => {
-    it('should have parent property as non-enumerable', () => {
-      const parent = new Command('parent')
-      const child = parent.command('child')
-
-      const descriptor = Object.getOwnPropertyDescriptor(child, 'parent')
-      expect(descriptor?.enumerable).toBe(false)
-    })
-  })
-
   describe(Command.prototype.renderHelp.name, () => {
     it('should render basic help with command info', () => {
-      const cmd = new Command('myapp', '1.0.0', 'A test application')
+      const cmd = new Command('myapp')
+      cmd.setVersion('1.0.0')
       const helpDefinition = new CommandHelpDefinition()
 
       const help = cmd.renderHelp(helpDefinition)
 
       expect(help).toContain('myapp')
-      expect(help).toContain('A test application')
     })
 
     it('should render help with arguments and options', () => {
-      const cmd = new Command('myapp', '1.0.0', 'A test application')
+      const cmd = new Command('myapp')
+      cmd.setVersion('1.0.0')
+      cmd
         .argument('<input>', 'input file')
         .argument('[output]', 'output file', { defaultValue: 'out.txt' })
         .option('-v, --verbose', 'verbose output')
@@ -854,9 +841,10 @@ describe(Command.name, () => {
     })
 
     it('should render help with subcommands', () => {
-      const parent = new Command('myapp', '1.0.0', 'Parent command')
-      parent.command('build', 'Build the project')
-      parent.command('test', 'Run tests')
+      const parent = new Command('myapp')
+      parent.setVersion('1.0.0')
+      parent.command('build')
+      parent.command('test')
 
       const helpDefinition = new CommandHelpDefinition()
       const help = parent.renderHelp(helpDefinition)
@@ -867,7 +855,7 @@ describe(Command.name, () => {
 
     it('should handle help configuration options', () => {
       const cmd = new Command('myapp').option('-v, --verbose', 'verbose output')
-      cmd.helpConfiguration = { sortOptions: true }
+      cmd.setHelpConfiguration({ sortOptions: true })
 
       const helpDefinition = new CommandHelpDefinition()
       const help = cmd.renderHelp(helpDefinition)

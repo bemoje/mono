@@ -588,7 +588,7 @@ export type CommandHelp = {
   commands: CommandHelp[]
   options: OptionHelp[]
   arguments: ArgumentHelp[]
-  parent?: CommandHelp | null
+  parent: CommandHelp | null
   helpConfiguration?: Partial<ICommandHelpDefinition>
 }
 

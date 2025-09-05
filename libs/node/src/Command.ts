@@ -144,6 +144,21 @@ interface OptionalVariadicOptionDescriptor extends OptionDescriptorBase {
   defaultValueDescription?: string
 }
 
+interface CommandDescriptor {
+  name: string
+  version?: string
+  aliases: string[]
+  summary?: string
+  description: string
+  hidden?: boolean
+  group?: string
+  parent: Command | null
+  commands: Command[]
+  arguments: ArgumentDescriptor[]
+  options: OptionDescriptor[]
+  helpConfiguration: Partial<ICommandHelpDefinition>
+}
+
 /** Union type for all argument descriptor variants */
 type ArgumentDescriptor =
   | RequiredArgumentDescriptor
@@ -187,7 +202,7 @@ export type CommandTypes = {
  *
  * @example
  * ```typescript
- * const cmd = new Command('myapp', '1.0.0')
+ * const cmd = new Command('myapp')
  *   .argument('<input>', 'input file')
  *   .argument('[output]', 'output file', 'out.txt')
  *   .option('-v, --verbose', 'verbose output')
@@ -196,41 +211,109 @@ export type CommandTypes = {
  * const result = cmd.parse(['input.txt', '-v', '-f', 'json'])
  * ```
  */
-export class Command {
-  name: string
-  version: string
-  aliases: string[] = []
-  summary?: string
-  description: string
-  hidden?: boolean
-  group?: string
-  parent?: Command | null = null
+export class Command implements CommandDescriptor {
+  protected state: CommandDescriptor
 
-  commands: Command[] = []
-  /** Collected argument descriptors in order of definition */
-  arguments: ArgumentDescriptor[] = []
-  /** Collected option descriptors */
-  options: OptionDescriptor[] = []
-
-  helpConfiguration: Partial<ICommandHelpDefinition> = {
-    showGlobalOptions: true,
+  get name() {
+    return this.state.name
+  }
+  get version() {
+    return this.state.version
+  }
+  get aliases() {
+    return this.state.aliases
+  }
+  get summary() {
+    return this.state.summary
+  }
+  get description() {
+    return this.state.description
+  }
+  get hidden() {
+    return this.state.hidden
+  }
+  get group() {
+    return this.state.group
+  }
+  get parent() {
+    return this.state.parent
+  }
+  get commands() {
+    return this.state.commands
+  }
+  get arguments() {
+    return this.state.arguments
+  }
+  get options() {
+    return this.state.options
+  }
+  get helpConfiguration() {
+    return this.state.helpConfiguration
   }
 
-  constructor(name: string, version = '0.0.0', description = '') {
-    this.name = name
-    this.version = version
-    this.description = description
-
-    Object.defineProperty(this, 'parent', { enumerable: false })
+  constructor(name: string, parent: Command | null = null) {
+    this.state = {
+      name,
+      parent,
+      aliases: [],
+      description: '',
+      commands: [],
+      arguments: [],
+      options: [],
+      helpConfiguration: { showGlobalOptions: true },
+    }
   }
 
-  get globalOptions() {
+  setName(name: string) {
+    this.state.name = name
+  }
+
+  setAliases(...aliases: (string | string[])[]) {
+    this.state.aliases = aliases.flat()
+    return this
+  }
+
+  setVersion(version?: string) {
+    this.state.version = version
+    return this
+  }
+
+  setSummary(summary?: string) {
+    this.state.summary = summary
+    return this
+  }
+
+  setDescription(...lines: string[]) {
+    this.state.description = lines.join('\n')
+    return this
+  }
+
+  setHidden(hidden: boolean | undefined = true) {
+    this.state.hidden = hidden
+    return this
+  }
+
+  setGroup(group?: Exclude<string, 'Options' | 'Global Options'>) {
+    this.state.group = group
+    return this
+  }
+
+  setParent(parent: Command | null) {
+    this.state.parent = parent
+    return this
+  }
+
+  setHelpConfiguration(config: Partial<ICommandHelpDefinition>) {
+    this.state.helpConfiguration = { ...this.helpConfiguration, ...config }
+    return this
+  }
+
+  get optionsInclAncestors() {
     return this.getCommandAndAncestors().flatMap((cmd) => cmd.options)
   }
 
-  command(name: string, description = ''): Command {
-    const sub = new Command(name, this.version, description)
-    sub.parent = this
+  command(name: string): Command {
+    const sub = new Command(name, this)
     this.commands.push(sub)
     return sub
   }
@@ -656,7 +739,7 @@ export class Command {
         },
         options: cmd.options.map(optionHelp),
         arguments: cmd.arguments.map(argumentHelp),
-        parent: cmd.parent ? commandHelp(cmd.parent) : parentHelp,
+        parent: cmd.parent ? commandHelp(cmd.parent) : (parentHelp ?? null),
         helpConfiguration: cmd.helpConfiguration,
       }
     }
