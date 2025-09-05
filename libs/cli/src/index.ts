@@ -1,2 +1,5 @@
 export * from './Command'
+export * from './CommandHelpAdapter'
+export * from './CommanderHelpAdapter'
 export * from './Help'
+export * from './renderHelp'

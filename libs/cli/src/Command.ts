@@ -1,6 +1,7 @@
 import { parseArgs } from 'node:util'
 import type { ParseArgsOptionDescriptor } from 'node:util'
-import type { ArgumentHelp, CommandHelp, IHelp, OptionHelp } from './Help'
+import type { IHelp } from './Help'
+import { CommandHelpAdapter } from './CommandHelpAdapter'
 
 /**
  * Command-line argument parser with fluent API and type-safe validation.
@@ -555,106 +556,17 @@ export class Command implements CommandDescriptor {
 
   /** Finds option by short or long name */
   findOption(this: Command, arg: string): OptionDescriptor | undefined {
-    return this.options.find((option) => this.optionsIs(option, arg))
+    return this.options.find((option) => option.short === arg || option.name === arg)
   }
 
-  /** Checks if option matches name or short name */
-  protected optionsIs(option: OptionDescriptor, nameOrShortName: string) {
-    return option.short === nameOrShortName || option.name === nameOrShortName
+  /** Returns a view that is compliant with the CommandHelp interface */
+  createHelpAdapter() {
+    return new CommandHelpAdapter(this)
   }
 
   /** Renders formatted help text using provided help definition */
   renderHelp(help: IHelp): string {
-    const helper = Object.assign(help, this.helpConfiguration ?? {})
-    return helper.formatHelp(commandHelp(this), helper)
-
-    function commandHelp(cmd: Command, parentHelp?: CommandHelp): CommandHelp {
-      let cmds: CommandHelp[] | undefined = undefined
-      return {
-        name: cmd.name,
-        aliases: cmd.aliases,
-        summary: cmd.summary ?? (cmd.description.includes('\n') ? cmd.description.split('\n')[0] : undefined),
-        description: cmd.description,
-        hidden: cmd.hidden,
-        usage: renderCommandUsage(cmd),
-        group: cmd.group,
-        get commands() {
-          if (cmds) return cmds
-          cmds = cmd.commands.map((c) => commandHelp(c, this))
-          return cmds
-        },
-        options: cmd.options.map(optionHelp),
-        arguments: cmd.arguments.map(argumentHelp),
-        parent: cmd.parent ? commandHelp(cmd.parent) : (parentHelp ?? null),
-        helpConfiguration: cmd.helpConfiguration,
-      }
-    }
-
-    function argumentHelp(arg: ArgumentDescriptor): ArgumentDescriptorBase & ArgumentHelp {
-      return {
-        ...arg,
-        name: arg.name,
-        description: arg.description,
-        required: arg.required,
-        variadic: arg.multiple,
-        defaultValue: arg.defaultValue,
-        defaultValueDescription: arg.defaultValueDescription,
-        choices: arg.choices,
-      }
-    }
-
-    function optionHelp(opt: OptionDescriptor): OptionDescriptorBase & OptionHelp {
-      return {
-        ...opt,
-        flags: renderOptionUsage(opt),
-        description: opt.description,
-        required: opt.required,
-        optional: !opt.required,
-        variadic: opt.multiple,
-        short: opt.short,
-        long: opt.name,
-        negate: false,
-        defaultValue: opt.defaultValue,
-        defaultValueDescription: opt.defaultValueDescription,
-        env: opt.env,
-        hidden: opt.hidden,
-        choices: opt.choices,
-        group: opt.group,
-      }
-    }
-
-    function renderArgumentUsage(arg: ArgumentDescriptor): ArgumentUsage {
-      return (
-        arg.required
-          ? arg.multiple
-            ? `<${arg.name}...>`
-            : `<${arg.name}>`
-          : arg.multiple
-            ? `[${arg.name}...]`
-            : `[${arg.name}]`
-      ) as ArgumentUsage
-    }
-
-    function renderOptionUsage(opt: OptionDescriptor): OptionUsage {
-      const usage = `-${opt.short}, --${opt.name}`
-      return opt.type === 'boolean'
-        ? (usage as BooleanOptionUsage)
-        : opt.required
-          ? opt.multiple
-            ? ((usage + ` <${opt.argName}...>`) as RequiredVariadicOptionUsage)
-            : ((usage + ` <${opt.argName}>`) as RequiredOptionUsage)
-          : opt.multiple
-            ? ((usage + ` [${opt.argName}...]`) as OptionalVariadicOptionUsage)
-            : ((usage + ` [${opt.argName}]`) as OptionalOptionUsage)
-    }
-
-    function renderCommandUsage(cmd: Command): string {
-      return [
-        ...(cmd.options.length ? ['[options]'] : []),
-        ...(cmd.commands.length ? ['[command]'] : []),
-        ...cmd.arguments.map((arg) => renderArgumentUsage(arg)),
-      ].join(' ')
-    }
+    return this.createHelpAdapter().renderHelp(help)
   }
 }
 
@@ -670,7 +582,7 @@ type RequiredVariadicOptionUsage = `-${string}, --${string} <${string}...>`
 type OptionalVariadicOptionUsage = `-${string}, --${string} [${string}...]`
 
 /** Union of all option usage pattern types */
-type OptionUsage =
+export type OptionUsage =
   | BooleanOptionUsage
   | RequiredOptionUsage
   | OptionalOptionUsage
@@ -687,7 +599,7 @@ type RequiredVariadicArgumentUsage = `<${string}...>`
 type OptionalVariadicArgumentUsage = `[${string}...]`
 
 /** Union of all argument usage pattern types */
-type ArgumentUsage =
+export type ArgumentUsage =
   | RequiredArgumentUsage //
   | OptionalArgumentUsage
   | RequiredVariadicArgumentUsage
@@ -804,7 +716,7 @@ interface OptionalVariadicOptionDescriptor extends OptionDescriptorBase {
 }
 
 /** Complete command configuration including all properties and substructures */
-interface CommandDescriptor {
+export interface CommandDescriptor {
   name: string
   version?: string
   aliases: string[]
@@ -833,33 +745,6 @@ export type OptionDescriptor =
   | OptionalOptionDescriptor
   | RequiredVariadicOptionDescriptor
   | OptionalVariadicOptionDescriptor
-
-/** Export type map for external type access and testing */
-export type CommandTypes = {
-  RequiredArgumentUsage: RequiredArgumentUsage
-  OptionalArgumentUsage: OptionalArgumentUsage
-  RequiredVariadicArgumentUsage: RequiredVariadicArgumentUsage
-  OptionalVariadicArgumentUsage: OptionalVariadicArgumentUsage
-  ArgumentDescriptorBase: ArgumentDescriptorBase
-  RequiredArgumentDescriptor: RequiredArgumentDescriptor
-  OptionalArgumentDescriptor: OptionalArgumentDescriptor
-  RequiredVariadicArgumentDescriptor: RequiredVariadicArgumentDescriptor
-  OptionalVariadicArgumentDescriptor: OptionalVariadicArgumentDescriptor
-  ArgumentDescriptor: ArgumentDescriptor
-
-  BooleanOptionUsage: BooleanOptionUsage
-  RequiredOptionUsage: RequiredOptionUsage
-  OptionalOptionUsage: OptionalOptionUsage
-  RequiredVariadicOptionUsage: RequiredVariadicOptionUsage
-  OptionalVariadicOptionUsage: OptionalVariadicOptionUsage
-  OptionalDescriptorBase: OptionDescriptorBase
-  BooleanOptionDescriptor: BooleanOptionDescriptor
-  RequiredOptionDescriptor: RequiredOptionDescriptor
-  OptionalOptionDescriptor: OptionalOptionDescriptor
-  RequiredVariadicOptionDescriptor: RequiredVariadicOptionDescriptor
-  OptionalVariadicOptionDescriptor: OptionalVariadicOptionDescriptor
-  OptionDescriptor: OptionDescriptor
-}
 
 /** Helper type for extracting argument configuration options */
 type ArgOpts<T extends ArgumentDescriptor> = Omit<T, 'name' | 'description' | 'required' | 'multiple'>
