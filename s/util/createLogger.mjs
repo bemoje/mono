@@ -17,11 +17,12 @@ export function createLogger(name) {
     info: (...args) => console.info(NAME, INFO, ...args),
     warn: (...args) => console.warn(NAME, WARN, ...args),
     error: (...args) => console.error(NAME, ERROR, ...args),
-    debug: (...args) => console.debug(NAME, ...args),
+    debug: (...args) => console.debug(NAME, DEBUG, ...args),
   }
 }
 
 const START = colors.blue('[START]')
+const DEBUG = colors.magenta('[DEBUG]')
 const INFO = colors.gray('[INFO]')
 const DONE = colors.green('[DONE] ')
 const WARN = colors.yellow('[WARN] ')

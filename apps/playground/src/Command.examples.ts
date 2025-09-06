@@ -1,4 +1,4 @@
-import { Command, Help } from '@mono/cli'
+import { Command, Help } from '@bemoje/cli'
 
 const cmd = new Command('myapp')
   .setVersion('1.0.0')

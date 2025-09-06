@@ -66,6 +66,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@bemoje/cli": "^1.0.2",
     "@sinclair/typebox": "^0.34.37",
     "ansi-colors": "^4.1.3",
     "cli-table": "^0.3.11",
@@ -101,5 +102,5 @@
     "type": "git",
     "url": "git+https://github.com/bemoje/mono.git"
   },
-  "homepage": "https://github.com/bemoje/tsmono"
+  "homepage": "https://github.com/bemoje/mono"
 }

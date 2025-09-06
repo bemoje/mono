@@ -121,6 +121,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bemoje/cli@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@bemoje/cli@npm:1.0.1"
+  checksum: 10c0/949d2a56a7d2e4bd9313f9f92e6e9101d6058ffc60509aeea1c1821c6ebac50100a18b0db1c013a8d54a81b1e826b66f655af08463e86cb356cad9e1931bc7f4
+  languageName: node
+  linkType: hard
+
+"@bemoje/cli@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@bemoje/cli@npm:1.0.2"
+  checksum: 10c0/bd2a832826cfb37d28cc529d75564b69ac30bb56f8a1aa839f4518dc6945949b63f82b9c2f7a77e294539291b72a11554d71f1c46b737f95d82dc4352d3e452f
+  languageName: node
+  linkType: hard
+
 "@esbuild/aix-ppc64@npm:0.23.1":
   version: 0.23.1
   resolution: "@esbuild/aix-ppc64@npm:0.23.1"
@@ -650,6 +664,8 @@ __metadata:
 "@mono/cli@workspace:libs/cli":
   version: 0.0.0-use.local
   resolution: "@mono/cli@workspace:libs/cli"
+  dependencies:
+    commander: "npm:^14.0.0"
   languageName: unknown
   linkType: soft
 
@@ -3788,6 +3804,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "mono@workspace:."
   dependencies:
+    "@bemoje/cli": "npm:^1.0.2"
     "@eslint/js": "npm:^9.8.0"
     "@microsoft/tsdoc": "npm:^0.15.1"
     "@sinclair/typebox": "npm:^0.34.37"
@@ -4184,6 +4201,8 @@ __metadata:
 "playground@workspace:apps/playground":
   version: 0.0.0-use.local
   resolution: "playground@workspace:apps/playground"
+  dependencies:
+    "@bemoje/cli": "npm:^1.0.1"
   languageName: unknown
   linkType: soft
 
