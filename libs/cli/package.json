@@ -1,7 +1,7 @@
 {
   "name": "@mono/cli",
-  "version": "1.0.6",
-  "description": "A type-safe CLI builder focused on command composition and help generation without execution coupling. Parse arguments, generate help, and integrate with existing CLI frameworks through a clean, fluent API.",
+  "version": "1.1.1",
+  "description": "A type-safe CLI composer that can parse argv and generate help without execution coupling.",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "private": true,
@@ -12,16 +12,14 @@
     "build": "node esbuild.mjs"
   },
   "devDependencies": {
-    "commander": "^14.0.0"
+    "commander": "^14.0.0",
+    "type-fest": "4.41.0"
   },
   "keywords": [
     "cli",
     "command-line",
-    "argument-parser",
-    "options-parser",
     "typescript",
     "type-safe",
-    "fluent-api",
     "help-generation",
     "commander",
     "commander.js",
@@ -29,7 +27,6 @@
     "validation",
     "parsing",
     "composition",
-    "adapter",
     "terminal",
     "console",
     "args",

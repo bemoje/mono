@@ -2,32 +2,30 @@ import { buildLibsWorkspace } from '../../s/util/buildLibsWorkspace.mjs'
 
 await buildLibsWorkspace(import.meta.dirname, {
   minify: false,
-  external: ['commander'],
   format: 'cjs',
 })
 
 await buildLibsWorkspace(import.meta.dirname, {
   minify: false,
-  external: ['commander'],
   format: 'esm',
 })
 
 import fs from 'fs-extra'
 import path from 'upath'
-import * as ts from 'typescript'
+import ts from 'typescript'
 import strip from 'strip-comments'
 import esbuild from 'esbuild'
 import { getRepoRootDirpath } from '../../s/util/getRepoRootDirpath.mjs'
 import { glob } from 'glob'
 
 const REPO_ROOT = getRepoRootDirpath()
-const pkg = fs.readJsonSync('./package.json')
-const repoPkg = fs.readJsonSync(path.joinSafe(REPO_ROOT, 'package.json'))
+const pkg = await fs.readJson('./package.json')
+const repoPkg = await fs.readJson(path.joinSafe(REPO_ROOT, 'package.json'))
 const libName = pkg.name.split('/').pop()
 const outDir = path.resolve('../../.dist/libs/' + libName)
 
 const tsconfigBaseFilepath = '../../tsconfig.json'
-const tsconfigBaseJson = strip(fs.readFileSync(tsconfigBaseFilepath, 'utf8'))
+const tsconfigBaseJson = strip(await fs.readFile(tsconfigBaseFilepath, 'utf8'))
 const tsconfigBase = JSON.parse(tsconfigBaseJson)
 
 const entryPoints = fs
@@ -42,7 +40,7 @@ const entryPoints = fs
   })
   .map((dirent) => path.join(dirent.parentPath, dirent.name))
 
-fs.removeSync(outDir)
+await fs.remove(outDir)
 
 ts.createProgram({
   rootNames: ['./src/index.ts'],
@@ -63,7 +61,6 @@ await esbuild.build({
   tsconfig: './tsconfig.json',
   platform: 'node',
   format: 'esm',
-  // external: ['vitest'],
   target: ['node20', 'es2022'],
   treeShaking: true,
   keepNames: true,
@@ -97,7 +94,7 @@ const publicPackageName = pkg.name.replace('@mono', '@bemoje')
 await fs.outputJson(
   outDir + '/package.json',
   {
-    name: pkg.name.replace('@mono', '@bemoje'),
+    name: publicPackageName,
     description: pkg.description,
     version: pkg.version,
     private: false,

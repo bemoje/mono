@@ -1,4 +1,4 @@
-import { ArgumentDescriptorBase, CommandDescriptor, OptionDescriptorBase } from './Command'
+import type { ArgumentDescriptorBase, CommandDescriptor, OptionDescriptorBase } from './Command'
 
 /**
  * Although this is a class, methods are static in style to allow override using subclass or just functions.

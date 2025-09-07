@@ -1,6 +1,6 @@
 import { parseArgs } from 'node:util'
 import type { ParseArgsOptionDescriptor } from 'node:util'
-import type { IHelp } from './Help'
+import { Help, type IHelp } from './Help'
 import type { AllUnionFields } from 'type-fest'
 
 /**
@@ -252,7 +252,13 @@ export class Command implements CommandDescriptor {
     const name = match[2]
     const argName = (match[4] || match[5])?.replace(/\.\.\.$/, '')
     this.assertOptionNameNotInUse(name)
-    const props = { flags, short, long: name, name, description }
+    const props = {
+      flags,
+      short,
+      long: name,
+      name,
+      description,
+    }
 
     if (!argName) {
       this._addOption({
@@ -262,6 +268,9 @@ export class Command implements CommandDescriptor {
         negate: false,
         optional: true,
         variadic: false,
+        get multiple() {
+          return this.variadic
+        },
       })
     } else if (flags.endsWith('>')) {
       if (flags.endsWith('...>')) {
@@ -273,6 +282,9 @@ export class Command implements CommandDescriptor {
           required: true,
           optional: false,
           variadic: true,
+          get multiple() {
+            return this.variadic
+          },
         })
       } else {
         this._addOption({
@@ -283,6 +295,9 @@ export class Command implements CommandDescriptor {
           required: true,
           optional: false,
           variadic: false,
+          get multiple() {
+            return this.variadic
+          },
         })
       }
     } else if (flags.endsWith(']')) {
@@ -295,6 +310,9 @@ export class Command implements CommandDescriptor {
           required: false,
           optional: true,
           variadic: true,
+          get multiple() {
+            return this.variadic
+          },
           defaultValue: (opts.defaultValue ?? []) as string[],
         })
       } else {
@@ -306,6 +324,9 @@ export class Command implements CommandDescriptor {
           required: false,
           optional: true,
           variadic: false,
+          get multiple() {
+            return this.variadic
+          },
         })
       }
     }
@@ -430,7 +451,7 @@ export class Command implements CommandDescriptor {
   }
 
   /** Renders formatted help text using provided help definition */
-  renderHelp(help: IHelp): string {
+  renderHelp(help: IHelp = new Help()): string {
     const helper = Object.assign(help, this.helpConfiguration)
     return helper.formatHelp(this, helper)
   }
