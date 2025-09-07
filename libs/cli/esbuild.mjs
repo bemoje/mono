@@ -72,7 +72,7 @@ await esbuild.build({
   sourcemap: true,
 })
 
-const outDirJsFiles = await glob('**/*.js', { cwd: outDir })
+const outDirJsFiles = await glob('**/*.js', { cwd: outDir, absolute: true })
 const outDirJsFilenames = outDirJsFiles.map((fp) => path.parse(fp).name)
 outDirJsFiles.forEach((fp) => {
   const code = fs.readFileSync(fp, 'utf8')
