@@ -1,5 +1,2 @@
 export * from './lib/Command'
-export * from './lib/CommandHelpAdapter'
-export * from './lib/CommanderHelpAdapter'
 export * from './lib/Help'
-export * from './lib/renderHelp'

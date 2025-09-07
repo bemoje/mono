@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 5802  | 5656    | 97.48%     |
-| Functions | 694   | 670     | 96.54%     |
-| Branches  | 2007  | 1909    | 95.11%     |
+| Lines     | 5609  | 5458    | 97.3%      |
+| Functions | 658   | 634     | 96.35%     |
+| Branches  | 1940  | 1843    | 95%        |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 526   | 8754          |
-| test      | 392   | 24429         |
+| source    | 522   | 8616          |
+| test      | 389   | 23584         |
 | examples  | 0     | 0             |
-| script    | 44    | 1284          |
-| total     | 962   | 34467         |
+| script    | 45    | 1319          |
+| total     | 956   | 33519         |
 
 ## Table of Contents
 
@@ -327,10 +327,7 @@ describe(ClassToTest.name, () => {
 **cli**
 
 - `Command`: Command-line argument parser with fluent API and type-safe validation. Enforces CLI argument ordering rules and provides structured parsing results.
-- `CommandHelpAdapter`: Adapter for
-- `CommanderHelpAdapter`: Adapter for commander.js
 - `Help`: Although this is a class, methods are static in style to allow override using subclass or just functions.
-- `renderHelp`: Renders help for a command using the specified help instance.
 
 **composition**
 

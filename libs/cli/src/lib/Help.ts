@@ -1,3 +1,5 @@
+import { ArgumentDescriptorBase, CommandDescriptor, OptionDescriptorBase } from './Command'
+
 /**
  * Although this is a class, methods are static in style to allow override using subclass or just functions.
  */
@@ -12,11 +14,11 @@ export class Help implements IHelp {
   /**
    * Get an array of the visible subcommands. Includes a placeholder for the implicit help command, if there is one.
    */
-  visibleCommands(cmd: ICommandHelp): ICommandHelp[] {
-    const visibleCommands = cmd.commands.filter((cmd: ICommandHelp) => !cmd.hidden)
+  visibleCommands(cmd: CommandDescriptor): CommandDescriptor[] {
+    const visibleCommands = cmd.commands.filter((cmd: CommandDescriptor) => !cmd.hidden)
 
     if (this.sortSubcommands) {
-      visibleCommands.sort((a: ICommandHelp, b: ICommandHelp) => {
+      visibleCommands.sort((a: CommandDescriptor, b: CommandDescriptor) => {
         return a.name.localeCompare(b.name)
       })
     }
@@ -26,8 +28,8 @@ export class Help implements IHelp {
   /**
    * Compare options for sort.
    */
-  compareOptions(a: IOptionHelp, b: IOptionHelp): number {
-    const getSortKey = (option: IOptionHelp): string => {
+  compareOptions(a: OptionDescriptorBase, b: OptionDescriptorBase): number {
+    const getSortKey = (option: OptionDescriptorBase): string => {
       // WYSIWYG for order displayed in help. Short used for comparison if present. No special handling for negated.
       return option.short ? option.short.replace(/^-/, '') : option.long!.replace(/^--/, '')
     }
@@ -37,8 +39,8 @@ export class Help implements IHelp {
   /**
    * Get an array of the visible options. Includes a placeholder for the implicit help option, if there is one.
    */
-  visibleOptions(cmd: ICommandHelp): IOptionHelp[] {
-    const visibleOptions = cmd.options.filter((option: IOptionHelp) => !option.hidden)
+  visibleOptions(cmd: CommandDescriptor): OptionDescriptorBase[] {
+    const visibleOptions = cmd.options.filter((option: OptionDescriptorBase) => !option.hidden)
 
     if (this.sortOptions) {
       visibleOptions.sort(this.compareOptions)
@@ -49,12 +51,12 @@ export class Help implements IHelp {
   /**
    * Get an array of the visible global options. (Not including help.)
    */
-  visibleGlobalOptions(cmd: ICommandHelp): IOptionHelp[] {
+  visibleGlobalOptions(cmd: CommandDescriptor): OptionDescriptorBase[] {
     if (!this.showGlobalOptions) return []
 
-    const globalOptions: IOptionHelp[] = []
+    const globalOptions: OptionDescriptorBase[] = []
     for (let ancestorCmd = cmd.parent; ancestorCmd; ancestorCmd = ancestorCmd.parent) {
-      const visibleOptions = ancestorCmd.options.filter((option: IOptionHelp) => !option.hidden)
+      const visibleOptions = ancestorCmd.options.filter((option: OptionDescriptorBase) => !option.hidden)
       globalOptions.push(...visibleOptions)
     }
     if (this.sortOptions) {
@@ -66,9 +68,9 @@ export class Help implements IHelp {
   /**
    * Get an array of the arguments if any have a description.
    */
-  visibleArguments(cmd: ICommandHelp): IArgumentHelp[] {
+  visibleArguments(cmd: CommandDescriptor): ArgumentDescriptorBase[] {
     // If there are any arguments with a description then return all the arguments.
-    if (cmd.arguments.find((argument: IArgumentHelp) => argument.description)) {
+    if (cmd.arguments.find((argument: ArgumentDescriptorBase) => argument.description)) {
       return [...cmd.arguments]
     }
     return []
@@ -77,9 +79,14 @@ export class Help implements IHelp {
   /**
    * Get the command term to show in the list of subcommands.
    */
-  subcommandTerm(cmd: ICommandHelp): string {
+  subcommandTerm(cmd: CommandDescriptor): string {
     // Legacy. Ignores custom usage string, and nested commands.
-    const args = cmd.arguments.map((arg: IArgumentHelp) => humanReadableArgName(arg)).join(' ')
+    const args = cmd.arguments
+      .map((arg: ArgumentDescriptorBase) => {
+        const nameOutput = arg.name + (arg.variadic === true ? '...' : '')
+        return arg.required ? '<' + nameOutput + '>' : '[' + nameOutput + ']'
+      })
+      .join(' ')
     return (
       cmd.name +
       (cmd.aliases[0] ? '|' + cmd.aliases[0] : '') +
@@ -91,22 +98,22 @@ export class Help implements IHelp {
   /**
    * Get the option term to show in the list of options.
    */
-  optionTerm(option: IOptionHelp): string {
+  optionTerm(option: OptionDescriptorBase): string {
     return option.flags
   }
 
   /**
    * Get the argument term to show in the list of arguments.
    */
-  argumentTerm(argument: IArgumentHelp): string {
+  argumentTerm(argument: ArgumentDescriptorBase): string {
     return argument.name
   }
 
   /**
    * Get the longest command term length.
    */
-  longestSubcommandTermLength(cmd: ICommandHelp, helper: Help): number {
-    return helper.visibleCommands(cmd).reduce((max: number, command: ICommandHelp) => {
+  longestSubcommandTermLength(cmd: CommandDescriptor, helper: Help): number {
+    return helper.visibleCommands(cmd).reduce((max: number, command: CommandDescriptor) => {
       return Math.max(max, this.displayWidth(helper.styleSubcommandTerm(helper.subcommandTerm(command))))
     }, 0)
   }
@@ -114,8 +121,8 @@ export class Help implements IHelp {
   /**
    * Get the longest option term length.
    */
-  longestOptionTermLength(cmd: ICommandHelp, helper: Help): number {
-    return helper.visibleOptions(cmd).reduce((max: number, option: IOptionHelp) => {
+  longestOptionTermLength(cmd: CommandDescriptor, helper: Help): number {
+    return helper.visibleOptions(cmd).reduce((max: number, option: OptionDescriptorBase) => {
       return Math.max(max, this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option))))
     }, 0)
   }
@@ -123,8 +130,8 @@ export class Help implements IHelp {
   /**
    * Get the longest global option term length.
    */
-  longestGlobalOptionTermLength(cmd: ICommandHelp, helper: Help): number {
-    return helper.visibleGlobalOptions(cmd).reduce((max: number, option: IOptionHelp) => {
+  longestGlobalOptionTermLength(cmd: CommandDescriptor, helper: Help): number {
+    return helper.visibleGlobalOptions(cmd).reduce((max: number, option: OptionDescriptorBase) => {
       return Math.max(max, this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option))))
     }, 0)
   }
@@ -132,8 +139,8 @@ export class Help implements IHelp {
   /**
    * Get the longest argument term length.
    */
-  longestArgumentTermLength(cmd: ICommandHelp, helper: Help): number {
-    return helper.visibleArguments(cmd).reduce((max: number, argument: IArgumentHelp) => {
+  longestArgumentTermLength(cmd: CommandDescriptor, helper: Help): number {
+    return helper.visibleArguments(cmd).reduce((max: number, argument: ArgumentDescriptorBase) => {
       return Math.max(max, this.displayWidth(helper.styleArgumentTerm(helper.argumentTerm(argument))))
     }, 0)
   }
@@ -141,7 +148,7 @@ export class Help implements IHelp {
   /**
    * Get the command usage to be displayed at the top of the built-in help.
    */
-  commandUsage(cmd: ICommandHelp): string {
+  commandUsage(cmd: CommandDescriptor): string {
     // Usage
     let cmdName = cmd.name
     if (cmd.aliases[0]) {
@@ -151,13 +158,30 @@ export class Help implements IHelp {
     for (let ancestorCmd = cmd.parent; ancestorCmd; ancestorCmd = ancestorCmd.parent) {
       ancestorCmdNames = ancestorCmd.name + ' ' + ancestorCmdNames
     }
-    return ancestorCmdNames + cmdName + ' ' + cmd.usage
+    return (
+      ancestorCmdNames +
+      cmdName +
+      ' ' +
+      [
+        ...(cmd.options.length ? ['[options]'] : []),
+        ...(cmd.commands.length ? ['[command]'] : []),
+        ...cmd.arguments.map((arg) => {
+          return arg.required
+            ? arg.variadic
+              ? `<${arg.name}...>`
+              : `<${arg.name}>`
+            : arg.variadic
+              ? `[${arg.name}...]`
+              : `[${arg.name}]`
+        }),
+      ].join(' ')
+    )
   }
 
   /**
    * Get the description for the command.
    */
-  commandDescription(cmd: ICommandHelp): string {
+  commandDescription(cmd: CommandDescriptor): string {
     return cmd.description
   }
 
@@ -165,14 +189,14 @@ export class Help implements IHelp {
    * Get the subcommand summary to show in the list of subcommands.
    * (Fallback to description for backwards compatibility.)
    */
-  subcommandDescription(cmd: ICommandHelp): string {
-    return cmd.summary || cmd.description
+  subcommandDescription(cmd: CommandDescriptor): string {
+    return cmd.summary || (cmd.description.includes('\n') ? cmd.description.split('\n')[0] : '')
   }
 
   /**
    * Get the option description to show in the list of options.
    */
-  optionDescription(option: IOptionHelp): string {
+  optionDescription(option: OptionDescriptorBase): string {
     const extraInfo: string[] = []
 
     if (option.choices) {
@@ -209,7 +233,7 @@ export class Help implements IHelp {
   /**
    * Get the argument description to show in the list of arguments.
    */
-  argumentDescription(argument: IArgumentHelp): string {
+  argumentDescription(argument: ArgumentDescriptorBase): string {
     const extraInfo: string[] = []
     if (argument.choices) {
       extraInfo.push(
@@ -242,7 +266,7 @@ export class Help implements IHelp {
   /**
    * Group items by their help group heading.
    */
-  groupItems<T extends ICommandHelp | IOptionHelp>(
+  groupItems<T extends CommandDescriptor | OptionDescriptorBase>(
     unsortedItems: T[],
     visibleItems: T[],
     getGroup: (item: T) => string,
@@ -267,7 +291,7 @@ export class Help implements IHelp {
   /**
    * Generate the built-in help text.
    */
-  formatHelp(cmd: ICommandHelp, helper: IHelp): string {
+  formatHelp(cmd: CommandDescriptor, helper: IHelp): string {
     const termWidth = helper.padWidth(cmd, helper)
     const helpWidth = helper.helpWidth
 
@@ -285,7 +309,7 @@ export class Help implements IHelp {
     }
 
     // Arguments
-    const argumentList = helper.visibleArguments(cmd).map((argument: IArgumentHelp) => {
+    const argumentList = helper.visibleArguments(cmd).map((argument: ArgumentDescriptorBase) => {
       return callFormatItem(
         helper.styleArgumentTerm(helper.argumentTerm(argument)),
         helper.styleArgumentDescription(helper.argumentDescription(argument)),
@@ -297,10 +321,10 @@ export class Help implements IHelp {
     const optionGroups = this.groupItems(
       cmd.options,
       helper.visibleOptions(cmd),
-      (option: IOptionHelp) => option.group ?? 'Options:',
+      (option: OptionDescriptorBase) => option.group ?? 'Options:',
     )
     optionGroups.forEach((options, group) => {
-      const optionList = options.map((option: IOptionHelp) => {
+      const optionList = options.map((option: OptionDescriptorBase) => {
         return callFormatItem(
           helper.styleOptionTerm(helper.optionTerm(option)),
           helper.styleOptionDescription(helper.optionDescription(option)),
@@ -310,7 +334,7 @@ export class Help implements IHelp {
     })
 
     if (helper.showGlobalOptions) {
-      const globalOptionList = helper.visibleGlobalOptions(cmd).map((option: IOptionHelp) => {
+      const globalOptionList = helper.visibleGlobalOptions(cmd).map((option: OptionDescriptorBase) => {
         return callFormatItem(
           helper.styleOptionTerm(helper.optionTerm(option)),
           helper.styleOptionDescription(helper.optionDescription(option)),
@@ -324,10 +348,10 @@ export class Help implements IHelp {
       cmd.commands,
       helper.visibleCommands(cmd),
 
-      (sub: ICommandHelp) => sub.group || 'Commands:',
+      (sub: CommandDescriptor) => sub.group || 'Commands:',
     )
     commandGroups.forEach((commands, group) => {
-      const commandList = commands.map((sub: ICommandHelp) => {
+      const commandList = commands.map((sub: CommandDescriptor) => {
         return callFormatItem(
           helper.styleSubcommandTerm(helper.subcommandTerm(sub)),
           helper.styleSubcommandDescription(helper.subcommandDescription(sub)),
@@ -343,7 +367,9 @@ export class Help implements IHelp {
    * Return display width of string, ignoring ANSI escape sequences. Used in padding and wrapping calculations.
    */
   displayWidth(str: string): number {
-    return stripColor(str).length
+    // eslint-disable-next-line no-control-regex
+    const sgrPattern = /\x1b\[\d*(;\d*)*m/g
+    return str.replace(sgrPattern, '').length
   }
 
   /**
@@ -466,7 +492,7 @@ export class Help implements IHelp {
   /**
    * Calculate the pad width from the maximum term length.
    */
-  padWidth(cmd: ICommandHelp, helper: Help): number {
+  padWidth(cmd: CommandDescriptor, helper: Help): number {
     return Math.max(
       helper.longestOptionTermLength(cmd, helper),
       helper.longestGlobalOptionTermLength(cmd, helper),
@@ -559,70 +585,6 @@ export class Help implements IHelp {
   }
 }
 
-/**
- * Strip style ANSI escape sequences from the string. In particular, SGR (Select Graphic Rendition) codes.
- */
-function stripColor(str: string): string {
-  // eslint-disable-next-line no-control-regex
-  const sgrPattern = /\x1b\[\d*(;\d*)*m/g
-  return str.replace(sgrPattern, '')
-}
-
-/**
- * Takes an argument and returns its human readable equivalent for help usage.
- */
-function humanReadableArgName(arg: IArgumentHelp): string {
-  const nameOutput = arg.name + (arg.variadic === true ? '...' : '')
-
-  return arg.required ? '<' + nameOutput + '>' : '[' + nameOutput + ']'
-}
-
-/**
- * Interface for a command object used to generate help.
- */
-export interface ICommandHelp {
-  name: string
-  aliases: string[]
-  summary?: string
-  description: string
-  hidden?: boolean
-  usage: string
-  group?: string
-  commands: ICommandHelp[]
-  options: IOptionHelp[]
-  arguments: IArgumentHelp[]
-  parent: ICommandHelp | null
-  helpConfiguration?: Partial<IHelp>
-}
-
-export interface IArgumentHelp {
-  name: string
-  description: string
-  required: boolean
-  variadic: boolean
-  defaultValue?: string | string[]
-  defaultValueDescription?: string
-  choices?: string[]
-}
-
-export interface IOptionHelp {
-  group?: string
-  flags: string
-  description: string
-  short: string
-  long: string
-  required?: boolean
-  optional?: boolean
-  variadic?: boolean
-  negate?: boolean
-  defaultValue?: boolean | string | string[]
-  defaultValueDescription?: string
-  env?: string
-  choices?: string[]
-  hidden?: boolean
-  global?: boolean
-}
-
 export interface IHelp {
   helpWidth: number
   minWidthToWrap: number
@@ -630,22 +592,22 @@ export interface IHelp {
   sortOptions?: boolean
   showGlobalOptions?: boolean
 
-  subcommandTerm(cmd: ICommandHelp): string
-  subcommandDescription(cmd: ICommandHelp): string
-  optionTerm(option: IOptionHelp): string
-  optionDescription(option: IOptionHelp): string
-  argumentTerm(argument: IArgumentHelp): string
-  argumentDescription(argument: IArgumentHelp): string
-  commandUsage(cmd: ICommandHelp): string
-  commandDescription(cmd: ICommandHelp): string
-  visibleCommands(cmd: ICommandHelp): ICommandHelp[]
-  visibleOptions(cmd: ICommandHelp): IOptionHelp[]
-  visibleGlobalOptions(cmd: ICommandHelp): IOptionHelp[]
-  visibleArguments(cmd: ICommandHelp): IArgumentHelp[]
-  longestSubcommandTermLength(cmd: ICommandHelp, helper: IHelp): number
-  longestOptionTermLength(cmd: ICommandHelp, helper: IHelp): number
-  longestGlobalOptionTermLength(cmd: ICommandHelp, helper: IHelp): number
-  longestArgumentTermLength(cmd: ICommandHelp, helper: IHelp): number
+  subcommandTerm(cmd: CommandDescriptor): string
+  subcommandDescription(cmd: CommandDescriptor): string
+  optionTerm(option: OptionDescriptorBase): string
+  optionDescription(option: OptionDescriptorBase): string
+  argumentTerm(argument: ArgumentDescriptorBase): string
+  argumentDescription(argument: ArgumentDescriptorBase): string
+  commandUsage(cmd: CommandDescriptor): string
+  commandDescription(cmd: CommandDescriptor): string
+  visibleCommands(cmd: CommandDescriptor): CommandDescriptor[]
+  visibleOptions(cmd: CommandDescriptor): OptionDescriptorBase[]
+  visibleGlobalOptions(cmd: CommandDescriptor): OptionDescriptorBase[]
+  visibleArguments(cmd: CommandDescriptor): ArgumentDescriptorBase[]
+  longestSubcommandTermLength(cmd: CommandDescriptor, helper: IHelp): number
+  longestOptionTermLength(cmd: CommandDescriptor, helper: IHelp): number
+  longestGlobalOptionTermLength(cmd: CommandDescriptor, helper: IHelp): number
+  longestArgumentTermLength(cmd: CommandDescriptor, helper: IHelp): number
   displayWidth(str: string): number
   styleTitle(title: string): string
   styleUsage(str: string): string
@@ -661,16 +623,16 @@ export interface IHelp {
   styleOptionText(str: string): string
   styleSubcommandText(str: string): string
   styleArgumentText(str: string): string
-  compareOptions(a: IOptionHelp, b: IOptionHelp): number
-  padWidth(cmd: ICommandHelp, helper: IHelp): number
+  compareOptions(a: OptionDescriptorBase, b: OptionDescriptorBase): number
+  padWidth(cmd: CommandDescriptor, helper: IHelp): number
   boxWrap(str: string, width: number): string
   preformatted(str: string): boolean
   formatItem(term: string, termWidth: number, description: string, helper: IHelp): string
   formatItemList(heading: string, items: string[], helper: IHelp): string[]
-  groupItems<T extends ICommandHelp | IOptionHelp>(
+  groupItems<T extends CommandDescriptor | OptionDescriptorBase>(
     unsortedItems: T[],
     visibleItems: T[],
     getGroup: (item: T) => string,
   ): Map<string, T[]>
-  formatHelp(cmd: ICommandHelp, helper: IHelp): string
+  formatHelp(cmd: CommandDescriptor, helper: IHelp): string
 }

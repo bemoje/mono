@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import assert from 'node:assert'
-import { Help, type ICommandHelp, type IOptionHelp, type IArgumentHelp } from './Help'
+import { Help } from './Help'
+import { type CommandDescriptor, type OptionDescriptor, type ArgumentDescriptor } from './Command'
 
 describe(Help.name, () => {
   it('examples', () => {
@@ -11,13 +12,12 @@ describe(Help.name, () => {
       assert.deepStrictEqual(help.minWidthToWrap, 40)
 
       // Mock command for testing
-      const mockCommand: ICommandHelp = {
+      const mockCommand: CommandDescriptor = {
         name: 'test',
         aliases: ['t'],
         summary: 'Test command',
         description: 'A test command description',
         hidden: false,
-        usage: '[options] <file>',
         group: undefined,
         commands: [],
         options: [
@@ -28,7 +28,7 @@ describe(Help.name, () => {
             long: 'verbose',
             required: false,
             hidden: false,
-          } as IOptionHelp,
+          } as OptionDescriptor,
         ],
         arguments: [
           {
@@ -36,7 +36,7 @@ describe(Help.name, () => {
             description: 'Input file',
             required: true,
             variadic: false,
-          } as IArgumentHelp,
+          } as ArgumentDescriptor,
         ],
         parent: null,
         helpConfiguration: {},
@@ -87,35 +87,38 @@ describe(Help.name, () => {
   describe(Help.prototype.visibleCommands.name, () => {
     it('should return visible commands', () => {
       const help = new Help()
-      const mockCommand: ICommandHelp = {
+      const mockCommand: CommandDescriptor = {
         name: 'parent',
         aliases: [],
         description: 'Parent command',
-        usage: '',
+
         commands: [
           {
             name: 'visible',
             aliases: [],
             description: 'Visible command',
-            usage: '',
+
             commands: [],
             options: [],
             arguments: [],
             parent: null,
             hidden: false,
-          } as ICommandHelp,
+            helpConfiguration: {},
+          } as CommandDescriptor,
           {
             name: 'hidden',
             aliases: [],
             description: 'Hidden command',
-            usage: '',
+
             commands: [],
             options: [],
             arguments: [],
             parent: null,
             hidden: true,
-          } as ICommandHelp,
+            helpConfiguration: {},
+          } as CommandDescriptor,
         ],
+        helpConfiguration: {},
         options: [],
         arguments: [],
         parent: null,
@@ -130,35 +133,38 @@ describe(Help.name, () => {
       const help = new Help()
       help.sortSubcommands = true
 
-      const mockCommand: ICommandHelp = {
+      const mockCommand: CommandDescriptor = {
         name: 'parent',
         aliases: [],
         description: 'Parent command',
-        usage: '',
+
         commands: [
           {
             name: 'zebra',
             aliases: [],
             description: 'Z command',
-            usage: '',
+
             commands: [],
             options: [],
             arguments: [],
             parent: null,
             hidden: false,
-          } as ICommandHelp,
+            helpConfiguration: {},
+          } as CommandDescriptor,
           {
             name: 'alpha',
             aliases: [],
             description: 'A command',
-            usage: '',
+
             commands: [],
             options: [],
             arguments: [],
             parent: null,
             hidden: false,
-          } as ICommandHelp,
+            helpConfiguration: {},
+          } as CommandDescriptor,
         ],
+        helpConfiguration: {},
         options: [],
         arguments: [],
         parent: null,
@@ -174,11 +180,11 @@ describe(Help.name, () => {
   describe(Help.prototype.visibleOptions.name, () => {
     it('should return visible options', () => {
       const help = new Help()
-      const mockCommand: ICommandHelp = {
+      const mockCommand: CommandDescriptor = {
         name: 'test',
         aliases: [],
         description: 'Test command',
-        usage: '',
+        helpConfiguration: {},
         commands: [],
         options: [
           {
@@ -187,14 +193,14 @@ describe(Help.name, () => {
             short: 'v',
             long: 'verbose',
             hidden: false,
-          } as IOptionHelp,
+          } as OptionDescriptor,
           {
             flags: '-h, --hidden',
             description: 'Hidden option',
             short: 'h',
             long: 'hidden',
             hidden: true,
-          } as IOptionHelp,
+          } as OptionDescriptor,
         ],
         arguments: [],
         parent: null,
@@ -209,11 +215,11 @@ describe(Help.name, () => {
       const help = new Help()
       help.sortOptions = true
 
-      const mockCommand: ICommandHelp = {
+      const mockCommand: CommandDescriptor = {
         name: 'test',
         aliases: [],
         description: 'Test command',
-        usage: '',
+        helpConfiguration: {},
         commands: [],
         options: [
           {
@@ -222,14 +228,14 @@ describe(Help.name, () => {
             short: 'z',
             long: 'zebra',
             hidden: false,
-          } as IOptionHelp,
+          } as OptionDescriptor,
           {
             flags: '-a, --alpha',
             description: 'A option',
             short: 'a',
             long: 'alpha',
             hidden: false,
-          } as IOptionHelp,
+          } as OptionDescriptor,
         ],
         arguments: [],
         parent: null,
@@ -247,11 +253,11 @@ describe(Help.name, () => {
       const help = new Help()
       help.showGlobalOptions = false
 
-      const mockCommand: ICommandHelp = {
+      const mockCommand: CommandDescriptor = {
         name: 'child',
         aliases: [],
         description: 'Child command',
-        usage: '',
+        helpConfiguration: {},
         commands: [],
         options: [],
         arguments: [],
@@ -259,7 +265,7 @@ describe(Help.name, () => {
           name: 'parent',
           aliases: [],
           description: 'Parent command',
-          usage: '',
+          helpConfiguration: {},
           commands: [],
           options: [
             {
@@ -268,11 +274,11 @@ describe(Help.name, () => {
               short: 'g',
               long: 'global',
               hidden: false,
-            } as IOptionHelp,
+            } as OptionDescriptor,
           ],
           arguments: [],
           parent: null,
-        } as ICommandHelp,
+        } as CommandDescriptor,
       }
 
       const result = help.visibleGlobalOptions(mockCommand)
@@ -283,11 +289,11 @@ describe(Help.name, () => {
       const help = new Help()
       help.showGlobalOptions = true
 
-      const parent: ICommandHelp = {
+      const parent: CommandDescriptor = {
         name: 'parent',
         aliases: [],
         description: 'Parent command',
-        usage: '',
+        helpConfiguration: {},
         commands: [],
         options: [
           {
@@ -296,17 +302,17 @@ describe(Help.name, () => {
             short: 'g',
             long: 'global',
             hidden: false,
-          } as IOptionHelp,
+          } as OptionDescriptor,
         ],
         arguments: [],
         parent: null,
       }
 
-      const mockCommand: ICommandHelp = {
+      const mockCommand: CommandDescriptor = {
         name: 'child',
         aliases: [],
         description: 'Child command',
-        usage: '',
+        helpConfiguration: {},
         commands: [],
         options: [],
         arguments: [],
@@ -322,11 +328,11 @@ describe(Help.name, () => {
   describe(Help.prototype.visibleArguments.name, () => {
     it('should return empty array when no arguments have descriptions', () => {
       const help = new Help()
-      const mockCommand: ICommandHelp = {
+      const mockCommand: CommandDescriptor = {
         name: 'test',
         aliases: [],
         description: 'Test command',
-        usage: '',
+        helpConfiguration: {},
         commands: [],
         options: [],
         arguments: [
@@ -335,7 +341,7 @@ describe(Help.name, () => {
             description: '',
             required: true,
             variadic: false,
-          } as IArgumentHelp,
+          } as ArgumentDescriptor,
         ],
         parent: null,
       }
@@ -346,11 +352,11 @@ describe(Help.name, () => {
 
     it('should return all arguments when at least one has a description', () => {
       const help = new Help()
-      const mockCommand: ICommandHelp = {
+      const mockCommand: CommandDescriptor = {
         name: 'test',
         aliases: [],
         description: 'Test command',
-        usage: '',
+        helpConfiguration: {},
         commands: [],
         options: [],
         arguments: [
@@ -359,13 +365,13 @@ describe(Help.name, () => {
             description: 'Input file',
             required: true,
             variadic: false,
-          } as IArgumentHelp,
+          } as ArgumentDescriptor,
           {
             name: 'output',
             description: '',
             required: false,
             variadic: false,
-          } as IArgumentHelp,
+          } as ArgumentDescriptor,
         ],
         parent: null,
       }
@@ -378,12 +384,12 @@ describe(Help.name, () => {
   describe(Help.prototype.formatHelp.name, () => {
     it('should generate complete help text', () => {
       const help = new Help()
-      const mockCommand: ICommandHelp = {
+      const mockCommand: CommandDescriptor = {
         name: 'myapp',
         aliases: ['app'],
         summary: 'My application',
         description: 'A comprehensive application for testing',
-        usage: '[options] <input> [output]',
+        helpConfiguration: {},
         commands: [],
         options: [
           {
@@ -392,7 +398,7 @@ describe(Help.name, () => {
             short: 'v',
             long: 'verbose',
             hidden: false,
-          } as IOptionHelp,
+          } as OptionDescriptor,
         ],
         arguments: [
           {
@@ -400,7 +406,7 @@ describe(Help.name, () => {
             description: 'Input file path',
             required: true,
             variadic: false,
-          } as IArgumentHelp,
+          } as ArgumentDescriptor,
         ],
         parent: null,
       }

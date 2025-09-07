@@ -128,10 +128,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bemoje/cli@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "@bemoje/cli@npm:1.0.5"
-  checksum: 10c0/24ca62c747ba7e73e2d55b43bfb1b52a76a21d25ccc7e6fdee8654b2de82a4e1709051fdb11f14402109381ab6c5cf5b13497ced5c72c6bef3eb582f42c3b0a9
+"@bemoje/cli@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "@bemoje/cli@npm:1.0.6"
+  checksum: 10c0/b89a286c00cebb4d6eb7a952799f0c39528d7289344685e62149e0341c6bc7053d1e520bc6faec321eaeadeb9086b92a36dac84ea3c874bf28fa5f1dcda307fb
   languageName: node
   linkType: hard
 
@@ -3804,7 +3804,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "mono@workspace:."
   dependencies:
-    "@bemoje/cli": "npm:^1.0.5"
+    "@bemoje/cli": "npm:^1.0.6"
     "@eslint/js": "npm:^9.8.0"
     "@microsoft/tsdoc": "npm:^0.15.1"
     "@sinclair/typebox": "npm:^0.34.37"
