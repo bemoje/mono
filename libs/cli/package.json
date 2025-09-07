@@ -1,6 +1,6 @@
 {
   "name": "@mono/cli",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "A type-safe CLI builder focused on command composition and help generation without execution coupling. Parse arguments, generate help, and integrate with existing CLI frameworks through a clean, fluent API.",
   "packageManager": "yarn@4.3.1",
   "type": "module",

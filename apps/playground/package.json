@@ -6,6 +6,6 @@
   "sideEffects": false,
   "type": "module",
   "dependencies": {
-    "@bemoje/cli": "^1.0.1"
+    "@bemoje/cli": "1.0.3"
   }
 }

@@ -18,6 +18,7 @@ import * as ts from 'typescript'
 import strip from 'strip-comments'
 import esbuild from 'esbuild'
 import { getRepoRootDirpath } from '../../s/util/getRepoRootDirpath.mjs'
+import { glob } from 'glob'
 
 const REPO_ROOT = getRepoRootDirpath()
 const pkg = fs.readJsonSync('./package.json')
@@ -63,12 +64,31 @@ await esbuild.build({
   platform: 'node',
   format: 'esm',
   // external: ['vitest'],
-  target: ['node20', 'es2020'],
+  target: ['node20', 'es2022'],
   treeShaking: true,
   keepNames: true,
   minify: false,
   mainFields: ['main', 'module'],
   sourcemap: true,
+})
+
+const outDirJsFiles = await glob('**/*.js', { cwd: outDir })
+const outDirJsFilenames = outDirJsFiles.map((fp) => path.parse(fp).name)
+outDirJsFiles.forEach((fp) => {
+  const code = fs.readFileSync(fp, 'utf8')
+  const lines = code.split('\n').map((line) => {
+    if (!line.endsWith(`";`)) return line
+    if (!line.includes(`from ".`)) return line
+    const isLocalJsFileImport = outDirJsFilenames.some((name) => {
+      return line.endsWith(`/${name}";`)
+    })
+    if (!isLocalJsFileImport) return line
+    return line.replace(/";$/, '.js";')
+  })
+  const newCode = lines.join('\n')
+  if (newCode !== code) {
+    fs.writeFileSync(fp, newCode, 'utf8')
+  }
 })
 
 const localPackageName = pkg.name

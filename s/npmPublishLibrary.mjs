@@ -18,6 +18,7 @@ import { getRepoPackageJson } from './util/getRepoPackageJson.mjs'
 import { getRepoPackageJsonPath } from './util/getRepoPackageJsonPath.mjs'
 import cp from 'child_process'
 import upath from 'upath'
+import { setTimeout } from 'timers/promises'
 
 const filename = upath.parse(import.meta.filename).name
 
@@ -69,6 +70,17 @@ await timer([filename, 'npm publish library'], async (log) => {
   log.info('formating package.json...')
   cp.execSync('yarn prettier -w package.json', { stdio: 'inherit', cwd: REPO_ROOT })
 
-  log.info('yarn install...')
-  cp.execSync('yarn install', { stdio: 'inherit', cwd: REPO_ROOT })
+  try {
+    log.info('waiting 15 seconds...')
+    await setTimeout(15000)
+
+    log.info('yarn install...')
+    cp.execSync('yarn install', { stdio: 'inherit', cwd: REPO_ROOT })
+  } catch (error) {
+    log.info('waiting 15 seconds...')
+    await setTimeout(15000)
+
+    log.info('yarn install (retry)...')
+    cp.execSync('yarn install', { stdio: 'inherit', cwd: REPO_ROOT })
+  }
 })
