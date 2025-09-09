@@ -17,8 +17,6 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@mono/is": "workspace:^",
-    "@mono/iter": "workspace:^",
     "@sinclair/typebox": "^0.34.37",
     "lodash-es": "^4.17.21"
   }
