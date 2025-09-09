@@ -6,7 +6,7 @@ import strip from 'strip-comments'
  * Calculates the total lines of code in the project, categorizing them into different types.
  */
 export async function getLinesOfCode() {
-  const ts = (await glob('{libs,apps,packages}/*/src/**/*.ts')).filter(
+  const ts = (await glob('{libs,apps,packages}/*/{src,examples}/**/*.ts')).filter(
     (p) => !/[./\\](wip|old|temp|playground)[./\\]/.test(p),
   )
   const script = countLines(await glob('s/**/*.mjs'))

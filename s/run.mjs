@@ -101,7 +101,7 @@ try {
     platform: 'node',
     format: 'cjs',
     target: ['node20'],
-    external: [...Object.keys(repoPkg.dependencies || {}), ...Object.keys(repoPkg.devDependencies || {})],
+    external: ['type-fest'],
     keepNames: true,
     minify: false,
     mainFields: ['module', 'main'],
