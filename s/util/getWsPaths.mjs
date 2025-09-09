@@ -14,6 +14,7 @@ export function getWsPaths(importMetaDirname) {
   importMetaDirname = upath.normalizeSafe(importMetaDirname)
   const wsDirname = upath.basename(importMetaDirname)
   const tsconfig = upath.joinSafe(importMetaDirname, 'tsconfig.json')
+  const pkg = upath.joinSafe(importMetaDirname, 'package.json')
   const srcDir = upath.joinSafe(importMetaDirname, 'src')
 
   const repoRootDir = getRepoRootDirpath()
@@ -27,6 +28,7 @@ export function getWsPaths(importMetaDirname) {
     wsDirname,
     distDir,
     tsconfig,
+    pkg,
     srcDir,
     indexTs,
     indexCjs,

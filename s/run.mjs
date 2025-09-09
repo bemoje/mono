@@ -50,9 +50,11 @@ if (!arg0.endsWith('.ts')) {
 const importSourceMapLine = `import 'source-map-support/register'`
 const importPrettyStackTraceLine = `import { enablePrettyStackTrace } from '@mono/stacktrace';\nenablePrettyStackTrace()`
 
+const repoPkg = fs.readJsonSync('package.json')
 const wsPath = relative.split(/\\|\//).slice(0, 2).join('/')
 const wsTsconfigPath = path.join(wsPath, 'tsconfig.json')
 const wsPkg = fs.readJsonSync(path.join(wsPath, 'package.json'))
+
 const wsName = wsPkg.name.split(/\\|\//).pop()
 const cjsBasename = path.basename(relative).replace('.ts', '.cjs')
 const outfile = `.dist/temp/runner.cjs`
@@ -99,7 +101,7 @@ try {
     platform: 'node',
     format: 'cjs',
     target: ['node20'],
-    external: [],
+    external: [...Object.keys(repoPkg.dependencies || {}), ...Object.keys(repoPkg.devDependencies || {})],
     keepNames: true,
     minify: false,
     mainFields: ['module', 'main'],

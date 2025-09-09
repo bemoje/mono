@@ -7,6 +7,7 @@ import { buildFile } from './buildFile.mjs'
 import { buildStats } from './buildStats.mjs'
 import { getWsPaths } from './getWsPaths.mjs'
 import upath from 'upath'
+import fs from 'fs-extra'
 
 /**
  * Builds a library workspace from its import.meta.dirname.
@@ -16,11 +17,16 @@ export async function buildLibsWorkspace(importMetaDirname, optionsOverride = {}
   console.info(`Building lib: ${upath.basename(importMetaDirname)}`)
   importMetaDirname = upath.normalizeSafe(importMetaDirname)
   const wsPaths = getWsPaths(importMetaDirname)
+  const repoPkg = fs.readJsonSync(wsPaths.pkg)
+
   await buildFile(
     wsPaths.indexTs,
     optionsOverride.format === 'esm' ? wsPaths.indexMjs : wsPaths.indexCjs,
     wsPaths.tsconfig,
-    optionsOverride,
+    {
+      external: [...Object.keys(repoPkg.dependencies || {}), ...Object.keys(repoPkg.devDependencies || {})],
+      ...optionsOverride,
+    },
   )
   if (argvHasFlag('--debug')) {
     console.debug({
