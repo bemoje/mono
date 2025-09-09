@@ -69,7 +69,7 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     Object.defineProperty(this, 'parent', { value: parent, enumerable: false })
 
     if (!parent) {
-      this.addOption('-h, --help', 'Display help for command') //
+      this.addOption('-h, --help', 'Display help information') //
         .addTrigger('help', {
           action: ({ cmd }) => console.log(cmd.renderHelp()),
         })
@@ -424,7 +424,7 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
   }
 
   protected addHelpOption() {
-    return this.addOption('-h, --help', 'Display help for command') //
+    return this.addOption('-h, --help', 'Display help information') //
       .addTrigger('help', {
         action: ({ cmd }) => console.log(cmd.renderHelp()),
       }) as Command<A, { help?: boolean } & O>

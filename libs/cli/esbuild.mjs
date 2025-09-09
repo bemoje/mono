@@ -1,4 +1,10 @@
 import { buildLibsWorkspace } from '../../s/util/buildLibsWorkspace.mjs'
+import fs from 'fs-extra'
+import path from 'upath'
+import ts from 'typescript'
+import strip from 'strip-comments'
+import esbuild from 'esbuild'
+import { getRepoRootDirpath } from '../../s/util/getRepoRootDirpath.mjs'
 
 await buildLibsWorkspace(import.meta.dirname, {
   minify: false,
@@ -9,13 +15,6 @@ await buildLibsWorkspace(import.meta.dirname, {
   minify: false,
   format: 'esm',
 })
-
-import fs from 'fs-extra'
-import path from 'upath'
-import ts from 'typescript'
-import strip from 'strip-comments'
-import esbuild from 'esbuild'
-import { getRepoRootDirpath } from '../../s/util/getRepoRootDirpath.mjs'
 
 const REPO_ROOT = getRepoRootDirpath()
 const pkg = await fs.readJson('./package.json')
@@ -40,8 +39,8 @@ ts.createProgram({
     declaration: true,
     isolatedModules: false,
     emitDeclarationOnly: true,
-    declarationMap: true,
-    sourceMap: true,
+    declarationMap: false,
+    sourceMap: false,
     outDir,
   },
 }).emit()
@@ -57,22 +56,6 @@ ts.createProgram({
 //     )
 //   })
 //   .map((dirent) => path.join(dirent.parentPath, dirent.name))
-
-// await esbuild.build({
-//   entryPoints: entryPoints,
-//   bundle: false,
-//   outdir: outDir,
-//   outbase: './src',
-//   tsconfig: './tsconfig.json',
-//   platform: 'node',
-//   format: 'esm',
-//   target: ['node20', 'es2022'],
-//   treeShaking: true,
-//   keepNames: true,
-//   minify: false,
-//   mainFields: ['main', 'module'],
-//   sourcemap: true,
-// })
 
 await esbuild.build({
   entryPoints: ['./src/index.ts'],

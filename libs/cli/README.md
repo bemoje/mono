@@ -95,7 +95,7 @@ Options defined on parent commands are available to subcommands:
 ```ts
 const app = new Command('myapp').addOption('-c, --config <file>', 'Config file')
 
-app.addSubcommand('build').addOption('-w, --watch', 'Watch mode')
+app.subcommand('build').addOption('-w, --watch', 'Watch mode')
 
 // Both --config and --watch are available to 'build' subcommand
 const result = app.parseArgv(['build', '--config', 'myconfig.json', '--watch'])
@@ -108,13 +108,13 @@ const cmd = new Command('git')
 
 // Create subcommand
 const add = cmd
-  .addSubcommand('add')
+  .subcommand('add')
   .setDescription('Add files to staging area')
   .addArgument('<files...>', 'Files to add')
   .addOption('-A, --all', 'Add all files')
 
 const commit = cmd
-  .addSubcommand('commit')
+  .subcommand('commit')
   .setDescription('Create a commit')
   .addArgument('[message]', 'Commit message')
   .addOption('-m, --message <msg>', 'Commit message')
@@ -219,7 +219,7 @@ cmd.addArgument('<files...>', 'First variadic').addArgument('<more...>', 'Second
 ```ts
 - addArgument(usage, description, options?): this
 - addOption(usage, description, options?): this
-- addSubcommand(name: string): Command
+- subcommand(name: string): Command
 ```
 
 **Configuration Methods**:

@@ -1,6 +1,6 @@
 {
   "name": "@mono/cli",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "A type-safe CLI composer that can parse argv and generate help without execution coupling.",
   "packageManager": "yarn@4.3.1",
   "type": "module",

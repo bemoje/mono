@@ -9,7 +9,7 @@ export default defineConfig({
     isolate: true,
     passWithNoTests: true,
     root: getRepoRootDirpath(),
-    include: ['{libs,packages,apps}/*/src/**/*.test.ts'],
+    include: ['{libs,packages,apps}/*/{src,examples}/**/*.test.ts'],
     exclude: ['**/{temp,wip}/**/*', 'apps/playground'],
     reporters: ['dot'],
     coverage: {

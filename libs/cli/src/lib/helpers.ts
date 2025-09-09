@@ -24,3 +24,17 @@ export const helpers = {
   getCommandAndAncestors: getCommandAndAncestors as typeof getCommandAndAncestors,
   parseOptionFlags: parseOptionFlags as typeof parseOptionFlags,
 }
+
+export {
+  assertNoMultipleVariadicArguments,
+  assertNoOptionalOrVariadicArguments,
+  assertNoVariadicArgument,
+  assertOptionNameNotInUse,
+  assertOptionShortNameIsValid,
+  assertOptionShortNameNotInUse,
+  findOption,
+  findSubcommand,
+  getCommandAncestors,
+  getCommandAndAncestors,
+  parseOptionFlags,
+}

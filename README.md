@@ -12,17 +12,17 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 | --------- | ----- | ------- | ---------- |
 | Lines     | 5747  | 5553    | 96.62%     |
 | Functions | 672   | 640     | 95.23%     |
-| Branches  | 1967  | 1856    | 94.35%     |
+| Branches  | 1969  | 1859    | 94.41%     |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 539   | 8772          |
-| test      | 388   | 23015         |
-| examples  | 1     | 24            |
-| script    | 45    | 1327          |
-| total     | 973   | 33138         |
+| source    | 539   | 8785          |
+| test      | 389   | 23022         |
+| examples  | 2     | 43            |
+| script    | 45    | 1312          |
+| total     | 975   | 33162         |
 
 ## Table of Contents
 
@@ -330,7 +330,18 @@ describe(ClassToTest.name, () => {
 - `Command`: A type-safe CLI composer that can parse argv and generate help without execution coupling.
 - `Help`: This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the expected interface of the Command instance to parse, are both similar, but different and not compatible without custom adaptations,
 - `Option`: ?
+- `assertNoMultipleVariadicArguments`: ?
+- `assertNoOptionalOrVariadicArguments`: ?
+- `assertNoVariadicArgument`: ?
+- `assertOptionNameNotInUse`: ?
+- `assertOptionShortNameIsValid`: ?
+- `assertOptionShortNameNotInUse`: ?
+- `findOption`: ?
+- `findSubcommand`: ?
+- `getCommandAncestors`: ?
+- `getCommandAndAncestors`: ?
 - `helpers`: ?
+- `parseOptionFlags`: ?
 
 **composition**
 
