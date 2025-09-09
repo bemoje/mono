@@ -1,4 +1,4 @@
-import { Command, Help } from '@mono/cli'
+import { Command } from '@mono/cli'
 
 const cmd = new Command('myapp')
   .setVersion('1.0.0')
@@ -13,18 +13,18 @@ const cmd = new Command('myapp')
   })
   .addOption('-h, --help', 'display help')
 
-cmd.addSubcommand('sub').setDescription('A subcommand')
+cmd.command('sub').setDescription('A subcommand')
 
 /////////////
 
 const parsedRoot = cmd.parseArgv(['input.txt', '--no-verbose', '--format', 'json'])
 console.log(parsedRoot)
 console.log('--------------')
-console.log(parsedRoot.command.renderHelp(new Help()))
+console.log(parsedRoot.cmd.renderHelp())
 
 console.log('------------------------------------------')
 
 const parsedSub = cmd.parseArgv(['sub', '-h'])
 console.log(parsedSub)
 console.log('--------------')
-console.log(parsedSub.command.renderHelp(new Help()))
+console.log(parsedSub.cmd.renderHelp())

@@ -16,7 +16,6 @@ import ts from 'typescript'
 import strip from 'strip-comments'
 import esbuild from 'esbuild'
 import { getRepoRootDirpath } from '../../s/util/getRepoRootDirpath.mjs'
-import { glob } from 'glob'
 
 const REPO_ROOT = getRepoRootDirpath()
 const pkg = await fs.readJson('./package.json')
@@ -28,40 +27,62 @@ const tsconfigBaseFilepath = '../../tsconfig.json'
 const tsconfigBaseJson = strip(await fs.readFile(tsconfigBaseFilepath, 'utf8'))
 const tsconfigBase = JSON.parse(tsconfigBaseJson)
 
-const entryPoints = fs
-  .readdirSync('./src', { recursive: true, withFileTypes: true })
-  .filter((dirent) => {
-    return (
-      dirent.isFile() &&
-      dirent.name.endsWith('.ts') &&
-      !dirent.name.endsWith('.test.ts') &&
-      !dirent.name.endsWith('.spec.ts')
-    )
-  })
-  .map((dirent) => path.join(dirent.parentPath, dirent.name))
-
 await fs.remove(outDir)
 
 ts.createProgram({
   rootNames: ['./src/index.ts'],
+
   options: {
+    // project:'./tsconfig.json',
     ...tsconfigBase,
-    emitDeclarationOnly: true,
+    verbatimModuleSyntax: true,
+    isolatedDeclarations: true,
     declaration: true,
+    isolatedModules: false,
+    emitDeclarationOnly: true,
     declarationMap: true,
     sourceMap: true,
     outDir,
   },
 }).emit()
 
+// const entryPoints = fs
+//   .readdirSync('./src', { recursive: true, withFileTypes: true })
+//   .filter((dirent) => {
+//     return (
+//       dirent.isFile() &&
+//       dirent.name.endsWith('.ts') &&
+//       !dirent.name.endsWith('.test.ts') &&
+//       !dirent.name.endsWith('.spec.ts')
+//     )
+//   })
+//   .map((dirent) => path.join(dirent.parentPath, dirent.name))
+
+// await esbuild.build({
+//   entryPoints: entryPoints,
+//   bundle: false,
+//   outdir: outDir,
+//   outbase: './src',
+//   tsconfig: './tsconfig.json',
+//   platform: 'node',
+//   format: 'esm',
+//   target: ['node20', 'es2022'],
+//   treeShaking: true,
+//   keepNames: true,
+//   minify: false,
+//   mainFields: ['main', 'module'],
+//   sourcemap: true,
+// })
+
 await esbuild.build({
-  entryPoints: entryPoints,
-  bundle: false,
-  outdir: outDir,
+  entryPoints: ['./src/index.ts'],
+  bundle: true,
+  outfile: path.joinSafe(outDir, 'index.js'),
   tsconfig: './tsconfig.json',
   platform: 'node',
   format: 'esm',
   target: ['node20', 'es2022'],
+  external: [...Object.keys(repoPkg.dependencies || {}), ...Object.keys(repoPkg.devDependencies || {})],
   treeShaking: true,
   keepNames: true,
   minify: false,
@@ -69,24 +90,26 @@ await esbuild.build({
   sourcemap: true,
 })
 
-const outDirJsFiles = await glob('**/*.js', { cwd: outDir, absolute: true })
-const outDirJsFilenames = outDirJsFiles.map((fp) => path.parse(fp).name)
-outDirJsFiles.forEach((fp) => {
-  const code = fs.readFileSync(fp, 'utf8')
-  const lines = code.split('\n').map((line) => {
-    if (!line.endsWith(`";`)) return line
-    if (!line.includes(`from ".`)) return line
-    const isLocalJsFileImport = outDirJsFilenames.some((name) => {
-      return line.endsWith(`/${name}";`)
-    })
-    if (!isLocalJsFileImport) return line
-    return line.replace(/";$/, '.js";')
-  })
-  const newCode = lines.join('\n')
-  if (newCode !== code) {
-    fs.writeFileSync(fp, newCode, 'utf8')
-  }
-})
+// add '.js' to local file import statements
+// import { glob } from 'glob'
+// const outDirJsFiles = await glob('**/*.js', { cwd: outDir, absolute: true })
+// const outDirJsFilenames = outDirJsFiles.map((fp) => path.parse(fp).name)
+// outDirJsFiles.forEach((fp) => {
+//   const code = fs.readFileSync(fp, 'utf8')
+//   const lines = code.split('\n').map((line) => {
+//     if (!line.endsWith(`";`)) return line
+//     if (!line.includes(`from ".`)) return line
+//     const isLocalJsFileImport = outDirJsFilenames.some((name) => {
+//       return line.endsWith(`/${name}";`)
+//     })
+//     if (!isLocalJsFileImport) return line
+//     return line.replace(/";$/, '.js";')
+//   })
+//   const newCode = lines.join('\n')
+//   if (newCode !== code) {
+//     fs.writeFileSync(fp, newCode, 'utf8')
+//   }
+// })
 
 const localPackageName = pkg.name
 const publicPackageName = pkg.name.replace('@mono', '@bemoje')

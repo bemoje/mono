@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 5631  | 5480    | 97.31%     |
-| Functions | 663   | 639     | 96.38%     |
-| Branches  | 1945  | 1848    | 95.01%     |
+| Lines     | 5747  | 5553    | 96.62%     |
+| Functions | 672   | 640     | 95.23%     |
+| Branches  | 1967  | 1856    | 94.35%     |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 522   | 8637          |
-| test      | 389   | 23589         |
-| examples  | 0     | 0             |
-| script    | 45    | 1320          |
-| total     | 956   | 33546         |
+| source    | 539   | 8772          |
+| test      | 388   | 23015         |
+| examples  | 1     | 24            |
+| script    | 45    | 1327          |
+| total     | 973   | 33138         |
 
 ## Table of Contents
 
@@ -326,8 +326,11 @@ describe(ClassToTest.name, () => {
 
 **cli**
 
-- `Command`: Command-line argument parser with fluent API and type-safe validation. Enforces CLI argument ordering rules and provides structured parsing results.
-- `Help`: Although this is a class, methods are static in style to allow override using subclass or just functions.
+- `Argument`: Defines a command-line argument
+- `Command`: A type-safe CLI composer that can parse argv and generate help without execution coupling.
+- `Help`: This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the expected interface of the Command instance to parse, are both similar, but different and not compatible without custom adaptations,
+- `Option`: ?
+- `helpers`: ?
 
 **composition**
 

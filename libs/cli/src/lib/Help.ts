@@ -1,35 +1,46 @@
-import type { ArgumentDescriptorBase, CommandDescriptor, OptionDescriptorBase } from './Command'
+import lazyProp from './internal/lazyProp'
+import type { IHelp, IArgument, ICommand, IOption } from './types'
+import C from 'ansi-colors'
 
 /**
- * Although this is a class, methods are static in style to allow override using subclass or just functions.
+ * This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the
+ * expected interface of the Command instance to parse, are both similar, but different and not compatible without
+ * custom adaptations, @see ICommand
  */
 export class Help implements IHelp {
+  protected readonly cmd: ICommand
   /** output helpWidth, long lines are wrapped to fit */
   helpWidth: number = process.stdout.isTTY ? process.stdout.columns : 80
   minWidthToWrap: number = 40
-  sortSubcommands?: boolean
-  sortOptions?: boolean
-  showGlobalOptions?: boolean
+  sortSubcommands: boolean = true
+  sortOptions: boolean = true
+  usageDisplayOptionsAs: string = '[opts]'
+  usageDisplaySubcommandAs: string = '[cmd]'
+
+  constructor(cmd: ICommand) {
+    this.cmd = cmd
+    Object.defineProperty(this, 'cmd', { enumerable: false })
+  }
 
   /**
    * Get an array of the visible subcommands. Includes a placeholder for the implicit help command, if there is one.
    */
-  visibleCommands(cmd: CommandDescriptor): CommandDescriptor[] {
-    const visibleCommands = cmd.commands.filter((cmd: CommandDescriptor) => !cmd.hidden)
-
+  @lazyProp
+  visibleCommands(): ICommand[] {
+    const res = this.cmd.commands.filter((c) => !c.hidden)
     if (this.sortSubcommands) {
-      visibleCommands.sort((a: CommandDescriptor, b: CommandDescriptor) => {
+      res.sort((a: ICommand, b: ICommand) => {
         return a.name.localeCompare(b.name)
       })
     }
-    return visibleCommands
+    return res
   }
 
   /**
    * Compare options for sort.
    */
-  compareOptions(a: OptionDescriptorBase, b: OptionDescriptorBase): number {
-    const getSortKey = (option: OptionDescriptorBase): string => {
+  compareOptions(a: IOption, b: IOption): number {
+    const getSortKey = (option: IOption): string => {
       // WYSIWYG for order displayed in help. Short used for comparison if present. No special handling for negated.
       return option.short ? option.short.replace(/^-/, '') : option.long!.replace(/^--/, '')
     }
@@ -39,39 +50,21 @@ export class Help implements IHelp {
   /**
    * Get an array of the visible options. Includes a placeholder for the implicit help option, if there is one.
    */
-  visibleOptions(cmd: CommandDescriptor): OptionDescriptorBase[] {
-    const visibleOptions = cmd.options.filter((option: OptionDescriptorBase) => !option.hidden)
-
-    if (this.sortOptions) {
-      visibleOptions.sort(this.compareOptions)
-    }
-    return visibleOptions
-  }
-
-  /**
-   * Get an array of the visible global options. (Not including help.)
-   */
-  visibleGlobalOptions(cmd: CommandDescriptor): OptionDescriptorBase[] {
-    if (!this.showGlobalOptions) return []
-
-    const globalOptions: OptionDescriptorBase[] = []
-    for (let ancestorCmd = cmd.parent; ancestorCmd; ancestorCmd = ancestorCmd.parent) {
-      const visibleOptions = ancestorCmd.options.filter((option: OptionDescriptorBase) => !option.hidden)
-      globalOptions.push(...visibleOptions)
-    }
-    if (this.sortOptions) {
-      globalOptions.sort(this.compareOptions)
-    }
-    return globalOptions
+  @lazyProp
+  visibleOptions(): IOption[] {
+    const res = this.cmd.options.filter((option: IOption) => !option.hidden)
+    if (this.sortOptions) res.sort(this.compareOptions)
+    return res
   }
 
   /**
    * Get an array of the arguments if any have a description.
    */
-  visibleArguments(cmd: CommandDescriptor): ArgumentDescriptorBase[] {
+  @lazyProp
+  visibleArguments(): IArgument[] {
     // If there are any arguments with a description then return all the arguments.
-    if (cmd.arguments.find((argument: ArgumentDescriptorBase) => argument.description)) {
-      return [...cmd.arguments]
+    if (this.cmd.arguments.find((argument: IArgument) => argument.description)) {
+      return [...this.cmd.arguments]
     }
     return []
   }
@@ -79,18 +72,12 @@ export class Help implements IHelp {
   /**
    * Get the command term to show in the list of subcommands.
    */
-  subcommandTerm(cmd: CommandDescriptor): string {
-    // Legacy. Ignores custom usage string, and nested commands.
-    const args = cmd.arguments
-      .map((arg: ArgumentDescriptorBase) => {
-        const nameOutput = arg.name + (arg.variadic === true ? '...' : '')
-        return arg.required ? '<' + nameOutput + '>' : '[' + nameOutput + ']'
-      })
-      .join(' ')
+  subcommandTerm(sub: ICommand): string {
+    const args = sub.arguments.map((arg) => arg.usage).join(' ')
     return (
-      cmd.name +
-      (cmd.aliases[0] ? '|' + cmd.aliases[0] : '') +
-      (cmd.options.length ? ' [options]' : '') + // simplistic check for non-help option
+      (sub.aliases[0] ? sub.aliases[0].padEnd(this.longestSubcommandAliasLength(), ' ') + ' | ' : '') +
+      sub.name +
+      (sub.options.length ? ' ' + this.usageDisplayOptionsAs : '') + // simplistic check for non-help option
       (args ? ' ' + args : '')
     )
   }
@@ -98,74 +85,78 @@ export class Help implements IHelp {
   /**
    * Get the option term to show in the list of options.
    */
-  optionTerm(option: OptionDescriptorBase): string {
+  optionTerm(option: IOption): string {
     return option.flags
   }
 
   /**
    * Get the argument term to show in the list of arguments.
    */
-  argumentTerm(argument: ArgumentDescriptorBase): string {
+  argumentTerm(argument: IArgument): string {
     return argument.name
   }
 
   /**
-   * Get the longest command term length.
+   * Get the longest subcommand primary alias length.
    */
-  longestSubcommandTermLength(cmd: CommandDescriptor, helper: Help): number {
-    return helper.visibleCommands(cmd).reduce((max: number, command: CommandDescriptor) => {
-      return Math.max(max, this.displayWidth(helper.styleSubcommandTerm(helper.subcommandTerm(command))))
+  @lazyProp
+  longestSubcommandAliasLength(): number {
+    return Math.max(0, ...this.visibleCommands().map((c) => c.aliases[0]?.length || 0))
+  }
+
+  /**
+   * Get the longest subcommand term length.
+   */
+  @lazyProp
+  longestSubcommandTermLength(): number {
+    return this.visibleCommands().reduce((max: number, command) => {
+      return Math.max(max, this.displayWidth(this.styleSubcommandTerm(this.subcommandTerm(command))))
     }, 0)
   }
 
   /**
    * Get the longest option term length.
    */
-  longestOptionTermLength(cmd: CommandDescriptor, helper: Help): number {
-    return helper.visibleOptions(cmd).reduce((max: number, option: OptionDescriptorBase) => {
-      return Math.max(max, this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option))))
-    }, 0)
-  }
-
-  /**
-   * Get the longest global option term length.
-   */
-  longestGlobalOptionTermLength(cmd: CommandDescriptor, helper: Help): number {
-    return helper.visibleGlobalOptions(cmd).reduce((max: number, option: OptionDescriptorBase) => {
-      return Math.max(max, this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option))))
+  @lazyProp
+  longestOptionTermLength(): number {
+    return this.visibleOptions().reduce((max: number, option) => {
+      return Math.max(max, this.displayWidth(this.styleOptionTerm(this.optionTerm(option))))
     }, 0)
   }
 
   /**
    * Get the longest argument term length.
    */
-  longestArgumentTermLength(cmd: CommandDescriptor, helper: Help): number {
-    return helper.visibleArguments(cmd).reduce((max: number, argument: ArgumentDescriptorBase) => {
-      return Math.max(max, this.displayWidth(helper.styleArgumentTerm(helper.argumentTerm(argument))))
+  @lazyProp
+  longestArgumentTermLength(): number {
+    return this.visibleArguments().reduce((max: number, argument) => {
+      return Math.max(max, this.displayWidth(this.styleArgumentTerm(this.argumentTerm(argument))))
     }, 0)
   }
 
   /**
    * Get the command usage to be displayed at the top of the built-in help.
    */
-  commandUsage(cmd: CommandDescriptor): string {
+  commandUsage(): string {
     // Usage
-    let cmdName = cmd.name
-    if (cmd.aliases[0]) {
-      cmdName = cmdName + '|' + cmd.aliases[0]
+    let path = ''
+    for (let ancestor = this.cmd.parent; ancestor; ancestor = ancestor.parent) {
+      path = ancestor.name + ' ' + path
     }
-    let ancestorCmdNames = ''
-    for (let ancestorCmd = cmd.parent; ancestorCmd; ancestorCmd = ancestorCmd.parent) {
-      ancestorCmdNames = ancestorCmd.name + ' ' + ancestorCmdNames
+
+    let cmdName = this.cmd.name
+    if (this.cmd.aliases[0]) {
+      cmdName += '|' + this.cmd.aliases[0]
     }
+
     return (
-      ancestorCmdNames +
+      path +
       cmdName +
       ' ' +
       [
-        ...(cmd.options.length ? ['[options]'] : []),
-        ...(cmd.commands.length ? ['[command]'] : []),
-        ...cmd.arguments.map((arg) => {
+        ...(this.cmd.commands.length ? [this.usageDisplaySubcommandAs] : []),
+        ...(this.cmd.options.length ? [this.usageDisplayOptionsAs] : []),
+        ...this.cmd.arguments.map((arg) => {
           return arg.required
             ? arg.variadic
               ? `<${arg.name}...>`
@@ -181,22 +172,22 @@ export class Help implements IHelp {
   /**
    * Get the description for the command.
    */
-  commandDescription(cmd: CommandDescriptor): string {
-    return cmd.description
+  commandDescription(): string {
+    return this.cmd.description
   }
 
   /**
    * Get the subcommand summary to show in the list of subcommands.
    * (Fallback to description for backwards compatibility.)
    */
-  subcommandDescription(cmd: CommandDescriptor): string {
-    return cmd.summary || (cmd.description.includes('\n') ? cmd.description.split('\n')[0] : '')
+  subcommandDescription(sub: ICommand): string {
+    return sub.summary || (sub.description.includes('\n') ? sub.description.split('\n')[0] : '')
   }
 
   /**
    * Get the option description to show in the list of options.
    */
-  optionDescription(option: OptionDescriptorBase): string {
+  optionDescription(option: IOption): string {
     const extraInfo: string[] = []
 
     if (option.choices) {
@@ -205,15 +196,8 @@ export class Help implements IHelp {
         `choices: ${option.choices.map((choice: string) => String(choice)).join(', ')}`,
       )
     }
-    if (option.defaultValue !== undefined) {
-      const boolean = !option.required && !option.optional && !option.negate
-      // default for boolean and negated more for programmer than end user,
-      // but show true/false for boolean option as may be for hand-rolled env or config processing.
-      const showDefault =
-        option.required || option.optional || (boolean && typeof option.defaultValue === 'boolean')
-      if (showDefault) {
-        extraInfo.push(`default: ${option.defaultValueDescription || String(option.defaultValue)}`)
-      }
+    if (option.defaultValue && !(Array.isArray(option.defaultValue) && option.defaultValue.length === 0)) {
+      extraInfo.push(`default: ${option.defaultValueDescription || String(option.defaultValue)}`)
     }
 
     if (option.env !== undefined) {
@@ -233,7 +217,7 @@ export class Help implements IHelp {
   /**
    * Get the argument description to show in the list of arguments.
    */
-  argumentDescription(argument: ArgumentDescriptorBase): string {
+  argumentDescription(argument: IArgument): string {
     const extraInfo: string[] = []
     if (argument.choices) {
       extraInfo.push(
@@ -257,16 +241,15 @@ export class Help implements IHelp {
   /**
    * Format a list of items, given a heading and an array of formatted items.
    */
-  formatItemList(heading: string, items: string[], helper: Help): string[] {
+  formatItemList(heading: string, items: string[]): string[] {
     if (items.length === 0) return []
-
-    return [helper.styleTitle(heading), ...items, '']
+    return [this.styleTitle(heading), ...items, '']
   }
 
   /**
    * Group items by their help group heading.
    */
-  groupItems<T extends CommandDescriptor | OptionDescriptorBase>(
+  groupItems<T extends ICommand | IOption>(
     unsortedItems: T[],
     visibleItems: T[],
     getGroup: (item: T) => string,
@@ -289,81 +272,6 @@ export class Help implements IHelp {
   }
 
   /**
-   * Generate the built-in help text.
-   */
-  formatHelp(cmd: CommandDescriptor, helper: IHelp): string {
-    const termWidth = helper.padWidth(cmd, helper)
-    const helpWidth = helper.helpWidth
-
-    function callFormatItem(term: string, description: string): string {
-      return helper.formatItem(term, termWidth, description, helper)
-    }
-
-    // Usage
-    let output = [`${helper.styleTitle('Usage:')} ${helper.styleUsage(helper.commandUsage(cmd))}`, '']
-
-    // Description
-    const commandDescription = helper.commandDescription(cmd)
-    if (commandDescription.length > 0) {
-      output = output.concat([helper.boxWrap(helper.styleCommandDescription(commandDescription), helpWidth), ''])
-    }
-
-    // Arguments
-    const argumentList = helper.visibleArguments(cmd).map((argument: ArgumentDescriptorBase) => {
-      return callFormatItem(
-        helper.styleArgumentTerm(helper.argumentTerm(argument)),
-        helper.styleArgumentDescription(helper.argumentDescription(argument)),
-      )
-    })
-    output = output.concat(this.formatItemList('Arguments:', argumentList, helper))
-
-    // Options
-    const optionGroups = this.groupItems(
-      cmd.options,
-      helper.visibleOptions(cmd),
-      (option: OptionDescriptorBase) => option.group ?? 'Options:',
-    )
-    optionGroups.forEach((options, group) => {
-      const optionList = options.map((option: OptionDescriptorBase) => {
-        return callFormatItem(
-          helper.styleOptionTerm(helper.optionTerm(option)),
-          helper.styleOptionDescription(helper.optionDescription(option)),
-        )
-      })
-      output = output.concat(this.formatItemList(group, optionList, helper))
-    })
-
-    if (helper.showGlobalOptions) {
-      const globalOptionList = helper.visibleGlobalOptions(cmd).map((option: OptionDescriptorBase) => {
-        return callFormatItem(
-          helper.styleOptionTerm(helper.optionTerm(option)),
-          helper.styleOptionDescription(helper.optionDescription(option)),
-        )
-      })
-      output = output.concat(this.formatItemList('Global Options:', globalOptionList, helper))
-    }
-
-    // Commands
-    const commandGroups = this.groupItems(
-      cmd.commands,
-      helper.visibleCommands(cmd),
-
-      (sub: CommandDescriptor) => sub.group || 'Commands:',
-    )
-    commandGroups.forEach((commands, group) => {
-      const commandList = commands.map((sub: CommandDescriptor) => {
-        return callFormatItem(
-          helper.styleSubcommandTerm(helper.subcommandTerm(sub)),
-          helper.styleSubcommandDescription(helper.subcommandDescription(sub)),
-        )
-      })
-      output = output.concat(this.formatItemList(group, commandList, helper))
-    })
-
-    return output.join('\n')
-  }
-
-  /**
    * Return display width of string, ignoring ANSI escape sequences. Used in padding and wrapping calculations.
    */
   displayWidth(str: string): number {
@@ -376,7 +284,7 @@ export class Help implements IHelp {
    * Style the title for displaying in the help. Called with 'Usage:', 'Options:', etc.
    */
   styleTitle(str: string): string {
-    return str
+    return C.yellow(str)
   }
 
   /**
@@ -384,13 +292,14 @@ export class Help implements IHelp {
    */
   styleUsage(str: string): string {
     // Usage has lots of parts the user might like to color separately! Assume default usage string which is formed like:
-    //    command subcommand [options] [command] <foo> [bar]
+    //    command subcommand [opts] [cmd] <foo> [bar]
     return str
       .split(' ')
       .map((word: string) => {
-        if (word === '[options]') return this.styleOptionText(word)
-        if (word === '[command]') return this.styleSubcommandText(word)
-        if (word[0] === '[' || word[0] === '<') return this.styleArgumentText(word)
+        if (word === this.usageDisplaySubcommandAs) return C.blue(word)
+        if (word === this.usageDisplayOptionsAs) return C.blue(word)
+        if (word[0] === '<') return C.red(word)
+        if (word[0] === '[') return C.cyan(word)
         return this.styleCommandText(word) // Restrict to initial words?
       })
       .join(' ')
@@ -407,21 +316,21 @@ export class Help implements IHelp {
    * Style option descriptions for display in help output.
    */
   styleOptionDescription(str: string): string {
-    return this.styleDescriptionText(str)
+    return C.gray(this.styleDescriptionText(str))
   }
 
   /**
    * Style subcommand descriptions for display in help output.
    */
   styleSubcommandDescription(str: string): string {
-    return this.styleDescriptionText(str)
+    return C.gray(this.styleDescriptionText(str))
   }
 
   /**
    * Style argument descriptions for display in help output.
    */
   styleArgumentDescription(str: string): string {
-    return this.styleDescriptionText(str)
+    return C.gray(this.styleDescriptionText(str))
   }
 
   /**
@@ -443,11 +352,11 @@ export class Help implements IHelp {
    */
   styleSubcommandTerm(str: string): string {
     // This is very like usage with lots of parts! Assume default string which is formed like:
-    //    subcommand [options] <foo> [bar]
+    //    subcommand [opts] <foo> [bar]
     return str
       .split(' ')
       .map((word: string) => {
-        if (word === '[options]') return this.styleOptionText(word)
+        if (word === this.usageDisplayOptionsAs) return this.styleOptionText(word)
         if (word[0] === '[' || word[0] === '<') return this.styleArgumentText(word)
         return this.styleSubcommandText(word) // Restrict to initial words?
       })
@@ -492,12 +401,12 @@ export class Help implements IHelp {
   /**
    * Calculate the pad width from the maximum term length.
    */
-  padWidth(cmd: CommandDescriptor, helper: Help): number {
+  @lazyProp
+  padWidth(): number {
     return Math.max(
-      helper.longestOptionTermLength(cmd, helper),
-      helper.longestGlobalOptionTermLength(cmd, helper),
-      helper.longestSubcommandTermLength(cmd, helper),
-      helper.longestArgumentTermLength(cmd, helper),
+      this.longestOptionTermLength(),
+      this.longestSubcommandTermLength(),
+      this.longestArgumentTermLength(),
     )
   }
 
@@ -515,23 +424,23 @@ export class Help implements IHelp {
    *   TTT  DDD DDDD
    *        DD DDD
    */
-  formatItem(term: string, termWidth: number, description: string, helper: Help): string {
+  formatItem(term: string, termWidth: number, description: string): string {
     const itemIndent = 2
     const itemIndentStr = ' '.repeat(itemIndent)
     if (!description) return itemIndentStr + term
 
     // Pad the term out to a consistent width, so descriptions are aligned.
-    const paddedTerm = term.padEnd(termWidth + term.length - helper.displayWidth(term))
+    const paddedTerm = term.padEnd(termWidth + term.length - this.displayWidth(term))
 
     // Format the description.
     const spacerWidth = 2 // between term and description
     const helpWidth = this.helpWidth
     const remainingWidth = helpWidth - termWidth - spacerWidth - itemIndent
     let formattedDescription: string
-    if (remainingWidth < this.minWidthToWrap || helper.preformatted(description)) {
+    if (remainingWidth < this.minWidthToWrap || this.preformatted(description)) {
       formattedDescription = description
     } else {
-      const wrappedDescription = helper.boxWrap(description, remainingWidth)
+      const wrappedDescription = this.boxWrap(description, remainingWidth)
       formattedDescription = wrappedDescription.replace(/\n/g, '\n' + ' '.repeat(termWidth + spacerWidth))
     }
 
@@ -583,56 +492,65 @@ export class Help implements IHelp {
 
     return wrappedLines.join('\n')
   }
-}
 
-export interface IHelp {
-  helpWidth: number
-  minWidthToWrap: number
-  sortSubcommands?: boolean
-  sortOptions?: boolean
-  showGlobalOptions?: boolean
+  /**
+   * Generate the built-in help text.
+   */
+  render(): string {
+    // Usage
+    let output = [`${this.styleTitle('Usage:')} ${this.styleUsage(this.commandUsage())}`, '']
 
-  subcommandTerm(cmd: CommandDescriptor): string
-  subcommandDescription(cmd: CommandDescriptor): string
-  optionTerm(option: OptionDescriptorBase): string
-  optionDescription(option: OptionDescriptorBase): string
-  argumentTerm(argument: ArgumentDescriptorBase): string
-  argumentDescription(argument: ArgumentDescriptorBase): string
-  commandUsage(cmd: CommandDescriptor): string
-  commandDescription(cmd: CommandDescriptor): string
-  visibleCommands(cmd: CommandDescriptor): CommandDescriptor[]
-  visibleOptions(cmd: CommandDescriptor): OptionDescriptorBase[]
-  visibleGlobalOptions(cmd: CommandDescriptor): OptionDescriptorBase[]
-  visibleArguments(cmd: CommandDescriptor): ArgumentDescriptorBase[]
-  longestSubcommandTermLength(cmd: CommandDescriptor, helper: IHelp): number
-  longestOptionTermLength(cmd: CommandDescriptor, helper: IHelp): number
-  longestGlobalOptionTermLength(cmd: CommandDescriptor, helper: IHelp): number
-  longestArgumentTermLength(cmd: CommandDescriptor, helper: IHelp): number
-  displayWidth(str: string): number
-  styleTitle(title: string): string
-  styleUsage(str: string): string
-  styleCommandText(str: string): string
-  styleCommandDescription(str: string): string
-  styleOptionDescription(str: string): string
-  styleSubcommandDescription(str: string): string
-  styleArgumentDescription(str: string): string
-  styleDescriptionText(str: string): string
-  styleOptionTerm(str: string): string
-  styleSubcommandTerm(str: string): string
-  styleArgumentTerm(str: string): string
-  styleOptionText(str: string): string
-  styleSubcommandText(str: string): string
-  styleArgumentText(str: string): string
-  compareOptions(a: OptionDescriptorBase, b: OptionDescriptorBase): number
-  padWidth(cmd: CommandDescriptor, helper: IHelp): number
-  boxWrap(str: string, width: number): string
-  preformatted(str: string): boolean
-  formatItem(term: string, termWidth: number, description: string, helper: IHelp): string
-  formatItemList(heading: string, items: string[], helper: IHelp): string[]
-  groupItems<T extends CommandDescriptor | OptionDescriptorBase>(
-    unsortedItems: T[],
-    visibleItems: T[],
-    getGroup: (item: T) => string,
-  ): Map<string, T[]>
-  formatHelp(cmd: CommandDescriptor, helper: IHelp): string
+    // Description
+    const des = this.commandDescription()
+    if (des.length > 0) {
+      output = output.concat([this.boxWrap(this.styleCommandDescription(des), this.helpWidth), ''])
+    }
+
+    // Arguments
+    const argumentList = this.visibleArguments().map((argument: IArgument) => {
+      return this.formatItem(
+        this.styleArgumentTerm(this.argumentTerm(argument)),
+        this.padWidth(),
+        this.styleArgumentDescription(this.argumentDescription(argument)),
+      )
+    })
+    output = output.concat(this.formatItemList('Arguments:', argumentList))
+
+    // Options
+    const optionGroups = this.groupItems(
+      this.cmd.options,
+      this.visibleOptions(),
+      (option: IOption) => option.group ?? 'Options:',
+    )
+    optionGroups.forEach((options, group) => {
+      const optionList = options.map((option: IOption) => {
+        return this.formatItem(
+          this.styleOptionTerm(this.optionTerm(option)),
+          this.padWidth(),
+          this.styleOptionDescription(this.optionDescription(option)),
+        )
+      })
+      output = output.concat(this.formatItemList(group, optionList))
+    })
+
+    // Commands
+    const commandGroups = this.groupItems(
+      this.cmd.commands,
+      this.visibleCommands(),
+
+      (sub: ICommand) => sub.group || 'Commands:',
+    )
+    commandGroups.forEach((commands, group) => {
+      const commandList = commands.map((sub: ICommand) => {
+        return this.formatItem(
+          this.styleSubcommandTerm(this.subcommandTerm(sub)),
+          this.padWidth(),
+          this.styleSubcommandDescription(this.subcommandDescription(sub)),
+        )
+      })
+      output = output.concat(this.formatItemList(group, commandList))
+    })
+
+    return output.join('\n')
+  }
 }

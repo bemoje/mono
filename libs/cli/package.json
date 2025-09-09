@@ -12,19 +12,20 @@
     "build": "node esbuild.mjs"
   },
   "devDependencies": {
-    "commander": "^14.0.0",
     "type-fest": "4.41.0"
+  },
+  "dependencies": {
+    "ansi-colors": "^4.1.3"
   },
   "keywords": [
     "cli",
     "command-line",
+    "minimist",
     "typescript",
     "type-safe",
     "help-generation",
     "commander",
-    "commander.js",
     "subcommands",
-    "validation",
     "parsing",
     "composition",
     "terminal",
