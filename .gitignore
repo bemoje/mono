@@ -11,3 +11,4 @@ s/**/*.cjs
 .coverage/
 .env
 .env.*
+.yarn/install-state.gz
