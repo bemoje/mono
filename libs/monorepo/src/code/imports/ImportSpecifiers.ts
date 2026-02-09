@@ -23,9 +23,9 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
   }
 
   get type(): 'default' | 'named' | 'mixed' | 'namespace' | 'sideEffect' | 'unknown' {
+    if (this.isMixedImport) return 'mixed'
     if (this.isNamedImport) return 'named'
     if (this.isNamespaceImport) return 'namespace'
-    if (this.isMixedImport) return 'mixed'
     if (this.isSideEffectImport) return 'sideEffect'
     if (this.isDefaultImport) return 'default'
     throw new Error('Unknown import specifier type. Code:\n' + this.codeWithoutTypeKeyword)

@@ -12,7 +12,10 @@ export class ImportKeywords<P extends ImportStatement = ImportStatement> extends
   })
 
   get keywords() {
-    return this.lines.map((s) => s.trim()).filter((s) => !!s)
+    return this.code
+      .split(/\s+/)
+      .map((s) => s.trim())
+      .filter((s) => !!s)
   }
 
   has(kw: string) {

@@ -33,7 +33,7 @@ export class ImportStatement<P extends TsCode = TsCode> extends CodeBlock<P> {
 
   @lazyProp
   get keywords() {
-    const match = this.code.match(/^import\s+/)
+    const match = this.code.match(/^import\s+(?:type\s+)?/)
     const code = match ? match[0].trim() : ''
     if (!code) throw new Error('No import keywords found in import statement: ' + this.filepath)
     return new ImportKeywords(this, this.codeIndexRangeOf(code))

@@ -3,6 +3,25 @@
   "ignore": [
     ".github/copilot/refactoring.mts"
   ],
+  "includeEntryExports": false,
+  "ignoreExportsUsedInFile": false,
+  "include": [
+    "files",
+    "dependencies",
+    "devDependencies",
+    "optionalPeerDependencies",
+    "unlisted",
+    "binaries",
+    "unresolved",
+    "exports",
+    "types",
+    "nsExports",
+    "nsTypes",
+    "duplicates",
+    "enumMembers",
+    "classMembers",
+    "catalog"
+  ],
   "workspaces": {
     ".": {},
     "s": {
