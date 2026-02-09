@@ -11,12 +11,6 @@
     "indexts": "node ../../s/clean/indextsWs.mjs",
     "build": "node esbuild.mjs"
   },
-  "devDependencies": {
-    "type-fest": "4.41.0"
-  },
-  "dependencies": {
-    "ansi-colors": "^4.1.3"
-  },
   "keywords": [
     "cli",
     "command-line",
