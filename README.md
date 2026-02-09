@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 5747  | 5553    | 96.62%     |
+| Lines     | 5747  | 5560    | 96.74%     |
 | Functions | 672   | 640     | 95.23%     |
-| Branches  | 1969  | 1859    | 94.41%     |
+| Branches  | 1973  | 1860    | 94.27%     |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
 | source    | 539   | 8785          |
-| test      | 389   | 23022         |
+| test      | 389   | 23029         |
 | examples  | 2     | 43            |
-| script    | 45    | 1312          |
-| total     | 975   | 33162         |
+| script    | 44    | 1301          |
+| total     | 974   | 33158         |
 
 ## Table of Contents
 
@@ -323,6 +323,7 @@ describe(ClassToTest.name, () => {
 - `arrTableToCsv`: Converts a 2D array to a CSV string.
 - `arrTableToObjects`: Converts a 2D array representing a table into an array of objects.
 - `arrayToString`: Short and condensed string representation of an array, easy to read for error outputs or similar.
+- `module.exports`: ?
 
 **cli**
 
@@ -341,6 +342,7 @@ describe(ClassToTest.name, () => {
 - `getCommandAncestors`: ?
 - `getCommandAndAncestors`: ?
 - `helpers`: ?
+- `module.exports`: ?
 - `parseOptionFlags`: ?
 
 **composition**
@@ -355,17 +357,20 @@ describe(ClassToTest.name, () => {
 - `inheritProxifiedPrototypeProperty`: Inherits a single prototype property from a target class to a viewer class with proxification.
 - `inspectDefaults`: Default options for Node.js util.inspect with enhanced settings for better debugging output.
 - `inspectorDefaults`: The default inspector configuration options.
+- `module.exports`: ?
 
 **config**
 
 - `ConfigFile`: Configuration file manager that provides schema validation and file I/O using the Strategy pattern.
 - `JsonFileStrategy`: Strategy for loading and saving configuration data as JSON files.
 - `SchemaConfigStrategy`: Strategy for validating configuration data against a TypeBox schema and applying default values.
+- `module.exports`: ?
 
 **crypto**
 
 - `decrypt`: Decrypts a string that was encrypted using encrypt(). Expects input in format: hexadecimal IV (32 chars) + encrypted data Uses PBKDF2 for key derivation with 100k iterations.
 - `encrypt`: Encrypts a string using AES-256-CBC with a random IV. Uses PBKDF2 for key derivation with 100k iterations.
+- `module.exports`: ?
 
 **date**
 
@@ -376,6 +381,7 @@ describe(ClassToTest.name, () => {
 - `hasCooldownElapsed`: Determines if a specified cooldown period has elapsed since a given date.
 - `hoursToMs`: Converts hours to milliseconds.
 - `minutesToMs`: Converts minutes to milliseconds.
+- `module.exports`: ?
 - `monthNameDa`: Returns the name, in Danish language, of the month corresponding to the provided month number.
 - `monthNameDaRelative`: Get the (Danish) name of the month relative to the current month.
 - `msSinceDate`: Calculates the number of milliseconds that have elapsed since the given date.
@@ -389,6 +395,7 @@ describe(ClassToTest.name, () => {
 - `lazyProp`: Decorator to memoize a method or getter accessor property.
 - `memoizeAsync`: Decorator to memoize an async method. Uses memoizee library, so if params are objects, the decorator needs a normalizer function.
 - `memoizeSync`: Decorator to memoize a sync method.
+- `module.exports`: ?
 
 **fn**
 
@@ -397,6 +404,7 @@ describe(ClassToTest.name, () => {
 - `dethisify`: Converts a function from a class method by by making the first argument take the place of the 'this' context. The reverse of
 - `functionSpy`: Wraps a function so that the given
 - `maxConcurrency`: Creates a throttled version of an async function that limits the rate at which the function can be called.
+- `module.exports`: ?
 - `once`: Wraps the function and returns a function that only allows the wrapped function to be executed once. If the wrapped function has already been called, the return value of the first call is returned. Preserves sync/async behavior of the original function. If the first call threw an error, subsequent calls will throw the same error.
 - `onceStrict`: Wraps the function and returns a function that only allows the wrapped function to be called once.
 - `onceSync`: Wraps the function and returns a function that only allows the wrapped function to be executed once. If the wrapped function has already been called, the return value of the first call is returned. If the first call threw an error, subsequent calls will throw the same error.
@@ -414,6 +422,7 @@ describe(ClassToTest.name, () => {
 - `deleteOlderThan`: Delete files older than a given timestamp
 - `getFileAge`: Retrieves the age of a file in milliseconds.
 - `getFirstFileInDir`: Get the name of the first file (not directory) found in a directory.
+- `module.exports`: ?
 - `readFileFirstLine`: Reads the first line of a file asynchronously.
 - `removeDataUrlSchemePrefix`: Removes the data URL scheme prefix from a given string.
 - `updateFile`: Updates a file by reading its content, applying a transformation function, and writing back the result. Creates the file and directories if they don't exist.
@@ -473,6 +482,7 @@ describe(ClassToTest.name, () => {
 - `isStringWithNoSpacesOrDashes`: Checks if the provided value is a string that contains no spaces or dashes.
 - `isUniqueNumArrayAscending`: Determine whether the input is an array of numbers in ascending order. Duplicate values are not allowed.
 - `isValidNumber`: Checks if the provided value is a valid finite number (not NaN or Infinity).
+- `module.exports`: ?
 
 **iter**
 
@@ -481,6 +491,7 @@ describe(ClassToTest.name, () => {
 - `mapIterable`: Transform both keys and values of map entries.
 - `mapIterableKeys`: Transform map keys while preserving values.
 - `mapIterableValues`: Transform map values while preserving keys.
+- `module.exports`: ?
 - `reduceIterable`: Reduce a map-like iterable to a single value.
 - `toObjectIterable`: Convert a map-like iterable to a regular object.
 
@@ -495,6 +506,7 @@ describe(ClassToTest.name, () => {
 - `mapLoad`: Loads multiple entries into the map from an iterable.
 - `mapReverse`: Reverses the order of entries in a Map.
 - `mapUpdate`: Updates a value in the map using an update function.
+- `module.exports`: ?
 - `sort`: Sorts the map entries using a custom comparison function and updates the map in place. This is Map-specific because it maintains insertion order.
 - `sortByKeys`: Sorts the map entries by their keys and updates the map in place.
 - `sortByValues`: Sorts the map entries by their values and updates the map in place.
@@ -522,6 +534,7 @@ describe(ClassToTest.name, () => {
 - `getRepoRootDirpath`: Get the root directory path of the monorepo by finding the package.json with workspaces configuration.
 - `getWorkspaceDirpaths`: Get all workspace directory paths by reading the workspace patterns from the root package.json.
 - `hasExtnamePrefix`: Checks if a file path has any of the specified semantic extension prefixes (e.g., .test.ts).
+- `module.exports`: ?
 - `resolveModuleImportPath`: Returns the resolved import path (relative from repo root)
 - `semverVersionBump`: Bumps the semantic versioning (SemVer) of a given version string or array based on the specified level. The function supports 'major', 'minor', and 'patch' levels.
 
@@ -536,6 +549,7 @@ describe(ClassToTest.name, () => {
 - `getCurrentMemoryUsage`: Get the current heap memory usage in megabytes.
 - `isTerminalColorSupported`: Check if colored terminal output is (probably) supported.
 - `memoryUsage`: Returns the memory usage of the Node.js process with values converted from bytes to megabytes and rounded to the specified precision.
+- `module.exports`: ?
 - `prompt`: Prompt the user for input.
 - `shellSpawnProgram`: Spawns a program using child_process.spawn with promise-based interface and optional stdio inheritance control.
 - `spawnChildProcess`: Spawn a child process.
@@ -551,6 +565,7 @@ describe(ClassToTest.name, () => {
 - `bytesToKilobytes`: Converts a given number of bytes into kilobytes.
 - `bytesToMegabytes`: Converts a given number of bytes into megabytes.
 - `determineNumberLocale`: Determine whether a set of valid number strings are formatted in da-DK or en-US locale.
+- `module.exports`: ?
 - `numRange`: Generates an array of numbers within a specified range.
 - `randomIntBetween`: Returns a random integer between min (inclusive) and max (inclusive).
 - `round`: Round a given number with a given precision. Shifts with exponential notation to avoid floating-point issues.
@@ -602,6 +617,7 @@ describe(ClassToTest.name, () => {
 - `mapObject`: Maps over an object's values, transforming each value using the provided function.
 - `mapObjectEntries`: Maps over an object's entries, transforming both keys and values using the provided function.
 - `mapObjectKeys`: Maps over an object's keys, transforming each key using the provided function while preserving values.
+- `module.exports`: ?
 - `objAssign`: Like Object.assign, but only copies source object property values != null.
 - `objDeepFreeze`: Deep freezes an object. Note: Deep recursion may cause stack overflow for very deeply nested objects.
 - `objDefineLazyProperty`: Defines a lazy property on an object. The property will be lazily evaluated on the first access and then cached for subsequent accesses. The property is both enumerable and configurable.
@@ -646,6 +662,7 @@ describe(ClassToTest.name, () => {
 - `isOSX`: Checks if the current platform is OSX. It checks the 'process' object and the 'platform' property to determine if the platform is 'darwin'.
 - `isVsCodeInstalled`: Returns whether Visual Studio Code is installed on the system.
 - `isWindows`: Checks if the current platform is Windows.
+- `module.exports`: ?
 - `openInDefaultBrowserCommand`: Gets the command to open a URL in the default browser for the current operating system.
 - `winExplorerOpenDirectory`: Opens a directory in Windows Explorer. Works on Windows only.
 
@@ -659,6 +676,7 @@ describe(ClassToTest.name, () => {
 - `isRelative`: Whether a path is a relative string, ie. not absolute.
 - `isUnc`: Determines if a given filepath is a UNC path.
 - `isValidWin32`: Check whether a provided windows filesystem path string is valid according to: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
+- `module.exports`: ?
 - `prefixFilename`: Append string to the beginning of the filename.
 - `root`: Returns the root directory of a given path.
 - `suffixFilename`: Append string to the end of the filename.
@@ -668,15 +686,18 @@ describe(ClassToTest.name, () => {
 **profiler**
 
 - `Profiler`: A utility class for profiling functions, classes, and modules to measure execution time and other performance metrics.
+- `module.exports`: ?
 
 **regex**
 
+- `module.exports`: ?
 - `regexEscapeString`: Escapes special characters in a string to be used in a regular expression.
 - `rexec`: Easily perform regex 'exec' on a string. An iterable is returned which steps through the exec process and yields all the details you might need.
 
 **stacktrace**
 
 - `enablePrettyStackTrace`: Enables pretty stack trace formatting for uncaught exceptions.
+- `module.exports`: ?
 - `prettyStackTrace`: Formats stack traces with colors and improved readability for debugging.
 
 **string**
@@ -684,6 +705,7 @@ describe(ClassToTest.name, () => {
 - `camelCase`: Converts a string to camel case.
 - `countFloatDecimals`: Counts the number of decimal places in a floating-point number.
 - `endsWithIncompleteUtfPairSurrogate`: Returns true if the string ends with an incomplete UTF-16 surrogate pair. This is useful for determining if a string can be safely concatenated with another string.
+- `module.exports`: ?
 - `strCountCharOccurances`: Counts the number of occurrences of a specific character in a string.
 - `strCountChars`: Counts the number of occurrences of each character in a string and returns a Map where the keys are the characters and the values are their counts.
 - `strEnsureEndsWith`: Ensures that a string ends with a specified substring. If the string already ends with the specified substring, it is returned as is. Otherwise, the substring is appended to the end of the string.
@@ -739,6 +761,7 @@ describe(ClassToTest.name, () => {
 - `formatAsStringTable`: Formats an array of objects into a string table with customizable column formatters.
 - `getHeadersFromCsvFile`: Extracts column headers from the first line of a CSV file.
 - `iterateTableArrayAsObjects`: Generator that iterates through a 2D table array, yielding objects with header keys and row values.
+- `module.exports`: ?
 - `objectsToTable`: Convert an array of objects to a table.
 - `parseCsvHeaderLine`: Takes the first line of a CSV string and returns an array of column names.
 
@@ -748,16 +771,19 @@ describe(ClassToTest.name, () => {
 - `StringTemplateStrategy`: Template strategy for handling simple string templates. Provides pass-through behavior for string templates where the template and rendered output are both plain strings. Useful for text-based templates that don't require parsing or complex structure.
 - `Template`: A generic template engine that supports variable substitution using the Strategy pattern. Validates templates and options against TypeBox schemas and renders templates with provided data. Supports mustache-style `{{variable}}` syntax for variable substitution.
 - `TextFileTemplateStrategy`: Template strategy for handling multi-line text file templates. Converts arrays of strings to newline-separated text and parses text files back to string arrays by splitting on newlines. Ideal for processing configuration files, scripts, or any line-based text content.
+- `module.exports`: ?
 
 **terminal**
 
 - `clearTerminal`: Clears the terminal screen using the system's clear command.
 - `confirmPrompt`: Prompts the user to confirm in the terminal.
+- `module.exports`: ?
 
 **tschema**
 
 - `SchemaValidationError`: Error thrown when a value does not match a given schema. Contains an array of ValueError instances with details about each violation.
 - `assertValidSchema`: Asserts that data conforms to a TypeBox schema, throwing a SchemaValidationError if it doesn't.
+- `module.exports`: ?
 
 **tscode**
 
@@ -766,6 +792,7 @@ describe(ClassToTest.name, () => {
 - `importStatementStripKeywords`: Removes the 'import' and 'type' keywords from an import statement line.
 - `importStatementToFormattedOneLiner`: Converts a multi-line import statement to a formatted single line with proper spacing. Adds spaces around braces, keywords, and other import statement elements for readability.
 - `importStatementToOneLiner`: Converts a multi-line import statement to a single line by removing comments and extra whitespace. This function strips comments, normalizes whitespace, and removes trailing commas to create a clean single-line import statement.
+- `module.exports`: ?
 - `parseImportStatement`: Parses an import statement into its constituent parts for detailed analysis. This function breaks down an import statement into keywords, specifiers, module path, and other components, providing a comprehensive analysis of the import structure.
 - `tsCrlfToLf`: Converts CRLF line endings to LF in TypeScript code. This function normalizes line endings from Windows-style (CRLF) to Unix-style (LF) for consistent processing across different operating systems.
 - `tsExtractImports`: Extract all import statements from a given TypeScript source code string. This function parses TypeScript code to identify and extract all import statements, handling both single-line and multi-line imports. It correctly ignores import-like text within comments and string literals.
