@@ -5,5 +5,3 @@ export const templates = {
   commands,
   files,
 }
-
-export default templates

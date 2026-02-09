@@ -21,7 +21,7 @@ export function help_option_enabled_by_default(): void {
 
 // help_option_enabled_by_default()
 
-export function subcommands(): void {
+function subcommands(): void {
   // Create root command
   const cmd = new Command('cli')
     .setVersion('1.0.0')

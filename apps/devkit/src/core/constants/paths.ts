@@ -5,11 +5,11 @@ import upath from 'upath'
 export const repoRootPath = getRepoRootDirpath()
 
 // repo basenames
-export const repoRootPackageJsonBasename = 'package.json'
+const repoRootPackageJsonBasename = 'package.json'
 export const tsconfigBaseJsonBasename = 'tsconfig.json'
-export const tsconfigBasePathsJsonBasename = 'tsconfig.paths.json'
+const tsconfigBasePathsJsonBasename = 'tsconfig.paths.json'
 
 // repo filepaths
 export const repoRootPackageJsonPath = upath.join(repoRootPath, repoRootPackageJsonBasename)
-export const tsconfigBaseJsonPath = upath.join(repoRootPath, tsconfigBaseJsonBasename)
+const tsconfigBaseJsonPath = upath.join(repoRootPath, tsconfigBaseJsonBasename)
 export const tsconfigBasePathsJsonPath = upath.join(repoRootPath, tsconfigBasePathsJsonBasename)

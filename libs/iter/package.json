@@ -9,10 +9,5 @@
   "scripts": {
     "indexts": "node ../../s/clean/indextsWs.mjs",
     "build": "node esbuild.mjs"
-  },
-  "dependencies": {
-    "@mono/map": "workspace:*",
-    "iter-tools": "^7.5.4",
-    "mnemonist": "^0.39.8"
   }
 }

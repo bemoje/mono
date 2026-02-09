@@ -9,15 +9,5 @@
   "scripts": {
     "indexts": "node ../../s/clean/indextsWs.mjs",
     "build": "node esbuild.mjs"
-  },
-  "devDependencies": {
-    "@mono/types": "workspace:^",
-    "eslint": "^8.57.0",
-    "type-fest": "4.41.0",
-    "vitest": "^3.2.4"
-  },
-  "dependencies": {
-    "@sinclair/typebox": "^0.34.37",
-    "lodash-es": "^4.17.21"
   }
 }

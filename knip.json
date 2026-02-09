@@ -1,0 +1,32 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignore": [
+    ".github/copilot/refactoring.mts"
+  ],
+  "workspaces": {
+    ".": {},
+    "s": {
+      "entry": [
+        "**/*.mjs"
+      ]
+    },
+    "libs/*": {
+      "entry": [
+        "src/index.ts"
+      ]
+    },
+    "apps/*": {
+      "entry": [
+        "src/main.ts"
+      ]
+    },
+    "apps/playground": {
+      "entry": [
+        "**/*.ts"
+      ]
+    }
+  },
+  "ignoreDependencies": [
+    "@mono/*"
+  ]
+}
