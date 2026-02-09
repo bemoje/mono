@@ -28,8 +28,6 @@ export class File<P extends Workspace = Workspace> extends AbstractBase<P> {
 
   @lazyProp(1000)
   get stats(): Stats {
-    const stats = Reflect.get(this, 'stats')
-    if (stats) return stats
     return fs.statSync(this.path)
   }
 
