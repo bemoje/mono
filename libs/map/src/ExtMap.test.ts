@@ -307,4 +307,21 @@ describe('ExtMap', () => {
       expect(sum).toBe(6)
     })
   })
+
+  describe('fromObject', () => {
+    it('should create an ExtMap from a plain object', () => {
+      const map = ExtMap.fromObject({ a: 1, b: 2, c: 3 })
+      expect(map).toBeInstanceOf(ExtMap)
+      expect(map.size).toBe(3)
+      expect(map.get('a')).toBe(1)
+      expect(map.get('b')).toBe(2)
+      expect(map.get('c')).toBe(3)
+    })
+
+    it('should create an empty ExtMap from an empty object', () => {
+      const map = ExtMap.fromObject({})
+      expect(map).toBeInstanceOf(ExtMap)
+      expect(map.size).toBe(0)
+    })
+  })
 })

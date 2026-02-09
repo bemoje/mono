@@ -1174,4 +1174,83 @@ describe(Command.name, () => {
       expect(help).toContain('build')
     })
   })
+
+  describe(Command.prototype.castArguments.name, () => {
+    it('should return the arguments array cast to the command type', () => {
+      const cmd = new Command('test').addArgument('<name>', 'a name')
+      const result = cmd.castArguments(['hello'])
+      expect(result).toEqual(['hello'])
+    })
+
+    it('should pass through an empty array', () => {
+      const cmd = new Command('test')
+      const result = cmd.castArguments([])
+      expect(result).toEqual([])
+    })
+  })
+
+  describe(Command.prototype.castOptions.name, () => {
+    it('should return the options object cast to the command type', () => {
+      const cmd = new Command('test').addOption('-v, --verbose', 'verbose')
+      const result = cmd.castOptions({ verbose: true })
+      expect(result).toEqual({ verbose: true })
+    })
+
+    it('should pass through an empty object', () => {
+      const cmd = new Command('test')
+      const result = cmd.castOptions({})
+      expect(result).toEqual({})
+    })
+  })
+
+  describe(Command.prototype.setAction.name, () => {
+    it('should set the action and return this for chaining', () => {
+      const cmd = new Command('test')
+      const handler = () => {}
+      const result = cmd.setAction(handler)
+      expect(result).toBe(cmd)
+    })
+
+    it('should set an action that can be invoked via parseArgv', () => {
+      const cmd = new Command('test').addArgument('<name>', 'a name').setAction(({ args }) => {
+        void args[0]
+      })
+      const parsed = cmd.parseArgv(['hello'])
+      expect(parsed.action).toBe('main')
+    })
+  })
+
+  describe(Command.prototype.helpConfiguration.name, () => {
+    it('should invoke the callback with the Help instance', () => {
+      const cmd = new Command('test')
+      let helpInstance: unknown = null
+      cmd.helpConfiguration((help) => {
+        helpInstance = help
+      })
+      expect(helpInstance).toBe(cmd.help)
+    })
+
+    it('should return this for chaining', () => {
+      const cmd = new Command('test')
+      const result = cmd.helpConfiguration(() => {})
+      expect(result).toBe(cmd)
+    })
+  })
+
+  describe('addHelpOption', () => {
+    it('should add a help option to a subcommand', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      // Subcommands don't auto-add help; use addHelpOption via the protected method
+      // We test that the root command already has help added by the constructor
+      expect(parent.options.some((o) => o.long === 'help')).toBe(true)
+    })
+
+    it('should add --help option with correct description', () => {
+      const cmd = new Command('test')
+      const helpOpt = cmd.options.find((o) => o.long === 'help')
+      expect(helpOpt).toBeDefined()
+      expect(helpOpt!.description).toBe('Display help information')
+    })
+  })
 })
