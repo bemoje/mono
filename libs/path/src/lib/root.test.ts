@@ -2,14 +2,22 @@ import { describe, it, expect } from 'vitest'
 import { root } from './root'
 
 describe(root.name, () => {
-  const paths = [
-    { input: '/home/user/docs', expected: '/' },
-    { input: 'C:\\Users\\User\\Documents', expected: 'C:/' },
-    { input: 'D:\\Folder\\Subfolder', expected: 'D:/' },
-    { input: '/', expected: '/' },
-    { input: 'C:/', expected: 'C:/' },
-    { input: '', expected: '' },
-  ]
+  const isWindows = process.platform === 'win32'
+
+  const paths = isWindows
+    ? [
+        { input: '/home/user/docs', expected: '/' },
+        { input: 'C:\\Users\\User\\Documents', expected: 'C:/' },
+        { input: 'D:\\Folder\\Subfolder', expected: 'D:/' },
+        { input: '/', expected: '/' },
+        { input: 'C:/', expected: 'C:/' },
+        { input: '', expected: '' },
+      ]
+    : [
+        { input: '/home/user/docs', expected: '/' },
+        { input: '/', expected: '/' },
+        { input: '', expected: '' },
+      ]
 
   it('should return the root directory of a given path', () => {
     paths.forEach(({ input, expected }) => {

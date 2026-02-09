@@ -112,9 +112,9 @@ describe(prettyStackTrace.name, () => {
       // Should contain stack trace section
       expect(result).toContain('stack:')
 
-      // On Windows, we might still see drive letters in some paths,
+      // On Windows, paths use backslashes; on Unix, forward slashes
       // but relative paths should be converted
-      expect(result).toMatch(/libs\\stacktrace/)
+      expect(result).toMatch(/libs[/\\]stacktrace/)
     })
 
     it('should color-code different types of files', () => {
