@@ -20,6 +20,7 @@
     "insight:depcheckUnused": "node s/insight/depcheckUnused.mjs",
     "insight:checkLibsTsDoc": "node s/insight/checkLibsTsDoc.mjs",
     "insight:linesOfCode": "node s/insight/linesOfCode.mjs",
+    "insight:findMissingTests": "node s/insight/findMissingTests.mjs",
     "docs": "echo '\nDOCS...' && node s/docs/writeReadme.mjs",
     "lint": "echo '\nLINT...' && yarn eslint '{libs,apps,s}/**/*' --fix -c eslint.config.js --cache --ignore-pattern apps/playground",
     "format": "echo '\nFORMAT...' && yarn prettier -w --l -u '{.github,.vscode,s,docs,apps,libs}/**/*'",
