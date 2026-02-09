@@ -85,16 +85,24 @@ export async function renderLibsExportedModules() {
   const librarySummaries = new Map()
 
   for (const { filepath, summary } of validSummaries) {
-    const [libName, fileName] = filepath.match(/^libs\/([^/]+)\/src\/(.+)\.ts$/).slice(1)
-    if (!librarySummaries.has(libName)) {
-      librarySummaries.set(libName, [])
-    }
+    try {
+      const regex = /^libs\/([^/]+)\/src\/(.+)\.ts$/
+      const [libName, fileName] = filepath.match(regex).slice(1)
+      if (libName === 'module.exports') {
+        continue
+      }
+      if (!librarySummaries.has(libName)) {
+        librarySummaries.set(libName, [])
+      }
+      librarySummaries.get(libName).push({
+        fileName,
+        functionName: upath.basename(fileName),
+        summary: summary || 'No description available',
+      })
 
-    librarySummaries.get(libName).push({
-      fileName,
-      functionName: upath.basename(fileName),
-      summary: summary || 'No description available',
-    })
+    } catch (error) {
+      continue
+    }
   }
 
   // Sort libraries alphabetically
