@@ -1,10 +1,10 @@
 import upath from 'upath'
-import templates from '../templates/templates'
+import { templates } from '../templates/templates'
 import { ConfigFile } from '@mono/config'
 import { repoRootPath } from '../constants/paths'
 import { Static, Type } from '@sinclair/typebox'
 
-export const ConfigSchema = Type.Object({
+const ConfigSchema = Type.Object({
   templates: Type.Object({
     commands: Type.Object({
       openFileInIDE: templates.commands.openFileInIDE.createSchema(),
@@ -23,7 +23,7 @@ export const ConfigSchema = Type.Object({
   }),
 })
 
-export type ConfigSchema = Static<typeof ConfigSchema>
+type ConfigSchema = Static<typeof ConfigSchema>
 export const dataPath = upath.join(repoRootPath, 'repo.config.json')
 export const configFile = new ConfigFile(ConfigSchema, dataPath)
-export const config = configFile.load()
+const config = configFile.load()

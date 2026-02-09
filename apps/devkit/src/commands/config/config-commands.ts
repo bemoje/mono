@@ -1,7 +1,7 @@
 import { Command } from 'commander'
 import { configFile, dataPath } from '../../core/config/config'
 import { execSync } from 'node:child_process'
-import templates from '../../core/templates/templates'
+import { templates } from '../../core/templates/templates'
 
 export function configPath() {
   const cmd = new Command('path')

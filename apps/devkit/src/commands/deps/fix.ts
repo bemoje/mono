@@ -5,7 +5,7 @@ import { Command, Option } from 'commander'
 import { confirmPrompt } from '@mono/terminal'
 import { MonoRepo } from '@mono/monorepo'
 import { Workspace } from '@mono/monorepo'
-import templates from '../../core/templates/templates'
+import { templates } from '../../core/templates/templates'
 import { execSync } from 'node:child_process'
 import path from 'upath'
 
