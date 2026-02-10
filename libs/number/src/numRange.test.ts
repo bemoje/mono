@@ -7,4 +7,8 @@ describe(numRange.name, () => {
     expect(numRange(-2, 2)).toEqual([-2, -1, 0, 1, 2])
     expect(numRange(0, 0)).toEqual([0])
   })
+
+  it('should throw when start is greater than end', () => {
+    expect(() => numRange(5, 1)).toThrow('Expected start to be less than or equal to end')
+  })
 })

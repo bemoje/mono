@@ -115,4 +115,10 @@ describe(determineNumberLocale.name, () => {
       })
     })
   })
+
+  describe('invalid', () => {
+    it('should throw TypeError for a value with both comma and period that does not match either locale', () => {
+      expect(() => determineNumberLocale(['1,2.3'])).toThrow(TypeError)
+    })
+  })
 })

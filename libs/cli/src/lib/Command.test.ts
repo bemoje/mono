@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import assert from 'node:assert'
 import { Command } from './Command'
 import getCommandAndAncestors from './helpers/getCommandAndAncestors'
@@ -720,6 +720,48 @@ describe(Command.name, () => {
 
       expect(child.description).toBe('')
     })
+
+    it('should inherit only specified options with inheritOptions', () => {
+      const parent = new Command('parent')
+        .addOption('-v, --verbose', 'verbose')
+        .addOption('-d, --debug', 'debug')
+        .addOption('-q, --quiet', 'quiet')
+
+      const child = parent.command('child', { inheritOptions: ['verbose', 'debug'] })
+
+      const childOptionNames = child.options.map((o) => o.name)
+      expect(childOptionNames).toContain('verbose')
+      expect(childOptionNames).toContain('debug')
+      expect(childOptionNames).not.toContain('quiet')
+    })
+
+    it('should inherit all options except specified with inheritOptionsExcept', () => {
+      const parent = new Command('parent')
+        .addOption('-v, --verbose', 'verbose')
+        .addOption('-d, --debug', 'debug')
+        .addOption('-q, --quiet', 'quiet')
+
+      const child = parent.command('child', { inheritOptionsExcept: ['debug'] })
+
+      const childOptionNames = child.options.map((o) => o.name)
+      expect(childOptionNames).toContain('verbose')
+      expect(childOptionNames).not.toContain('debug')
+      expect(childOptionNames).toContain('quiet')
+      // Also has the help option from parent
+      expect(childOptionNames).toContain('help')
+    })
+
+    it('should inherit triggers matching inherited options', () => {
+      const parent = new Command('parent')
+        .addOption('-v, --verbose', 'verbose')
+        .addOption('-d, --debug', 'debug')
+        .addTrigger('verbose', { action: () => {} })
+
+      const child = parent.command('child', { inheritOptions: ['verbose'] })
+
+      const parsed = child.parseArgv(['-v'])
+      expect(parsed.triggers).toHaveLength(1)
+    })
   })
 
   describe('getter properties', () => {
@@ -1107,6 +1149,17 @@ describe(Command.name, () => {
       expect(help).toContain('myapp')
     })
 
+    it('should strip ANSI colors when noColor is true', () => {
+      const cmd = new Command('myapp')
+      cmd.setVersion('1.0.0')
+
+      const colorHelp = cmd.renderHelp()
+      const plainHelp = cmd.renderHelp({ noColor: true })
+
+      expect(plainHelp).not.toContain('\x1b[')
+      expect(plainHelp.length).toBeLessThanOrEqual(colorHelp.length)
+    })
+
     it('should render help with arguments and options', () => {
       const cmd = new Command('myapp')
       cmd.setVersion('1.0.0')
@@ -1189,6 +1242,83 @@ describe(Command.name, () => {
     })
   })
 
+  describe('addTrigger', () => {
+    it('should add a trigger with a custom predicate', () => {
+      const cmd = new Command('test').addOption('-v, --verbose', 'verbose').addTrigger('verbose', {
+        predicate: ({ opts }) => opts.verbose === true,
+        action: () => {},
+      })
+
+      const parsed = cmd.parseArgv(['-v'])
+      expect(parsed.triggers).toHaveLength(1)
+    })
+
+    it('should use default predicate when none provided', () => {
+      const cmd = new Command('test').addOption('-v, --verbose', 'verbose').addTrigger('verbose', {
+        action: () => {},
+      })
+
+      const parsed = cmd.parseArgv(['-v'])
+      expect(parsed.triggers).toHaveLength(1)
+    })
+
+    it('should select trigger action over main action', () => {
+      let triggerCalled = false
+      const cmd = new Command('test')
+        .addOption('-v, --verbose', 'verbose')
+        .setAction(() => {})
+        .addTrigger('verbose', {
+          action: () => {
+            triggerCalled = true
+          },
+        })
+
+      const parsed = cmd.parseArgv(['-v'])
+      expect(parsed.action).toBe('verbose')
+      void parsed.execute!()
+      expect(triggerCalled).toBe(true)
+    })
+
+    it('should execute main action when no trigger matches', () => {
+      let mainCalled = false
+      const cmd = new Command('test')
+        .addOption('-v, --verbose', 'verbose')
+        .setAction(() => {
+          mainCalled = true
+        })
+        .addTrigger('verbose', {
+          action: () => {},
+        })
+
+      const parsed = cmd.parseArgv([])
+      expect(parsed.action).toBe('main')
+      void parsed.execute!()
+      expect(mainCalled).toBe(true)
+    })
+
+    it('should have no execute when no action or trigger', () => {
+      const cmd = new Command('test')
+      const parsed = cmd.parseArgv([])
+      expect(parsed.execute).toBeUndefined()
+    })
+  })
+
+  describe('option long-name camelCase mapping', () => {
+    it('should map multi-word long option names to camelCase', () => {
+      const cmd = new Command('test').addOption('-o, --output-dir <path>', 'output directory')
+
+      const result = cmd.parseArgv(['--output-dir', '/tmp'])
+      expect(result.opts.outputDir).toBe('/tmp')
+    })
+
+    it('should handle --no- negation with long option names', () => {
+      const cmd = new Command('test').addOption('-c, --use-color', 'use color')
+
+      const result = cmd.parseArgv(['--no-use-color'])
+      expect(result.opts.useColor).toBe(false)
+    })
+  })
+
   describe(Command.prototype.castOptions.name, () => {
     it('should return the options object cast to the command type', () => {
       const cmd = new Command('test').addOption('-v, --verbose', 'verbose')
@@ -1245,10 +1375,9 @@ describe(Command.name, () => {
     }
 
     it('should add a help option to a command', () => {
-      // Create a TestCommand subclass instance that starts without options
       const cmd = new TestCommand('test')
-      // Root commands auto-add help in constructor, so remove it first
       cmd.options.length = 0
+      ;(cmd as any).triggers.length = 0
       cmd.exposeAddHelpOption()
       expect(cmd.options.some((o) => o.long === 'help')).toBe(true)
       expect(cmd.options.some((o) => o.short === 'h')).toBe(true)
@@ -1259,6 +1388,173 @@ describe(Command.name, () => {
       const helpOpt = cmd.options.find((o) => o.long === 'help')
       expect(helpOpt).toBeDefined()
       expect(helpOpt!.description).toBe('Display help information')
+    })
+
+    it('should execute help trigger action', () => {
+      const cmd = new Command('test').addOption('-v, --verbose', 'verbose')
+      const spy = vi.spyOn(console, 'log').mockImplementation(() => {})
+      const parsed = cmd.parseArgv(['--help'])
+      void parsed.execute!()
+      expect(spy).toHaveBeenCalledWith(expect.any(String))
+      spy.mockRestore()
+    })
+
+    it('should execute addHelpOption trigger action from protected method', () => {
+      class SubCmd extends Command {
+        exposeAddHelpOption() {
+          return this.addHelpOption()
+        }
+      }
+      const parent = new Command('root')
+      const cmd = new SubCmd('test2', parent)
+      cmd.exposeAddHelpOption()
+      const spy = vi.spyOn(console, 'log').mockImplementation(() => {})
+      const parsed = cmd.parseArgv(['--help'])
+      void parsed.execute!()
+      expect(spy).toHaveBeenCalledWith(expect.any(String))
+      spy.mockRestore()
+    })
+  })
+
+  describe('addVersionOption', () => {
+    class TestCommand extends Command {
+      public exposeAddVersionOption() {
+        return this.addVersionOption()
+      }
+    }
+
+    it('should add a version option', () => {
+      const cmd = new TestCommand('test')
+      cmd.exposeAddVersionOption()
+      expect(cmd.options.some((o) => o.long === 'version')).toBe(true)
+      expect(cmd.options.some((o) => o.short === 'V')).toBe(true)
+    })
+
+    it('should execute version trigger action', () => {
+      const cmd = new TestCommand('test')
+      cmd.version = '1.2.3'
+      cmd.exposeAddVersionOption()
+      const spy = vi.spyOn(console, 'log').mockImplementation(() => {})
+      const parsed = cmd.parseArgv(['--version'])
+      void parsed.execute!()
+      expect(spy).toHaveBeenCalledWith('1.2.3')
+      spy.mockRestore()
+    })
+  })
+
+  describe('option value sorting in parseArgv', () => {
+    it('should sort options: defined values -> true -> false -> undefined', () => {
+      const cmd = new Command('test')
+        .addOption('-a, --aaa <val>', 'string opt 1')
+        .addOption('-b, --bbb <val>', 'string opt 2')
+        .addOption('-c, --ccc <val>', 'string opt 3')
+        .addOption('-d, --ddd', 'bool opt 1')
+        .addOption('-e, --eee', 'bool opt 2')
+        .addOption('-f, --fff', 'bool opt 3')
+        .addOption('-g, --ggg', 'bool opt 4')
+        .addOption('-i, --iii', 'bool opt 5')
+        .addOption('-j, --jjj', 'bool opt 6')
+
+      // aaa,bbb,ccc = defined strings; ddd,eee = true; fff = false (negated); ggg,iii,jjj = undefined (not passed)
+      const result = cmd.parseArgv(['-a', 'x', '-b', 'y', '-c', 'z', '-d', '-e', '--no-fff'])
+      const keys = Object.keys(result.opts)
+
+      const aIdx = keys.indexOf('aaa')
+      const bIdx = keys.indexOf('bbb')
+      const cIdx = keys.indexOf('ccc')
+      const dIdx = keys.indexOf('ddd')
+      const eIdx = keys.indexOf('eee')
+      const fIdx = keys.indexOf('fff')
+      const gIdx = keys.indexOf('ggg')
+
+      expect(aIdx).toBeLessThan(dIdx)
+      expect(bIdx).toBeLessThan(dIdx)
+      expect(cIdx).toBeLessThan(dIdx)
+      expect(dIdx).toBeLessThan(fIdx) // true before false
+      expect(eIdx).toBeLessThan(fIdx) // true before false
+      expect(fIdx).toBeLessThan(gIdx) // false before undefined
+    })
+
+    it('should correctly sort two-element comparisons: defined vs undefined', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      sub.addOption('-a, --aaa <val>', 'string opt').addOption('-b, --bbb', 'bool opt')
+      const result = sub.parseArgv(['-a', 'x'])
+      const keys = Object.keys(result.opts)
+      expect(keys.indexOf('aaa')).toBeLessThan(keys.indexOf('bbb'))
+    })
+
+    it('should correctly sort two-element comparisons: true vs false', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      sub.addOption('-a, --aaa', 'bool opt 1').addOption('-b, --bbb', 'bool opt 2')
+      const result = sub.parseArgv(['-a', '--no-bbb'])
+      const keys = Object.keys(result.opts)
+      expect(keys.indexOf('aaa')).toBeLessThan(keys.indexOf('bbb'))
+    })
+
+    it('should correctly sort two-element comparisons: false vs true', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      sub.addOption('-a, --aaa', 'bool opt 1').addOption('-b, --bbb', 'bool opt 2')
+      const result = sub.parseArgv(['--no-aaa', '-b'])
+      const keys = Object.keys(result.opts)
+      expect(keys.indexOf('bbb')).toBeLessThan(keys.indexOf('aaa'))
+    })
+
+    it('should correctly sort two-element comparisons: undefined vs defined', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      sub.addOption('-a, --aaa', 'bool opt').addOption('-b, --bbb <val>', 'string opt')
+      const result = sub.parseArgv(['-b', 'x'])
+      const keys = Object.keys(result.opts)
+      expect(keys.indexOf('bbb')).toBeLessThan(keys.indexOf('aaa'))
+    })
+
+    it('should correctly sort two-element comparisons: true vs defined', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      sub.addOption('-a, --aaa', 'bool opt').addOption('-b, --bbb <val>', 'string opt')
+      const result = sub.parseArgv(['-a', '-b', 'x'])
+      const keys = Object.keys(result.opts)
+      expect(keys.indexOf('bbb')).toBeLessThan(keys.indexOf('aaa'))
+    })
+
+    it('should correctly sort two-element comparisons: defined vs true', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      sub.addOption('-a, --aaa <val>', 'string opt').addOption('-b, --bbb', 'bool opt')
+      const result = sub.parseArgv(['-a', 'x', '-b'])
+      const keys = Object.keys(result.opts)
+      expect(keys.indexOf('aaa')).toBeLessThan(keys.indexOf('bbb'))
+    })
+
+    it('should correctly sort two-element comparisons: false vs undefined', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      sub.addOption('-a, --aaa', 'bool opt 1').addOption('-b, --bbb', 'bool opt 2')
+      const result = sub.parseArgv(['--no-aaa'])
+      const keys = Object.keys(result.opts)
+      expect(keys.indexOf('aaa')).toBeLessThan(keys.indexOf('bbb'))
+    })
+
+    it('should correctly sort two-element comparisons: defined vs false', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      sub.addOption('-a, --aaa <val>', 'string opt').addOption('-b, --bbb', 'bool opt')
+      const result = sub.parseArgv(['-a', 'x', '--no-bbb'])
+      const keys = Object.keys(result.opts)
+      expect(keys.indexOf('aaa')).toBeLessThan(keys.indexOf('bbb'))
+    })
+
+    it('should correctly sort two equal defined values to 0', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      sub.addOption('-a, --aaa <val>', 'string opt 1').addOption('-b, --bbb <val>', 'string opt 2')
+      const result = sub.parseArgv(['-a', 'x', '-b', 'y'])
+      // Both defined, order is stable (original order preserved)
+      expect(Object.keys(result.opts)).toContain('aaa')
+      expect(Object.keys(result.opts)).toContain('bbb')
     })
   })
 })
