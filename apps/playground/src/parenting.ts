@@ -10,7 +10,7 @@ declare module './parenting' {
  * Without decorator
  */
 @Parenting.compose
-export class Root {
+class Root {
   constructor() {
     this.parenting.onInstance(null)
   }
@@ -20,7 +20,7 @@ export class Root {
  * Decorator with options
  */
 @Parenting.compose
-export class Node {
+class Node {
   constructor(parent: Root | Node) {
     this.parenting.onInstance(parent)
   }
@@ -30,7 +30,7 @@ export class Node {
  * Decorator with options as static property 'profiler'
  */
 @Parenting.compose
-export class Leaf {
+class Leaf {
   constructor(parent: Root | Node) {
     this.parenting.onInstance(parent)
   }
