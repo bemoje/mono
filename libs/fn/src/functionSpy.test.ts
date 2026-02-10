@@ -81,4 +81,62 @@ describe(functionSpy.name, () => {
     expect(originalFunc).toHaveBeenCalledWith(1)
     expect(spyStrategy.onReturn).toHaveBeenCalledWith(data, 2)
   })
+
+  // wrapSync ignore branches
+  it('should return original sync function when ignore(2 args) returns true with async:false', () => {
+    const ignorePredicate = vitest.fn((...args: unknown[]) => args.length === 2)
+    const originalFunc = vitest.fn()
+    const wrappedFunc = functionSpy(originalFunc, spyStrategy, { async: false, ignore: ignorePredicate })
+    expect(wrappedFunc).toBe(originalFunc)
+  })
+
+  it('should skip spy for sync when ignore(3 args) returns true with async:false', () => {
+    const ignorePredicate = vitest.fn((...args: unknown[]) => args.length === 3)
+    const originalFunc = vitest.fn((n: number) => n + 1)
+    const wrappedFunc = functionSpy(originalFunc, spyStrategy, { async: false, ignore: ignorePredicate })
+    expect(wrappedFunc).not.toBe(originalFunc)
+    expect(wrappedFunc(1)).toBe(2)
+    expect(originalFunc).toHaveBeenCalledWith(1)
+    expect(spyStrategy.onInvoke).not.toHaveBeenCalled()
+    expect(spyStrategy.onReturn).not.toHaveBeenCalled()
+  })
+
+  // wrapAsync ignore branches
+  it('should return original async function when ignore(2 args) returns true with async:true', () => {
+    const ignorePredicate = vitest.fn((...args: unknown[]) => args.length === 2)
+    const originalFunc = vitest.fn(async () => {})
+    const wrappedFunc = functionSpy(originalFunc, spyStrategy, { async: true, ignore: ignorePredicate })
+    expect(wrappedFunc).toBe(originalFunc)
+  })
+
+  it('should skip spy for async when ignore(3 args) returns true with async:true', async () => {
+    const ignorePredicate = vitest.fn((...args: unknown[]) => args.length === 3)
+    const originalFunc = vitest.fn(async (n: number) => n + 1)
+    const wrappedFunc = functionSpy(originalFunc, spyStrategy, { async: true, ignore: ignorePredicate })
+    expect(wrappedFunc).not.toBe(originalFunc)
+    expect(await wrappedFunc(1)).toBe(2)
+    expect(originalFunc).toHaveBeenCalledWith(1)
+    expect(spyStrategy.onInvoke).not.toHaveBeenCalled()
+    expect(spyStrategy.onReturn).not.toHaveBeenCalled()
+  })
+
+  // wrapMaybeAsync: sync function returning promise
+  it('should handle sync function that returns a promise (maybeAsync path)', async () => {
+    const originalFunc = vitest.fn((n: number) => Promise.resolve(n + 1))
+    const wrappedFunc = functionSpy(originalFunc, spyStrategy)
+    expect(await wrappedFunc(1)).toBe(2)
+    expect(spyStrategy.onInvoke).toHaveBeenCalledWith(undefined, [1])
+    expect(spyStrategy.onReturn).toHaveBeenCalledWith(data, 2)
+  })
+
+  // wrapMaybeAsync: ignore(3 args) path
+  it('should skip spy for maybeAsync when ignore(3 args) returns true', () => {
+    const ignorePredicate = vitest.fn((...args: unknown[]) => args.length === 3)
+    const originalFunc = vitest.fn((n: number) => n + 1)
+    const wrappedFunc = functionSpy(originalFunc, spyStrategy, { ignore: ignorePredicate })
+    expect(wrappedFunc).not.toBe(originalFunc)
+    wrappedFunc(1)
+    expect(originalFunc).toHaveBeenCalledWith(1)
+    expect(spyStrategy.onInvoke).not.toHaveBeenCalled()
+  })
 })

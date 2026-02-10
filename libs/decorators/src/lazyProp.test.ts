@@ -64,6 +64,22 @@ describe(lazyProp.name, () => {
     expect(a.value).toBe(2)
   })
 
+  it('should accept a string maxAge', async () => {
+    let c = 0
+    class A {
+      @lazyProp('50ms')
+      get value() {
+        return ++c
+      }
+    }
+
+    const a = new A()
+    expect(a.value).toBe(1)
+
+    await setTimeoutPromise(250)
+    expect(a.value).toBe(2)
+  })
+
   it('should throw an error if "get" is not a function', () => {
     const target = {}
     const key = 'prop'

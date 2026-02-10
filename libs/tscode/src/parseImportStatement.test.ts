@@ -113,6 +113,14 @@ describe(parseImportStatement.name, () => {
       expect(result.modulePath.type).toBe('absolute')
       expect(result.modulePath.path).toBe('/absolute/path/module')
     })
+
+    it('should correctly identify workspace imports via isWorkspacePath option', () => {
+      const result = parseImportStatement("import foo from '@mono/utils'", {
+        isWorkspacePath: (p) => p.startsWith('@mono/'),
+      })
+      expect(result.modulePath.type).toBe('workspace')
+      expect(result.modulePath.path).toBe('@mono/utils')
+    })
   })
 
   describe('quote types', () => {
@@ -265,6 +273,22 @@ describe(parseImportStatement.name, () => {
       expect(split).toHaveLength(2)
       expect(split[0].specifiers.children[0].isType).toBe(true)
       expect(split[1].specifiers.children[0].isType).toBe(false)
+    })
+
+    it('should split import type statement with hasTypeKeyword', () => {
+      const result = parseImportStatement("import type { User, Config } from './types'")
+      expect(result.keywords.hasTypeKeyword).toBe(true)
+      const split = result.splitBySpecifier()
+      expect(split).toHaveLength(2)
+      expect(split[0].specifiers.children[0].isType).toBe(true)
+      expect(split[1].specifiers.children[0].isType).toBe(true)
+    })
+
+    it('should split namespace import', () => {
+      const result = parseImportStatement("import * as utils from './utils'")
+      const split = result.splitBySpecifier()
+      expect(split).toHaveLength(1)
+      expect(split[0].type).toBe('namespace')
     })
   })
 

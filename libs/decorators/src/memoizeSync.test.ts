@@ -55,4 +55,36 @@ describe(memoizeSync.name, () => {
       memoizeSync()(target, key, descriptor)
     }).toThrow('"value" not a function')
   })
+
+  it('should throw an error if descriptor is undefined', () => {
+    expect(() => {
+      memoizeSync()({}, 'prop', undefined as any)
+    }).toThrow('descriptor is undefined')
+  })
+
+  it('should accept a numeric maxAge', () => {
+    let c = 0
+    class A {
+      @memoizeSync(60000)
+      value() {
+        return ++c
+      }
+    }
+    const a = new A()
+    expect(a.value()).toBe(1)
+    expect(a.value()).toBe(1)
+  })
+
+  it('should accept a string maxAge', () => {
+    let c = 0
+    class A {
+      @memoizeSync('1h')
+      value() {
+        return ++c
+      }
+    }
+    const a = new A()
+    expect(a.value()).toBe(1)
+    expect(a.value()).toBe(1)
+  })
 })

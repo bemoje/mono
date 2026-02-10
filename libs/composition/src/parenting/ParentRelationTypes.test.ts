@@ -123,6 +123,34 @@ describe(ParentRelationTypes.name, () => {
     })
   })
 
+  describe('getParentTypes', () => {
+    it('should return the MultiSet of parent types for a class', () => {
+      childRelation.registerParent(TestParent as FunctionPrototype)
+      const parentTypes = childRelation.getParentTypes
+      expect(parentTypes.has(TestParent as FunctionPrototype)).toBe(true)
+      expect(parentTypes.size).toBe(1)
+    })
+
+    it('should return an empty MultiSet when no parents are registered', () => {
+      const parentTypes = isolatedRelation.getParentTypes
+      expect(parentTypes.size).toBe(0)
+    })
+  })
+
+  describe('getChildTypes', () => {
+    it('should return the MultiSet of child types for a class', () => {
+      childRelation.registerParent(TestParent as FunctionPrototype)
+      const childTypes = parentRelation.getChildTypes
+      expect(childTypes.has(TestChild as FunctionPrototype)).toBe(true)
+      expect(childTypes.size).toBe(1)
+    })
+
+    it('should return an empty MultiSet when no children are registered', () => {
+      const childTypes = isolatedRelation.getChildTypes
+      expect(childTypes.size).toBe(0)
+    })
+  })
+
   describe('static stats methods', () => {
     beforeEach(() => {
       // Create relationships for testing

@@ -223,6 +223,58 @@ describe(inheritProxifiedPrototypeProperty.name, () => {
       expect(descriptor?.get).toBeDefined()
       expect(descriptor?.set).toBeUndefined()
     })
+
+    it('should proxy setter to target for accessor with both get and set', () => {
+      class FreshTarget {
+        private _val = 'initial'
+        get accessor() {
+          return this._val
+        }
+        set accessor(v: string) {
+          this._val = v
+        }
+      }
+
+      class FreshViewer implements IView<FreshTarget> {
+        constructor(public target: FreshTarget) {}
+      }
+
+      const target = new FreshTarget()
+      inheritProxifiedPrototypeProperty(FreshViewer, FreshTarget, 'accessor')
+      const viewer = new FreshViewer(target)
+
+      expect((viewer as any).accessor).toBe('initial')
+      ;(viewer as any).accessor = 'updated'
+      expect(target.accessor).toBe('updated')
+      expect((viewer as any).accessor).toBe('updated')
+    })
+
+    it('should handle setter-only accessor (no getter)', () => {
+      class SetterOnlyTarget {
+        declare writeOnly: string
+      }
+      Object.defineProperty(SetterOnlyTarget.prototype, 'writeOnly', {
+        set(value: string) {
+          ;(this as any)._written = value
+        },
+        configurable: true,
+        enumerable: true,
+      })
+
+      class SetterOnlyViewer implements IView<SetterOnlyTarget> {
+        constructor(public target: SetterOnlyTarget) {}
+      }
+
+      const target = new SetterOnlyTarget()
+      inheritProxifiedPrototypeProperty(SetterOnlyViewer, SetterOnlyTarget, 'writeOnly')
+      const viewer = new SetterOnlyViewer(target)
+
+      const descriptor = Object.getOwnPropertyDescriptor(SetterOnlyViewer.prototype, 'writeOnly')
+      expect(descriptor?.get).toBeUndefined()
+      expect(descriptor?.set).toBeDefined()
+      ;(viewer as any).writeOnly = 'test'
+      expect((target as any)._written).toBe('test')
+    })
   })
 
   describe('edge cases', () => {

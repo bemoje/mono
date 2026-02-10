@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { ExtMap } from './ExtMap'
+import { inspect } from 'node:util'
 
 describe('ExtMap', () => {
   describe('constructor', () => {
@@ -16,6 +17,18 @@ describe('ExtMap', () => {
       expect(map.size).toBe(2)
       expect(map.get('a')).toBe(1)
       expect(map.get('b')).toBe(2)
+    })
+
+    it('creates a map from a plain object', () => {
+      const map = new ExtMap<string, number>({ a: 1, b: 2 })
+      expect(map.size).toBe(2)
+      expect(map.get('a')).toBe(1)
+      expect(map.get('b')).toBe(2)
+    })
+
+    it('creates an empty map from null', () => {
+      const map = new ExtMap<string, number>(null)
+      expect(map.size).toBe(0)
     })
   })
 
@@ -305,6 +318,31 @@ describe('ExtMap', () => {
       const sum = map.reduce((acc, value) => acc + value, 0)
 
       expect(sum).toBe(6)
+    })
+  })
+
+  describe('fromObject', () => {
+    it('should create an ExtMap from a plain object', () => {
+      const map = ExtMap.fromObject({ a: 1, b: 2, c: 3 })
+      expect(map).toBeInstanceOf(ExtMap)
+      expect(map.size).toBe(3)
+      expect(map.get('a')).toBe(1)
+      expect(map.get('b')).toBe(2)
+      expect(map.get('c')).toBe(3)
+    })
+
+    it('should create an empty ExtMap from an empty object', () => {
+      const map = ExtMap.fromObject({})
+      expect(map).toBeInstanceOf(ExtMap)
+      expect(map.size).toBe(0)
+    })
+  })
+
+  describe('inspect.custom', () => {
+    it('should return a string representation', () => {
+      const map = new ExtMap([['a', 1]])
+      const result = inspect(map)
+      expect(typeof result).toBe('string')
     })
   })
 })

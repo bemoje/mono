@@ -25,11 +25,10 @@ export function parseImportStatement(
   const code = statement
   const oneliner = importStatementToFormattedOneLiner(code)
 
-  const groups =
-    rexec(
-      /^(?<keywords>import +(?<type>type)? *)(?<specifiers>(?:.*?) ?)?(?<mod>(?:from ?)?(?<quote>['"`])(?<path>.*?)\5(?<semi>;?))$/g,
-      oneliner,
-    )[0].groups || {}
+  const groups = rexec(
+    /^(?<keywords>import +(?<type>type)? *)(?<specifiers>(?:.*?) ?)?(?<mod>(?:from ?)?(?<quote>['"`])(?<path>.*?)\5(?<semi>;?))$/g,
+    oneliner,
+  )[0].groups!
 
   const keywords: ImportKeywords = {
     code: groups.keywords!,

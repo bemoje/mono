@@ -110,7 +110,7 @@ export class ExtMap<K = any, V = any> extends View<Map<K, V>> implements Map<K, 
    * @returns A string representation of the map
    */
   [inspect.custom](_depth: number, _options: InspectOptions): string {
-    return inspect(this, { breakLength: 50 })
+    return inspect(this.target, { breakLength: 50 })
   }
 }
 

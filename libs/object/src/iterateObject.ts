@@ -100,7 +100,7 @@ export function* iterateObject<T extends object = object, V = unknown>(
           .join('.')
           .replace(/\.\[/g, '['),
         isLeaf: true,
-        nodeType: Array.isArray(current) ? 'array' : 'object',
+        nodeType: 'object',
       }
     }
   }

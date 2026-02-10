@@ -4,7 +4,7 @@ declare module './inspector' {
   export interface A extends InspectorTarget {}
 }
 
-export class A {
+class A {
   static inspector = Inspector.compose(A, {
     keys: ['one', 'two', 'a'],
     ignoreValues: { noFalse: true },
@@ -20,7 +20,7 @@ export class A {
   }
 }
 
-export class B extends A {
+class B extends A {
   static inspector = Inspector.compose(B, {
     keys: ['three', 'b'],
     ignoreKeys: ['a'],
@@ -41,5 +41,5 @@ export class B extends A {
 }
 
 for (const x of [new A(), new B(), new A(), new B()]) {
-  console.log(x.inspector.inspect())
+  // console.log(x.inspector.inspect())
 }

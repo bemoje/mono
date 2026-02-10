@@ -31,8 +31,6 @@ export default function lazyProp(
       })
       return retval
     }
-  } else {
-    throw new Error(`@lazyProp can only be used on getter or method: ${String(key)}`)
   }
 
   return descriptor

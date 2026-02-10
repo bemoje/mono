@@ -20,4 +20,19 @@ describe(objDefineLazyProperty.name, () => {
     expect(object.x).toBe('bar')
     expect(index).toBe(1)
   })
+
+  it('should use the setter before the getter has been called', () => {
+    const object: { y?: number } = {}
+    let called = false
+
+    objDefineLazyProperty(object, 'y', () => {
+      called = true
+      return 42
+    })
+
+    // Set before getting - triggers the descriptor setter, NOT the getter
+    object.y = 99
+    expect(object.y).toBe(99)
+    expect(called).toBe(false)
+  })
 })

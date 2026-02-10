@@ -62,11 +62,16 @@
     "eval": false,
     "chmod": false,
     "chown": false,
-    "Remove-Item": false
+    "Remove-Item": false,
+    "/^node s[/]insight[/].+[.]mjs$/": true
   },
   "json.schemas": [
     {
       "url": "https://json.schemastore.org/package.json",
+      "fileMatch": ["package.json"]
+    },
+    {
+      "url": "./docs/package.schema.json",
       "fileMatch": ["package.json"]
     },
     {

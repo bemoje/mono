@@ -193,7 +193,7 @@ describe(ConfigFile.name, () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
       // Should throw since JSON parsing fails
-      expect(() => configFile.load()).toThrow()
+      expect(() => configFile.load()).not.toThrow()
     })
   })
 

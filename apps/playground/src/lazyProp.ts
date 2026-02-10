@@ -1,7 +1,7 @@
 /**
  * Decorator to make a getter accessor property lazy loaded by setting the property value on the object
  */
-export default function lazyProp(target: unknown, key: string | symbol, descriptor: PropertyDescriptor) {
+function lazyProp(target: unknown, key: string | symbol, descriptor: PropertyDescriptor) {
   const orig = descriptor.get
 
   if (typeof orig !== 'function') {

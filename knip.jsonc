@@ -1,0 +1,43 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+
+  "include": ["nsTypes", "nsExports", "classMembers"],
+
+  "ignoreExportsUsedInFile": true,
+  "ignore": [".github/copilot/refactoring.mts"],
+  "ignoreDependencies": ["@mono/*"],
+
+  "workspaces": {
+    "apps/*": {
+      "entry": ["src/*.ts", "**/*.examples.ts"],
+      "includeEntryExports": true,
+    },
+    "libs/*": {
+      "entry": ["src/index.ts", "src/**/*.examples.ts"],
+      "includeEntryExports": false,
+      "ignoreMembers": ["depth"],
+    },
+    "s": {
+      "entry": ["**/*.mjs"],
+      "includeEntryExports": false,
+    },
+  },
+
+  "rules": {
+    // "nsTypes": "warn",
+    // "nsExports": "warn",
+    // "classMembers": "warn",
+    // "files": "error",
+    // "dependencies": "error",
+    // "devDependencies": "error",
+    // "optionalPeerDependencies": "error",
+    // "unlisted": "error",
+    // "binaries": "error",
+    // "unresolved": "error",
+    // "exports": "error",
+    // "types": "error",
+    // "duplicates": "error",
+    // "enumMembers": "error",
+    // "catalog": "error",
+  },
+}

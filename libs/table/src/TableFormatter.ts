@@ -199,9 +199,9 @@ export class TableFormatter {
   }
 
   protected formatBoolean(cell: string, c: number) {
-    cell = cell = this.alignLeft(cell, c)
-    if (cell === 'true') return this.options.color.booleanTrue(cell)
-    if (cell === 'false') return this.options.color.booleanFalse(cell)
+    const padded = this.alignLeft(cell, c)
+    if (cell === 'true') return this.options.color.booleanTrue(padded)
+    if (cell === 'false') return this.options.color.booleanFalse(padded)
     throw new Error(`Unexpected boolean representation: ${cell}`)
   }
 

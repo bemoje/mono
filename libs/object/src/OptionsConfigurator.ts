@@ -139,11 +139,7 @@ function createConfigurator<
       value: function (this: CFG<T>, value: T[typeof key]) {
         if (value === undefined) {
           if (key in options.defaults) {
-            if (typeof options.defaults[key] === 'function') {
-              this.$data[key] = options.defaults[key]()
-            } else {
-              this.$data[key] = options.defaults[key] as T[typeof key]
-            }
+            this.$data[key] = options.defaults[key]!()
           } else {
             delete this.$data[key]
           }

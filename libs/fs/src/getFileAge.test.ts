@@ -1,17 +1,35 @@
-import * as fs from 'fs-extra'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { getFileAge } from './getFileAge'
 
+const mockStat = vi.fn()
+
+vi.mock('fs-extra', () => ({
+  default: { stat: (...args: any[]) => mockStat(...args) },
+  stat: (...args: any[]) => mockStat(...args),
+}))
+
 describe(getFileAge.name, () => {
-  it('should find either ctime, birthtime or mtime ', async () => {
-    const stats = await fs.stat(__filename)
-    const time = stats.ctimeMs || stats.birthtimeMs || stats.mtimeMs
-    expect(time).toBeDefined()
-    expect(time).toBeGreaterThan(0)
+  it('should return the age of a file in milliseconds using ctimeMs', async () => {
+    const now = Date.now()
+    mockStat.mockResolvedValueOnce({ ctimeMs: now - 100, birthtimeMs: now - 200, mtimeMs: now - 300 })
+    const age = await getFileAge('test-file')
+    expect(age).toBeGreaterThanOrEqual(50)
+    expect(age).toBeLessThan(500)
   })
 
-  it('should return the age of a file in milliseconds', async () => {
-    const age = await getFileAge(__filename)
-    expect(age).toBeLessThanOrEqual(Date.now())
+  it('should fall back to birthtimeMs when ctimeMs is 0', async () => {
+    const now = Date.now()
+    mockStat.mockResolvedValueOnce({ ctimeMs: 0, birthtimeMs: now - 100, mtimeMs: now - 200 })
+    const age = await getFileAge('any')
+    expect(age).toBeGreaterThanOrEqual(50)
+    expect(age).toBeLessThan(500)
+  })
+
+  it('should fall back to mtimeMs when ctimeMs and birthtimeMs are 0', async () => {
+    const now = Date.now()
+    mockStat.mockResolvedValueOnce({ ctimeMs: 0, birthtimeMs: 0, mtimeMs: now - 100 })
+    const age = await getFileAge('any')
+    expect(age).toBeGreaterThanOrEqual(50)
+    expect(age).toBeLessThan(500)
   })
 })

@@ -56,6 +56,38 @@ describe(memoizeAsync.name, () => {
     }).toThrow('"value" not a function')
   })
 
+  it('should throw an error if descriptor is undefined', () => {
+    expect(() => {
+      memoizeAsync()({}, 'prop', undefined as any)
+    }).toThrow('descriptor is undefined')
+  })
+
+  it('should accept a numeric maxAge', async () => {
+    let c = 0
+    class A {
+      @memoizeAsync(60000)
+      async value() {
+        return ++c
+      }
+    }
+    const a = new A()
+    expect(await a.value()).toBe(1)
+    expect(await a.value()).toBe(1)
+  })
+
+  it('should accept a string maxAge', async () => {
+    let c = 0
+    class A {
+      @memoizeAsync('1h')
+      async value() {
+        return ++c
+      }
+    }
+    const a = new A()
+    expect(await a.value()).toBe(1)
+    expect(await a.value()).toBe(1)
+  })
+
   it('should memoize functions with parameters', async () => {
     const functionInvocations: Map<string, number> = new Map()
 

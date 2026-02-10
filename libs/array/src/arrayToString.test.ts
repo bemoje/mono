@@ -11,4 +11,8 @@ describe(arrayToString.name, () => {
   it('nested array', () => {
     expect(arrayToString([1, 2, ['2.a', '2.b', ['2.b.a'], '2.c'], 3])).toBe('[1,2,[2.a,2.b,[2.b.a],2.c],3]')
   })
+
+  it('should handle null and undefined items', () => {
+    expect(arrayToString([null, undefined, 'a'])).toBe('[null,undefined,a]')
+  })
 })
