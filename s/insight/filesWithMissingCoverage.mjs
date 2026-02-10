@@ -1,17 +1,60 @@
 import fs from 'fs'
+import path from 'path'
+import { getRepoRootDirpath } from '../util/getRepoRootDirpath.mjs'
 
-const cov = JSON.parse(fs.readFileSync('.coverage/html/coverage-summary.json', 'utf-8'))
+const repoRoot = getRepoRootDirpath()
 
-Object.entries(cov)
-  .filter(([filename,]) => {
-    return filename !== 'total'
+const vitestConfigFilepath = path.join(repoRoot, 'vitest.config.js')
+if (!fs.existsSync(vitestConfigFilepath)) {
+  console.error(`Vitest config file not found at ${vitestConfigFilepath}`)
+  process.exit(1)
+}
+
+const coverageDirectory = fs
+  .readFileSync(vitestConfigFilepath, 'utf-8')
+  .split('\n')
+  .find((line) => line.includes('reportsDirectory:'))
+  ?.match(/reportsDirectory:\s*['"`](.+?)['"`]/)?.[1]
+  ?.trim()
+
+if (!coverageDirectory) {
+  console.error(`Could not find reportsDirectory in Vitest config at ${vitestConfigFilepath}`)
+  process.exit(1)
+}
+
+const coverageSummaryJsonFilepath = path.join(coverageDirectory, 'coverage-summary.json')
+if (!fs.existsSync(coverageSummaryJsonFilepath)) {
+  console.error(`Coverage summary file not found at ${coverageSummaryJsonFilepath}`)
+  process.exit(1)
+}
+
+const coverageSummary = JSON.parse(fs.readFileSync(coverageSummaryJsonFilepath, 'utf-8'))
+
+Object.entries(coverageSummary)
+  //
+  // remove total summary entry
+  .filter(([filepath]) => {
+    return filepath !== 'total'
   })
-  .filter(([_, obj]) => {
-    return obj.lines.total > 0 && Object.values(obj).some((o) => o.pct < 100 && o.total > 0)
+
+  // remove files with no lines of code to cover, eg. files with only types
+  .filter(([_, metrics]) => {
+    return metrics.lines.total > 0
   })
-  .map(([filename,]) => {
-    return filename.replace(/\\+/g, '/').replace('C:/Users/bemoj/repos/mono/', '')
+
+  // keep files with some uncovered lines of code
+  .filter(([_, metrics]) => {
+    return Object.values(metrics).some((metric) => {
+      return metric.pct < 100 && metric.total > 0
+    })
   })
-  .forEach((filename) => {
-    console.log(filename)
+
+  // normalize filepaths and make relative to repo root
+  .map(([filepath]) => {
+    return filepath.replace(/\\+/g, '/').replace(repoRoot, '')
+  })
+
+  // output filepaths
+  .forEach((filepath) => {
+    console.log(filepath)
   })
