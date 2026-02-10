@@ -14,4 +14,10 @@ describe(toError.name, () => {
     expect(result).toBeInstanceOf(Error)
     expect(result.message).toBe(error)
   })
+
+  it('should use default message when input is falsy', () => {
+    const result = toError(null)
+    expect(result).toBeInstanceOf(Error)
+    expect(result.message).toBe('Unknown error occurred.')
+  })
 })

@@ -7,9 +7,7 @@
  */
 export function getConfigurableMethodOrGetterKeys<T extends object>(obj: T): string[] {
   return Object.getOwnPropertyNames(obj).filter((key) => {
-    if (typeof key !== 'string') return false
-    const des = Object.getOwnPropertyDescriptor(obj, key)
-    if (!des) return false
+    const des = Object.getOwnPropertyDescriptor(obj, key)!
     if (!des.configurable) return false
     if (typeof des.value === 'function') return true
     if (typeof des.get === 'function') return true

@@ -13,6 +13,11 @@ describe('NumberFormatter', () => {
       expect(formatter.format(-1234567.89)).toBe('-1,234,567.89')
     })
 
+    it('should format a whole number with decimal padding', () => {
+      const f = new NumberFormatter(2)
+      expect(f.format(1000)).toBe('1,000.00')
+    })
+
     it('should format a number with custom thousand seperator and decimal seperator', () => {
       formatter.thousandSeparator = '-'
       formatter.decimalSeparator = '.'

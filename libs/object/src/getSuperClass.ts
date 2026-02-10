@@ -7,5 +7,5 @@ import type { AnyConstructor } from '@mono/types'
  */
 export function getSuperClass(target: object | AnyConstructor): AnyConstructor {
   const chain = getClassChain(target, { includeSelf: false })
-  return chain[0] || Object
+  return chain[0]
 }
