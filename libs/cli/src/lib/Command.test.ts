@@ -1238,12 +1238,20 @@ describe(Command.name, () => {
   })
 
   describe('addHelpOption', () => {
-    it('should add a help option to a subcommand', () => {
-      const parent = new Command('root')
-      const sub = parent.command('sub')
-      // Subcommands don't auto-add help; use addHelpOption via the protected method
-      // We test that the root command already has help added by the constructor
-      expect(parent.options.some((o) => o.long === 'help')).toBe(true)
+    class TestCommand extends Command {
+      public exposeAddHelpOption() {
+        return this.addHelpOption()
+      }
+    }
+
+    it('should add a help option to a command', () => {
+      // Create a TestCommand subclass instance that starts without options
+      const cmd = new TestCommand('test')
+      // Root commands auto-add help in constructor, so remove it first
+      cmd.options.length = 0
+      cmd.exposeAddHelpOption()
+      expect(cmd.options.some((o) => o.long === 'help')).toBe(true)
+      expect(cmd.options.some((o) => o.short === 'h')).toBe(true)
     })
 
     it('should add --help option with correct description', () => {

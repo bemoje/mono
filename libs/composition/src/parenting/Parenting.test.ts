@@ -54,7 +54,7 @@ describe(Parenting.name, () => {
     })
   })
 
-  describe('depth', () => {
+  describe('depth' satisfies keyof Parenting, () => {
     it('should return 0 for a root object with no parent', () => {
       class Root {}
       Parenting.compose(Root as any)
