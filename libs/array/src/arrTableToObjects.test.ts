@@ -51,4 +51,27 @@ describe('arrTableToObjects', () => {
       { Name: 'Jane', Age: 30, Email: 'jane@example.com' },
     ])
   })
+
+  it('should convert null and undefined headers to empty strings', () => {
+    const rows: any[][] = [
+      [null, undefined, 'Name'],
+      ['a', 'b', 'John'],
+    ]
+    const result = arrTableToObjects(rows)
+    expect(result).toEqual([{ '': 'b', 'Name': 'John' }])
+  })
+
+  it('should skip keys present in ignoreKeys', () => {
+    const headers = ['Name', 'Age', 'Email']
+    const rows = [
+      ['John', 25, 'john@example.com'],
+      ['Jane', 30, 'jane@example.com'],
+    ]
+    const ignoreKeys = new Set(['Age'])
+    const result = arrTableToObjects(rows, headers, ignoreKeys)
+    expect(result).toEqual([
+      { Name: 'John', Email: 'john@example.com' },
+      { Name: 'Jane', Email: 'jane@example.com' },
+    ])
+  })
 })

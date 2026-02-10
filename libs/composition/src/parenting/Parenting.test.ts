@@ -82,4 +82,23 @@ describe(Parenting.name, () => {
       expect((c as any).parenting.depth).toBe(2)
     })
   })
+
+  describe('iterateAncestors' satisfies keyof Parenting, () => {
+    it('should stop iterating when a circular reference is detected', () => {
+      class A {}
+      class B {}
+      Parenting.compose(A as any)
+      Parenting.compose(B as any)
+
+      const a = new A()
+      const b = new B()
+      ;(a as any).parenting.onInstance(b)
+      ;(b as any).parenting.onInstance(a)
+
+      const ancestors = [...(a as any).parenting.iterateAncestors()]
+      expect(ancestors).toHaveLength(2)
+      expect(ancestors[0]).toBe(b)
+      expect(ancestors[1]).toBe(a)
+    })
+  })
 })

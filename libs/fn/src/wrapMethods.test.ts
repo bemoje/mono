@@ -107,4 +107,92 @@ describe(wrapMethods.name, () => {
     expect(target.method1()).toBe('wrapped original method1')
     expect(target.method2()).toBe('original method2')
   })
+
+  it('should skip methods when onMethod is not provided', () => {
+    const target = {
+      method1() {
+        return 'original'
+      },
+    }
+    wrapMethods(target, {})
+    expect(target.method1()).toBe('original')
+  })
+
+  it('should skip getters when onGetter is not provided', () => {
+    const target = {
+      get prop() {
+        return 'original'
+      },
+    }
+    wrapMethods(target, {})
+    expect(target.prop).toBe('original')
+  })
+
+  it('should skip setters when onSetter is not provided', () => {
+    const target = {
+      _val: '',
+      set val(v: string) {
+        this._val = v
+      },
+    }
+    wrapMethods(target, {})
+    target.val = 'test'
+    expect(target._val).toBe('test')
+  })
+
+  it('should skip method when wrapper returns undefined', () => {
+    const target = {
+      method1() {
+        return 'original'
+      },
+    }
+    wrapMethods(target, {
+      onMethod: () => undefined as Any,
+    })
+    expect(target.method1()).toBe('original')
+  })
+
+  it('should skip getter when wrapper returns undefined', () => {
+    const target = {
+      get prop() {
+        return 'original'
+      },
+    }
+    wrapMethods(target, {
+      onGetter: () => undefined as Any,
+    })
+    expect(target.prop).toBe('original')
+  })
+
+  it('should skip setter when wrapper returns undefined', () => {
+    const target = {
+      _val: '',
+      set val(v: string) {
+        this._val = v
+      },
+    }
+    wrapMethods(target, {
+      onSetter: () => undefined as Any,
+    })
+    target.val = 'test'
+    expect(target._val).toBe('test')
+  })
+
+  it('should skip non-configurable properties', () => {
+    const target: Any = {}
+    Object.defineProperty(target, 'method', {
+      value() {
+        return 'original'
+      },
+      configurable: false,
+    })
+    wrapMethods(target, {
+      onMethod: (_t: Any, _k: Any, method: Any) => {
+        return function () {
+          return 'wrapped'
+        }
+      },
+    })
+    expect(target.method()).toBe('original')
+  })
 })
