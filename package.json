@@ -20,7 +20,7 @@
     "insight:depcheckUnused": "node s/insight/depcheckUnused.mjs",
     "insight:checkLibsTsDoc": "node s/insight/checkLibsTsDoc.mjs",
     "insight:knip": "knip --config knip.jsonc --cache --reporter markdown",
-    "insight:knip-fix": "yarn insight:knip -- --fix-type 'files,dependencies,exports,types'",
+    "insight:knip-fix": "knip --config knip.jsonc --cache --reporter markdown --fix-type exports",
     "insight:linesOfCode": "node s/insight/linesOfCode.mjs",
     "docs": "echo '\nDOCS...' && node s/docs/writeReadme.mjs",
     "lint": "echo '\nLINT...' && eslint '{libs,apps,s}/**/*' --fix -c eslint.config.js --cache --ignore-pattern apps/playground",

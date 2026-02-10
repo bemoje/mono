@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
 
   "includeEntryExports": true,
-  "ignoreExportsUsedInFile": true,
+  // "ignoreExportsUsedInFile": true,
 
   "ignore": [".github/copilot/refactoring.mts"],
 
@@ -15,7 +15,6 @@
 
     "apps/*": {
       "entry": ["src/main.ts", "**/*.examples.ts"],
-      "includeEntryExports": false,
     },
     "apps/playground": {
       "entry": ["**/*.ts"],
@@ -23,9 +22,11 @@
 
     "libs/*": {
       "entry": ["src/index.ts", "src/**/*.examples.ts"],
+      "includeEntryExports": false,
     },
     "libs/composition": {
       "entry": ["src/index.ts", "src/**/*.examples.ts"],
+      "includeEntryExports": false,
       "ignoreMembers": ["depth"],
     },
   },
