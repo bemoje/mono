@@ -10,19 +10,19 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 5747  | 5604    | 97.51%     |
-| Functions | 670   | 647     | 96.56%     |
-| Branches  | 1999  | 1905    | 95.29%     |
+| Lines     | 6569  | 6569    | 100%       |
+| Functions | 778   | 778     | 100%       |
+| Branches  | 2387  | 2387    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 539   | 8784          |
-| test      | 401   | 23718         |
+| source    | 536   | 8684          |
+| test      | 414   | 26386         |
 | examples  | 2     | 51            |
-| script    | 45    | 1320          |
-| total     | 987   | 33873         |
+| script    | 46    | 1363          |
+| total     | 998   | 36484         |
 
 ## Table of Contents
 
@@ -397,9 +397,6 @@ describe(ClassToTest.name, () => {
 - `dethisify`: Converts a function from a class method by by making the first argument take the place of the 'this' context. The reverse of
 - `functionSpy`: Wraps a function so that the given
 - `maxConcurrency`: Creates a throttled version of an async function that limits the rate at which the function can be called.
-- `once`: Wraps the function and returns a function that only allows the wrapped function to be executed once. If the wrapped function has already been called, the return value of the first call is returned. Preserves sync/async behavior of the original function. If the first call threw an error, subsequent calls will throw the same error.
-- `onceStrict`: Wraps the function and returns a function that only allows the wrapped function to be called once.
-- `onceSync`: Wraps the function and returns a function that only allows the wrapped function to be executed once. If the wrapped function has already been called, the return value of the first call is returned. If the first call threw an error, subsequent calls will throw the same error.
 - `preserveNameAndLength`: Preserves the name and length of a function or class constructor
 - `sequence`: Creates a function that executes the provided async functions sequentially in order.
 - `setLength`: Set the length of a function.
