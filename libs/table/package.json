@@ -6,12 +6,6 @@
   "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
-  "dependencies": {
-    "@mono/decorators": "workspace:*",
-    "@mono/fs": "workspace:*",
-    "@mono/number": "workspace:*",
-    "@mono/string": "workspace:*"
-  },
   "scripts": {
     "indexts": "node ../../s/clean/indextsWs.mjs",
     "build": "node esbuild.mjs"

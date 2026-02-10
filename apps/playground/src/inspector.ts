@@ -41,5 +41,5 @@ class B extends A {
 }
 
 for (const x of [new A(), new B(), new A(), new B()]) {
-  console.log(x.inspector.inspect())
+  // console.log(x.inspector.inspect())
 }

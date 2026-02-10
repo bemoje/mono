@@ -6,6 +6,8 @@
 
   "ignore": [".github/copilot/refactoring.mts"],
 
+  "ignoreDependencies": ["@mono/*"],
+
   "workspaces": {
     ".": {},
 

@@ -11,13 +11,6 @@
     "indexts": "node ../../s/clean/indextsWs.mjs",
     "build": "node esbuild.mjs"
   },
-  "dependencies": {
-    "@mono/array": "workspace:*",
-    "@mono/fn": "workspace:*",
-    "@mono/object": "workspace:*",
-    "@mono/string": "workspace:*",
-    "@mono/types": "workspace:*"
-  },
   "devDependencies": {
     "type-fest": "^5.4.4"
   },

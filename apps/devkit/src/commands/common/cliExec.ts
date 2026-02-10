@@ -1,6 +1,6 @@
 import { exec, execSync } from 'node:child_process'
 
-function cliExec(
+export function cliExec(
   command: string,
   options: { dryRun?: boolean; quiet?: boolean; cwd?: string; silent?: boolean } = {},
 ) {

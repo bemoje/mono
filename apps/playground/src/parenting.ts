@@ -12,7 +12,7 @@ declare module './parenting' {
 @Parenting.compose
 class Root {
   constructor() {
-    this.parenting.onInstance(null)
+    // this.parenting.onInstance(null)
   }
 }
 
@@ -22,7 +22,7 @@ class Root {
 @Parenting.compose
 class Node {
   constructor(parent: Root | Node) {
-    this.parenting.onInstance(parent)
+    // this.parenting.onInstance(parent)
   }
 }
 
@@ -32,7 +32,7 @@ class Node {
 @Parenting.compose
 class Leaf {
   constructor(parent: Root | Node) {
-    this.parenting.onInstance(parent)
+    // this.parenting.onInstance(parent)
   }
 
   unused() {}
@@ -56,7 +56,7 @@ const L7 = new Leaf(N4)
 console.log('---------------')
 const nodes = [R0, N1, N2, L3, N4, L4, L5, L6, L7]
 nodes.forEach((node, i) => {
-  console.log(node.constructor.name.substring(0, 1) + i + '.depth: ' + node.parenting.depth)
+  // console.log(node.constructor.name.substring(0, 1) + i + '.depth: ' + node.parenting.depth)
 })
 console.log('---------------')
 

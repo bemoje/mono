@@ -6,9 +6,6 @@
   "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
-  "dependencies": {
-    "@mono/fn": "workspace:*"
-  },
   "scripts": {
     "build": "node esbuild.mjs"
   }

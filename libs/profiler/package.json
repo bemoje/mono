@@ -6,12 +6,6 @@
   "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
-  "dependencies": {
-    "@mono/fn": "workspace:*",
-    "@mono/object": "workspace:*",
-    "@mono/table": "workspace:*",
-    "@mono/types": "workspace:*"
-  },
   "scripts": {
     "build": "node esbuild.mjs"
   }

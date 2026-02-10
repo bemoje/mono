@@ -4,15 +4,5 @@
   "packageManager": "yarn@4.3.1",
   "private": true,
   "sideEffects": false,
-  "type": "module",
-  "dependencies": {
-    "@mono/cli": "workspace:*",
-    "@mono/composition": "workspace:*",
-    "@mono/map": "workspace:*",
-    "@mono/monorepo": "workspace:*",
-    "@mono/object": "workspace:*",
-    "@mono/profiler": "workspace:*",
-    "@mono/template": "workspace:*",
-    "@mono/tscode": "workspace:*"
-  }
+  "type": "module"
 }
