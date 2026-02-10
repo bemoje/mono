@@ -23,7 +23,7 @@
     "docs": "echo '\nDOCS...' && node s/docs/writeReadme.mjs",
     "lint": "echo '\nLINT...' && yarn eslint '{libs,apps,s}/**/*' --fix -c eslint.config.js --cache --ignore-pattern apps/playground",
     "format": "echo '\nFORMAT...' && yarn prettier -w --l -u '{.github,.vscode,s,docs,apps,libs}/**/*'",
-    "knip": "knip --reporter markdown",
+    "knip": "knip --config knip.jsonc --cache --reporter markdown",
     "typecheck": "echo '\nTYPECHECK...' && yarn tsc -p tsconfig.json --noEmit",
     "test": "yarn vitest --config 'vitest.config.js' --run",
     "test:watch": "yarn vitest --config 'vitest.config.js'",

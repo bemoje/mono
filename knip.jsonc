@@ -5,7 +5,7 @@
   // "ignoreExportsUsedInFile": true,
 
   "ignore": [".github/copilot/refactoring.mts"],
-  "ignoreDependencies": ["@mono/*"],
+  // "ignoreDependencies": ["@mono/*"],
 
   "workspaces": {
     ".": {},

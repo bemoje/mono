@@ -8,5 +8,14 @@
   "scripts": {
     "build": "node esbuild.mjs",
     "buildPackage": "node ../../s/util/buildcli.mjs devkit"
+  },
+  "dependencies": {
+    "@mono/monorepo": "workspace:*",
+    "@mono/tscode": "workspace:*",
+    "@mono/template": "workspace:*",
+    "@mono/config": "workspace:*",
+    "@mono/terminal": "workspace:*",
+    "@mono/stacktrace": "workspace:*",
+    "@mono/map": "workspace:*"
   }
 }
