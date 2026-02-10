@@ -339,17 +339,15 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     parsed.values = objSortKeys(parsed.values, (a, b) => {
       return a[1] === undefined
         ? 1
-        : b[1] === undefined
-          ? -1
-          : a[1] === false
-            ? 1
-            : b[1] === false
-              ? -1
-              : a[1] === true
-                ? 1
-                : b[1] === true
-                  ? -1
-                  : 0
+        : a[1] === false
+          ? 1
+          : b[1] === false
+            ? -1
+            : a[1] === true
+              ? 1
+              : b[1] === true
+                ? -1
+                : 0
     })
 
     // Handle positional arguments
