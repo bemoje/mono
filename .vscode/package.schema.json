@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Custom schema for mono repo root package.json script descriptions.",
+  "type": "object",
+  "properties": {
+    "scripts": {
+      "type": "object",
+      "properties": {
+        "ws": {
+          "type": "string",
+          "description": "Execute a command inside a workspace.\n\nUsage: `yarn ws \"@mono/regex\" \"build\"`"
+        },
+        "r": {
+          "type": "string",
+          "description": "Execute/run a file (.ts, .test.ts, .js, .ps1, .mjs).\n\nUsage: `yarn r <filepath>`"
+        },
+        "clean": {
+          "type": "string",
+          "description": "Runs all clean tasks: fixOwnWsImports, indexts, ensureVitestImports, removeEmptyWsFiles."
+        },
+        "clean:fixOwnWsImports": {
+          "type": "string",
+          "description": "Fixes import statements where a path alias is used to reference its own workspace (can cause build problems due to circular references)."
+        },
+        "clean:indexts": {
+          "type": "string",
+          "description": "Generate barrel export files at src/index.ts (runs script defined in each workspace package.json)."
+        },
+        "clean:ensureVitestImports": {
+          "type": "string",
+          "description": "Ensures that all test files have the necessary Vitest imports."
+        },
+        "clean:removeEmptyWsFiles": {
+          "type": "string",
+          "description": "Removes any files that have size 0 bytes for all workspaces."
+        },
+        "build": {
+          "type": "string",
+          "description": "Builds all workspaces."
+        },
+        "insight": {
+          "type": "string",
+          "description": "Runs all insight tasks: knip, filesWithMissingCoverage, linesOfCode."
+        },
+        "insight:knip": {
+          "type": "string",
+          "description": "Runs knip to find unused exports, dependencies, and files."
+        },
+        "insight:filesWithMissingCoverage": {
+          "type": "string",
+          "description": "Lists files with incomplete code coverage."
+        },
+        "insight:checkLibsTsDoc": {
+          "type": "string",
+          "description": "Validates TSDoc documentation for all library exports."
+        },
+        "insight:linesOfCode": {
+          "type": "string",
+          "description": "Counts lines of code across the monorepo by category."
+        },
+        "docs": {
+          "type": "string",
+          "description": "Generates and writes the README.md file with auto-generated documentation."
+        },
+        "lint": {
+          "type": "string",
+          "description": "Runs eslint on all workspaces with auto-fix."
+        },
+        "format": {
+          "type": "string",
+          "description": "Formats all files in the monorepo using prettier."
+        },
+        "typecheck": {
+          "type": "string",
+          "description": "Runs tsc typecheck on all workspaces (noEmit)."
+        },
+        "test": {
+          "type": "string",
+          "description": "Run vitest normally without coverage or watch mode.\n\nUsage: `yarn test` or `yarn test <glob>`"
+        },
+        "test:watch": {
+          "type": "string",
+          "description": "Run vitest in watch mode without coverage."
+        },
+        "test-coverage": {
+          "type": "string",
+          "description": "Run vitest on all workspaces and emit coverage (html, json summary) for workspaces in libs/ dir."
+        },
+        "test-coverage:open": {
+          "type": "string",
+          "description": "Open the coverage index html file with OS default app."
+        },
+        "precommit": {
+          "type": "string",
+          "description": "Runs all pre-commit checks: install, clean, typecheck, lint, build, test-coverage, docs, format, insight."
+        },
+        "dk": {
+          "type": "string",
+          "description": "Build, then run devkit CLI (apps/devkit)."
+        },
+        "DK": {
+          "type": "string",
+          "description": "Run devkit CLI (apps/devkit) without building first."
+        }
+      }
+    }
+  }
+}

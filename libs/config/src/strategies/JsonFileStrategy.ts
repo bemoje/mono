@@ -8,8 +8,11 @@ export class JsonFileStrategy<T> implements ConfigDataStrategy<T> {
   constructor(readonly filepath: string) {}
 
   load(): T | undefined {
-    if (!fs.existsSync(this.filepath)) return undefined
-    return fs.readJsonSync(this.filepath)
+    try {
+      return fs.readJsonSync(this.filepath)
+    } catch (error) {
+      return undefined
+    }
   }
 
   save(config: T): void {

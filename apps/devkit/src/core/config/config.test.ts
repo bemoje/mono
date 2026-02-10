@@ -10,7 +10,7 @@ describe('config', () => {
 
   it('should export dataPath as a string path', () => {
     expect(typeof dataPath).toBe('string')
-    expect(dataPath).toContain('repo.config.json')
+    expect(dataPath).toContain('devkit.config.json')
   })
 
   it('should export configFile as a ConfigFile instance', () => {

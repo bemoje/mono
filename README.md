@@ -30,6 +30,9 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
   - [Status](#status)
   - [Table of Contents](#table-of-contents)
   - [Scripts](#scripts)
+    - [`package.json`](#packagejson)
+    - [`./s/` directory](#s-directory)
+    - [`devkit` CLI](#devkit-cli)
   - [Workspaces](#workspaces)
     - [Documentation](#documentation)
       - [TSDoc](#tsdoc)
@@ -54,40 +57,20 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 ## Scripts
 
-**package.json**
+### `package.json`
 
-```bash
-yarn ws                         # Execute a command inside a workspace, eg. `yarn ws "@mono/regex" "build"`
-yarn r                          # Execute/run a file (.ts, .test.ts, .js, .ps1, .mjs)
-yarn clean
-yarn clean:fixOwnWsImports      # Fixes imports statements where a path alias is used to reference its own workspace (can cause build problems due to circular references)
-yarn clean:indexts              # Generate barrel export files at src/index.ts (runs script defined in each workspace package.json)
-yarn clean:ensureVitestImports  # Ensures that all test files have the necessary Vitest imports
-yarn clean:removeEmptyWsFiles   # Removes any files that have size 0 bytes for all workspaces
-yarn build                      # Builds all workspaces
-yarn insight
-yarn insight:knip               # Runs knip to find unused exports, dependencies, and files
-yarn insight:filesWithMissingCoverage # Lists files with incomplete code coverage
-yarn insight:checkLibsTsDoc     # Validates TSDoc documentation for all library exports
-yarn insight:linesOfCode        # Counts lines of code across the monorepo by category
-yarn docs                       # Generates and writes the README.md file with auto-generated documentation
-yarn lint                       # Runs eslint on all workspaces
-yarn format                     # Formats all files in the monorepo using prettier
-yarn typecheck                  # Runs tsc typecheck on all workspaces
-yarn test                       # Run vitest normally without coverage or watch mode
-yarn test:watch                 # Run vitest in watch mode without coverage
-yarn test-coverage              # Run vitest on all workspaces and emit coverage (html, json summary) (ONLY) for workspaces in libs/ dir
-yarn test-coverage:open         # Open the coverage index html file with OS default app
-yarn precommit                  # Runs all pre-commit checks (clean, typecheck, lint, build, test-coverage, docs, format, insight)
-yarn dk                         # build, then run devkit CLI (apps/devkit)
-yarn DK                         # run devkit CLI (apps/devkit) without building first
-```
+Scripts are defined in the root [`package.json`](/package.json). Each script property has a description via a custom JSON schema ([`.vscode/package.schema.json`](/.vscode/package.schema.json)), which is shown when hovering over a script name in VS Code.
 
-**`./s/` directory**
+### `./s/` directory
+
 The `s` directory contains .mjs scripts that can import all repo dependencies.
 These are used for various things like repo maintainence tasks, build steps, or other convenience scripts.
 This is all a bit messy and bound to change a lot because repo management is being experimented with.
 When styles and patterns are more established, this will need a lot of refactoring and documentation.
+
+### `devkit` CLI
+
+The [`devkit`](/apps/devkit) CLI provides development utilities for the monorepo. Run with `yarn dk` (build + run) or `yarn DK` (run without building).
 
 ## Workspaces
 
