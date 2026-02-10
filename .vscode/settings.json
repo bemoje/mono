@@ -71,7 +71,7 @@
       "fileMatch": ["package.json"]
     },
     {
-      "url": "./.vscode/package.schema.json",
+      "url": "./docs/package.schema.json",
       "fileMatch": ["package.json"]
     },
     {

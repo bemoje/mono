@@ -59,7 +59,7 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 ### `package.json`
 
-Scripts are defined in the root [`package.json`](/package.json). Each script property has a description via a custom JSON schema ([`.vscode/package.schema.json`](/.vscode/package.schema.json)), which is shown when hovering over a script name in VS Code.
+Scripts are defined in the root [`package.json`](/package.json). Each script property has a description via a custom JSON schema ([`docs/package.schema.json`](/docs/package.schema.json)), which is shown when hovering over a script name in VS Code.
 
 ### `./s/` directory
 
