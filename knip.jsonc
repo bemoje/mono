@@ -1,0 +1,58 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+
+  // "includeEntryExports": true,
+  // "ignoreExportsUsedInFile": true,
+
+  "ignore": [".github/copilot/refactoring.mts"],
+
+  "workspaces": {
+    ".": {},
+
+    "s": {
+      "entry": ["**/*.mjs"],
+    },
+
+    "libs/*": {
+      // "entry": ["src/index.ts"],
+    },
+
+    "libs/{profiler,config,monorepo,table,object,number,tscode,template,fn,decorators,path,is,node,cli,map}": {
+      // "entry": ["src/index.ts"],
+      "ignoreDependencies": ["@mono/*"],
+    },
+    "libs/composition": {
+      // "entry": ["src/index.ts"],
+      "ignoreDependencies": ["@mono/*"],
+      "ignoreMembers": ["depth"],
+    },
+
+    "apps/*": {
+      // "entry": ["src/main.ts"],
+      "includeEntryExports": true,
+    },
+    "apps/playground": {
+      "entry": ["**/*.ts"],
+      "includeEntryExports": true,
+      "ignoreDependencies": ["@mono/*"],
+    },
+  },
+
+  "include": [
+    "files",
+    "dependencies",
+    "devDependencies",
+    "optionalPeerDependencies",
+    "unlisted",
+    "binaries",
+    "unresolved",
+    "exports",
+    "types",
+    "nsExports",
+    "nsTypes",
+    "duplicates",
+    "enumMembers",
+    "classMembers",
+    "catalog",
+  ],
+}
