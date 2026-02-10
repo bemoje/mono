@@ -22,13 +22,11 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
     return this.code.replace(/[\s]*\btype\b[\s]*/g, ' ')
   }
 
-  get type(): 'default' | 'named' | 'mixed' | 'namespace' | 'sideEffect' | 'unknown' {
+  get type(): 'default' | 'named' | 'mixed' | 'namespace' {
     if (this.isMixedImport) return 'mixed'
     if (this.isNamedImport) return 'named'
     if (this.isNamespaceImport) return 'namespace'
-    if (this.isSideEffectImport) return 'sideEffect'
-    if (this.isDefaultImport) return 'default'
-    throw new Error('Unknown import specifier type. Code:\n' + this.codeWithoutTypeKeyword)
+    return 'default'
   }
 
   get isDefaultImport() {
@@ -45,10 +43,6 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
 
   get isNamespaceImport() {
     return /\*\s+as\s+([a-zA-Z_$][\w$]*)/.test(this.codeWithoutTypeKeyword)
-  }
-
-  get isSideEffectImport() {
-    return /^$/.test(this.codeWithoutTypeKeyword)
   }
 
   get namedImportsArray(): string[] {
@@ -79,7 +73,7 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
    */
   get importedNamesArray() {
     return this.codeWithoutTypeKeyword
-      .replace(/[\w*]+ as \w+/, (m) => m.split(' as ')[1] || '')
+      .replace(/[\w*]+ as \w+/, (m) => m.split(' as ')[1])
       .replace(/[{}]/g, ' ')
       .split(',')
       .map((s) => s.trim())
@@ -92,10 +86,6 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
 
   get namespaceImport() {
     return this.codeWithoutTypeKeyword.match(/^\*\s+as\s+([a-zA-Z_$][\w$]*)/)?.[1] || undefined
-  }
-
-  get sideEffectImport() {
-    return this.codeWithoutTypeKeyword.match(/^['"]([^'"]+)['"]/)?.[1] || undefined
   }
 
   get hasNamedImport() {

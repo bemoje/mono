@@ -28,6 +28,16 @@ vi.mock('upath', () => ({
 vi.mock('../file/TsFile')
 vi.mock('../file/TestFile')
 vi.mock('../util/resolveModuleImportPath')
+vi.mock('@mono/path', async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...(actual as object),
+    hasParentDirname: vi.fn(),
+  }
+})
+vi.mock('../util/hasExtnamePrefix', () => ({
+  hasExtnamePrefix: vi.fn(),
+}))
 
 const mockPath = vi.mocked(path)
 const mockFsExtra = vi.mocked(fsExtra)
@@ -37,12 +47,16 @@ const mockTestFile = vi.mocked(TestFile)
 
 // Mock resolveModuleImportPath
 import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
+import { hasParentDirname } from '@mono/path'
+import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
 
 vi.mock('../util/resolveModuleImportPath', () => ({
   resolveModuleImportPath: vi.fn(),
 }))
 
 const mockResolveModuleImportPath = vi.mocked(resolveModuleImportPath)
+const mockHasParentDirname = vi.mocked(hasParentDirname)
+const mockHasExtnamePrefix = vi.mocked(hasExtnamePrefix)
 
 describe(Workspace.name, () => {
   let mockMonoRepo: MonoRepo
@@ -218,6 +232,51 @@ describe(Workspace.name, () => {
       mockFsExtra.readJsonSync.mockReturnValue({ name: 'test' } as PackageJson)
 
       expect(workspace.installedDevDependencies).toEqual([])
+    })
+  })
+
+  describe('tsFiles getter', () => {
+    it('should filter and map walkDirectory results into TsFile instances', () => {
+      const walkResults = [
+        ['/test/repo/libs/example/src/foo.ts', {}],
+        ['/test/repo/libs/example/src/bar.test.ts', {}],
+      ] as any
+      mockFs.walkDirectory.mockImplementation((_dirpath: string, options: any) => {
+        // Exercise the filter callback with various basenames
+        options.filter('', 'node_modules')
+        options.filter('', 'coverage')
+        options.filter('', '.hidden')
+        options.filter('', 'src')
+        return walkResults
+      })
+      mockHasParentDirname.mockReturnValue(true)
+      mockHasExtnamePrefix.mockReturnValueOnce(false).mockReturnValueOnce(true)
+
+      const ws = new Workspace(mockMonoRepo, testWorkspacePath)
+      const result = ws.tsFiles
+      expect(result).toHaveLength(1)
+    })
+  })
+
+  describe('testFiles getter', () => {
+    it('should filter and map walkDirectory results into TestFile instances', () => {
+      const walkResults = [
+        ['/test/repo/libs/example/src/foo.test.ts', {}],
+        ['/test/repo/libs/example/src/bar.ts', {}],
+      ] as any
+      mockFs.walkDirectory.mockImplementation((_dirpath: string, options: any) => {
+        options.filter('', 'node_modules')
+        options.filter('', 'coverage')
+        options.filter('', '.hidden')
+        options.filter('', 'src')
+        return walkResults
+      })
+      mockHasParentDirname.mockReturnValue(true)
+      mockHasExtnamePrefix.mockReturnValueOnce(false).mockReturnValueOnce(true)
+
+      const ws = new Workspace(mockMonoRepo, testWorkspacePath)
+      const result = ws.testFiles
+      expect(result).toHaveLength(1)
     })
   })
 
@@ -454,6 +513,39 @@ describe(Workspace.name, () => {
 
         expect(result[0].withValue).toBe('./someExport')
       })
+
+      it('should skip when resolveModuleImportPath returns undefined', () => {
+        const mockFiles = [
+          {
+            path: '/test/repo/libs/example/src/file1.ts',
+            tsCode: {
+              imports: [{ module: { from: '@mono/example' }, specifiers: { importedNamesArray: ['foo'] } }],
+            },
+          },
+        ] as any
+
+        vi.spyOn(workspace, 'files', 'get').mockReturnValue(mockFiles)
+        mockResolveModuleImportPath.mockReturnValue(undefined as any)
+
+        const result = workspace.incorrectlyImportedRepoWorkspaces
+        expect(result).toEqual([])
+      })
+
+      it('should skip imports not matching workspace name', () => {
+        const mockFiles = [
+          {
+            path: '/test/repo/libs/example/src/file1.ts',
+            tsCode: {
+              imports: [{ module: { from: 'lodash-es' } }],
+            },
+          },
+        ] as any
+
+        vi.spyOn(workspace, 'files', 'get').mockReturnValue(mockFiles)
+
+        const result = workspace.incorrectlyImportedRepoWorkspaces
+        expect(result).toEqual([])
+      })
     })
 
     describe('dependencyProblems getter', () => {
@@ -607,6 +699,16 @@ describe(Workspace.name, () => {
 
       const expectedIgnores = ['global-dev-dep', 'global-dep', '@mono/*'].join(',')
       expect(mockExecPromise).toHaveBeenCalledWith(expect.stringContaining(`--ignores "${expectedIgnores}"`))
+    })
+
+    it('should handle parent packageJson without dependencies or devDependencies', async () => {
+      const minimalRepo = { packageJson: { name: 'mono' } } as any
+      const ws = new Workspace(minimalRepo, testWorkspacePath)
+      mockExecPromise.mockResolvedValue({ stdout: '{}' })
+
+      await ws.depcheck()
+
+      expect(mockExecPromise).toHaveBeenCalledWith(expect.stringContaining('--ignores "@mono/*"'))
     })
   })
 

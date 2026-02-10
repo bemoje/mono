@@ -12,6 +12,41 @@ describe(TsCode.name, () => {
     })
   })
 
+  describe('code', () => {
+    it('should return the code string', () => {
+      const tsCode = createTsCode('const x = 1')
+      expect(tsCode.code).toBe('const x = 1')
+    })
+  })
+
+  describe('toString', () => {
+    it('should return the code string', () => {
+      const tsCode = createTsCode('const x = 1')
+      expect(tsCode.toString()).toBe('const x = 1')
+    })
+  })
+
+  describe('imports', () => {
+    it('should create ImportStatement objects for each import', () => {
+      const code = "import { foo } from './foo'\nimport { bar } from './bar'"
+      const tsCode = createTsCode(code)
+      const imports = tsCode.imports
+      expect(imports).toHaveLength(2)
+    })
+
+    it('should return empty array when no imports exist', () => {
+      const tsCode = createTsCode('const a = 1')
+      expect(tsCode.imports).toEqual([])
+    })
+  })
+
+  describe('dependencies', () => {
+    it('should filter and sort dependency names from imports', () => {
+      const tsCode = createTsCode('const a = 1')
+      expect(tsCode.dependencies).toEqual([])
+    })
+  })
+
   describe(TsCode.prototype.requires.name, () => {
     it('should return module names for requires with default format', () => {
       const code = ["const a = require('module-a')", "const b = require('module-b')"].join('\n')

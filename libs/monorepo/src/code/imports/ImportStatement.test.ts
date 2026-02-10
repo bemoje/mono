@@ -66,4 +66,30 @@ describe(ImportStatement.name, () => {
       expect(result).toEqual(["import 'bar'"])
     })
   })
+
+  describe('filepath', () => {
+    it('should throw when no TsFile ancestor exists', () => {
+      const stmt = getImportStatement("import { Foo } from 'bar'")
+      expect(() => stmt.filepath).toThrow()
+    })
+  })
+
+  describe('specifiers', () => {
+    it('should return undefined for side-effect imports', () => {
+      const stmt = getImportStatement("import 'bar'")
+      expect(stmt.specifiers).toBeUndefined()
+    })
+
+    it('should return ImportSpecifiers instance for named imports', () => {
+      const stmt = getImportStatement("import { Foo } from 'bar'")
+      expect(stmt.specifiers).toBeDefined()
+    })
+  })
+
+  describe('module', () => {
+    it('should return ModuleSpecifier instance', () => {
+      const stmt = getImportStatement("import { Foo } from 'bar'")
+      expect(stmt.module).toBeDefined()
+    })
+  })
 })

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { File } from './File'
+import fs from 'node:fs'
 
 vi.mock('node:fs', () => ({
   default: {
@@ -121,6 +122,33 @@ describe(File.name, () => {
 
     it('should return false for other filenames', () => {
       expect(createFile('/workspace/src/file.ts').isIndexFile).toBe(false)
+    })
+  })
+
+  describe('isSourceFile', () => {
+    it('should return true for regular source files in src/', () => {
+      expect(createFile('/workspace/src/file.ts').isSourceFile).toBe(true)
+    })
+
+    it('should return false for test files in src/', () => {
+      expect(createFile('/workspace/src/file.test.ts').isSourceFile).toBe(false)
+    })
+
+    it('should return false for files not in src/', () => {
+      expect(createFile('/workspace/other/file.ts').isSourceFile).toBe(false)
+    })
+  })
+
+  describe('readFile', () => {
+    it('should read file contents', () => {
+      const file = createFile('/workspace/src/file.ts')
+      expect((file as any).readFile()).toBe('')
+    })
+
+    it('should throw when file does not exist', () => {
+      vi.mocked(fs.existsSync).mockReturnValueOnce(false)
+      const file = createFile('/workspace/src/missing.ts')
+      expect(() => (file as any).readFile()).toThrow('File not found')
     })
   })
 })

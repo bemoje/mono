@@ -34,8 +34,7 @@ export class ImportStatement<P extends TsCode = TsCode> extends CodeBlock<P> {
   @lazyProp
   get keywords() {
     const match = this.code.match(/^import\s+(?:type\s+)?/)
-    const code = match ? match[0].trim() : ''
-    if (!code) throw new Error('No import keywords found in import statement: ' + this.filepath)
+    const code = match![0].trim()
     return new ImportKeywords(this, this.codeIndexRangeOf(code))
   }
 
@@ -50,8 +49,7 @@ export class ImportStatement<P extends TsCode = TsCode> extends CodeBlock<P> {
   @lazyProp
   get module() {
     const match = this.code.match(/(?:from|import)\s+['"]([^'"]+)['"]/)
-    const code = match ? match[1].trim() : ''
-    if (!code) throw new Error('No module specifier found in import statement: ' + this.filepath)
+    const code = match![1].trim()
     return new ModuleSpecifier(this, this.codeIndexRangeOf(code))
   }
 

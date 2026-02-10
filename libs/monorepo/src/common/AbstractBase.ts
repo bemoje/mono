@@ -40,7 +40,6 @@ export abstract class AbstractBase<P extends object | null = object | null> impl
 
   findParentDeep<T extends AbstractBase>(predicate: (parent: T) => boolean): T | undefined {
     for (const parent of this.parenting.iterateAncestors()) {
-      if (!parent) continue
       if (predicate(parent as T)) {
         return parent as T
       }

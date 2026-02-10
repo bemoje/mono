@@ -16,6 +16,134 @@ describe(ModuleSpecifier.name, () => {
     })
   })
 
+  describe('from', () => {
+    it('should return the module specifier string', () => {
+      const mod = getModule("import { Foo } from './local'")
+      expect(mod.from).toBe('./local')
+    })
+  })
+
+  describe('dependency', () => {
+    it('should return the package name for external packages', () => {
+      const mod = getModule("import { Foo } from 'lodash'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
+      expect(mod.dependency).toBe('lodash')
+    })
+
+    it('should return scoped package name', () => {
+      const mod = getModule("import { Foo } from '@scope/pkg'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
+      expect(mod.dependency).toBe('@scope/pkg')
+    })
+
+    it('should return package name without subpath for deep imports', () => {
+      const mod = getModule("import { Foo } from 'lodash/fp'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
+      expect(mod.dependency).toBe('lodash')
+    })
+
+    it('should return undefined for relative imports', () => {
+      const mod = getModule("import { Foo } from './local'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
+      expect(mod.dependency).toBeUndefined()
+    })
+
+    it('should return undefined for builtin modules', () => {
+      const mod = getModule("import { Foo } from 'fs'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
+      expect(mod.dependency).toBeUndefined()
+    })
+  })
+
+  describe('isBuiltin', () => {
+    it('should return true for node builtins', () => {
+      const mod = getModule("import { readFile } from 'fs'")
+      expect(mod.isBuiltin).toBe(true)
+    })
+
+    it('should return true for node: prefixed builtins', () => {
+      const mod = getModule("import { readFile } from 'node:fs'")
+      expect(mod.isBuiltin).toBe(true)
+    })
+
+    it('should return false for external packages', () => {
+      const mod = getModule("import { Foo } from 'lodash'")
+      expect(mod.isBuiltin).toBe(false)
+    })
+  })
+
+  describe('isScoped', () => {
+    it('should return true for scoped packages', () => {
+      const mod = getModule("import { Foo } from '@scope/pkg'")
+      expect(mod.isScoped).toBe(true)
+    })
+
+    it('should return false for unscoped packages', () => {
+      const mod = getModule("import { Foo } from 'lodash'")
+      expect(mod.isScoped).toBe(false)
+    })
+  })
+
+  describe('isRepoScoped', () => {
+    it('should return true for repo-scoped imports', () => {
+      const mod = getModule("import { Foo } from '@mono/array'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      expect(mod.isRepoScoped).toBe(true)
+    })
+
+    it('should return false for other scoped imports', () => {
+      const mod = getModule("import { Foo } from '@other/pkg'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      expect(mod.isRepoScoped).toBe(false)
+    })
+  })
+
+  describe('isRelative', () => {
+    it('should return true for relative imports', () => {
+      const mod = getModule("import { Foo } from './local'")
+      expect(mod.isRelative).toBe(true)
+    })
+
+    it('should return false for package imports', () => {
+      const mod = getModule("import { Foo } from 'lodash'")
+      expect(mod.isRelative).toBe(false)
+    })
+  })
+
+  describe('isExternal', () => {
+    it('should return true for external packages', () => {
+      const mod = getModule("import { Foo } from 'lodash'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      expect(mod.isExternal).toBe(true)
+    })
+
+    it('should return false for builtins', () => {
+      const mod = getModule("import { Foo } from 'fs'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      expect(mod.isExternal).toBe(false)
+    })
+
+    it('should return false for relative imports', () => {
+      const mod = getModule("import { Foo } from './local'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      expect(mod.isExternal).toBe(false)
+    })
+  })
+
+  describe('isDependency', () => {
+    it('should return true for external packages', () => {
+      const mod = getModule("import { Foo } from 'lodash'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      expect(mod.isDependency).toBe(true)
+    })
+
+    it('should return false for relative imports', () => {
+      const mod = getModule("import { Foo } from './local'")
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      expect(mod.isDependency).toBe(false)
+    })
+  })
+
   describe('isFromRepoRoot', () => {
     it('should return true for imports starting with /', () => {
       const mod = getModule("import { Foo } from '/root/path'")
