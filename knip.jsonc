@@ -11,23 +11,21 @@
 
     "s": {
       "entry": ["**/*.mjs"],
-      "includeEntryExports": false,
     },
 
     "apps/*": {
-      "entry": ["src/main.ts", "src/**/*.{examples,temp}.ts"],
-      // "includeEntryExports": false,
+      "entry": ["src/main.ts", "**/*.examples.ts"],
+      "includeEntryExports": false,
     },
     "apps/playground": {
-      "entry": ["**/*.ts", "src/**/*.{examples,temp}.ts"],
-      // "includeEntryExports": false,
+      "entry": ["**/*.ts"],
     },
 
     "libs/*": {
-      "entry": ["src/index.ts", "src/**/*.{examples,temp}.ts"],
+      "entry": ["src/index.ts", "src/**/*.examples.ts"],
     },
     "libs/composition": {
-      "entry": ["src/index.ts", "src/**/*.{examples,temp}.ts"],
+      "entry": ["src/index.ts", "src/**/*.examples.ts"],
       "ignoreMembers": ["depth"],
     },
   },
