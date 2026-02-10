@@ -16,7 +16,7 @@
         },
         "clean": {
           "type": "string",
-          "description": "Runs all clean tasks: fixOwnWsImports, indexts, ensureVitestImports, removeEmptyWsFiles."
+          "description": "Runs all clean tasks: fixOwnWsImports, indexts, ensureVitestImports, removeEmptyWsFiles, replaceBadDashChars."
         },
         "clean:fixOwnWsImports": {
           "type": "string",
@@ -33,6 +33,10 @@
         "clean:removeEmptyWsFiles": {
           "type": "string",
           "description": "Removes any files that have size 0 bytes for all workspaces."
+        },
+        "clean:replaceBadDashChars": {
+          "type": "string",
+          "description": "Replaces bad dash characters (em dash U+2014) with regular hyphens in all workspace files."
         },
         "build": {
           "type": "string",
