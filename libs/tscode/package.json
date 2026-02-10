@@ -6,6 +6,9 @@
   "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
+  "dependencies": {
+    "@mono/regex": "workspace:*"
+  },
   "scripts": {
     "indexts": "node ../../s/clean/indextsWs.mjs",
     "build": "node esbuild.mjs"

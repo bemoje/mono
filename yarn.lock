@@ -669,29 +669,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mono/array@workspace:libs/array":
+"@mono/array@workspace:*, @mono/array@workspace:libs/array":
   version: 0.0.0-use.local
   resolution: "@mono/array@workspace:libs/array"
   languageName: unknown
   linkType: soft
 
-"@mono/cli@workspace:libs/cli":
+"@mono/cli@workspace:*, @mono/cli@workspace:libs/cli":
   version: 0.0.0-use.local
   resolution: "@mono/cli@workspace:libs/cli"
   dependencies:
+    "@mono/array": "workspace:*"
+    "@mono/fn": "workspace:*"
+    "@mono/object": "workspace:*"
+    "@mono/string": "workspace:*"
+    "@mono/types": "workspace:*"
     type-fest: "npm:^5.4.4"
   languageName: unknown
   linkType: soft
 
-"@mono/composition@workspace:libs/composition":
+"@mono/composition@workspace:*, @mono/composition@workspace:libs/composition":
   version: 0.0.0-use.local
   resolution: "@mono/composition@workspace:libs/composition"
+  dependencies:
+    "@mono/object": "workspace:*"
+    "@mono/types": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/config@workspace:libs/config":
+"@mono/config@workspace:*, @mono/config@workspace:libs/config":
   version: 0.0.0-use.local
   resolution: "@mono/config@workspace:libs/config"
+  dependencies:
+    "@mono/os": "workspace:*"
+    "@mono/tschema": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -707,133 +718,179 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mono/decorators@workspace:libs/decorators":
+"@mono/decorators@workspace:*, @mono/decorators@workspace:libs/decorators":
   version: 0.0.0-use.local
   resolution: "@mono/decorators@workspace:libs/decorators"
+  dependencies:
+    "@mono/map": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/fn@workspace:libs/fn":
+"@mono/fn@workspace:*, @mono/fn@workspace:libs/fn":
   version: 0.0.0-use.local
   resolution: "@mono/fn@workspace:libs/fn"
+  dependencies:
+    "@mono/object": "workspace:*"
+    "@mono/types": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/fs@workspace:libs/fs":
+"@mono/fs@workspace:*, @mono/fs@workspace:libs/fs":
   version: 0.0.0-use.local
   resolution: "@mono/fs@workspace:libs/fs"
   languageName: unknown
   linkType: soft
 
-"@mono/is@workspace:libs/is":
+"@mono/is@workspace:*, @mono/is@workspace:libs/is":
   version: 0.0.0-use.local
   resolution: "@mono/is@workspace:libs/is"
+  dependencies:
+    "@mono/types": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/iter@workspace:libs/iter":
+"@mono/iter@workspace:*, @mono/iter@workspace:libs/iter":
   version: 0.0.0-use.local
   resolution: "@mono/iter@workspace:libs/iter"
   languageName: unknown
   linkType: soft
 
-"@mono/map@workspace:libs/map":
+"@mono/map@workspace:*, @mono/map@workspace:libs/map":
   version: 0.0.0-use.local
   resolution: "@mono/map@workspace:libs/map"
+  dependencies:
+    "@mono/composition": "workspace:*"
+    "@mono/iter": "workspace:*"
+    "@mono/object": "workspace:*"
+    "@mono/types": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/monorepo@workspace:libs/monorepo":
+"@mono/monorepo@workspace:*, @mono/monorepo@workspace:libs/monorepo":
   version: 0.0.0-use.local
   resolution: "@mono/monorepo@workspace:libs/monorepo"
+  dependencies:
+    "@mono/array": "workspace:*"
+    "@mono/composition": "workspace:*"
+    "@mono/decorators": "workspace:*"
+    "@mono/fs": "workspace:*"
+    "@mono/path": "workspace:*"
+    "@mono/regex": "workspace:*"
+    "@mono/tscode": "workspace:*"
+    "@mono/types": "workspace:*"
   languageName: unknown
   linkType: soft
 
 "@mono/node@workspace:libs/node":
   version: 0.0.0-use.local
   resolution: "@mono/node@workspace:libs/node"
+  dependencies:
+    "@mono/number": "workspace:*"
+    "@mono/types": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/number@workspace:libs/number":
+"@mono/number@workspace:*, @mono/number@workspace:libs/number":
   version: 0.0.0-use.local
   resolution: "@mono/number@workspace:libs/number"
+  dependencies:
+    "@mono/is": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/object@workspace:libs/object":
+"@mono/object@workspace:*, @mono/object@workspace:libs/object":
   version: 0.0.0-use.local
   resolution: "@mono/object@workspace:libs/object"
+  dependencies:
+    "@mono/is": "workspace:*"
+    "@mono/iter": "workspace:*"
+    "@mono/types": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/os@workspace:libs/os":
+"@mono/os@workspace:*, @mono/os@workspace:libs/os":
   version: 0.0.0-use.local
   resolution: "@mono/os@workspace:libs/os"
   languageName: unknown
   linkType: soft
 
-"@mono/path@workspace:libs/path":
+"@mono/path@workspace:*, @mono/path@workspace:libs/path":
   version: 0.0.0-use.local
   resolution: "@mono/path@workspace:libs/path"
+  dependencies:
+    "@mono/fn": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/profiler@workspace:libs/profiler":
+"@mono/profiler@workspace:*, @mono/profiler@workspace:libs/profiler":
   version: 0.0.0-use.local
   resolution: "@mono/profiler@workspace:libs/profiler"
+  dependencies:
+    "@mono/fn": "workspace:*"
+    "@mono/object": "workspace:*"
+    "@mono/table": "workspace:*"
+    "@mono/types": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/regex@workspace:libs/regex":
+"@mono/regex@workspace:*, @mono/regex@workspace:libs/regex":
   version: 0.0.0-use.local
   resolution: "@mono/regex@workspace:libs/regex"
   languageName: unknown
   linkType: soft
 
-"@mono/stacktrace@workspace:libs/stacktrace":
+"@mono/stacktrace@workspace:*, @mono/stacktrace@workspace:libs/stacktrace":
   version: 0.0.0-use.local
   resolution: "@mono/stacktrace@workspace:libs/stacktrace"
   languageName: unknown
   linkType: soft
 
-"@mono/string@workspace:libs/string":
+"@mono/string@workspace:*, @mono/string@workspace:libs/string":
   version: 0.0.0-use.local
   resolution: "@mono/string@workspace:libs/string"
   languageName: unknown
   linkType: soft
 
-"@mono/table@workspace:libs/table":
+"@mono/table@workspace:*, @mono/table@workspace:libs/table":
   version: 0.0.0-use.local
   resolution: "@mono/table@workspace:libs/table"
+  dependencies:
+    "@mono/decorators": "workspace:*"
+    "@mono/fs": "workspace:*"
+    "@mono/number": "workspace:*"
+    "@mono/string": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/template@workspace:libs/template":
+"@mono/template@workspace:*, @mono/template@workspace:libs/template":
   version: 0.0.0-use.local
   resolution: "@mono/template@workspace:libs/template"
+  dependencies:
+    "@mono/tschema": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/terminal@workspace:libs/terminal":
+"@mono/terminal@workspace:*, @mono/terminal@workspace:libs/terminal":
   version: 0.0.0-use.local
   resolution: "@mono/terminal@workspace:libs/terminal"
   languageName: unknown
   linkType: soft
 
-"@mono/tschema@workspace:libs/tschema":
+"@mono/tschema@workspace:*, @mono/tschema@workspace:libs/tschema":
   version: 0.0.0-use.local
   resolution: "@mono/tschema@workspace:libs/tschema"
   languageName: unknown
   linkType: soft
 
-"@mono/tscode@workspace:libs/tscode":
+"@mono/tscode@workspace:*, @mono/tscode@workspace:libs/tscode":
   version: 0.0.0-use.local
   resolution: "@mono/tscode@workspace:libs/tscode"
+  dependencies:
+    "@mono/regex": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@mono/types@workspace:libs/types":
+"@mono/types@workspace:*, @mono/types@workspace:libs/types":
   version: 0.0.0-use.local
   resolution: "@mono/types@workspace:libs/types"
   languageName: unknown
@@ -2179,6 +2236,14 @@ __metadata:
 "devkit@workspace:apps/devkit":
   version: 0.0.0-use.local
   resolution: "devkit@workspace:apps/devkit"
+  dependencies:
+    "@mono/config": "workspace:*"
+    "@mono/map": "workspace:*"
+    "@mono/monorepo": "workspace:*"
+    "@mono/stacktrace": "workspace:*"
+    "@mono/template": "workspace:*"
+    "@mono/terminal": "workspace:*"
+    "@mono/tscode": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -4462,6 +4527,15 @@ __metadata:
 "playground@workspace:apps/playground":
   version: 0.0.0-use.local
   resolution: "playground@workspace:apps/playground"
+  dependencies:
+    "@mono/cli": "workspace:*"
+    "@mono/composition": "workspace:*"
+    "@mono/map": "workspace:*"
+    "@mono/monorepo": "workspace:*"
+    "@mono/object": "workspace:*"
+    "@mono/profiler": "workspace:*"
+    "@mono/template": "workspace:*"
+    "@mono/tscode": "workspace:*"
   languageName: unknown
   linkType: soft
 

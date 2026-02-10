@@ -6,6 +6,16 @@
   "module": "src/index.ts",
   "sideEffects": false,
   "private": true,
+  "dependencies": {
+    "@mono/array": "workspace:*",
+    "@mono/composition": "workspace:*",
+    "@mono/decorators": "workspace:*",
+    "@mono/fs": "workspace:*",
+    "@mono/path": "workspace:*",
+    "@mono/regex": "workspace:*",
+    "@mono/tscode": "workspace:*",
+    "@mono/types": "workspace:*"
+  },
   "scripts": {
     "indexts": "node ../../s/clean/indextsWs.mjs",
     "build": "node esbuild.mjs"
