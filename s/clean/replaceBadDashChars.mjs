@@ -1,7 +1,11 @@
 import fs from 'fs-extra'
 import { glob } from 'glob'
 
-const filepaths = (await glob('**/*', { ignore: '**/{.dist,.coverage,.yarn,node_modules}/**/*', nodir: true, follow: false }))
+const filepaths = await glob('**/*', {
+  ignore: '**/{.dist,.coverage,.yarn,node_modules}/**/*',
+  nodir: true,
+  follow: false,
+})
 
 // console.log(`Checking ${filepaths.length} files...`)
 
@@ -14,7 +18,6 @@ const promises = filepaths.map(async (filepath) => {
     await fs.writeFile(filepath, res, 'utf-8')
     console.log(`Replaced bad dash char in ${filepath}`)
   }
-
 })
 
 await Promise.all(promises)

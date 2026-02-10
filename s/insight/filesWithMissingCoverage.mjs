@@ -54,8 +54,6 @@ const result = Object.entries(coverageSummary)
     return filepath.replace(/\\+/g, '/').replace(repoRoot, '')
   })
 
-
-
 // output filepaths
 result.forEach((filepath) => {
   console.log(filepath)
@@ -67,4 +65,3 @@ if (process.argv.includes('--check')) {
     process.exit(1)
   }
 }
-
