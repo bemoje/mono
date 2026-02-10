@@ -26,4 +26,4 @@ export const ConfigSchema = Type.Object({
 export type ConfigSchema = Static<typeof ConfigSchema>
 export const dataPath = upath.join(repoRootPath, 'repo.config.json')
 export const configFile = new ConfigFile(ConfigSchema, dataPath)
-export const config = configFile.load()
+const config = configFile.load()
