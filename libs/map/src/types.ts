@@ -1,4 +1,4 @@
-import { Any } from '@mono/types'
+import type { Any } from '@mono/types'
 
 export type MapKeys = keyof Map<Any, Any>
 

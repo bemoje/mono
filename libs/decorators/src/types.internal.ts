@@ -1,4 +1,4 @@
-import memoizee from 'memoizee'
+import type memoizee from 'memoizee'
 
 interface MemoizeExtendedOptions {
   /**
