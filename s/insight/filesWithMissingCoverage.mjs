@@ -30,7 +30,7 @@ if (!fs.existsSync(coverageSummaryJsonFilepath)) {
 
 const coverageSummary = JSON.parse(fs.readFileSync(coverageSummaryJsonFilepath, 'utf-8'))
 
-Object.entries(coverageSummary)
+const result = Object.entries(coverageSummary)
   //
   // remove total summary entry
   .filter(([filepath]) => {
@@ -54,7 +54,17 @@ Object.entries(coverageSummary)
     return filepath.replace(/\\+/g, '/').replace(repoRoot, '')
   })
 
-  // output filepaths
-  .forEach((filepath) => {
-    console.log(filepath)
-  })
+
+
+// output filepaths
+result.forEach((filepath) => {
+  console.log(filepath)
+})
+
+if (process.argv.includes('--check')) {
+  if (result.length > 0) {
+    console.error(`\nError: ${result.length} files with missing coverage found.`)
+    process.exit(1)
+  }
+}
+
