@@ -9,10 +9,6 @@
   "workspaces": {
     ".": {},
 
-    "s": {
-      "entry": ["**/*.mjs"],
-    },
-
     "apps/*": {
       "entry": ["src/main.ts", "**/*.examples.ts"],
     },
@@ -28,6 +24,11 @@
       "entry": ["src/index.ts", "src/**/*.examples.ts"],
       "includeEntryExports": false,
       "ignoreMembers": ["depth"],
+    },
+
+    "s": {
+      "entry": ["**/*.mjs"],
+      "includeEntryExports": false,
     },
   },
 
