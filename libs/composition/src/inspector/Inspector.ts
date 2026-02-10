@@ -110,7 +110,7 @@ export class Inspector extends View<InspectorTarget> {
       const protoGetterKeys = getClassChain(this.target, { includeSelf: false })
         .map((cls) => {
           return Object.getOwnPropertyNames(cls.prototype).filter((key) => {
-            return hasOwnProperty(Reflect.getOwnPropertyDescriptor(cls.prototype, key) ?? {}, 'get')
+            return hasOwnProperty(Reflect.getOwnPropertyDescriptor(cls.prototype, key)!, 'get')
           })
         })
         .flat(2)
