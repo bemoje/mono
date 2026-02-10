@@ -15,3 +15,5 @@ Get the files that do not have full code coverage: run `node s/insight/filesWith
 Create a todo for each of the printed filepaths to ensure full code coverage using the #todos tool
 
 process only one file at a time.
+
+Finally, when processing of all files is complete, run the tests with `yarn test-coverage` and then verify that all files have full code coverage by running `node s/insight/filesWithMissingCoverage.mjs` again and ensuring that no files are printed.

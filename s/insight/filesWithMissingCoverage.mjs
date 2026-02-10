@@ -7,7 +7,7 @@ Object.entries(cov)
     return filename !== 'total'
   })
   .filter(([_, obj]) => {
-    return Object.values(obj).some((o) => o.pct < 100)
+    return obj.lines.total > 0 && Object.values(obj).some((o) => o.pct < 100 && o.total > 0)
   })
   .map(([filename,]) => {
     return filename.replace(/\\+/g, '/').replace('C:/Users/bemoj/repos/mono/', '')
