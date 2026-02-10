@@ -18,11 +18,11 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 536   | 8657          |
+| source    | 536   | 8678          |
 | test      | 427   | 27535         |
 | examples  | 2     | 51            |
 | script    | 46    | 1363          |
-| total     | 1011  | 37606         |
+| total     | 1011  | 37627         |
 
 ## Table of Contents
 
