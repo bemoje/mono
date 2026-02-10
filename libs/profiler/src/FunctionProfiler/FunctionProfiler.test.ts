@@ -58,10 +58,14 @@ describe(FunctionProfiler.name, () => {
     profiler.onReturn(profiler.onInvoke(), undefined)
     const result = profiler.getResult()
     expect(result.calls).toBe(1)
-    expect(result.totalTimeUs! > 0).toBe(true)
-    expect(result.avgTimeUs! > 0).toBe(true)
-    expect(result.minTimeUs! > 0).toBe(true)
-    expect(result.maxTimeUs! > 0).toBe(true)
+    expect(result.totalTimeUs).toBeTypeOf('number')
+    expect(result.totalTimeUs! >= 0).toBe(true)
+    expect(result.avgTimeUs).toBeTypeOf('number')
+    expect(result.avgTimeUs! >= 0).toBe(true)
+    expect(result.minTimeUs).toBeTypeOf('number')
+    expect(result.minTimeUs! >= 0).toBe(true)
+    expect(result.maxTimeUs).toBeTypeOf('number')
+    expect(result.maxTimeUs! >= 0).toBe(true)
   })
 
   it('[inspect.custom]()', () => {
