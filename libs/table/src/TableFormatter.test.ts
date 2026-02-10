@@ -179,4 +179,70 @@ describe(TableFormatter.name, () => {
     expect(actual).toContain('-1.50')
     expect(actual).toContain('2.75')
   })
+
+  it('should throw on unexpected cell value type in formatCell', () => {
+    const table = new TableFormatter([
+      ['Name', 'Value'],
+      ['Alice', 'ok'],
+    ])
+    // Access stringsTable first so cellToString doesn't throw
+    void table.stringsTable
+    // Mutate table data to inject unexpected type after cellToString has already run
+    ;(table.table[1] as unknown[])[1] = Symbol('test')
+    expect(() => table.formattedRows).toThrow('Unexpected cell value type')
+  })
+
+  it('should throw on unexpected boolean representation in formatBoolean', () => {
+    const table = new TableFormatter([
+      ['Name', 'Active'],
+      ['Alice', true],
+    ])
+    // Access stringsTable to populate it, then mutate the string representation
+    const strings = table.stringsTable
+    strings[1][1] = 'maybe'
+    expect(() => table.formattedRows).toThrow('Unexpected boolean representation')
+  })
+
+  it('should handle grayOutRow for header row', () => {
+    const table = new TableFormatter(
+      [
+        ['Name', 'Age'],
+        ['Alice', 30],
+      ],
+      {
+        color: true,
+        grayOutRow: () => true,
+      },
+    )
+    const actual = table.toString()
+    expect(actual).toBeDefined()
+    expect(actual.length).toBeGreaterThan(0)
+  })
+
+  it('should handle mixed-type columns where number precision is undefined', () => {
+    const table = new TableFormatter([
+      ['A', 'B'],
+      [1, 'x'],
+      ['y', 'z'],
+    ])
+    const actual = table.toString()
+    expect(actual).toContain('1')
+    expect(actual).toContain('x')
+  })
+
+  it('should handle formatNumber with undefined originalCell', () => {
+    class TestableTableFormatter extends TableFormatter {
+      testFormatNumber(cell: string, originalCell: number | undefined, c: number) {
+        return this.formatNumber(cell, originalCell, c)
+      }
+    }
+    const table = new TestableTableFormatter([
+      ['A', 'B'],
+      ['x', 10],
+    ])
+    // Force column widths to be computed
+    void table.columnWidths
+    const result = table.testFormatNumber('0', undefined, 1)
+    expect(result).toContain('0')
+  })
 })
