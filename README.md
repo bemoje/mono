@@ -21,8 +21,8 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 | source    | 536   | 8677          |
 | test      | 427   | 27535         |
 | examples  | 2     | 51            |
-| script    | 47    | 1388          |
-| total     | 1012  | 37651         |
+| script    | 47    | 1392          |
+| total     | 1012  | 37655         |
 
 ## Table of Contents
 
