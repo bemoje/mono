@@ -27,12 +27,13 @@ yarn ws                         # Execute a command inside a workspace, eg. `yar
 yarn r                          # Execute/run a file (.ts, .test.ts, .js, .ps1, .mjs)
 yarn clean
 yarn clean:fixOwnWsImports      # Fixes imports statements where a path alias is used to reference its own workspace (can cause build problems due to circular references)
-yarn clean:indextsAll           # Generate barrel export files at src/index.ts (runs script defined in each workspace package.json)
+yarn clean:indexts              # Generate barrel export files at src/index.ts (runs script defined in each workspace package.json)
 yarn clean:ensureVitestImports  # Ensures that all test files have the necessary Vitest imports
 yarn clean:removeEmptyWsFiles   # Removes any files that have size 0 bytes for all workspaces
 yarn build                      # Builds all workspaces
 yarn insight
-yarn insight:depcheckUnused     # Runs depcheck on all workspaces and outputs unused dependencies
+yarn insight:knip               # Runs knip to find unused exports, dependencies, and files
+yarn insight:filesWithMissingCoverage # Lists files with incomplete code coverage
 yarn insight:checkLibsTsDoc     # Validates TSDoc documentation for all library exports
 yarn insight:linesOfCode        # Counts lines of code across the monorepo by category
 yarn docs                       # Generates and writes the README.md file with auto-generated documentation
@@ -43,7 +44,7 @@ yarn test                       # Run vitest normally without coverage or watch 
 yarn test:watch                 # Run vitest in watch mode without coverage
 yarn test-coverage              # Run vitest on all workspaces and emit coverage (html, json summary) (ONLY) for workspaces in libs/ dir
 yarn test-coverage:open         # Open the coverage index html file with OS default app
-yarn precommit                  # Runs all pre-commit checks (clean, typecheck, lint, test-coverage, build, insight repots, docs, format)
+yarn precommit                  # Runs all pre-commit checks (clean, typecheck, lint, build, test-coverage, docs, format, insight)
 yarn dk                         # build, then run devkit CLI (apps/devkit)
 yarn DK                         # run devkit CLI (apps/devkit) without building first
 ```
