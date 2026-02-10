@@ -1,51 +1,54 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
 
-  // "includeEntryExports": true,
-  // "ignoreExportsUsedInFile": true,
+  "includeEntryExports": true,
+  "ignoreExportsUsedInFile": true,
 
   "ignore": [".github/copilot/refactoring.mts"],
-  // "ignoreDependencies": ["@mono/*"],
 
   "workspaces": {
     ".": {},
 
     "s": {
       "entry": ["**/*.mjs"],
+      "includeEntryExports": false,
     },
 
     "apps/*": {
-      "includeEntryExports": true,
+      "entry": ["src/main.ts", "src/**/*.{examples,temp}.ts"],
+      // "includeEntryExports": false,
     },
     "apps/playground": {
-      "entry": ["**/*.ts"],
-      "includeEntryExports": true,
+      "entry": ["**/*.ts", "src/**/*.{examples,temp}.ts"],
+      // "includeEntryExports": false,
     },
 
-    "libs/*": {},
-    "libs/{array,crypto,date,fs,iter,os,regex,stacktrace,string,terminal,tschema,types}": {
-      "ignoreDependencies": [],
+    "libs/*": {
+      "entry": ["src/index.ts", "src/**/*.{examples,temp}.ts"],
     },
     "libs/composition": {
+      "entry": ["src/index.ts", "src/**/*.{examples,temp}.ts"],
       "ignoreMembers": ["depth"],
     },
   },
 
-  "include": [
-    "files",
-    "dependencies",
-    "devDependencies",
-    "optionalPeerDependencies",
-    "unlisted",
-    "binaries",
-    "unresolved",
-    "exports",
-    "types",
-    "nsExports",
-    "nsTypes",
-    "duplicates",
-    "enumMembers",
-    "classMembers",
-    "catalog",
-  ],
+  "include": ["nsTypes", "nsExports", "classMembers"],
+
+  "rules": {
+    "nsTypes": "warn",
+    "nsExports": "warn",
+    "classMembers": "warn",
+    // "files": "error",
+    // "dependencies": "error",
+    // "devDependencies": "error",
+    // "optionalPeerDependencies": "error",
+    // "unlisted": "error",
+    // "binaries": "error",
+    // "unresolved": "error",
+    // "exports": "error",
+    // "types": "error",
+    // "duplicates": "error",
+    // "enumMembers": "error",
+    // "catalog": "error",
+  },
 }
