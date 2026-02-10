@@ -76,11 +76,11 @@ describe(JsonFileStrategy.name, () => {
       expect(result).toEqual(testData)
     })
 
-    it('should throw error for invalid JSON', () => {
+    it('should return undefined for invalid JSON', () => {
       fs.writeFileSync(testFilePath, 'invalid json content')
 
       const strategy = new JsonFileStrategy(testFilePath)
-      expect(() => strategy.load()).toThrow()
+      expect(strategy.load()).toBeUndefined()
     })
   })
 
