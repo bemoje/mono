@@ -42,8 +42,7 @@ function action(workspaceName: string, options: DefaultOptions = {}) {
   // get scoped library name
   const repoRootPackageJson = fs.readJsonSync(repoRootPackageJsonPath)
   const repoScope = repoRootPackageJson.name
-  const libScope = '@' + repoScope
-  const scopedLibraryName = libScope + (libScope ? '/' : '') + workspaceName
+  const scopedLibraryName = `@${repoScope}/${workspaceName}`
 
   // Add path to tsconfig.json
   const tsconfigBasePathsJson = fs.readJsonSync(tsconfigBasePathsJsonPath)

@@ -6,8 +6,8 @@ import { confirmPrompt } from '@mono/terminal'
 import { MonoRepo } from '@mono/monorepo'
 import { Workspace } from '@mono/monorepo'
 import { templates } from '../../core/templates/templates'
-import { execSync } from 'node:child_process'
 import path from 'upath'
+import { cliExecSync } from '../common/cliExec'
 
 //
 
@@ -122,8 +122,8 @@ async function uninstallUnusedDependencies(
     }
 
     try {
-      execSync(command, {
-        stdio: options.quiet ? 'ignore' : 'inherit',
+      cliExecSync(command, {
+        quiet: options.quiet,
         cwd: path.resolve(workspace.parent.path),
       })
       fixed.count++
@@ -163,8 +163,8 @@ async function installMissingDependencies(
     }
 
     try {
-      execSync(command, {
-        stdio: options.quiet ? 'ignore' : 'inherit',
+      cliExecSync(command, {
+        quiet: options.quiet,
         cwd: path.resolve(workspace.parent.path),
       })
       fixed.count++
@@ -199,8 +199,8 @@ async function installMissingDevDependencies(
     }
 
     try {
-      execSync(command, {
-        stdio: options.quiet ? 'ignore' : 'inherit',
+      cliExecSync(command, {
+        quiet: options.quiet,
         cwd: path.resolve(workspace.parent.path),
       })
       fixed.count++

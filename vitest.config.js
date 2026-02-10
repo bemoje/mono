@@ -19,7 +19,6 @@ export default defineConfig({
       include: ['{libs,apps}/*/src/**/*.ts'],
       exclude: [
         'apps/playground',
-        'apps/devkit',
         '{libs,apps}/*/{src,examples}/**/*{temp,wip,examples,benchmark}*.ts',
       ],
       reportsDirectory: `.coverage/html`,
