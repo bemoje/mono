@@ -25,9 +25,9 @@ describe(ModuleSpecifier.name, () => {
 
   describe('dependency', () => {
     it('should return the package name for external packages', () => {
-      const mod = getModule("import { Foo } from 'lodash'")
+      const mod = getModule("import { Foo } from 'es-toolkit'")
       vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
-      expect(mod.dependency).toBe('lodash')
+      expect(mod.dependency).toBe('es-toolkit')
     })
 
     it('should return scoped package name', () => {
@@ -37,9 +37,9 @@ describe(ModuleSpecifier.name, () => {
     })
 
     it('should return package name without subpath for deep imports', () => {
-      const mod = getModule("import { Foo } from 'lodash/fp'")
+      const mod = getModule("import { Foo } from 'es-toolkit/fp'")
       vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
-      expect(mod.dependency).toBe('lodash')
+      expect(mod.dependency).toBe('es-toolkit')
     })
 
     it('should return undefined for relative imports', () => {
@@ -67,7 +67,7 @@ describe(ModuleSpecifier.name, () => {
     })
 
     it('should return false for external packages', () => {
-      const mod = getModule("import { Foo } from 'lodash'")
+      const mod = getModule("import { Foo } from 'es-toolkit'")
       expect(mod.isBuiltin).toBe(false)
     })
   })
@@ -79,7 +79,7 @@ describe(ModuleSpecifier.name, () => {
     })
 
     it('should return false for unscoped packages', () => {
-      const mod = getModule("import { Foo } from 'lodash'")
+      const mod = getModule("import { Foo } from 'es-toolkit'")
       expect(mod.isScoped).toBe(false)
     })
   })
@@ -105,14 +105,14 @@ describe(ModuleSpecifier.name, () => {
     })
 
     it('should return false for package imports', () => {
-      const mod = getModule("import { Foo } from 'lodash'")
+      const mod = getModule("import { Foo } from 'es-toolkit'")
       expect(mod.isRelative).toBe(false)
     })
   })
 
   describe('isExternal', () => {
     it('should return true for external packages', () => {
-      const mod = getModule("import { Foo } from 'lodash'")
+      const mod = getModule("import { Foo } from 'es-toolkit'")
       vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
       expect(mod.isExternal).toBe(true)
     })
@@ -132,7 +132,7 @@ describe(ModuleSpecifier.name, () => {
 
   describe('isDependency', () => {
     it('should return true for external packages', () => {
-      const mod = getModule("import { Foo } from 'lodash'")
+      const mod = getModule("import { Foo } from 'es-toolkit'")
       vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
       expect(mod.isDependency).toBe(true)
     })
@@ -185,7 +185,7 @@ describe(ModuleSpecifier.name, () => {
     })
 
     it('should return false for external packages', () => {
-      const mod = getModule("import { Foo } from 'lodash'")
+      const mod = getModule("import { Foo } from 'es-toolkit'")
       const mockWorkspaces = [{ name: '@mono/other-lib' }]
       vi.spyOn(mod, 'getParentDeep').mockImplementation((cls: any) => {
         if (cls === MonoRepo) return { workspaces: mockWorkspaces } as any

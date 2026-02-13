@@ -1,4 +1,4 @@
-import { isString } from 'lodash-es'
+import { isString } from 'es-toolkit/predicate'
 import { IsArrayWhereEach } from './IsArrayWhereEach'
 import { describe, expect, it } from 'vitest'
 

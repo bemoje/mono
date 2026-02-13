@@ -1,4 +1,4 @@
-import { isString } from 'lodash-es'
+import { isString } from 'es-toolkit/predicate'
 
 /**
  * Checks if the provided value is a string that contains no spaces or dashes.

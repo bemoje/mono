@@ -1,5 +1,5 @@
 import type { Any } from '@mono/types'
-import { isFunction } from 'lodash-es'
+import { isFunction } from 'es-toolkit/predicate'
 import { preserveNameAndLength } from './preserveNameAndLength'
 
 /**

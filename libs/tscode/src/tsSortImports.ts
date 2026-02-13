@@ -1,4 +1,4 @@
-import { sortBy } from 'lodash-es'
+import { sortBy } from 'es-toolkit/compat'
 import { tsCrlfToLf } from './tsCrlfToLf'
 import { tsStripImports } from './tsStripImports'
 import { tsExtractImports } from './tsExtractImports'

@@ -1,4 +1,4 @@
-import { camelCase as _camelCase } from 'lodash-es'
+import { camelCase as _camelCase } from 'es-toolkit/string'
 
 /**
  * Converts a string to camel case.

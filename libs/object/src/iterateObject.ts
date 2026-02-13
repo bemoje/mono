@@ -1,5 +1,3 @@
-import type { PropertyPath } from 'lodash-es'
-
 /**
  * Interface describing the data yielded by iterateObject for each node in the traversal
  */
@@ -12,8 +10,8 @@ export interface IterateObjectYield<T extends object = object, V = unknown> {
   value: V
   /** Array representation of the path to the current node */
   propertyPathArray: (string | number)[]
-  /** Lodash-compatible property path string (e.g., 'a.b[0].c') */
-  propertyPath: PropertyPath
+  /** Lodash-style property path string (e.g., 'a.b[0].c') */
+  propertyPath: string | number | symbol | readonly (string | number | symbol)[]
   /** Whether this node is a primitive value */
   isLeaf: boolean
   /** The type of container at this node */

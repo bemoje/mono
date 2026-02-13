@@ -1,4 +1,4 @@
-import { isFunction } from 'lodash-es'
+import { isFunction } from 'es-toolkit/predicate'
 import { isPrototype } from '@mono/is'
 
 /**

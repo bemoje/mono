@@ -29,7 +29,7 @@ export async function renderReadme(): Promise<string> {
   md = md.replace('<!-- TOC_TABLE -->', await renderTOC(md))
 
   const descriptions = await getNpmPkgDescriptions([
-    ['<!-- LODASH_INFO -->', 'lodash'],
+    ['<!-- ES_TOOLKIT_INFO -->', 'es-toolkit'],
     ['<!-- ITER_TOOLS_INFO -->', 'iter-tools'],
     ['<!-- TYPE_FEST_INFO -->', 'type-fest'],
     ['<!-- UPATH_INFO -->', 'upath'],
