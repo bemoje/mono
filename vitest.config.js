@@ -29,7 +29,7 @@ export default defineConfig({
         '{libs,apps}/*/{src,examples}/**/*{temp,wip,examples,benchmark}*.ts',
         'apps/playground/**',
         // devkit: CLI command handlers (integration-level, not unit-testable)
-        'apps/devkit/src/commands/{build,clean,debug,insight,publish,run,ws}/**',
+        'apps/devkit/src/commands/{build,clean,debug,docs,insight,publish,run,ws}/**',
         'apps/devkit/src/commands/config/config-commands.ts',
         'apps/devkit/src/commands/imports/mostFrequentImportStatements.ts',
         'apps/devkit/src/commands/imports/mostImportedFiles.ts',
@@ -51,6 +51,10 @@ export default defineConfig({
         'apps/devkit/src/core/version.ts',
         'apps/devkit/src/core/description.ts',
         'apps/devkit/src/core/templates/templates.ts',
+        // devkit: graceful degradation catch blocks triggered at import time (unmockable)
+        'apps/devkit/src/core/templates/lib/files.ts',
+        // devkit: ESM/CJS detection and outside-repo fallback branches
+        'apps/devkit/src/lib/getRepoRootDirpath.ts',
       ],
       reportsDirectory: `.coverage/html`,
     },

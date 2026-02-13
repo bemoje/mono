@@ -43,6 +43,20 @@ describe(tsDocExtractAllComments.name, () => {
     expect(results).toHaveLength(0)
   })
 
+  it('should handle TSDoc at end of file with trailing empty line', () => {
+    const code = ['/**', ' * Last comment.', ' */', ''].join('\n')
+    const results = [...tsDocExtractAllComments(code)]
+    expect(results).toHaveLength(1)
+    expect(results[0].nextLine).toBe('')
+  })
+
+  it('should handle TSDoc at end of file with no trailing content', () => {
+    const code = ['/**', ' * Last comment.', ' */'].join('\n')
+    const results = [...tsDocExtractAllComments(code)]
+    expect(results).toHaveLength(1)
+    expect(results[0].nextLine).toBeUndefined()
+  })
+
   it('should track offsets correctly for multiple comments', () => {
     const code = [
       '/**',
@@ -108,6 +122,28 @@ describe(getNamedExportTsDocSummary.name, () => {
   it('should return undefined for code without TSDoc', () => {
     const code = 'export function noDoc() {}'
     const result = getNamedExportTsDocSummary('noDoc', code)
+    expect(result).toBeUndefined()
+  })
+
+  it('should not match a different named export', () => {
+    const code = [
+      '/**',
+      ' * Docs for alpha.',
+      ' */',
+      'export function alpha() {}',
+      '/**',
+      ' * Docs for beta.',
+      ' */',
+      'export function beta() {}',
+    ].join('\n')
+    expect(getNamedExportTsDocSummary('alpha', code)).toBe('Docs for alpha.')
+    expect(getNamedExportTsDocSummary('beta', code)).toBe('Docs for beta.')
+    expect(getNamedExportTsDocSummary('gamma', code)).toBeUndefined()
+  })
+
+  it('should handle export with no nextLine', () => {
+    const code = ['/**', ' * Orphan comment.', ' */'].join('\n')
+    const result = getNamedExportTsDocSummary('anything', code)
     expect(result).toBeUndefined()
   })
 })
