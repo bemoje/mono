@@ -1,13 +1,13 @@
 node_modules/
 .eslintcache
 .dist/
+!.dist/devkit.cjs
 .yarn/sdks
 *.wip.*
 *.wip/
 *.temp.*
 *.temp/
 temp/
-s/**/*.cjs
 .coverage/
 .env
 .env.*

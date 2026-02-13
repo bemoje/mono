@@ -17,10 +17,6 @@
       "includeEntryExports": false,
       "ignoreMembers": ["depth"],
     },
-    "s": {
-      "entry": ["**/*.mjs"],
-      "includeEntryExports": false,
-    },
   },
 
   "rules": {
