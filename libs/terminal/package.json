@@ -9,7 +9,7 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "indexts": "node ../../s/clean/indextsWs.mjs",
+    "indexts": "node ../../.dist/devkit.cjs clean index-ts",
     "build": "node esbuild.mjs"
   }
 }
