@@ -44,15 +44,3 @@ export const ConfigSchema = Type.Object(
 export type ConfigSchema = Static<typeof ConfigSchema>
 export const dataPath = upath.join(repoRootPath, 'devkit.config.json')
 export const configFile = new ConfigFile(ConfigSchema, dataPath)
-
-/** Load config lazily — only when actually needed */
-let _configLoaded = false
-export function ensureConfigLoaded() {
-  if (_configLoaded) return
-  _configLoaded = true
-  try {
-    configFile.load()
-  } catch {
-    // Gracefully handle missing config (e.g. running via npx outside repo)
-  }
-}

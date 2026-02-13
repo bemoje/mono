@@ -23,7 +23,7 @@
     "insight:knip": "knip --config knip.jsonc --cache --no-config-hints",
     "insight:linesOfCode": "node .dist/devkit.cjs insight loc",
     "docs": "echo '\nDOCS...' && node .dist/devkit.cjs docs readme",
-    "lint": "echo '\nLINT...' && eslint '{libs,apps}/**/*' --fix -c eslint.config.js --cache --ignore-pattern apps/playground",
+    "lint": "echo '\nLINT...' && eslint '{libs,apps}/**/*' --fix -c eslint.config.js --cache --ignore-pattern apps/playground --ignore-pattern '**/dist/**'",
     "format": "echo '\nFORMAT...' && prettier -w --l -u '{.github,.vscode,s,docs,apps,libs}/**/*'",
     "typecheck": "echo '\nTYPECHECK...' && tsc -p tsconfig.json --noEmit",
     "test": "vitest --config 'vitest.config.js' --run",

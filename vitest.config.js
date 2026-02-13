@@ -26,8 +26,31 @@ export default defineConfig({
       reporter: ['html', 'json-summary', 'text-summary'],
       include: ['{libs,apps}/*/src/**/*.ts'],
       exclude: [
-        'apps/playground',
         '{libs,apps}/*/{src,examples}/**/*{temp,wip,examples,benchmark}*.ts',
+        'apps/playground/**',
+        // devkit: CLI command handlers (integration-level, not unit-testable)
+        'apps/devkit/src/commands/{build,clean,debug,insight,publish,run,ws}/**',
+        'apps/devkit/src/commands/config/config-commands.ts',
+        'apps/devkit/src/commands/imports/mostFrequentImportStatements.ts',
+        'apps/devkit/src/commands/imports/mostImportedFiles.ts',
+        // devkit: main CLI entry point (integration wiring)
+        'apps/devkit/src/main.ts',
+        // devkit: I/O-heavy or integration-level lib files
+        'apps/devkit/src/lib/buildFile.ts',
+        'apps/devkit/src/lib/buildLibsWorkspace.ts',
+        'apps/devkit/src/lib/buildStats.ts',
+        'apps/devkit/src/lib/confirmPrompt.ts',
+        'apps/devkit/src/lib/getEmptyWsFiles.ts',
+        'apps/devkit/src/lib/getLinesOfCode.ts',
+        'apps/devkit/src/lib/importLibs.ts',
+        'apps/devkit/src/lib/outputFileIfChanged.ts',
+        'apps/devkit/src/lib/renderReadme.ts',
+        'apps/devkit/src/lib/timer.ts',
+        'apps/devkit/src/lib/workspaces.ts',
+        // devkit: trivial single-value exports
+        'apps/devkit/src/core/version.ts',
+        'apps/devkit/src/core/description.ts',
+        'apps/devkit/src/core/templates/templates.ts',
       ],
       reportsDirectory: `.coverage/html`,
     },

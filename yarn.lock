@@ -124,8 +124,10 @@ __metadata:
 "@bemoje/devkit@workspace:apps/devkit":
   version: 0.0.0-use.local
   resolution: "@bemoje/devkit@workspace:apps/devkit"
+  dependencies:
+    esbuild: "npm:^0.23.0"
   bin:
-    devkit: dist/devkit.cjs
+    devkit: dist/cli.mjs
   languageName: unknown
   linkType: soft
 

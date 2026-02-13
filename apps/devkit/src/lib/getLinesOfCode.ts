@@ -9,15 +9,14 @@ export async function getLinesOfCode() {
   const ts = (await glob('{libs,apps,packages}/*/{src,examples}/**/*.ts')).filter(
     (p) => !/[./\\](wip|old|temp|playground)[./\\]/.test(p),
   )
-  const script = countLines(await glob('s/**/*.mjs'))
   const source = countLines(ts.filter((p) => !/[./\\](test|examples|benchmark)[./\\]/.test(p)))
   const test = countLines(ts.filter((p) => p.endsWith('.test.ts')))
   const examples = countLines(ts.filter((p) => /[./\\](examples|benchmark)[./\\]/.test(p)))
   const total = {
-    files: source.files + test.files + examples.files + script.files,
-    lines: source.lines + test.lines + examples.lines + script.lines,
+    files: source.files + test.files + examples.files,
+    lines: source.lines + test.lines + examples.lines,
   }
-  return { source, test, examples, script, total }
+  return { source, test, examples, total }
 }
 
 function countLines(paths: string[]) {

@@ -83,7 +83,7 @@ apps\devkit\package.json:
 10: "buildPackage": "node ../../s/util/buildcli.mjs devkit"
 11 }
 
-Yes, absolutely — this is a significant restructuring effort. I've audited the full scope of the problem. Here's a comprehensive action plan:
+Yes, absolutely - this is a significant restructuring effort. I've audited the full scope of the problem. Here's a comprehensive action plan:
 
 ---
 
@@ -94,7 +94,7 @@ Yes, absolutely — this is a significant restructuring effort. I've audited the
 | Problem                 | Detail                                                                                                                                                                                                                 |
 | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Dual tooling**        | s scripts (13+ files) and devkit (CLI with 4 command groups) overlap and cross-reference each other                                                                                                                    |
-| **Bootstrapping cycle** | devkit depends on 7 `@mono/*` packages (`monorepo`, `map`, `tscode`, `terminal`, `template`, `config`, `stacktrace`) which must be built first — but building them uses util scripts, and fixing the repo needs devkit |
+| **Bootstrapping cycle** | devkit depends on 7 `@mono/*` packages (`monorepo`, `map`, `tscode`, `terminal`, `template`, `config`, `stacktrace`) which must be built first - but building them uses util scripts, and fixing the repo needs devkit |
 | **Fragile wiring**      | Every lib's esbuild.mjs imports buildLibsWorkspace.mjs; every lib's package.json references indextsWs.mjs; root package.json mixes `node mono.` and `node .dist/devkit.cjs`                                            |
 | **No fallback**         | If the repo is broken (can't build), there is no way to run devkit to fix it                                                                                                                                           |
 
@@ -105,19 +105,19 @@ Yes, absolutely — this is a significant restructuring effort. I've audited the
 1. **Catalog all s scripts** and classify by purpose: build infrastructure, clean, insight, docs, debug, utility
 2. **Catalog all devkit commands** and their `@mono/*` dependencies
 3. **Map all consumers**: every package.json script, esbuild.mjs, .github, .vscode, and `playground` reference to s or devkit
-4. **Identify what devkit actually needs** from each `@mono/*` package — determine if the functionality can be inlined or replaced with npm packages
+4. **Identify what devkit actually needs** from each `@mono/*` package - determine if the functionality can be inlined or replaced with npm packages
 
 ### Phase 1: Eliminate devkit's `@mono/*` Dependencies
 
 **Goal:** Devkit must build with **zero** workspace dependencies. It should only depend on npm packages and its own source code.
 
-5. **Inline or replace `@mono/monorepo`** — this is the biggest dependency (used in deps, imports commands). Extract the needed classes (`MonoRepo`, `Workspace`, `getAllImports`, `resolveModuleImportPath`) directly into devkit's source
-6. **Inline or replace `@mono/tscode`** — `tsExtractImports`, `tsSortImports` — copy into devkit
-7. **Inline or replace `@mono/template`** — `Template`, `StringTemplateStrategy`, `JsonFileTemplateStrategy`, `TextFileTemplateStrategy` — copy into devkit
-8. **Inline or replace `@mono/config`** — `ConfigFile` — copy into devkit
-9. **Inline or replace `@mono/terminal`** — `confirmPrompt` — replace with a simple `readline` prompt or use `inquirer`
-10. **Inline or replace `@mono/map`** — `ExtMap` — likely a small utility, inline it
-11. **Replace `@mono/stacktrace`** — `enablePrettyStackTrace` — either inline or just drop it for the CLI tool
+5. **Inline or replace `@mono/monorepo`** - this is the biggest dependency (used in deps, imports commands). Extract the needed classes (`MonoRepo`, `Workspace`, `getAllImports`, `resolveModuleImportPath`) directly into devkit's source
+6. **Inline or replace `@mono/tscode`** - `tsExtractImports`, `tsSortImports` - copy into devkit
+7. **Inline or replace `@mono/template`** - `Template`, `StringTemplateStrategy`, `JsonFileTemplateStrategy`, `TextFileTemplateStrategy` - copy into devkit
+8. **Inline or replace `@mono/config`** - `ConfigFile` - copy into devkit
+9. **Inline or replace `@mono/terminal`** - `confirmPrompt` - replace with a simple `readline` prompt or use `inquirer`
+10. **Inline or replace `@mono/map`** - `ExtMap` - likely a small utility, inline it
+11. **Replace `@mono/stacktrace`** - `enablePrettyStackTrace` - either inline or just drop it for the CLI tool
 
 ### Phase 2: Absorb s Scripts into devkit
 
@@ -146,35 +146,35 @@ Yes, absolutely — this is a significant restructuring effort. I've audited the
 
 **Goal:** devkit must always be runnable, even if the repo is completely broken.
 
-20. **Commit the built artifact** (devkit.cjs) to the repo — this means there's always a working copy available, even on fresh clone
+20. **Commit the built artifact** (devkit.cjs) to the repo - this means there's always a working copy available, even on fresh clone
 21. **Add a CI step** that rebuilds devkit and checks that the committed devkit.cjs is up to date (to prevent it from getting stale)
-22. **Alternative: Publish devkit to npm** as `@bemoje/devkit` — then you can always `npx @bemoje/devkit` regardless of repo state. More robust but adds npm publish overhead
+22. **Alternative: Publish devkit to npm** as `@bemoje/devkit` - then you can always `npx @bemoje/devkit` regardless of repo state. More robust but adds npm publish overhead
 
-> **Recommendation**: Do **both** — commit the artifact for instant availability, and consider npm publish as a future option.
+> **Recommendation**: Do **both** - commit the artifact for instant availability, and consider npm publish as a future option.
 
 ### Phase 4: Update All Consumers
 
-23. **Update every lib's esbuild.mjs** — replace `import { buildLibsWorkspace } from buildLibsWorkspace.mjs'` with either:
+23. **Update every lib's esbuild.mjs** - replace `import { buildLibsWorkspace } from buildLibsWorkspace.mjs'` with either:
     - a devkit CLI call: `devkit build <workspace>`, or
     - keep a minimal standalone esbuild.mjs wrapper that calls the now-built-in devkit function
-24. **Update every lib's package.json** — replace `"indexts": "node ../../s/clean/indextsWs.mjs"` with `node devkit.cjs clean index-ts`
-25. **Update root package.json scripts** — replace all `node mono.` and `node devkit.cjs ...` references with unified `node devkit.cjs <command>` calls
-26. **Update tasks.json** — change run command
-27. **Update .github prompts** — update references to old script paths
-28. **Update playground** — the `imports.ts` file that shells out to `node s/insight/listLibsImportStatements.mjs`
+24. **Update every lib's package.json** - replace `"indexts": "node ../../s/clean/indextsWs.mjs"` with `node devkit.cjs clean index-ts`
+25. **Update root package.json scripts** - replace all `node mono.` and `node devkit.cjs ...` references with unified `node devkit.cjs <command>` calls
+26. **Update tasks.json** - change run command
+27. **Update .github prompts** - update references to old script paths
+28. **Update playground** - the `imports.ts` file that shells out to `node s/insight/listLibsImportStatements.mjs`
 
 ### Phase 5: Delete s Directory & Clean Up
 
 29. **Delete the s directory entirely**
 30. **Remove s from workspace and eslint config references**
-31. **Update devkit.config.json** — remove any stale s references (e.g., `"indexts": "node ../../s/clean/indextsWs.mjs"` in templates)
+31. **Update devkit.config.json** - remove any stale s references (e.g., `"indexts": "node ../../s/clean/indextsWs.mjs"` in templates)
 32. **Update README** and documentation
 
 ### Phase 6: Validation & Testing
 
-33. **Fresh clone test** — clone the repo, run `node .dist/devkit.cjs` to verify it works without building
-34. **Build test** — run `yarn dk` to rebuild devkit, verify it still works
-35. **Full `precommit` pipeline** — run the entire clean → typecheck → lint → build → test → insight → docs → format cycle
+33. **Fresh clone test** - clone the repo, run `node .dist/devkit.cjs` to verify it works without building
+34. **Build test** - run `yarn dk` to rebuild devkit, verify it still works
+35. **Full `precommit` pipeline** - run the entire clean → typecheck → lint → build → test → insight → docs → format cycle
 36. **Test each migrated command** individually
 
 ---
@@ -188,4 +188,4 @@ Yes, absolutely — this is a significant restructuring effort. I've audited the
 | **Phase 2 incrementally** | Migrate one s script at a time, update its consumers (Phase 4), test, repeat               |
 | **Phase 5 last**          | Only delete s after everything is migrated and validated                                   |
 
-The riskiest part is **Phase 1** (inlining `@mono/*` dependencies). The `@mono/monorepo` package is likely the largest — I'd start by understanding exactly how much of it devkit actually uses, and inline only the needed functions.
+The riskiest part is **Phase 1** (inlining `@mono/*` dependencies). The `@mono/monorepo` package is likely the largest - I'd start by understanding exactly how much of it devkit actually uses, and inline only the needed functions.
