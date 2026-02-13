@@ -1,6 +1,7 @@
 import { JsonFileTemplateStrategy, Template, TextFileTemplateStrategy } from '@mono/template'
 import { Type } from '@sinclair/typebox'
 import { repoRootPackageJsonPath, tsconfigBaseJsonBasename } from '../../constants/paths'
+import fs from 'fs-extra'
 
 const eslintConfigJs = new Template({
   strategy: new TextFileTemplateStrategy(),
@@ -11,7 +12,19 @@ const eslintConfigJs = new Template({
   ],
 })
 
-import fs from 'fs-extra'
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let _repoRootPkg: any
+function getRepoRootPkg() {
+  if (!_repoRootPkg) {
+    try {
+      _repoRootPkg = fs.readJsonSync(repoRootPackageJsonPath)
+    } catch {
+      // Gracefully handle missing package.json (e.g. running via npx outside repo)
+      _repoRootPkg = {}
+    }
+  }
+  return _repoRootPkg
+}
 
 const packageJson = new Template({
   strategy: new JsonFileTemplateStrategy(),
@@ -19,18 +32,18 @@ const packageJson = new Template({
   template: {
     name: '{{libraryName}}',
     version: '0.0.1',
-    packageManager: fs.readJsonSync(repoRootPackageJsonPath).packageManager,
+    packageManager: getRepoRootPkg().packageManager,
     type: 'module',
     private: true,
     module: 'src/index.ts',
     sideEffects: false,
     scripts: {
       lint: 'yarn eslint . --fix',
-      indexts: 'node ../../s/clean/indextsWs.mjs',
+      indexts: 'yarn dk clean index-ts',
       build: 'node esbuild.mjs',
     },
     devDependencies: {
-      eslint: fs.readJsonSync(repoRootPackageJsonPath).devDependencies.eslint,
+      eslint: getRepoRootPkg().devDependencies?.eslint,
     },
   },
 })
@@ -39,9 +52,11 @@ const esbuild = new Template({
   strategy: new TextFileTemplateStrategy(),
   optionsSchema: Type.Object({}),
   template: [
-    `import { buildLibsWorkspace } from '../../s/util/buildLibsWorkspace.mjs'`,
+    `import { execSync } from 'node:child_process'`,
+    `import upath from 'upath'`,
     ``,
-    `await buildLibsWorkspace(import.meta.dirname, { debug: false })`,
+    `const dirname = upath.basename(import.meta.dirname)`,
+    `execSync(\`yarn DK build lib \${dirname}\`, { stdio: 'inherit' })`,
     ``,
   ],
 })

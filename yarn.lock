@@ -121,12 +121,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bemoje/cli@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@bemoje/cli@npm:1.1.1"
-  checksum: 10c0/48d15490a4176490522adcd0965b5704e163f25ff0eea7568a6ddfecb5b4835b12afacc997a46fe1a311ed68cdd120247985b5d3171bcf84a1b466598d29483d
-  languageName: node
-  linkType: hard
+"@bemoje/devkit@workspace:apps/devkit":
+  version: 0.0.0-use.local
+  resolution: "@bemoje/devkit@workspace:apps/devkit"
+  dependencies:
+    esbuild: "npm:^0.23.0"
+  bin:
+    devkit: dist/cli.mjs
+  languageName: unknown
+  linkType: soft
 
 "@emnapi/core@npm:^1.7.1":
   version: 1.8.1
@@ -2176,12 +2179,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"devkit@workspace:apps/devkit":
-  version: 0.0.0-use.local
-  resolution: "devkit@workspace:apps/devkit"
-  languageName: unknown
-  linkType: soft
-
 "diff-sequences@npm:^29.6.3":
   version: 29.6.3
   resolution: "diff-sequences@npm:29.6.3"
@@ -4004,7 +4001,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "mono@workspace:."
   dependencies:
-    "@bemoje/cli": "npm:^1.1.1"
     "@eslint/js": "npm:^9.8.0"
     "@sinclair/typebox": "npm:^0.34.37"
     "@types/cli-table": "npm:^0.3.4"

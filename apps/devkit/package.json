@@ -1,12 +1,26 @@
 {
-  "name": "devkit",
+  "name": "@bemoje/devkit",
   "description": "Development utilities for the monorepo.",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "packageManager": "yarn@4.3.1",
-  "private": true,
   "type": "module",
+  "license": "MIT",
+  "bin": "dist/cli.mjs",
+  "files": [
+    "dist/"
+  ],
+  "dependencies": {
+    "esbuild": "^0.23.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bemoje/mono.git",
+    "directory": "apps/devkit"
+  },
   "scripts": {
-    "build": "node esbuild.mjs",
-    "buildPackage": "node ../../s/util/buildcli.mjs devkit"
+    "build": "node esbuild.mjs"
   }
 }

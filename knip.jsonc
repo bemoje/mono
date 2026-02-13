@@ -5,7 +5,7 @@
 
   "ignoreExportsUsedInFile": true,
   "ignore": [".github/copilot/refactoring.mts"],
-  "ignoreDependencies": ["@mono/*"],
+  "ignoreDependencies": ["@mono/*", "esbuild"],
 
   "workspaces": {
     "apps/*": {
@@ -16,10 +16,6 @@
       "entry": ["src/index.ts", "src/**/*.examples.ts"],
       "includeEntryExports": false,
       "ignoreMembers": ["depth"],
-    },
-    "s": {
-      "entry": ["**/*.mjs"],
-      "includeEntryExports": false,
     },
   },
 

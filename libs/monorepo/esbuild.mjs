@@ -1,47 +1,5 @@
-// import fs from 'fs-extra'
-// import upath from 'upath'
-// import { buildFile } from '../../s/util/buildFile.mjs'
-// // import { buildStats } from '../../s/util/buildStats.mjs'
-// import { getWsPaths } from '../../s/util/getWsPaths.mjs'
+import { execSync } from 'node:child_process'
+import upath from 'upath'
 
-// const { wsDir, wsDirname, distDir, tsconfig, indexTs, indexCjs, toRelative } = getWsPaths(import.meta.dirname)
-
-// await buildFile(indexTs, indexCjs, tsconfig, {})
-
-// // console.debug({
-// //   tsconfig: toRelative(tsconfig),
-// //   infile: toRelative(indexTs),
-// //   outfile: toRelative(indexCjs),
-// //   stats: await buildStats(indexCjs),
-// // })
-
-// ///////////
-
-// const utilDir = upath.joinSafe(wsDir, 'src', 'util')
-// const utilFiles = await fs.readdir(utilDir)
-// const utilInOut = utilFiles
-//   .filter((file) => !file.includes('.test.ts'))
-//   .map((file) => [
-//     upath.joinSafe(utilDir, file),
-//     upath.changeExt(upath.joinSafe(distDir, wsDirname, 'util', file), '.cjs'),
-//   ])
-
-// await fs.emptyDir(upath.joinSafe(distDir, wsDirname, 'util'))
-
-// for (const [infile, outfile] of utilInOut) {
-//   await buildFile(infile, outfile, tsconfig, {
-//     minify: true,
-//     sourcemap: false,
-//     // external: ['typescript'],
-//   })
-//   // console.debug({
-//   //   tsconfig: toRelative(tsconfig),
-//   //   infile: toRelative(infile),
-//   //   outfile: toRelative(outfile),
-//   //   stats: await buildStats(outfile),
-//   // })
-// }
-
-import { buildLibsWorkspace } from '../../s/util/buildLibsWorkspace.mjs'
-
-await buildLibsWorkspace(import.meta.dirname, {})
+const dirname = upath.basename(import.meta.dirname)
+execSync(`node ../../.dist/devkit.cjs build lib ${dirname}`, { stdio: 'inherit' })
