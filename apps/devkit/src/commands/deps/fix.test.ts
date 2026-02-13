@@ -11,7 +11,7 @@ vi.mock('node:child_process', () => ({
   execSync: vi.fn(),
 }))
 
-vi.mock('@mono/terminal', () => ({
+vi.mock('../../lib/confirmPrompt', () => ({
   confirmPrompt: vi.fn(),
 }))
 
@@ -41,7 +41,7 @@ vi.mock('../../core/templates/templates', () => ({
 
 import fs from 'fs-extra'
 import { execSync } from 'node:child_process'
-import { confirmPrompt } from '@mono/terminal'
+import { confirmPrompt } from '../../lib/confirmPrompt'
 import { MonoRepo } from '@mono/monorepo'
 import { fixDeps } from './fix'
 

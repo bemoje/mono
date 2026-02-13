@@ -26,7 +26,7 @@ const packageJson = new Template({
     sideEffects: false,
     scripts: {
       lint: 'yarn eslint . --fix',
-      indexts: 'node ../../s/clean/indextsWs.mjs',
+      indexts: 'yarn dk clean index-ts',
       build: 'node esbuild.mjs',
     },
     devDependencies: {
@@ -39,9 +39,11 @@ const esbuild = new Template({
   strategy: new TextFileTemplateStrategy(),
   optionsSchema: Type.Object({}),
   template: [
-    `import { buildLibsWorkspace } from '../../s/util/buildLibsWorkspace.mjs'`,
+    `import { execSync } from 'node:child_process'`,
+    `import upath from 'upath'`,
     ``,
-    `await buildLibsWorkspace(import.meta.dirname, { debug: false })`,
+    `const dirname = upath.basename(import.meta.dirname)`,
+    `execSync(\`yarn DK build lib \${dirname}\`, { stdio: 'inherit' })`,
     ``,
   ],
 })

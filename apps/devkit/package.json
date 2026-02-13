@@ -6,7 +6,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node esbuild.mjs",
-    "buildPackage": "node ../../s/util/buildcli.mjs devkit"
+    "build": "node esbuild.mjs"
   }
 }

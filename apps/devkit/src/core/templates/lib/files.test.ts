@@ -19,7 +19,7 @@ describe('template files', () => {
   it('should export esbuild template', () => {
     expect(files.esbuild).toBeDefined()
     const result = files.esbuild.renderString({})
-    expect(result).toContain('buildLibsWorkspace')
+    expect(result).toContain('yarn DK build lib')
   })
 
   it('should export readmeMd template', () => {

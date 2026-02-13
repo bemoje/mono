@@ -15,6 +15,16 @@ vi.mock('./commands/imports/insertImports', () => ({ insertImports: vi.fn() }))
 vi.mock('./commands/imports/mostFrequentImportStatements', () => ({ mostFrequentImportStatements: vi.fn() }))
 vi.mock('./commands/imports/mostImportedFiles', () => ({ mostImportedFiles: vi.fn() }))
 
+// Mock the new consolidated commands
+vi.mock('./commands/clean/clean-commands', () => ({ cleanCommands: vi.fn().mockReturnValue({}) }))
+vi.mock('./commands/insight/insight-commands', () => ({ insightCommands: vi.fn().mockReturnValue({}) }))
+vi.mock('./commands/docs/docs-commands', () => ({ docsCommands: vi.fn().mockReturnValue({}) }))
+vi.mock('./commands/run/run-command', () => ({ runCommand: vi.fn().mockReturnValue({}) }))
+vi.mock('./commands/ws/ws-command', () => ({ wsCommand: vi.fn().mockReturnValue({}) }))
+vi.mock('./commands/build/build-commands', () => ({ buildCommands: vi.fn().mockReturnValue({}) }))
+vi.mock('./commands/publish/publish-commands', () => ({ publishCommands: vi.fn().mockReturnValue({}) }))
+vi.mock('./commands/debug/debug-commands', () => ({ debugCommands: vi.fn().mockReturnValue({}) }))
+
 import { Command } from 'commander'
 import * as configCommands from './commands/config/config-commands'
 import * as createLibModule from './commands/libs/create'
