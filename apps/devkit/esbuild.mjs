@@ -65,3 +65,6 @@ await fs.copy(indexOutFilepath, upath.joinSafe(npmDistDir, 'devkit.cjs'))
 if (await fs.pathExists(indexOutFilepath + '.map')) {
   await fs.copy(indexOutFilepath + '.map', upath.joinSafe(npmDistDir, 'devkit.cjs.map'))
 }
+
+// create bin wrapper for cross-platform npx support
+await fs.writeFile(upath.joinSafe(npmDistDir, 'cli.mjs'), '#!/usr/bin/env node\nimport("./devkit.cjs");\n')

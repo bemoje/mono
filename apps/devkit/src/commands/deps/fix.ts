@@ -17,8 +17,7 @@ export function fixDeps() {
   cmd.description('Fix missing and unused dependencies.')
 
   cmd.addOption(
-    new Option('-w, --workspaces [names...]', 'Comma-sep list of workspace names to fix. Defaults to all.') //
-      .choices(new MonoRepo().workspaces.map((ws) => ws.name)),
+    new Option('-w, --workspaces [names...]', 'Comma-sep list of workspace names to fix. Defaults to all.'), //
   )
   cmd.addOption(
     new Option('-f, --fixes [names...]', 'Fixes to apply. Defaults to all.') //

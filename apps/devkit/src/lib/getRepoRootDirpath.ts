@@ -17,7 +17,9 @@ export function getRepoRootDirpath(): string {
   const parts = path.split('/')
   const repoRootIndex = parts.findLastIndex((part) => part === 'mono')
   if (repoRootIndex === -1) {
-    throw new Error('Could not find repo root directory')
+    // Fallback to cwd when running outside the repo (e.g. via npx)
+    _cached = upath.normalizeSafe(process.cwd())
+    return _cached
   }
   _cached = parts.slice(0, repoRootIndex + 1).join('/')
   return _cached

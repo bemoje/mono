@@ -1,14 +1,17 @@
 {
   "name": "@bemoje/devkit",
   "description": "Development utilities for the monorepo.",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "license": "MIT",
-  "bin": "dist/devkit.cjs",
+  "bin": "dist/cli.mjs",
   "files": [
     "dist/"
   ],
+  "dependencies": {
+    "esbuild": "^0.23.0"
+  },
   "publishConfig": {
     "access": "public"
   },
