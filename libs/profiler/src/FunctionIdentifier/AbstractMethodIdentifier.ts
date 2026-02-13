@@ -1,6 +1,6 @@
 import { AbstractFunctionIdentifier } from './AbstractFunctionIdentifier'
 import type { FunctionPrototype } from '@mono/types'
-import { isSymbol } from 'lodash-es'
+import { isSymbol } from 'es-toolkit/predicate'
 import { MethodTargetType, MethodType } from './types'
 import { setNonEnumerable } from '@mono/object'
 

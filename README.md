@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7155  | 7155    | 100%       |
+| Lines     | 7159  | 7159    | 100%       |
 | Functions | 810   | 810     | 100%       |
-| Branches  | 2534  | 2534    | 100%       |
+| Branches  | 2535  | 2535    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 563   | 9872          |
+| source    | 563   | 9875          |
 | test      | 431   | 27705         |
 | examples  | 2     | 51            |
-| total     | 996   | 37628         |
+| total     | 996   | 37631         |
 
 ## Table of Contents
 
@@ -89,7 +89,7 @@ All dependencies are added at monorepo root `package.json` and are versioned wit
 
 Before introducing a new dependency, check if if one of the library packages already provides the functionality you need.
 
-- **lodash**: Lodash modular utilities.
+- **es-toolkit**: A state-of-the-art, high-performance JavaScript utility library with a small bundle size and strong type annotations.
 - **iter-tools**: The iterable toolbox
 - **type-fest**: A collection of essential TypeScript types
 - **upath**: A proxy to `path`, replacing `\` with `/` for all results (supports UNC paths) & new methods to normalize & join keeping leading `./` and add, change, default, trim file extensions.

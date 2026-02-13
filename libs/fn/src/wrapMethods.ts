@@ -2,7 +2,7 @@ import type { AnyGetter } from '@mono/types'
 import type { AnyFunction } from '@mono/types'
 import type { AnySetter } from '@mono/types'
 import { defineGetter, defineMethod, defineSetter } from '@mono/object'
-import { isFunction } from 'lodash-es'
+import { isFunction } from 'es-toolkit/predicate'
 import { preserveNameAndLength } from './preserveNameAndLength'
 
 /**

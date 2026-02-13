@@ -54,7 +54,7 @@ All dependencies are added at monorepo root `package.json` and are versioned wit
 
 Before introducing a new dependency, check if if one of the library packages already provides the functionality you need.
 
-- **lodash**: <!-- LODASH_INFO -->
+- **es-toolkit**: <!-- ES_TOOLKIT_INFO -->
 - **iter-tools**: <!-- ITER_TOOLS_INFO -->
 - **type-fest**: <!-- TYPE_FEST_INFO -->
 - **upath**: <!-- UPATH_INFO -->

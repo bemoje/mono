@@ -2,7 +2,7 @@ import { beforeEach } from 'vitest'
 import { describe, expect, it, vi } from 'vitest'
 import { formatAsStringTable } from './formatAsStringTable'
 import { format } from 'date-fns'
-import { startCase } from 'lodash-es'
+import { startCase } from 'es-toolkit/string'
 
 describe('formatAsStringTable', () => {
   type Input = {

@@ -1,7 +1,7 @@
 import { Any } from '@mono/types'
 import { TupleToObject, UnionToTuple } from 'type-fest'
 import { RemoveArrayElements } from '@mono/types'
-import { range } from 'lodash-es'
+import { range } from 'es-toolkit/math'
 import { preserveNameAndLength } from './preserveNameAndLength'
 
 /**

@@ -6,7 +6,7 @@ describe(parseImportStatement.name, () => {
   it('examples', () => {
     expect(() => {
       // Basic named import
-      const named = parseImportStatement("import { foo, bar } from 'lodash'")
+      const named = parseImportStatement("import { foo, bar } from 'es-toolkit'")
       assert.strictEqual(named.type, 'named')
       assert.strictEqual(named.modulePath.type, 'package')
       assert.deepStrictEqual(named.getNames(), ['foo', 'bar'])
@@ -17,7 +17,7 @@ describe(parseImportStatement.name, () => {
       assert.deepStrictEqual(defaultImport.getNames(), ['React'])
 
       // Namespace import
-      const namespace = parseImportStatement("import * as utils from 'lodash'")
+      const namespace = parseImportStatement("import * as utils from 'es-toolkit'")
       assert.strictEqual(namespace.type, 'namespace')
       assert.strictEqual(namespace.modulePath.type, 'package')
       assert.deepStrictEqual(namespace.getNames(), ['utils'])
@@ -36,14 +36,14 @@ describe(parseImportStatement.name, () => {
 
   describe('import statement types', () => {
     it('should correctly identify side effect imports', () => {
-      const result = parseImportStatement("import 'lodash'")
+      const result = parseImportStatement("import 'es-toolkit'")
       expect(result.type).toBe('sideEffect')
       expect(result.specifiers.children).toHaveLength(0)
       expect(result.getNames()).toEqual([])
     })
 
     it('should correctly identify default imports', () => {
-      const result = parseImportStatement("import foo from 'lodash'")
+      const result = parseImportStatement("import foo from 'es-toolkit'")
       expect(result.type).toBe('default')
       expect(result.specifiers.children).toHaveLength(1)
       expect(result.specifiers.children[0].type).toBe('default')
@@ -51,7 +51,7 @@ describe(parseImportStatement.name, () => {
     })
 
     it('should correctly identify namespace imports', () => {
-      const result = parseImportStatement("import * as foo from 'lodash'")
+      const result = parseImportStatement("import * as foo from 'es-toolkit'")
       expect(result.type).toBe('namespace')
       expect(result.specifiers.children).toHaveLength(1)
       expect(result.specifiers.children[0].type).toBe('namespace')
@@ -59,7 +59,7 @@ describe(parseImportStatement.name, () => {
     })
 
     it('should correctly identify named imports', () => {
-      const result = parseImportStatement("import { foo, bar } from 'lodash'")
+      const result = parseImportStatement("import { foo, bar } from 'es-toolkit'")
       expect(result.type).toBe('named')
       expect(result.specifiers.children).toHaveLength(2)
       expect(result.specifiers.children[0].type).toBe('named')
@@ -79,9 +79,9 @@ describe(parseImportStatement.name, () => {
 
   describe('module path types', () => {
     it('should correctly identify package imports', () => {
-      const result = parseImportStatement("import foo from 'lodash'")
+      const result = parseImportStatement("import foo from 'es-toolkit'")
       expect(result.modulePath.type).toBe('package')
-      expect(result.modulePath.path).toBe('lodash')
+      expect(result.modulePath.path).toBe('es-toolkit')
     })
 
     it('should correctly identify relative imports', () => {
@@ -172,7 +172,7 @@ describe(parseImportStatement.name, () => {
 
   describe('named imports with aliases', () => {
     it('should handle named imports with as aliases', () => {
-      const result = parseImportStatement("import { foo as bar, baz } from 'lodash'")
+      const result = parseImportStatement("import { foo as bar, baz } from 'es-toolkit'")
       expect(result.specifiers.children).toHaveLength(2)
       expect(result.specifiers.children[0].code).toBe('foo as bar')
       expect(result.specifiers.children[0].name).toBe('foo')
@@ -182,7 +182,7 @@ describe(parseImportStatement.name, () => {
     })
 
     it('should handle getNames with unaliasNamedImports option', () => {
-      const result = parseImportStatement("import { foo as bar, baz } from 'lodash'")
+      const result = parseImportStatement("import { foo as bar, baz } from 'es-toolkit'")
       expect(result.getNames({ unaliasNamedImports: true })).toEqual(['foo', 'baz'])
     })
 
@@ -196,12 +196,12 @@ describe(parseImportStatement.name, () => {
 
   describe('semicolons', () => {
     it('should handle imports with semicolons', () => {
-      const result = parseImportStatement("import foo from 'lodash';")
+      const result = parseImportStatement("import foo from 'es-toolkit';")
       expect(result.semi).toBe(';')
     })
 
     it('should handle imports without semicolons', () => {
-      const result = parseImportStatement("import foo from 'lodash'")
+      const result = parseImportStatement("import foo from 'es-toolkit'")
       expect(result.semi).toBe('')
     })
   })
@@ -228,7 +228,7 @@ describe(parseImportStatement.name, () => {
       const multiline = `import {
         foo,
         bar as baz
-      } from 'lodash'`
+      } from 'es-toolkit'`
       const result = parseImportStatement(multiline)
       expect(result.type).toBe('named')
       expect(result.specifiers.children).toHaveLength(2)
@@ -238,14 +238,14 @@ describe(parseImportStatement.name, () => {
 
   describe('splitBySpecifier method', () => {
     it('should return single import for side effect imports', () => {
-      const result = parseImportStatement("import 'lodash'")
+      const result = parseImportStatement("import 'es-toolkit'")
       const split = result.splitBySpecifier()
       expect(split).toHaveLength(1)
       expect(split[0].type).toBe('sideEffect')
     })
 
     it('should split named imports into individual imports', () => {
-      const result = parseImportStatement("import { foo, bar } from 'lodash'")
+      const result = parseImportStatement("import { foo, bar } from 'es-toolkit'")
       const split = result.splitBySpecifier()
       expect(split).toHaveLength(2)
       expect(split[0].specifiers.children[0].code).toBe('foo')
@@ -261,7 +261,7 @@ describe(parseImportStatement.name, () => {
     })
 
     it('should handle unaliasNamedImports option', () => {
-      const result = parseImportStatement("import { foo as bar } from 'lodash'")
+      const result = parseImportStatement("import { foo as bar } from 'es-toolkit'")
       const split = result.splitBySpecifier({ unaliasNamedImports: true })
       expect(split).toHaveLength(1)
       expect(split[0].specifiers.children[0].code).toBe('foo')
@@ -294,14 +294,14 @@ describe(parseImportStatement.name, () => {
 
   describe('keywords parsing', () => {
     it('should parse import keywords correctly', () => {
-      const result = parseImportStatement("import foo from 'lodash'")
+      const result = parseImportStatement("import foo from 'es-toolkit'")
       expect(result.keywords.code).toBe('import ')
       expect(result.keywords.keywords).toEqual(['import'])
       expect(result.keywords.hasTypeKeyword).toBe(false)
     })
 
     it('should parse type import keywords correctly', () => {
-      const result = parseImportStatement("import type { User } from 'lodash'")
+      const result = parseImportStatement("import type { User } from 'es-toolkit'")
       expect(result.keywords.code).toBe('import type ')
       expect(result.keywords.keywords).toEqual(['import', 'type'])
       expect(result.keywords.hasTypeKeyword).toBe(true)
@@ -310,13 +310,13 @@ describe(parseImportStatement.name, () => {
 
   describe('edge cases', () => {
     it('should handle empty named import braces', () => {
-      const result = parseImportStatement("import {} from 'lodash'")
+      const result = parseImportStatement("import {} from 'es-toolkit'")
       expect(result.type).toBe('sideEffect')
       expect(result.specifiers.children).toHaveLength(0)
     })
 
     it('should handle whitespace in various places', () => {
-      const result = parseImportStatement("import  {  foo  ,  bar  }  from  'lodash'  ")
+      const result = parseImportStatement("import  {  foo  ,  bar  }  from  'es-toolkit'  ")
       expect(result.type).toBe('named')
       expect(result.specifiers.children).toHaveLength(2)
       expect(result.getNames()).toEqual(['foo', 'bar'])
@@ -337,7 +337,7 @@ describe(parseImportStatement.name, () => {
 
   describe('parser instance properties', () => {
     it('should preserve original code', () => {
-      const code = "import { foo } from 'lodash'"
+      const code = "import { foo } from 'es-toolkit'"
       const result = parseImportStatement(code)
       expect(result.code).toBe(code)
     })
@@ -346,16 +346,16 @@ describe(parseImportStatement.name, () => {
       const multiline = `import {
         foo,
         bar
-      } from 'lodash'`
+      } from 'es-toolkit'`
       const result = parseImportStatement(multiline)
-      expect(result.oneliner).toBe("import { foo, bar } from 'lodash'")
+      expect(result.oneliner).toBe("import { foo, bar } from 'es-toolkit'")
     })
 
     it('should provide correct module path information', () => {
-      const result = parseImportStatement("import foo from 'lodash'")
-      expect(result.modulePath.code).toBe("from 'lodash'")
+      const result = parseImportStatement("import foo from 'es-toolkit'")
+      expect(result.modulePath.code).toBe("from 'es-toolkit'")
       expect(result.modulePath.quote).toBe("'")
-      expect(result.modulePath.path).toBe('lodash')
+      expect(result.modulePath.path).toBe('es-toolkit')
       expect(result.modulePath.type).toBe('package')
     })
   })

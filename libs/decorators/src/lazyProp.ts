@@ -1,5 +1,5 @@
 import { GenericMap, mapGetOrDefault, TimeoutWeakMap } from '@mono/map'
-import { isFunction } from 'lodash-es'
+import { isFunction } from 'es-toolkit/predicate'
 import { ms } from 'enhanced-ms'
 import { memoizeSync } from './memoizeSync'
 
