@@ -121,6 +121,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bemoje/devkit@workspace:apps/devkit":
+  version: 0.0.0-use.local
+  resolution: "@bemoje/devkit@workspace:apps/devkit"
+  bin:
+    devkit: dist/devkit.cjs
+  languageName: unknown
+  linkType: soft
+
 "@emnapi/core@npm:^1.7.1":
   version: 1.8.1
   resolution: "@emnapi/core@npm:1.8.1"
@@ -2168,12 +2176,6 @@ __metadata:
   checksum: 10c0/c782a5f992047944c39d337c82f5d1d21d65d1378986d46c354df9d9ec6d5f356bca0182969c11b08b9b8a7af8727b3c2d5a9fad0b022be4a3bf4c216f63ed07
   languageName: node
   linkType: hard
-
-"devkit@workspace:apps/devkit":
-  version: 0.0.0-use.local
-  resolution: "devkit@workspace:apps/devkit"
-  languageName: unknown
-  linkType: soft
 
 "diff-sequences@npm:^29.6.3":
   version: 29.6.3

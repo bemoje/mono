@@ -39,6 +39,7 @@ await esbuild.build({
   sourcemap: true,
   treeShaking: true,
   external: ['esbuild'],
+  banner: { js: '#!/usr/bin/env node' },
   logOverride: { 'empty-import-meta': 'silent' },
 })
 
@@ -55,4 +56,12 @@ await fs.rename(indexOutFileTemp, indexOutFilepath)
 await fs.remove(indexOutFilepath + '.map')
 if (await fs.pathExists(indexOutFileTemp + '.map')) {
   await fs.rename(indexOutFileTemp + '.map', indexOutFilepath + '.map')
+}
+
+// copy to apps/devkit/dist/ for npm publishing
+const npmDistDir = upath.joinSafe(wsDirpath, 'dist')
+await fs.ensureDir(npmDistDir)
+await fs.copy(indexOutFilepath, upath.joinSafe(npmDistDir, 'devkit.cjs'))
+if (await fs.pathExists(indexOutFilepath + '.map')) {
+  await fs.copy(indexOutFilepath + '.map', upath.joinSafe(npmDistDir, 'devkit.cjs.map'))
 }

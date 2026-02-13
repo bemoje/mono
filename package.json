@@ -31,7 +31,7 @@
     "test-coverage": "echo '\nTEST-COVERAGE...' && vitest --config 'vitest.config.js' --run --coverage",
     "test-coverage:open": ".coverage/html/index.html",
     "precommit": "echo '\nPRECOMMIT...' && yarn install && yarn clean && yarn typecheck && yarn lint && yarn build && yarn test-coverage && yarn insight && yarn docs && yarn format",
-    "dk": "yarn workspace devkit build && node .dist/devkit.cjs",
+    "dk": "yarn workspace @bemoje/devkit build && node .dist/devkit.cjs",
     "DK": "node .dist/devkit.cjs",
     "ws": "node .dist/devkit.cjs ws"
   },
