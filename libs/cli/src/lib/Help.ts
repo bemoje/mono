@@ -1,4 +1,4 @@
-import lazyProp from './internal/lazyProp'
+import { lazyProp } from '@mono/decorators'
 import type { IHelp, IArgument, ICommand, IOption } from './types'
 import C from 'ansi-colors'
 
