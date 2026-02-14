@@ -17,7 +17,7 @@
     "clean:removeEmptyWsFiles": "node .dist/devkit.cjs clean empty-files",
     "build": "echo '\nBUILD...' && yarn workspaces foreach -Apt --verbose --exclude mono run build",
     "clean:replaceBadDashChars": "node .dist/devkit.cjs clean dash-chars",
-    "insight": "echo '\nINSIGHT...' && yarn insight:knip && yarn insight:filesWithMissingCoverage && yarn insight:linesOfCode",
+    "insight": "echo '\nINSIGHT...' && yarn insight:knip && yarn insight:checkLibsTsDoc && yarn insight:filesWithMissingCoverage && yarn insight:linesOfCode",
     "insight:checkLibsTsDoc": "node .dist/devkit.cjs insight tsdoc",
     "insight:filesWithMissingCoverage": "echo 'Files with incomplete code coverage:' && node .dist/devkit.cjs insight coverage --check",
     "insight:knip": "knip --config knip.jsonc --cache --no-config-hints",
