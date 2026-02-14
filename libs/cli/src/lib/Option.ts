@@ -66,10 +66,5 @@ export class Option<Long extends string = string> implements IOption {
         this.defaultValue = process.env[this.env]!
       }
     }
-
-    // Clean up undefined properties
-    for (const [key, value] of Object.entries(this)) {
-      if (value === undefined) Reflect.deleteProperty(this, key)
-    }
   }
 }

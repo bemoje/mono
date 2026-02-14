@@ -159,11 +159,17 @@ describe(Command.name, () => {
         expect(result).toBe(cmd) // Should return this for chaining
       })
 
-      it('should set version to undefined when not provided', () => {
+      it('should add version option', () => {
         const cmd = new Command('test')
-        cmd.setVersion('1.0.0')
-        cmd.setVersion()
-        expect(cmd.version).toBeUndefined()
+        cmd.setVersion('1.2.3')
+        expect(cmd.options.filter((option) => option.name === 'version')).toHaveLength(1)
+      })
+
+      it('should not add version option more than once', () => {
+        const cmd = new Command('test')
+        cmd.setVersion('1.2.3')
+        cmd.setVersion('1.2.3')
+        expect(cmd.options.filter((option) => option.name === 'version')).toHaveLength(1)
       })
     })
 
@@ -256,6 +262,11 @@ describe(Command.name, () => {
           description: 'input file',
           required: true,
         })
+      })
+
+      it('should add argument without description', () => {
+        const cmd = new Command('test').addArgument('<input>')
+        expect(cmd.arguments[0].description).toBe('')
       })
 
       it('should add multiple required arguments in order', () => {
@@ -673,6 +684,26 @@ describe(Command.name, () => {
         const result = cmd.parseArgv(['-o', 'dist'])
         expect(result.opts.output).toBe('dist')
       })
+
+      it('should trim trailing undefined args when optional arg has no default', () => {
+        const cmd = new Command('test')
+          .addArgument('<input>', 'input file')
+          .addArgument('[output]', 'optional output')
+
+        const result = cmd.parseArgv(['in.txt'])
+        // trailing undefined from the missing optional arg should be trimmed
+        expect(result.args).toEqual(['in.txt'])
+      })
+
+      it('should trim multiple trailing undefined args', () => {
+        const cmd = new Command('test')
+          .addArgument('<input>', 'input file')
+          .addArgument('[opt1]', 'optional 1')
+          .addArgument('[opt2]', 'optional 2')
+
+        const result = cmd.parseArgv(['in.txt'])
+        expect(result.args).toEqual(['in.txt'])
+      })
     })
   })
 
@@ -747,8 +778,6 @@ describe(Command.name, () => {
       expect(childOptionNames).toContain('verbose')
       expect(childOptionNames).not.toContain('debug')
       expect(childOptionNames).toContain('quiet')
-      // Also has the help option from parent
-      expect(childOptionNames).toContain('help')
     })
 
     it('should inherit triggers matching inherited options', () => {
@@ -795,7 +824,7 @@ describe(Command.name, () => {
   describe('protected method validation', () => {
     it('should validate option matching correctly', () => {
       const cmd = new Command('test').addOption('-v, --verbose', 'verbose flag')
-      const option = cmd.options[1]
+      const option = cmd.options[0]
 
       // Access the protected method via the public findOption method which uses it
       expect(findOption(cmd, 'v')).toBe(option)
@@ -972,25 +1001,25 @@ describe(Command.name, () => {
         choices: ['json', 'xml', 'yaml'],
       })
 
-      expect(cmd.options[1].choices).toEqual(['json', 'xml', 'yaml'])
+      expect(cmd.options[0].choices).toEqual(['json', 'xml', 'yaml'])
     })
 
     it('should handle options with env variables', () => {
       const cmd = new Command('test').addOption('-t, --token <value>', 'auth token', { env: 'AUTH_TOKEN' })
 
-      expect(cmd.options[1].env).toBe('AUTH_TOKEN')
+      expect(cmd.options[0].env).toBe('AUTH_TOKEN')
     })
 
     it('should handle hidden options', () => {
       const cmd = new Command('test').addOption('-H, --hidden', 'hidden option', { hidden: true })
 
-      expect(cmd.options[1].hidden).toBe(true)
+      expect(cmd.options[0].hidden).toBe(true)
     })
 
     it('should handle option groups', () => {
       const cmd = new Command('test').addOption('-v, --verbose', 'verbose flag', { group: 'logging' })
 
-      expect(cmd.options[1].group).toBe('logging')
+      expect(cmd.options[0].group).toBe('logging')
     })
   })
 
@@ -1034,7 +1063,7 @@ describe(Command.name, () => {
     it('should handle undefined default values for optional options', () => {
       const cmd = new Command('test').addOption('-o, --output [path]', 'output path')
 
-      expect(cmd.options[1].defaultValue).toBeUndefined()
+      expect(cmd.options[0].defaultValue).toBeUndefined()
     })
 
     it('should handle complex default values for variadic arguments', () => {
@@ -1352,30 +1381,21 @@ describe(Command.name, () => {
   })
 
   describe('addHelpOption', () => {
-    class TestCommand extends Command {
-      public exposeAddHelpOption() {
-        return this.addHelpOption()
-      }
-    }
-
     it('should add a help option to a command', () => {
-      const cmd = new TestCommand('test')
-      cmd.options.length = 0
-      ;(cmd as any).triggers.length = 0
-      cmd.exposeAddHelpOption()
+      const cmd = new Command('test').helpConfiguration()
       expect(cmd.options.some((o) => o.long === 'help')).toBe(true)
       expect(cmd.options.some((o) => o.short === 'h')).toBe(true)
     })
 
     it('should add --help option with correct description', () => {
-      const cmd = new Command('test')
+      const cmd = new Command('test').helpConfiguration()
       const helpOpt = cmd.options.find((o) => o.long === 'help')
       expect(helpOpt).toBeDefined()
       expect(helpOpt!.description).toBe('Display help information')
     })
 
     it('should execute help trigger action', () => {
-      const cmd = new Command('test').addOption('-v, --verbose', 'verbose')
+      const cmd = new Command('test').helpConfiguration().addOption('-v, --verbose', 'verbose')
       const spy = vi.spyOn(console, 'log').mockImplementation(() => {})
       const parsed = cmd.parseArgv(['--help'])
       void parsed.execute!()
@@ -1383,15 +1403,9 @@ describe(Command.name, () => {
       spy.mockRestore()
     })
 
-    it('should execute addHelpOption trigger action from protected method', () => {
-      class SubCmd extends Command {
-        exposeAddHelpOption() {
-          return this.addHelpOption()
-        }
-      }
+    it('should execute addHelpOption trigger action on subcommand', () => {
       const parent = new Command('root')
-      const cmd = new SubCmd('test2', parent)
-      cmd.exposeAddHelpOption()
+      const cmd = new Command('test2', parent).helpConfiguration()
       const spy = vi.spyOn(console, 'log').mockImplementation(() => {})
       const parsed = cmd.parseArgv(['--help'])
       void parsed.execute!()
