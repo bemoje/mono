@@ -1,4 +1,4 @@
-import { getRepoRootDirpath } from '@mono/monorepo'
+import { getRepoRootDirpath } from '../../lib/getRepoRootDirpath'
 import upath from 'upath'
 
 // repo dirpaths

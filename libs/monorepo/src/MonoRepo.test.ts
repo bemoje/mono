@@ -267,7 +267,7 @@ describe(MonoRepo.name, () => {
       const repo = new MonoRepo()
       const result = repo.workspacesRootPaths
 
-      expect(result).toEqual(['libs/', 'apps/'])
+      expect(result).toEqual(['/libs/', '/apps/'])
     })
 
     it('should remove trailing asterisk from workspace paths', () => {
@@ -285,7 +285,7 @@ describe(MonoRepo.name, () => {
       const repo = new MonoRepo()
       const result = repo.workspacesRootPaths
 
-      expect(result).toEqual(['libs/', 'apps/', 'packages/'])
+      expect(result).toEqual(['/libs/', '/apps/', '/packages/'])
     })
 
     it('should throw error if package.json missing workspaces field', () => {
@@ -326,9 +326,9 @@ describe(MonoRepo.name, () => {
       const repo = new MonoRepo()
       const result = repo.workspacePaths
 
-      expect(mockFs.readdirSync).toHaveBeenCalledWith('libs/', { withFileTypes: true })
-      expect(mockFs.readdirSync).toHaveBeenCalledWith('apps/', { withFileTypes: true })
-      expect(result).toEqual(['libs//package1', 'libs//package2', 'apps//app1'])
+      expect(mockFs.readdirSync).toHaveBeenCalledWith('/libs/', { withFileTypes: true })
+      expect(mockFs.readdirSync).toHaveBeenCalledWith('/apps/', { withFileTypes: true })
+      expect(result).toEqual(['/libs//package1', '/libs//package2', '/apps//app1'])
     })
 
     it('should filter only directories', () => {
@@ -351,7 +351,7 @@ describe(MonoRepo.name, () => {
       const repo = new MonoRepo()
       const result = repo.workspacePaths
 
-      expect(result).toEqual(['libs//package1', 'libs//package2'])
+      expect(result).toEqual(['/libs//package1', '/libs//package2'])
     })
 
     it('should flatten nested workspace paths', () => {
@@ -374,7 +374,7 @@ describe(MonoRepo.name, () => {
       const repo = new MonoRepo()
       const result = repo.workspacePaths
 
-      expect(result).toEqual(['libs//lib1', 'apps//app1'])
+      expect(result).toEqual(['/libs//lib1', '/apps//app1'])
       expect(Array.isArray(result)).toBe(true)
     })
   })
@@ -400,7 +400,7 @@ describe(MonoRepo.name, () => {
 
       expect(Array.isArray(result)).toBe(true)
       expect(result).toHaveLength(1)
-      expect(Workspace).toHaveBeenCalledWith(repo, 'libs//package1')
+      expect(Workspace).toHaveBeenCalledWith(repo, '/libs//package1')
     })
 
     it('should create Workspace with correct parent and path', () => {
@@ -423,8 +423,8 @@ describe(MonoRepo.name, () => {
       const repo = new MonoRepo()
       repo.workspaces
 
-      expect(Workspace).toHaveBeenCalledWith(repo, 'libs//lib1')
-      expect(Workspace).toHaveBeenCalledWith(repo, 'apps//app1')
+      expect(Workspace).toHaveBeenCalledWith(repo, '/libs//lib1')
+      expect(Workspace).toHaveBeenCalledWith(repo, '/apps//app1')
       expect(Workspace).toHaveBeenCalledTimes(2)
     })
   })

@@ -56,7 +56,6 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
           .replace(/type /g, '')
           .replace("from 'ms'", "from 'enhanced-ms'")
           .replace("from '@commander-js/extra-typings'", "from 'commander'")
-          .replace("from 'lodash'", "from 'lodash-es'")
           .replace("from 'node:fs'", "from 'fs-extra'")
           .replace("from 'node:path'", "from 'upath'")
           .replace(/ fse from 'fs-extra'/, " fs from 'fs-extra'")
@@ -96,7 +95,7 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
     }
     return Array.from(defaultImports.get(line).multiplicities()).sort((a, b) => b[1] - a[1])[0][0]
   })
-  .concat(...cp.execSync(`node s/insight/listLibsImportStatements.mjs`).toString().trim().split('\n'))
+  .concat(...cp.execSync(`node .dist/devkit.cjs insight import-statements`).toString().trim().split('\n'))
 
 const counts = countUniques(lines)
 

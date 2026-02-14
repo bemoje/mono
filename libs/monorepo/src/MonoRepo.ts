@@ -82,7 +82,7 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
       throw new Error(`MonoRepo package.json missing 'workspaces' field: ${this.packageJsonPath}`)
     }
     return this.packageJson.workspaces.map((workspacePath: string) => {
-      return path.normalize(workspacePath.replace(/\*$/, ''))
+      return path.join(this.path, workspacePath.replace(/\*$/, ''))
     })
   }
 

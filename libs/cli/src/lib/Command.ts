@@ -7,8 +7,8 @@ import type { CamelCase, SetFieldType, Simplify } from 'type-fest'
 import { parseArgs } from 'node:util'
 import { Argument } from './Argument'
 import { Help } from './Help'
-import findSubcommand from './helpers/findSubcommand'
-import getCommandAncestors from './helpers/getCommandAncestors'
+import { findSubcommand } from './helpers/findSubcommand'
+import { getCommandAncestors } from './helpers/getCommandAncestors'
 import lazyProp from './internal/lazyProp'
 import { Option } from './Option'
 import type { Arguments, ICommand, Options } from './types'
@@ -70,9 +70,7 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
 
     if (!parent) {
       this.addOption('-h, --help', 'Display help information') //
-        .addTrigger('help', {
-          action: ({ cmd }) => console.log(cmd.renderHelp()),
-        })
+        .addTrigger('help', ({ cmd }) => console.log(cmd.renderHelp()))
     }
   }
 
@@ -390,22 +388,13 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     return this
   }
 
-  addTrigger<C extends ICommand = Command<A, O>>(
-    name: keyof O,
-    config: {
-      predicate?: TriggerPredicate<A, O, C>
-      action: ActionHandler<A, O, C>
-    },
-  ): this {
-    if (!config.predicate) {
-      config.predicate = ({ opts }) => {
-        return typeof opts[name] === 'boolean' && opts[name] === true
-      }
-    }
+  addTrigger<C extends ICommand = Command<A, O>>(name: keyof O, action: ActionHandler<A, O, C>): this {
     this.triggers.push({
       name,
-      predicate: setName('has' + strFirstCharToUpperCase(name as string), config.predicate!),
-      action: setName(name as string, config.action),
+      predicate: setName('has' + strFirstCharToUpperCase(name as string), (({ opts }) => {
+        return typeof opts[name] === 'boolean' && opts[name] === true
+      }) as TriggerPredicate<A, O, Command<A, O>>),
+      action: setName(name as string, action),
     } as never)
     return this
   }
@@ -423,15 +412,11 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
 
   protected addHelpOption() {
     return this.addOption('-h, --help', 'Display help information') //
-      .addTrigger('help', {
-        action: ({ cmd }) => console.log(cmd.renderHelp()),
-      }) as Command<A, { help?: boolean } & O>
+      .addTrigger('help', ({ cmd }) => console.log(cmd.renderHelp())) as Command<A, { help?: boolean } & O>
   }
 
   protected addVersionOption() {
     return this.addOption('-V, --version', 'Display semver version') //
-      .addTrigger('version', {
-        action: ({ cmd }) => console.log(cmd.version),
-      }) as Command<A, { version?: boolean } & O>
+      .addTrigger('version', ({ cmd }) => console.log(cmd.version)) as Command<A, { version?: boolean } & O>
   }
 }

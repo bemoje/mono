@@ -1,4 +1,4 @@
-import { isString } from 'lodash-es'
+import { isString } from 'es-toolkit/predicate'
 
 /**
  * Determine whether the input is a string array.

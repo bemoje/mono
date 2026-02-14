@@ -11,20 +11,35 @@ const cmd = new Command('myapp')
     choices: ['json', 'xml'],
     group: 'Output Options',
   })
-  .addOption('-h, --help', 'display help')
+cmd.help.styleUsage = (str) => `>>> ${str} <<<`
 
-cmd.command('sub').setDescription('A subcommand')
+cmd.command('licka').setGroup('CAT B')
+cmd
+  .command('sub')
+  .setGroup('CAT A')
+  .setDescription('A subcommand')
+  .addArgument('<arg1>', 'first argument')
+  .addOption('-w, --wow', 'a wow option')
+  .setAction(async (a) => {
+    console.log('Subcommand executed', a)
+  })
+  .addTrigger('wow', async ({ args, cmd, opts }) => {
+    console.log('Trigger executed because args includes WOW', args)
+    console.log({ opts })
+  })
 
 /////////////
 
-const parsedRoot = cmd.parseArgv(['input.txt', '--no-verbose', '--format', 'json'])
-console.log(parsedRoot)
-console.log('--------------')
-console.log(parsedRoot.cmd.renderHelp())
+// const parsedRoot = cmd.parseArgv(['input.txt', '--no-verbose', '--format', 'json'])
+// console.log(parsedRoot)
+// console.log('--------------')
+// console.log(parsedRoot.cmd.renderHelp())
 
 console.log('------------------------------------------')
 
-const parsedSub = cmd.parseArgv(['sub', '-h'])
+const parsedSub = cmd.parseArgv(['sub', '--wow'])
+// const parsedSub = cmd.parseArgv(['sub', 'WOW'])
 console.log(parsedSub)
 console.log('--------------')
 console.log(parsedSub.cmd.renderHelp())
+void parsedSub.execute?.()

@@ -10,19 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7180  | 7180    | 100%       |
-| Functions | 800   | 800     | 100%       |
-| Branches  | 2489  | 2489    | 100%       |
+| Lines     | 7147  | 7147    | 100%       |
+| Functions | 806   | 806     | 100%       |
+| Branches  | 2535  | 2535    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 536   | 8677          |
-| test      | 427   | 27535         |
+| source    | 563   | 9860          |
+| test      | 431   | 27691         |
 | examples  | 2     | 51            |
-| script    | 47    | 1392          |
-| total     | 1012  | 37655         |
+| total     | 996   | 37602         |
 
 ## Table of Contents
 
@@ -31,7 +30,6 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
   - [Table of Contents](#table-of-contents)
   - [Scripts](#scripts)
     - [`package.json`](#packagejson)
-    - [`./s/` directory](#s-directory)
     - [`devkit` CLI](#devkit-cli)
   - [Workspaces](#workspaces)
     - [Documentation](#documentation)
@@ -61,16 +59,11 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 Scripts are defined in the root [`package.json`](/package.json). Each script property has a description via a custom JSON schema ([`docs/package.schema.json`](/docs/package.schema.json)), which is shown when hovering over a script name in VS Code.
 
-### `./s/` directory
-
-The `s` directory contains .mjs scripts that can import all repo dependencies.
-These are used for various things like repo maintainence tasks, build steps, or other convenience scripts.
-This is all a bit messy and bound to change a lot because repo management is being experimented with.
-When styles and patterns are more established, this will need a lot of refactoring and documentation.
-
 ### `devkit` CLI
 
-The [`devkit`](/apps/devkit) CLI provides development utilities for the monorepo. Run with `yarn dk` (build + run) or `yarn DK` (run without building).
+The [`devkit`](/apps/devkit) CLI provides development utilities for the monorepo. It is the single consolidated tool for all repo management tasks including builds, code cleanup, insight/analysis, documentation generation, and more.
+
+Run with `yarn dk` (build + run) or `yarn DK` (run without building). The built artifact (`.dist/devkit.cjs`) is committed to git for zero-dependency bootstrapping.
 
 ## Workspaces
 
@@ -96,7 +89,7 @@ All dependencies are added at monorepo root `package.json` and are versioned wit
 
 Before introducing a new dependency, check if if one of the library packages already provides the functionality you need.
 
-- **lodash**: Lodash modular utilities.
+- **es-toolkit**: A state-of-the-art, high-performance JavaScript utility library with a small bundle size and strong type annotations.
 - **iter-tools**: The iterable toolbox
 - **type-fest**: A collection of essential TypeScript types
 - **upath**: A proxy to `path`, replacing `\` with `/` for all results (supports UNC paths) & new methods to normalize & join keeping leading `./` and add, change, default, trim file extensions.
@@ -313,19 +306,19 @@ describe(ClassToTest.name, () => {
 - `Argument`: Defines a command-line argument
 - `Command`: A type-safe CLI composer that can parse argv and generate help without execution coupling.
 - `Help`: This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the expected interface of the Command instance to parse, are both similar, but different and not compatible without custom adaptations,
-- `Option`: ?
-- `assertNoMultipleVariadicArguments`: ?
-- `assertNoOptionalOrVariadicArguments`: ?
-- `assertNoVariadicArgument`: ?
-- `assertOptionNameNotInUse`: ?
-- `assertOptionShortNameIsValid`: ?
-- `assertOptionShortNameNotInUse`: ?
-- `findOption`: ?
-- `findSubcommand`: ?
-- `getCommandAncestors`: ?
-- `getCommandAndAncestors`: ?
-- `helpers`: ?
-- `parseOptionFlags`: ?
+- `Option`: Represents a command-line option with support for short/long flags and various configurations.
+- `assertNoMultipleVariadicArguments`: Ensures only one variadic argument per command
+- `assertNoOptionalOrVariadicArguments`: Validates CLI argument ordering
+- `assertNoVariadicArgument`: Validates optional args don't follow variadic args
+- `assertOptionNameNotInUse`: Validates option names are unique across command hierarchy
+- `assertOptionShortNameIsValid`: Validates option short names are single alphanumeric characters
+- `assertOptionShortNameNotInUse`: Validates option short names are unique across command hierarchy
+- `findOption`: Finds option by name, short name or long name
+- `findSubcommand`: Finds subcommand by name or alias
+- `getCommandAncestors`: Returns all ancestor commands excluding this command
+- `getCommandAndAncestors`: Returns command and all ancestor commands in hierarchy
+- `helpers`: Collection of helper functions for CLI command manipulation and validation.
+- `parseOptionFlags`: Parses option flags string into its components
 
 **composition**
 

@@ -24,16 +24,11 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 Scripts are defined in the root [`package.json`](/package.json). Each script property has a description via a custom JSON schema ([`docs/package.schema.json`](/docs/package.schema.json)), which is shown when hovering over a script name in VS Code.
 
-### `./s/` directory
-
-The `s` directory contains .mjs scripts that can import all repo dependencies.
-These are used for various things like repo maintainence tasks, build steps, or other convenience scripts.
-This is all a bit messy and bound to change a lot because repo management is being experimented with.
-When styles and patterns are more established, this will need a lot of refactoring and documentation.
-
 ### `devkit` CLI
 
-The [`devkit`](/apps/devkit) CLI provides development utilities for the monorepo. Run with `yarn dk` (build + run) or `yarn DK` (run without building).
+The [`devkit`](/apps/devkit) CLI provides development utilities for the monorepo. It is the single consolidated tool for all repo management tasks including builds, code cleanup, insight/analysis, documentation generation, and more.
+
+Run with `yarn dk` (build + run) or `yarn DK` (run without building). The built artifact (`.dist/devkit.cjs`) is committed to git for zero-dependency bootstrapping.
 
 ## Workspaces
 
@@ -59,7 +54,7 @@ All dependencies are added at monorepo root `package.json` and are versioned wit
 
 Before introducing a new dependency, check if if one of the library packages already provides the functionality you need.
 
-- **lodash**: <!-- LODASH_INFO -->
+- **es-toolkit**: <!-- ES_TOOLKIT_INFO -->
 - **iter-tools**: <!-- ITER_TOOLS_INFO -->
 - **type-fest**: <!-- TYPE_FEST_INFO -->
 - **upath**: <!-- UPATH_INFO -->

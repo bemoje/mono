@@ -1,15 +1,18 @@
-import assertNoMultipleVariadicArguments from './helpers/assertNoMultipleVariadicArguments'
-import assertNoOptionalOrVariadicArguments from './helpers/assertNoOptionalOrVariadicArguments'
-import assertNoVariadicArgument from './helpers/assertNoVariadicArgument'
-import assertOptionNameNotInUse from './helpers/assertOptionNameNotInUse'
-import assertOptionShortNameIsValid from './helpers/assertOptionShortNameIsValid'
-import assertOptionShortNameNotInUse from './helpers/assertOptionShortNameNotInUse'
-import findOption from './helpers/findOption'
-import findSubcommand from './helpers/findSubcommand'
-import getCommandAncestors from './helpers/getCommandAncestors'
-import getCommandAndAncestors from './helpers/getCommandAndAncestors'
-import parseOptionFlags from './helpers/parseOptionFlags'
+import { assertNoMultipleVariadicArguments } from './helpers/assertNoMultipleVariadicArguments'
+import { assertNoOptionalOrVariadicArguments } from './helpers/assertNoOptionalOrVariadicArguments'
+import { assertNoVariadicArgument } from './helpers/assertNoVariadicArgument'
+import { assertOptionNameNotInUse } from './helpers/assertOptionNameNotInUse'
+import { assertOptionShortNameIsValid } from './helpers/assertOptionShortNameIsValid'
+import { assertOptionShortNameNotInUse } from './helpers/assertOptionShortNameNotInUse'
+import { findOption } from './helpers/findOption'
+import { findSubcommand } from './helpers/findSubcommand'
+import { getCommandAncestors } from './helpers/getCommandAncestors'
+import { getCommandAndAncestors } from './helpers/getCommandAndAncestors'
+import { parseOptionFlags } from './helpers/parseOptionFlags'
 
+/**
+ * Collection of helper functions for CLI command manipulation and validation.
+ */
 export const helpers = {
   assertNoMultipleVariadicArguments: assertNoMultipleVariadicArguments as typeof assertNoMultipleVariadicArguments,
   assertNoOptionalOrVariadicArguments:

@@ -1,7 +1,10 @@
-import parseOptionFlags from './helpers/parseOptionFlags'
+import { parseOptionFlags } from './helpers/parseOptionFlags'
 import type { ICommand, IOption } from './types'
 import type { OptionOptions, OptionUsage } from './types.internal'
 
+/**
+ * Represents a command-line option with support for short/long flags and various configurations.
+ */
 export class Option<Long extends string = string> implements IOption {
   type: 'boolean' | 'string'
   flags: string

@@ -1,12 +1,14 @@
 import type { CamelCase } from 'type-fest'
-import assertOptionShortNameIsValid from './assertOptionShortNameIsValid'
-import assertOptionShortNameNotInUse from './assertOptionShortNameNotInUse'
-import assertOptionNameNotInUse from './assertOptionNameNotInUse'
+import { assertOptionShortNameIsValid } from './assertOptionShortNameIsValid'
+import { assertOptionShortNameNotInUse } from './assertOptionShortNameNotInUse'
+import { assertOptionNameNotInUse } from './assertOptionNameNotInUse'
 import type { OptionUsage } from '../types.internal'
 import type { ICommand } from '../types'
 
-/** Parses option flags string into its components */
-export default function parseOptionFlags<Long extends string>(
+/**
+ * Parses option flags string into its components
+ */
+export function parseOptionFlags<Long extends string>(
   cmd: ICommand,
   flags: OptionUsage<Long>,
 ): {

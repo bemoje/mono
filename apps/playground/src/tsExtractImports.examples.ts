@@ -2,7 +2,8 @@ import { ImportStatement, tsExtractImports } from '@mono/tscode'
 import { parseImportStatement } from '@mono/tscode'
 import { globSync } from 'glob'
 import fs from 'fs-extra'
-import lodash from 'lodash-es'
+import { groupBy } from 'es-toolkit/array'
+import { sortBy } from 'es-toolkit/compat'
 import { mapObject } from '@mono/object'
 
 example1()
@@ -19,13 +20,13 @@ function example1() {
   }
 
   const fps = globSync('libs/*/src/**/*.ts').filter((p) => !isTestFile(p))
-  const entries = Object.entries(lodash.groupBy(fps, getWsDirname)).map(([ws, fps]) => {
+  const entries = Object.entries(groupBy(fps, getWsDirname)).map(([ws, fps]) => {
     const arr = fps
       .flatMap((p) => tsExtractImports(fs.readFileSync(p, 'utf8')))
       .map((m) => parseImportStatement(m.matchOneLine, { isWorkspacePath }))
       .filter((i) => i.modulePath.type !== 'relative')
     const wsName = repoLibScope + '/' + ws
-    const depsByType = mapObject(lodash.groupBy(arr, getImportType), toSortedModulePaths)
+    const depsByType = mapObject(groupBy(arr, getImportType), toSortedModulePaths)
     return [wsName, depsByType] as const
   })
 
@@ -60,12 +61,10 @@ function example2() {
   console.log('---------')
   const result = Array.from(
     new Set(
-      lodash
-        .sortBy(
-          p.flatMap((i) => i.splitBySpecifier({ unaliasNamedImports: true })),
-          (a) => a.modulePath.path,
-        )
-        .map((i) => i.modulePath.path),
+      sortBy(
+        p.flatMap((i) => i.splitBySpecifier({ unaliasNamedImports: true })),
+        (a) => a.modulePath.path,
+      ).map((i) => i.modulePath.path),
     ),
   )
   console.log(result.join('\n'))

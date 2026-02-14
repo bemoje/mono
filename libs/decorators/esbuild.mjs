@@ -1,3 +1,5 @@
-import { buildLibsWorkspace } from '../../s/util/buildLibsWorkspace.mjs'
+import { execSync } from 'node:child_process'
+import upath from 'upath'
 
-await buildLibsWorkspace(import.meta.dirname, {})
+const dirname = upath.basename(import.meta.dirname)
+execSync(`node ../../.dist/devkit.cjs build lib ${dirname}`, { stdio: 'inherit' })

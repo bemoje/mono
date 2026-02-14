@@ -7,7 +7,7 @@
   "module": "src/index.ts",
   "sideEffects": false,
   "scripts": {
-    "indexts": "node ../../s/clean/indextsWs.mjs",
+    "indexts": "node ../../.dist/devkit.cjs clean index-ts",
     "build": "node esbuild.mjs"
   }
 }

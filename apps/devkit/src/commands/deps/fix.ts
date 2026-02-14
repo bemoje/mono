@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import colors from 'ansi-colors'
 import { addDefaultsOptions, DefaultOptions } from '../common/addDefaultsOptions'
 import { Command, Option } from 'commander'
-import { confirmPrompt } from '@mono/terminal'
+import { confirmPrompt } from '../../lib/confirmPrompt'
 import { MonoRepo } from '@mono/monorepo'
 import { Workspace } from '@mono/monorepo'
 import { templates } from '../../core/templates/templates'
@@ -17,8 +17,7 @@ export function fixDeps() {
   cmd.description('Fix missing and unused dependencies.')
 
   cmd.addOption(
-    new Option('-w, --workspaces [names...]', 'Comma-sep list of workspace names to fix. Defaults to all.') //
-      .choices(new MonoRepo().workspaces.map((ws) => ws.name)),
+    new Option('-w, --workspaces [names...]', 'Comma-sep list of workspace names to fix. Defaults to all.'), //
   )
   cmd.addOption(
     new Option('-f, --fixes [names...]', 'Fixes to apply. Defaults to all.') //

@@ -1,7 +1,7 @@
 import type { ArgumentOptions, ArgumentUsage } from './types.internal'
-import assertNoMultipleVariadicArguments from './helpers/assertNoMultipleVariadicArguments'
-import assertNoOptionalOrVariadicArguments from './helpers/assertNoOptionalOrVariadicArguments'
-import assertNoVariadicArgument from './helpers/assertNoVariadicArgument'
+import { assertNoMultipleVariadicArguments } from './helpers/assertNoMultipleVariadicArguments'
+import { assertNoOptionalOrVariadicArguments } from './helpers/assertNoOptionalOrVariadicArguments'
+import { assertNoVariadicArgument } from './helpers/assertNoVariadicArgument'
 import type { IArgument, ICommand } from './types'
 
 /**
