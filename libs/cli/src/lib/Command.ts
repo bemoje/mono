@@ -32,25 +32,39 @@ import type {
   TriggerPredicate,
 } from './types.internal'
 import type { WithRequired } from '@mono/types'
+import { findOption } from './helpers'
 
 /**
  * A type-safe CLI composer that can parse argv and generate help without execution coupling.
  */
 export class Command<A extends Arguments = [], O extends Options = { help?: boolean }> implements ICommand {
+  /** Parent command in the hierarchy, undefined for root command */
   parent?: Command<Arguments, Options>
+  /** The command name used to invoke it */
   name: string
+  /** Semantic version string displayed by --version flag */
   version?: string
+  /** Alternative names for invoking this command */
   aliases: string[]
+  /** Brief one-line description shown in command lists */
   summary?: string
+  /** Full description displayed in help text */
   description: string
+  /** Whether to exclude from help listings */
   hidden?: boolean
+  /** Category for organizing related commands in help output */
   group?: string
+  /** Positional arguments this command accepts */
   arguments: Argument[]
+  /** CLI options (flags) this command recognizes */
   options: Option[]
+  /** Subcommands registered with this command */
   commands: Command<Arguments, Options>[]
 
+  /** Main action handler executed when command is invoked */
   protected action?: ActionHandler<A, O, Command<A, O>>
 
+  /** Option-driven actions (e.g., --help, --version) executed when their conditions match */
   protected triggers: TriggerDefinition<A, O, Command<A, O>>[] = []
 
   constructor(name: string, parent?: ICommand) {
@@ -61,28 +75,27 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     this.options = []
     this.commands = []
 
-    for (const [key, value] of Object.entries(this)) {
-      if (value === undefined) Reflect.deleteProperty(this, key)
-    }
-
     // Make parent non-enumerable to avoid circular references for toJSON compatibility
     Object.defineProperty(this, 'parent', { value: parent, enumerable: false })
-
-    if (!parent) {
-      this.addOption('-h, --help', 'Display help information') //
-        .addTrigger('help', ({ cmd }) => console.log(cmd.renderHelp()))
-    }
   }
 
   @lazyProp
   get help(): Help {
+    this.addHelpOption()
     return new Help(this)
   }
 
   /** Configure how the help is rendered */
-  helpConfiguration(cb: (help: Help) => void): this {
-    cb(this.help)
-    return this
+  helpConfiguration(cb?: (help: Help) => void): InferNewOptions<A, O, { help?: boolean }> {
+    const help = this.help
+    cb?.(help)
+    return this.addHelpOption()
+  }
+
+  /** Renders formatted help text using provided help definition */
+  renderHelp(config: { noColor?: boolean } = {}): string {
+    const result = this.help.render()
+    return config.noColor ? colors.stripColor(result) : result
   }
 
   /** Sets the command name */
@@ -103,10 +116,9 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
   }
 
   /** Sets the command version */
-  setVersion(version?: string): this {
+  setVersion(version: string): InferNewOptions<A, O, { version?: boolean }> {
     this.version = version
-    if (version) this.addVersionOption()
-    return this
+    return this.addVersionOption()
   }
 
   /** Sets the command summary */
@@ -388,6 +400,25 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     return this
   }
 
+  /**
+   * Register an action to be invoked when a boolean option is set to true.
+   *
+   * Triggers execute in addition to or instead of the main action handler,
+   * allowing for option-driven behavior. For example, `--help` and `--version`
+   * are implemented as triggers.
+   *
+   * @param name - The option name (must be a boolean option)
+   * @param action - Handler called when the option evaluates to true
+   * @returns This command instance for chaining
+   *
+   * @example
+   * ```
+   * cmd.addOption('-v, --verbose', 'Enable verbose output')
+   *    .addTrigger('verbose', ({ args, opts }) => {
+   *      console.log('Verbose mode enabled', { args, opts })
+   *    })
+   * ```
+   */
   addTrigger<C extends ICommand = Command<A, O>>(name: keyof O, action: ActionHandler<A, O, C>): this {
     this.triggers.push({
       name,
@@ -399,24 +430,31 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     return this
   }
 
-  /** Renders formatted help text using provided help definition */
-  renderHelp(config: { noColor?: boolean } = {}): string {
-    const result = this.help.render()
-    return config.noColor ? colors.stripColor(result) : result
+  /** Adds `-h, --help` option with a trigger that prints help text */
+  protected addHelpOption(): InferNewOptions<A, O, { help?: boolean }> {
+    if (findOption(this, 'help')) return this
+    return this.addOption('-h, --help', 'Display help information') //
+      .addTrigger('help', ({ cmd }) => {
+        console.log(cmd.renderHelp())
+      }) as InferNewOptions<A, O, { help?: boolean }>
+  }
+
+  /** Adds `-V, --version` option with a trigger that prints version */
+  protected addVersionOption(): InferNewOptions<A, O, { version?: boolean }> {
+    if (findOption(this, 'version')) return this
+    return this.addOption('-V, --version', 'Display semver version') //
+      .addTrigger('version', ({ cmd }) => {
+        console.log(cmd.version)
+      }) as InferNewOptions<A, O, { version?: boolean }>
   }
 
   /** Returns a new Command instance. Override this method in subclasses. */
   protected createSubcommand(name: string): Command<[], O> {
     return new Command<[], O>(name, this)
   }
-
-  protected addHelpOption() {
-    return this.addOption('-h, --help', 'Display help information') //
-      .addTrigger('help', ({ cmd }) => console.log(cmd.renderHelp())) as Command<A, { help?: boolean } & O>
-  }
-
-  protected addVersionOption() {
-    return this.addOption('-V, --version', 'Display semver version') //
-      .addTrigger('version', ({ cmd }) => console.log(cmd.version)) as Command<A, { version?: boolean } & O>
-  }
 }
+
+type InferNewOptions<A extends Arguments, O extends Options, NewOptions extends Options> = Command<
+  A,
+  NewOptions & O
+>

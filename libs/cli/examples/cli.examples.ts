@@ -2,12 +2,12 @@ import { Command, Option, findOption } from '../src'
 import assert from 'node:assert'
 
 export function help_option_enabled_by_default(): void {
-  const cmd = new Command('app')
+  const cmd = new Command('app').helpConfiguration()
 
   // All option instances are stored in options array
   const optionsArray = cmd.options
 
-  // There should be a help Option instance by default
+  // There should be a help Option instance
   const helpOption = findOption(cmd, 'help')
 
   // Render help text
