@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7147  | 7147    | 100%       |
+| Lines     | 7142  | 7142    | 100%       |
 | Functions | 806   | 806     | 100%       |
-| Branches  | 2535  | 2535    | 100%       |
+| Branches  | 2527  | 2527    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 563   | 9860          |
-| test      | 431   | 27691         |
+| source    | 563   | 9859          |
+| test      | 431   | 27700         |
 | examples  | 2     | 51            |
-| total     | 996   | 37602         |
+| total     | 996   | 37610         |
 
 ## Table of Contents
 
