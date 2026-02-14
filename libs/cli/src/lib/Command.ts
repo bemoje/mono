@@ -9,14 +9,16 @@ import { Argument } from './Argument'
 import { Help } from './Help'
 import { findSubcommand } from './helpers/findSubcommand'
 import { getCommandAncestors } from './helpers/getCommandAncestors'
-import lazyProp from './internal/lazyProp'
+import { lazyProp } from '@mono/decorators'
 import { Option } from './Option'
+import { findOption } from './helpers/findOption'
 import type { Arguments, ICommand, Options } from './types'
 import type {
   ActionHandler,
   ArgumentOptions,
   ArgumentUsage,
   IBooleanOption,
+  InferNewOptions,
   IOptionalArgument,
   IOptionalOption,
   IOptionalVariadicArgument,
@@ -32,7 +34,6 @@ import type {
   TriggerPredicate,
 } from './types.internal'
 import type { WithRequired } from '@mono/types'
-import { findOption } from './helpers'
 
 /**
  * A type-safe CLI composer that can parse argv and generate help without execution coupling.
@@ -179,14 +180,6 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     description: string,
     options: SetFieldType<WithRequired<IOptionalArgument, 'defaultValue'>, 'defaultValue', string>,
   ): Command<[...A, string], O>
-  /** Add optional argument, eg.: `[name]` */
-  addArgument(
-    usage: `[${string}]`,
-    description?: string,
-    options?: SetFieldType<IOptionalArgument, 'defaultValue', undefined | never>,
-  ): Command<[...A, string | undefined], O>
-  /** Add required argument, eg.: `<name>` */
-  addArgument(usage: `<${string}>`, description?: string, options?: IRequiredArgument): Command<[...A, string], O>
   /** Add required variadic argument, eg.: `<name...>` */
   addArgument(
     usage: `<${string}...>`,
@@ -199,6 +192,14 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     description?: string,
     options?: IOptionalVariadicArgument,
   ): Command<[...A, string[]], O>
+  /** Add optional argument, eg.: `[name]` */
+  addArgument(
+    usage: `[${string}]`,
+    description?: string,
+    options?: SetFieldType<IOptionalArgument, 'defaultValue', undefined | never>,
+  ): Command<[...A, string | undefined], O>
+  /** Add required argument, eg.: `<name>` */
+  addArgument(usage: `<${string}>`, description?: string, options?: IRequiredArgument): Command<[...A, string], O>
 
   addArgument(usage: ArgumentUsage, description?: string, options?: Partial<ArgumentOptions>) {
     const ins = new Argument(this, usage, description ?? '', options)
@@ -228,12 +229,6 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     description: string,
     options: SetFieldType<WithRequired<IOptionalOption, 'defaultValue'>, 'defaultValue', string>,
   ): Command<A, Simplify<{ [K in CamelCase<Long>]: string } & O>>
-  /** Add required string option, eg.: `-f, --file <path>` */
-  addOption<Long extends string>(
-    flags: `-${string}, --${Long} <${string}>`,
-    description?: string,
-    options?: IRequiredOption,
-  ): Command<A, Simplify<{ [K in CamelCase<Long>]: string } & O>>
   /** Add required variadic option, eg.: `-i, --include <patterns...>` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} <${string}...>`,
@@ -246,6 +241,18 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     description?: string,
     options?: IOptionalVariadicOption,
   ): Command<A, Simplify<{ [K in CamelCase<Long>]: string[] } & O>>
+  /** Add optional string option, eg.: `-o, --output [path]` */
+  addOption<Long extends string>(
+    flags: `-${string}, --${Long} [${string}]`,
+    description?: string,
+    options?: SetFieldType<IOptionalOption, 'defaultValue', undefined | never>,
+  ): Command<A, Simplify<{ [K in CamelCase<Long>]?: string } & O>>
+  /** Add required string option, eg.: `-f, --file <path>` */
+  addOption<Long extends string>(
+    flags: `-${string}, --${Long} <${string}>`,
+    description?: string,
+    options?: IRequiredOption,
+  ): Command<A, Simplify<{ [K in CamelCase<Long>]: string } & O>>
   /** Add boolean flag option with default, eg.: `-v, --verbose` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long}`,
@@ -453,8 +460,3 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     return new Command<[], O>(name, this)
   }
 }
-
-type InferNewOptions<A extends Arguments, O extends Options, NewOptions extends Options> = Command<
-  A,
-  NewOptions & O
->
