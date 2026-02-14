@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import assert from 'node:assert'
 import { Command } from './Command'
-import getCommandAndAncestors from './helpers/getCommandAndAncestors'
-import getCommandAncestors from './helpers/getCommandAncestors'
-import findSubcommand from './helpers/findSubcommand'
-import findOption from './helpers/findOption'
+import { getCommandAndAncestors } from './helpers/getCommandAndAncestors'
+import { getCommandAncestors } from './helpers/getCommandAncestors'
+import { findSubcommand } from './helpers/findSubcommand'
+import { findOption } from './helpers/findOption'
 
 describe(Command.name, () => {
   it('examples', () => {
@@ -755,7 +755,7 @@ describe(Command.name, () => {
       const parent = new Command('parent')
         .addOption('-v, --verbose', 'verbose')
         .addOption('-d, --debug', 'debug')
-        .addTrigger('verbose', { action: () => {} })
+        .addTrigger('verbose', () => {})
 
       const child = parent.command('child', { inheritOptions: ['verbose'] })
 
@@ -1243,20 +1243,8 @@ describe(Command.name, () => {
   })
 
   describe('addTrigger', () => {
-    it('should add a trigger with a custom predicate', () => {
-      const cmd = new Command('test').addOption('-v, --verbose', 'verbose').addTrigger('verbose', {
-        predicate: ({ opts }) => opts.verbose === true,
-        action: () => {},
-      })
-
-      const parsed = cmd.parseArgv(['-v'])
-      expect(parsed.triggers).toHaveLength(1)
-    })
-
     it('should use default predicate when none provided', () => {
-      const cmd = new Command('test').addOption('-v, --verbose', 'verbose').addTrigger('verbose', {
-        action: () => {},
-      })
+      const cmd = new Command('test').addOption('-v, --verbose', 'verbose').addTrigger('verbose', () => {})
 
       const parsed = cmd.parseArgv(['-v'])
       expect(parsed.triggers).toHaveLength(1)
@@ -1267,10 +1255,8 @@ describe(Command.name, () => {
       const cmd = new Command('test')
         .addOption('-v, --verbose', 'verbose')
         .setAction(() => {})
-        .addTrigger('verbose', {
-          action: () => {
-            triggerCalled = true
-          },
+        .addTrigger('verbose', () => {
+          triggerCalled = true
         })
 
       const parsed = cmd.parseArgv(['-v'])
@@ -1286,9 +1272,7 @@ describe(Command.name, () => {
         .setAction(() => {
           mainCalled = true
         })
-        .addTrigger('verbose', {
-          action: () => {},
-        })
+        .addTrigger('verbose', () => {})
 
       const parsed = cmd.parseArgv([])
       expect(parsed.action).toBe('main')

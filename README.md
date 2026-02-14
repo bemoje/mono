@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7159  | 7159    | 100%       |
-| Functions | 810   | 810     | 100%       |
+| Lines     | 7147  | 7147    | 100%       |
+| Functions | 806   | 806     | 100%       |
 | Branches  | 2535  | 2535    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 563   | 9875          |
-| test      | 431   | 27705         |
+| source    | 563   | 9860          |
+| test      | 431   | 27691         |
 | examples  | 2     | 51            |
-| total     | 996   | 37631         |
+| total     | 996   | 37602         |
 
 ## Table of Contents
 
@@ -306,19 +306,19 @@ describe(ClassToTest.name, () => {
 - `Argument`: Defines a command-line argument
 - `Command`: A type-safe CLI composer that can parse argv and generate help without execution coupling.
 - `Help`: This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the expected interface of the Command instance to parse, are both similar, but different and not compatible without custom adaptations,
-- `Option`: ?
-- `assertNoMultipleVariadicArguments`: ?
-- `assertNoOptionalOrVariadicArguments`: ?
-- `assertNoVariadicArgument`: ?
-- `assertOptionNameNotInUse`: ?
-- `assertOptionShortNameIsValid`: ?
-- `assertOptionShortNameNotInUse`: ?
-- `findOption`: ?
-- `findSubcommand`: ?
-- `getCommandAncestors`: ?
-- `getCommandAndAncestors`: ?
-- `helpers`: ?
-- `parseOptionFlags`: ?
+- `Option`: Represents a command-line option with support for short/long flags and various configurations.
+- `assertNoMultipleVariadicArguments`: Ensures only one variadic argument per command
+- `assertNoOptionalOrVariadicArguments`: Validates CLI argument ordering
+- `assertNoVariadicArgument`: Validates optional args don't follow variadic args
+- `assertOptionNameNotInUse`: Validates option names are unique across command hierarchy
+- `assertOptionShortNameIsValid`: Validates option short names are single alphanumeric characters
+- `assertOptionShortNameNotInUse`: Validates option short names are unique across command hierarchy
+- `findOption`: Finds option by name, short name or long name
+- `findSubcommand`: Finds subcommand by name or alias
+- `getCommandAncestors`: Returns all ancestor commands excluding this command
+- `getCommandAndAncestors`: Returns command and all ancestor commands in hierarchy
+- `helpers`: Collection of helper functions for CLI command manipulation and validation.
+- `parseOptionFlags`: Parses option flags string into its components
 
 **composition**
 
