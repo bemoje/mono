@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7142  | 7142    | 100%       |
-| Functions | 806   | 806     | 100%       |
-| Branches  | 2527  | 2527    | 100%       |
+| Lines     | 7092  | 7092    | 100%       |
+| Functions | 803   | 803     | 100%       |
+| Branches  | 2524  | 2524    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 563   | 9859          |
-| test      | 431   | 27700         |
+| source    | 562   | 9802          |
+| test      | 445   | 28261         |
 | examples  | 2     | 51            |
-| total     | 996   | 37610         |
+| total     | 1009  | 38114         |
 
 ## Table of Contents
 
@@ -310,6 +310,7 @@ describe(ClassToTest.name, () => {
 - `assertNoMultipleVariadicArguments`: Ensures only one variadic argument per command
 - `assertNoOptionalOrVariadicArguments`: Validates CLI argument ordering
 - `assertNoVariadicArgument`: Validates optional args don't follow variadic args
+- `assertOptionLongNotInUse`: Validates option long name are unique across command hierarchy
 - `assertOptionNameNotInUse`: Validates option names are unique across command hierarchy
 - `assertOptionShortNameIsValid`: Validates option short names are single alphanumeric characters
 - `assertOptionShortNameNotInUse`: Validates option short names are unique across command hierarchy
@@ -317,7 +318,6 @@ describe(ClassToTest.name, () => {
 - `findSubcommand`: Finds subcommand by name or alias
 - `getCommandAncestors`: Returns all ancestor commands excluding this command
 - `getCommandAndAncestors`: Returns command and all ancestor commands in hierarchy
-- `helpers`: Collection of helper functions for CLI command manipulation and validation.
 - `parseOptionFlags`: Parses option flags string into its components
 
 **composition**

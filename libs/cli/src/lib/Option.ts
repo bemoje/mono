@@ -1,3 +1,7 @@
+import { assertOptionLongNotInUse } from './helpers/assertOptionLongNotInUse'
+import { assertOptionNameNotInUse } from './helpers/assertOptionNameNotInUse'
+import { assertOptionShortNameIsValid } from './helpers/assertOptionShortNameIsValid'
+import { assertOptionShortNameNotInUse } from './helpers/assertOptionShortNameNotInUse'
 import { parseOptionFlags } from './helpers/parseOptionFlags'
 import type { ICommand, IOption } from './types'
 import type { OptionOptions, OptionUsage } from './types.internal'
@@ -23,7 +27,11 @@ export class Option<Long extends string = string> implements IOption {
   group?: string
 
   constructor(cmd: ICommand, flags: OptionUsage<Long>, description?: string, opts: Partial<OptionOptions> = {}) {
-    const { short, long, name, argName } = parseOptionFlags<Long>(cmd, flags)
+    const { short, long, name, argName } = parseOptionFlags<Long>(flags)
+    assertOptionShortNameIsValid(short)
+    assertOptionShortNameNotInUse(cmd, short)
+    assertOptionNameNotInUse(cmd, name)
+    assertOptionLongNotInUse(cmd, long)
     this.flags = flags
     this.short = short
     this.long = long
