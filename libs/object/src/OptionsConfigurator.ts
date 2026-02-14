@@ -122,7 +122,7 @@ function createConfigurator<
         if (this.$data[key] === undefined) {
           const df = dfValue?.()
           if (df !== undefined) {
-            this.$data[key] = dfValue?.()
+            this.$data[key] = df
           }
         }
       })

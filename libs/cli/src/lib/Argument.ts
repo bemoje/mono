@@ -48,10 +48,5 @@ export class Argument implements IArgument {
     for (const [key, value] of Object.entries(opts)) {
       if (value !== undefined) Reflect.set(this, key, value)
     }
-
-    // Clean up undefined properties
-    for (const [key, value] of Object.entries(this)) {
-      if (value === undefined) Reflect.deleteProperty(this, key)
-    }
   }
 }
