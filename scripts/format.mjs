@@ -26,9 +26,13 @@ const commands = [
 ]
 
 const files = Array.from(new Set((await Promise.all(commands.map(exec))).flat()))
-const existentFiles = files.filter((file) => {
-  return fs.existsSync(file)
-})
+const existentFiles = files
+  .filter((file) => {
+    return !file.startsWith('.dist/')
+  })
+  .filter((file) => {
+    return fs.existsSync(file)
+  })
 
 if (existentFiles.length === 0) {
   console.log('No files to format.')
