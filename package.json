@@ -10,8 +10,8 @@
   ],
   "scripts": {
     "r": "node .dist/devkit.cjs run",
-    "clean": "echo '\nCLEAN...' && yarn clean:fixOwnWsImports && yarn clean:indexts && yarn clean:ensureVitestImports && yarn clean:removeEmptyWsFiles && yarn clean:replaceBadDashChars",
-    "clean:fixOwnWsImports": "echo 'fixOwnWsImports...' && node .dist/devkit.cjs deps fix -f imports -y",
+    "clean": "echo '\nCLEAN...' && yarn run-p --print-label \"clean:*\"",
+    "clean:fixOwnWsImports": "echo 'fixOwnWsImports...' && node .dist/devkit.cjs deps fix --fixes imports",
     "clean:indexts": "yarn workspaces foreach -Apt --verbose run indexts",
     "clean:ensureVitestImports": "node .dist/devkit.cjs clean vitest-imports",
     "clean:removeEmptyWsFiles": "node .dist/devkit.cjs clean empty-files",
@@ -55,6 +55,7 @@
     "globals": "^15.8.0",
     "husky": "^9.1.7",
     "knip": "^5.83.1",
+    "npm-run-all2": "^8.0.4",
     "prettier": "^3.3.3",
     "tsd": "^0.31.2",
     "type-fest": "^5.4.4",
