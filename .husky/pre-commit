@@ -1,1 +1,1 @@
-yarn run-p --print-label typecheck lint
+yarn run-p --print-label typecheck format:check
