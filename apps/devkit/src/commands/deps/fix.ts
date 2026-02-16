@@ -4,7 +4,7 @@ import { addDefaultsOptions, DefaultOptions } from '../common/addDefaultsOptions
 import { Command, Option } from 'commander'
 import { confirmPrompt } from '../../lib/confirmPrompt'
 import { MonoRepo } from '@mono/monorepo'
-import { Workspace } from '@mono/monorepo'
+import { timer } from '../../lib/timer'
 
 //
 
@@ -36,53 +36,41 @@ interface FixDepsOptions extends DefaultOptions {
 //
 
 async function action(options: FixDepsOptions) {
-  const t0 = Date.now()
-
-  if (options.debug) {
-    console.debug({ options })
-  }
-
-  const fixed = { count: 0 }
-
-  for (const ws of new MonoRepo().workspaces) {
-    if (!options.fixes || options.fixes.includes('imports')) {
-      await fixIncorrectlyImportedRepoWorkspaces(ws, options, fixed)
-    }
-  }
-
-  if (!options.silent) {
-    console.info(colors.green(`Fixed ${fixed.count} dependencies in ${Date.now() - t0} ms.`))
-  }
-}
-
-async function fixIncorrectlyImportedRepoWorkspaces(
-  workspace: Workspace,
-  options: FixDepsOptions,
-  fixed: { count: number },
-) {
-  for (const { filepath, replaceValue, withValue } of workspace.incorrectlyImportedRepoWorkspaces) {
-    if (!options.silent) {
-      console.info(
-        `\nIncorrect import in ${colors.magenta(filepath)}. Replace '${colors.red(replaceValue)}' with '${colors.green(withValue)}'`,
-      )
+  await timer('fix imports', async (log) => {
+    if (options.debug) {
+      log.debug({ options })
     }
 
-    if (!options.yes && !(await confirmPrompt('Proceed?'))) {
-      continue
-    }
+    const fixed = { count: 0 }
 
-    if (options.dryRun) {
-      console.log(`dryRun. Action skipped: Fix import in: ${filepath}`)
-      continue
-    }
+    for (const ws of new MonoRepo().workspaces) {
+      if (!options.fixes || options.fixes.includes('imports')) {
+        for (const { filepath, replaceValue, withValue } of ws.incorrectlyImportedRepoWorkspaces) {
+          if (!options.silent) {
+            log.info(
+              `\nIncorrect import in ${colors.magenta(filepath)}. Replace '${colors.red(replaceValue)}' with '${colors.green(withValue)}'`,
+            )
+          }
 
-    try {
-      const code = await fs.readFile(filepath, 'utf8')
-      await fs.writeFile(filepath, code.replace(RegExp(replaceValue, 'g'), withValue))
-      fixed.count++
-    } catch (error) {
-      console.error(error)
-      console.error(`Failed to fix import in ${filepath}`)
+          if (!options.yes && !(await confirmPrompt('Proceed?'))) {
+            continue
+          }
+
+          if (options.dryRun) {
+            log.info(`dryRun. Action skipped: Fix import in: ${filepath}`)
+            continue
+          }
+
+          try {
+            const code = await fs.readFile(filepath, 'utf8')
+            await fs.writeFile(filepath, code.replace(RegExp(replaceValue, 'g'), withValue))
+            fixed.count++
+          } catch (error) {
+            log.error(error)
+            log.error(`Failed to fix import in ${filepath}`)
+          }
+        }
+      }
     }
-  }
+  })
 }

@@ -41,5 +41,5 @@ if (existentFiles.length === 0) {
 
 const prettierCmd = `yarn prettier ${args.join(' ')} ${existentFiles.join(' ')}`
 
-console.debug(`Running: ${prettierCmd}`)
+// console.debug(`Running: ${prettierCmd}`)
 cp.execSync(prettierCmd, { stdio: 'inherit' })

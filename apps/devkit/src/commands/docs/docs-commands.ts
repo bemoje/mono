@@ -13,7 +13,7 @@ function docsReadme() {
     await timer(['writeReadme', 'Generating readme'], async (log) => {
       await fs.writeFile('README.md', await renderReadme(), 'utf8')
       log.info('Writing to file:', './README.md')
-      cp.execSync('yarn prettier -w README.md', { stdio: 'inherit' })
+      cp.execSync('yarn format:write', { stdio: 'inherit' })
     })
   })
 }

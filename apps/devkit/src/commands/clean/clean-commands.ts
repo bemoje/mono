@@ -23,7 +23,7 @@ function cleanVitestImports() {
     .description('Ensure all test files have necessary Vitest imports.')
     .argument('[glob]', 'File glob pattern', '{libs,apps,packages}/*/src/**/*.test.{ts,tsx}')
     .action(async (fileGlob: string) => {
-      await timer(['ensureVitestImports', 'Fixing Vitest imports in test files...'], async (log) => {
+      await timer('clean vitest-imports', async (log) => {
         const filepaths = globSync(fileGlob, { cwd: process.cwd() }).map((fp) => upath.normalizeSafe(fp))
 
         log.info(`Found ${filepaths.length} files matching glob: ${fileGlob}`)
@@ -108,7 +108,7 @@ function cleanIndexTs() {
 
 function cleanEmptyFiles() {
   return new Command('empty-files').description('Remove empty files from all workspaces.').action(async () => {
-    await timer(['removeEmptyWsFiles', 'Deleting empty files in all workspaces'], async (log) => {
+    await timer('clean empty-files', async (log) => {
       const empty = await getEmptyWsFiles()
       for (const file of empty) {
         log.info('Deleting empty file:', file)
@@ -122,23 +122,25 @@ function cleanDashChars() {
   return new Command('dash-chars')
     .description('Replace bad dash characters (em-dash) with regular dashes.')
     .action(async () => {
-      const filepaths = await glob('**/*', {
-        ignore: '**/{.dist,.coverage,.yarn,node_modules}/**/*',
-        nodir: true,
-        follow: false,
+      await timer('clean dash-chars', async (log) => {
+        const filepaths = await glob('**/*', {
+          ignore: '**/{.dist,.coverage,.yarn,node_modules}/**/*',
+          nodir: true,
+          follow: false,
+        })
+
+        const regex = new RegExp(String.fromCharCode(8212), 'g')
+
+        const promises = filepaths.map(async (filepath) => {
+          const src = await fs.readFile(filepath, 'utf-8')
+          const res = src.replace(regex, '-')
+          if (src !== res) {
+            await fs.writeFile(filepath, res, 'utf-8')
+            log.info(`Replaced bad dash char in ${filepath}`)
+          }
+        })
+
+        await Promise.all(promises)
       })
-
-      const regex = new RegExp(String.fromCharCode(8212), 'g')
-
-      const promises = filepaths.map(async (filepath) => {
-        const src = await fs.readFile(filepath, 'utf-8')
-        const res = src.replace(regex, '-')
-        if (src !== res) {
-          await fs.writeFile(filepath, res, 'utf-8')
-          console.log(`Replaced bad dash char in ${filepath}`)
-        }
-      })
-
-      await Promise.all(promises)
     })
 }

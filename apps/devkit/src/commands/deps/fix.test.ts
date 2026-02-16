@@ -185,13 +185,10 @@ describe(fixDeps.name, () => {
         }) as never,
     )
     const consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {})
-    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
     const cmd = fixDeps()
     await cmd.parseAsync(['--yes', '--dryRun'], { from: 'user' })
     expect(fs.readFile).not.toHaveBeenCalled()
-    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('dryRun'))
     consoleInfoSpy.mockRestore()
-    consoleLogSpy.mockRestore()
   })
 
   it('should output debug info when --debug is set', async () => {
