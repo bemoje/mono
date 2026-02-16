@@ -21,7 +21,7 @@ describe(updateFileLines.name, () => {
 
   it('examples', () => {
     expect(async () => {
-      const testFile = './temp-test-updateFileLines.txt'
+      const testFile = './.temp/test-updateFileLines.txt'
 
       // Setup mocks for different calls
       mockFs.readFile.mockResolvedValueOnce('')
@@ -47,7 +47,7 @@ describe(updateFileLines.name, () => {
   })
 
   it('should handle empty files', async () => {
-    const testFile = './temp-test-empty.txt'
+    const testFile = './.temp/test-empty.txt'
 
     mockFs.readFile.mockResolvedValue('')
 
@@ -60,7 +60,7 @@ describe(updateFileLines.name, () => {
   })
 
   it('should preserve line endings and handle both return types', async () => {
-    const testFile = './temp-test-mixed.txt'
+    const testFile = './.temp/test-mixed.txt'
 
     // Test array return
     mockFs.readFile.mockResolvedValueOnce('')

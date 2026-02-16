@@ -31,14 +31,14 @@ function createFile(filepath: string) {
   return new File({} as any, filepath)
 }
 
-describe(File.name, () => {
-  describe('inspector', () => {
+describe.sequential(File.name, () => {
+  describe.sequential('inspector', () => {
     it('should be defined as a static property', () => {
       expect(File.inspector).toBeDefined()
     })
   })
 
-  describe('stats', () => {
+  describe.sequential('stats', () => {
     it('should return file stats', () => {
       const file = createFile('/workspace/src/myFile.ts')
       const stats = file.stats
@@ -47,7 +47,7 @@ describe(File.name, () => {
     })
   })
 
-  describe('isTs', () => {
+  describe.sequential('isTs', () => {
     it('should return true for .ts files', () => {
       expect(createFile('/workspace/src/file.ts').isTs).toBe(true)
     })
@@ -65,7 +65,7 @@ describe(File.name, () => {
     })
   })
 
-  describe('isDotTs', () => {
+  describe.sequential('isDotTs', () => {
     it('should return true for .ts files', () => {
       expect(createFile('/workspace/src/file.ts').isDotTs).toBe(true)
     })
@@ -75,7 +75,7 @@ describe(File.name, () => {
     })
   })
 
-  describe('isDotTsx', () => {
+  describe.sequential('isDotTsx', () => {
     it('should return true for .tsx files', () => {
       expect(createFile('/workspace/src/file.tsx').isDotTsx).toBe(true)
     })
@@ -85,7 +85,7 @@ describe(File.name, () => {
     })
   })
 
-  describe('isExample', () => {
+  describe.sequential('isExample', () => {
     it('should return true for .examples.ts files', () => {
       expect(createFile('/workspace/src/file.examples.ts').isExample).toBe(true)
     })
@@ -95,7 +95,7 @@ describe(File.name, () => {
     })
   })
 
-  describe('isDeclaration', () => {
+  describe.sequential('isDeclaration', () => {
     it('should return true for .d.ts files', () => {
       expect(createFile('/workspace/src/file.d.ts').isDeclaration).toBe(true)
     })
@@ -105,7 +105,7 @@ describe(File.name, () => {
     })
   })
 
-  describe('isTest', () => {
+  describe.sequential('isTest', () => {
     it('should return true for .test.ts files', () => {
       expect(createFile('/workspace/src/file.test.ts').isTest).toBe(true)
     })
@@ -115,7 +115,7 @@ describe(File.name, () => {
     })
   })
 
-  describe('isIndexFile', () => {
+  describe.sequential('isIndexFile', () => {
     it('should return true for index.ts', () => {
       expect(createFile('/workspace/src/index.ts').isIndexFile).toBe(true)
     })
@@ -125,7 +125,7 @@ describe(File.name, () => {
     })
   })
 
-  describe('isSourceFile', () => {
+  describe.sequential('isSourceFile', () => {
     it('should return true for regular source files in src/', () => {
       expect(createFile('/workspace/src/file.ts').isSourceFile).toBe(true)
     })
@@ -139,7 +139,7 @@ describe(File.name, () => {
     })
   })
 
-  describe('readFile', () => {
+  describe.sequential('readFile', () => {
     it('should read file contents', () => {
       const file = createFile('/workspace/src/file.ts')
       expect((file as any).readFile()).toBe('')
