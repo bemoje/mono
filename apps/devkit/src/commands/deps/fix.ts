@@ -45,7 +45,6 @@ async function action(options: FixDepsOptions) {
   const fixed = { count: 0 }
 
   for (const ws of new MonoRepo().workspaces) {
-    if (options.workspaces && !options.workspaces.includes(ws.name)) continue
     if (!options.fixes || options.fixes.includes('imports')) {
       await fixIncorrectlyImportedRepoWorkspaces(ws, options, fixed)
     }

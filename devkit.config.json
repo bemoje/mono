@@ -37,16 +37,11 @@
         "execSync(`yarn DK build lib ${dirname}`, { stdio: 'inherit' })",
         ""
       ],
-      "readmeMd": [
-        "# {{libraryName}}",
-        ""
-      ],
+      "readmeMd": ["# {{libraryName}}", ""],
       "tsconfigJson": {
         "extends": "../../tsconfig.json"
       },
-      "indexTs": [
-        ""
-      ]
+      "indexTs": [""]
     }
   }
 }
