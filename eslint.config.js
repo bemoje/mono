@@ -10,6 +10,8 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
 
+  eslintConfigPrettier,
+
   {
     plugins: { 'unused-imports': unusedImports },
     rules: {
@@ -66,6 +68,4 @@ export default [
       '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
-
-  eslintConfigPrettier,
 ]
