@@ -1,1 +1,1 @@
-node scripts/format.mjs
+yarn run-p --print-label typecheck lint format:check
