@@ -56,7 +56,7 @@ function cleanVitestImports() {
 function cleanIndexTs() {
   return new Command('index-ts')
     .description('Generate barrel export index.ts for a workspace.')
-    .argument('<wsPath>', 'Workspace path (relative to repo root)')
+    .argument('[wsPath]', 'Workspace path (relative to repo root)')
     .argument('[ignoreDirs]', 'Comma-separated dirs to ignore')
     .action(async (wsPath?: string, ignoreDirs?: string) => {
       const repoRoot = getRepoRootDirpath()
