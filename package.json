@@ -34,7 +34,8 @@
     "dk": "yarn workspace @bemoje/devkit build && node .dist/devkit.cjs",
     "DK": "node .dist/devkit.cjs",
     "ws": "node .dist/devkit.cjs ws",
-    "publish:devkit": "yarn workspace @bemoje/devkit build && yarn workspace @bemoje/devkit npm publish"
+    "publish:devkit": "yarn workspace @bemoje/devkit build && yarn workspace @bemoje/devkit npm publish",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
