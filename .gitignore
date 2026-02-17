@@ -1,7 +1,6 @@
 node_modules/
 .eslintcache
 .dist/
-!.dist/devkit.cjs
 apps/devkit/dist/
 .yarn/sdks
 *.wip.*

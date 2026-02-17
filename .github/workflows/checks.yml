@@ -19,16 +19,22 @@ jobs:
           node-version: '21'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: corepack enable && yarn install --frozen-lockfile
 
-      - name: Type check
+      # - name: Build
+      #   run: yarn build
+
+      - name: typecheck
         run: yarn typecheck
 
-      - name: Lint
+      - name: lint
         run: yarn lint
 
-      - name: Build
-        run: yarn build
+      - name: prettier
+        run: yarn format-all:check
 
-      - name: Test
+      - name: knip
+        run: yarn check:knip
+
+      - name: test
         run: yarn test

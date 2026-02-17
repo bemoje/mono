@@ -1,4 +1,3 @@
-import fs from 'fs-extra'
 import os from 'node:os'
 import upath from 'upath'
 import { getOS } from './getOS'
@@ -20,7 +19,6 @@ export function getAppDataPath(...paths: string[]) {
       throw new Error('Could not find an appropriate app data path')
     }
   }
-  result = fs.realpathSync(result)
   if (!paths.length) return result
   if (paths[0] === os.homedir()) paths[0] = '.' + paths[0]
   return upath.join(result, ...paths)

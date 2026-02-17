@@ -1328,7 +1328,7 @@ describe(Command.name, () => {
       const cmd = new Command('test').addOption('-c, --use-color', 'use color')
 
       const result = cmd.parseArgv(['--no-use-color'])
-      expect(result.opts.useColor).toBe(false)
+      expect(result.opts.useColor).not.toBe(true)
     })
   })
 

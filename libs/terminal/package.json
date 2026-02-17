@@ -9,7 +9,10 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "indexts": "node ../../.dist/devkit.cjs clean index-ts",
+    "indexts": "devkit clean index-ts",
     "build": "node esbuild.mjs"
+  },
+  "devDependencies": {
+    "@bemoje/devkit": "0.0.10"
   }
 }

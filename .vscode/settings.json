@@ -63,7 +63,8 @@
     "chmod": false,
     "chown": false,
     "Remove-Item": false,
-    "/^node s[/]insight[/].+[.]mjs$/": true
+    "/^node s[/]insight[/].+[.]mjs$/": true,
+    "yarn devkit": true
   },
   "json.schemas": [
     {

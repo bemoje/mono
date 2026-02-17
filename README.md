@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 6501  | 6501    | 100%       |
+| Lines     | 6499  | 6499    | 100%       |
 | Functions | 770   | 770     | 100%       |
-| Branches  | 2372  | 2372    | 100%       |
+| Branches  | 2371  | 2371    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 561   | 9684          |
-| test      | 444   | 27925         |
+| source    | 561   | 9682          |
+| test      | 444   | 27921         |
 | examples  | 2     | 51            |
-| total     | 1007  | 37660         |
+| total     | 1007  | 37654         |
 
 ## Table of Contents
 
@@ -63,7 +63,7 @@ Scripts are defined in the root [`package.json`](/package.json). Each script pro
 
 The [`devkit`](/apps/devkit) CLI provides development utilities for the monorepo. It is the single consolidated tool for all repo management tasks including builds, code cleanup, insight/analysis, documentation generation, and more.
 
-Run with `yarn dk` (build + run) or `yarn DK` (run without building). The built artifact (`.dist/devkit.cjs`) is committed to git for zero-dependency bootstrapping.
+Run with `yarn devkit`.
 
 ## Workspaces
 

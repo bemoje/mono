@@ -95,7 +95,7 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
     }
     return Array.from(defaultImports.get(line).multiplicities()).sort((a, b) => b[1] - a[1])[0][0]
   })
-  .concat(...cp.execSync(`node .dist/devkit.cjs insight import-statements`).toString().trim().split('\n'))
+  .concat(...cp.execSync(`yarn devkit insight import-statements`).toString().trim().split('\n'))
 
 const counts = countUniques(lines)
 
