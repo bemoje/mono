@@ -20,6 +20,7 @@ export function getAppDataPath(...paths: string[]) {
       throw new Error('Could not find an appropriate app data path')
     }
   }
+  if (!fs.existsSync(result)) return upath.join(...paths)
   result = fs.realpathSync(result)
   if (!paths.length) return result
   if (paths[0] === os.homedir()) paths[0] = '.' + paths[0]
