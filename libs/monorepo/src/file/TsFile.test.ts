@@ -25,14 +25,14 @@ function createTsFile(filepath = '/workspace/src/file.ts') {
   return new TsFile({} as any, filepath)
 }
 
-describe(TsFile.name, () => {
-  describe('inspector', () => {
+describe.sequential(TsFile.name, () => {
+  describe.sequential('inspector', () => {
     it('should be defined as a static property', () => {
       expect(TsFile.inspector).toBeDefined()
     })
   })
 
-  describe('tsCode', () => {
+  describe.sequential('tsCode', () => {
     it('should return a TsCode instance', () => {
       const file = createTsFile()
       const tsCode = file.tsCode
@@ -41,7 +41,7 @@ describe(TsFile.name, () => {
     })
   })
 
-  describe('dependencies', () => {
+  describe.sequential('dependencies', () => {
     it('should return empty array when no imports exist', () => {
       vi.mocked(fs.readFileSync).mockReturnValueOnce('const a = 1')
       const file = createTsFile()

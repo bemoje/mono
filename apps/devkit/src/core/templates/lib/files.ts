@@ -38,8 +38,7 @@ const packageJson = new Template({
     module: 'src/index.ts',
     sideEffects: false,
     scripts: {
-      lint: 'yarn eslint . --fix',
-      indexts: 'yarn dk clean index-ts',
+      indexts: 'node ../../.dist/devkit.cjs clean index-ts',
       build: 'node esbuild.mjs',
     },
     devDependencies: {
@@ -56,7 +55,7 @@ const esbuild = new Template({
     `import upath from 'upath'`,
     ``,
     `const dirname = upath.basename(import.meta.dirname)`,
-    `execSync(\`yarn DK build lib \${dirname}\`, { stdio: 'inherit' })`,
+    "execSync(`node ../../.dist/devkit.cjs build lib ${dirname}`, { stdio: 'inherit' })",
     ``,
   ],
 })

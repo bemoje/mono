@@ -20,7 +20,7 @@ describe(updateJsonFile.name, () => {
 
   it('examples', () => {
     expect(async () => {
-      const testFile = './temp-test-updateJsonFile.json'
+      const testFile = './.temp/test-updateJsonFile.json'
 
       // Setup mocks
       mockFs.readJson.mockRejectedValueOnce(new Error('File not found'))
@@ -42,7 +42,7 @@ describe(updateJsonFile.name, () => {
   })
 
   it('should use default value when file does not exist', async () => {
-    const testFile = './temp-test-default.json'
+    const testFile = './.temp/test-default.json'
     const defaultValue = { default: true, count: 0 }
 
     mockFs.readJson.mockRejectedValue(new Error('File not found'))
@@ -54,7 +54,7 @@ describe(updateJsonFile.name, () => {
   })
 
   it('should handle malformed JSON files', async () => {
-    const testFile = './temp-test-malformed.json'
+    const testFile = './.temp/test-malformed.json'
 
     const defaultValue = { recovered: true }
     mockFs.readJson.mockRejectedValue(new Error('Invalid JSON'))
@@ -66,7 +66,7 @@ describe(updateJsonFile.name, () => {
   })
 
   it('should handle async transformation functions', async () => {
-    const testFile = './temp-test-async-json.json'
+    const testFile = './.temp/test-async-json.json'
 
     mockFs.readJson.mockRejectedValue(new Error('File not found'))
 

@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 6981  | 6981    | 100%       |
-| Functions | 799   | 799     | 100%       |
-| Branches  | 2486  | 2486    | 100%       |
+| Lines     | 6501  | 6501    | 100%       |
+| Functions | 770   | 770     | 100%       |
+| Branches  | 2372  | 2372    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 562   | 9693          |
-| test      | 445   | 27953         |
+| source    | 561   | 9684          |
+| test      | 444   | 27925         |
 | examples  | 2     | 51            |
-| total     | 1009  | 37697         |
+| total     | 1007  | 37660         |
 
 ## Table of Contents
 
@@ -375,7 +375,6 @@ describe(ClassToTest.name, () => {
 - `functionSpy`: Wraps a function so that the given
 - `maxConcurrency`: Creates a throttled version of an async function that limits the rate at which the function can be called.
 - `preserveNameAndLength`: Preserves the name and length of a function or class constructor
-- `sequence`: Creates a function that executes the provided async functions sequentially in order.
 - `setLength`: Set the length of a function.
 - `setName`: Set the name of a function.
 - `thisProxy`: Returns a function that redirects or 'proxies' the 'this' context of the input function to a property of a given key.
