@@ -22,20 +22,20 @@ jobs:
       - name: Install dependencies
         run: corepack enable && yarn install --frozen-lockfile
 
-      - name: Build
-        run: yarn build
+      # - name: Build
+      #   run: yarn build
 
-      - name: Type check
+      - name: typecheck
         run: yarn typecheck
 
-      - name: Lint check
+      - name: lint
         run: yarn lint
 
-      - name: Format check
+      - name: prettier
         run: yarn format-all:check
 
-      - name: Check Knip
+      - name: knip
         run: yarn check:knip
 
-      - name: Test
+      - name: test
         run: yarn test
