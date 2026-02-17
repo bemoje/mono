@@ -21,7 +21,7 @@ describe(updateFileSync.name, () => {
 
   it('examples', () => {
     expect(() => {
-      const testFile = './.temp/test-updateFileSync.txt'
+      const testFile = './.temp/test/updateFileSync.txt'
 
       // Setup mocks
       mockFs.readFileSync.mockReturnValue('Hello, World!')
@@ -40,7 +40,7 @@ describe(updateFileSync.name, () => {
   })
 
   it('should create file and directories if they do not exist', () => {
-    const testFile = './.temp/test-dir-sync/nested/test-file.txt'
+    const testFile = './.temp/test/dir-sync/nested/test-file.txt'
 
     mockFs.readFileSync.mockReturnValue('')
 
@@ -51,7 +51,7 @@ describe(updateFileSync.name, () => {
   })
 
   it('should update existing file content', () => {
-    const testFile = './.temp/test-update.txt'
+    const testFile = './.temp/test/update.txt'
 
     mockFs.readFileSync.mockReturnValueOnce('')
     mockFs.readFileSync.mockReturnValueOnce('original')

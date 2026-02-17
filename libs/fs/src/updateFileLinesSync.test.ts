@@ -21,7 +21,7 @@ describe(updateFileLinesSync.name, () => {
 
   it('examples', () => {
     expect(() => {
-      const testFile = './.temp/test-updateFileLinesSync.txt'
+      const testFile = './.temp/test/updateFileLinesSync.txt'
 
       // Setup mocks
       mockFs.readFileSync.mockReturnValueOnce('')
@@ -47,7 +47,7 @@ describe(updateFileLinesSync.name, () => {
   })
 
   it('should handle empty files', () => {
-    const testFile = './.temp/test-empty-sync.txt'
+    const testFile = './.temp/test/empty-sync.txt'
 
     mockFs.readFileSync.mockReturnValue('')
 
@@ -60,7 +60,7 @@ describe(updateFileLinesSync.name, () => {
   })
 
   it('should filter and transform lines', () => {
-    const testFile = './.temp/test-filter.txt'
+    const testFile = './.temp/test/filter.txt'
 
     mockFs.readFileSync.mockReturnValueOnce('')
     mockFs.readFileSync.mockReturnValueOnce('keep\nremove\nkeep\nremove')
