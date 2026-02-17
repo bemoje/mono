@@ -12,7 +12,6 @@ export async function buildLibsWorkspace(
   options: { debug?: boolean } & Record<string, unknown> = {},
 ) {
   const { debug, ...optionsOverride } = options
-  console.info(`Building lib: ${upath.basename(importMetaDirname)}`)
   importMetaDirname = upath.normalizeSafe(importMetaDirname)
   const wsPaths = getWsPaths(importMetaDirname)
   const repoPkg = fs.readJsonSync(wsPaths.pkg)

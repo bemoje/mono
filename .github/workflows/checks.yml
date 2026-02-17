@@ -1,0 +1,40 @@
+name: Checks
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+
+      - name: Install dependencies
+        run: corepack enable && yarn install --frozen-lockfile
+
+      # - name: Build
+      #   run: yarn build
+
+      - name: typecheck
+        run: yarn typecheck
+
+      - name: lint
+        run: yarn lint
+
+      - name: prettier
+        run: yarn format-all:check
+
+      - name: knip
+        run: yarn check:knip
+
+      - name: test
+        run: yarn test

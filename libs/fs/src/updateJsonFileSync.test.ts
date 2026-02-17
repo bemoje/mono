@@ -20,7 +20,7 @@ describe(updateJsonFileSync.name, () => {
 
   it('examples', () => {
     expect(() => {
-      const testFile = './temp-test-updateJsonFileSync.json'
+      const testFile = './.temp/test/updateJsonFileSync.json'
 
       // Setup mocks
       mockFs.readJsonSync.mockImplementationOnce(() => {
@@ -44,7 +44,7 @@ describe(updateJsonFileSync.name, () => {
   })
 
   it('should use default value when file does not exist', () => {
-    const testFile = './temp-test-default-sync.json'
+    const testFile = './.temp/test/default-sync.json'
     const defaultValue = { default: true, count: 0 }
 
     mockFs.readJsonSync.mockImplementation(() => {
@@ -58,7 +58,7 @@ describe(updateJsonFileSync.name, () => {
   })
 
   it('should handle malformed JSON files', () => {
-    const testFile = './temp-test-malformed-sync.json'
+    const testFile = './.temp/test/malformed-sync.json'
 
     const defaultValue = { recovered: true }
     mockFs.readJsonSync.mockImplementation(() => {
@@ -72,7 +72,7 @@ describe(updateJsonFileSync.name, () => {
   })
 
   it('should handle complex transformations', () => {
-    const testFile = './temp-test-complex.json'
+    const testFile = './.temp/test/complex.json'
 
     mockFs.readJsonSync.mockImplementation(() => {
       throw new Error('File not found')

@@ -22,7 +22,7 @@ package.json:
 23 "insight:knip": "knip --config knip.jsonc --cache --no-config-hints",
 24: "insight:linesOfCode": "node s/insight/linesOfCode.mjs",
 25: "docs": "echo '\nDOCS...' && node s/docs/writeReadme.mjs",
-26 "lint": "echo '\nLINT...' && eslint '{libs,apps,s}/\*_/_' --fix -c eslint.config.js --cache --ignore-pattern apps/playground",
+26 "lint": "echo '\nLINT...' && eslint '{libs,apps,s}/\*_/_' --fix -c eslint.config.mjs --cache --ignore-pattern apps/playground",
 
 35 "DK": "node .dist/devkit.cjs",
 36: "ws": "node s/wsRun.mjs"
@@ -148,7 +148,7 @@ Yes, absolutely - this is a significant restructuring effort. I've audited the f
 
 20. **Commit the built artifact** (devkit.cjs) to the repo - this means there's always a working copy available, even on fresh clone
 21. **Add a CI step** that rebuilds devkit and checks that the committed devkit.cjs is up to date (to prevent it from getting stale)
-22. **Alternative: Publish devkit to npm** as `@bemoje/devkit` - then you can always `npx @bemoje/devkit` regardless of repo state. More robust but adds npm publish overhead
+22. **Alternative: Publish devkit to npm** as `@bemoje/devkit` - then you can always `yarn devkit` regardless of repo state. More robust but adds npm publish overhead
 
 > **Recommendation**: Do **both** - commit the artifact for instant availability, and consider npm publish as a future option.
 

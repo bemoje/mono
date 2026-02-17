@@ -19,8 +19,10 @@ function buildLib() {
     .argument('<dirname>', 'Directory name of the library under libs/')
     .option('--debug', 'Enable debug output', false)
     .action(async (dirname: string, opts: { debug: boolean }) => {
-      const wsDir = upath.join(getRepoRootDirpath(), 'libs', dirname)
-      await buildLibsWorkspace(wsDir, { debug: opts.debug })
+      await timer(['build lib', `Building ${dirname}...`], async () => {
+        const wsDir = upath.join(getRepoRootDirpath(), 'libs', dirname)
+        await buildLibsWorkspace(wsDir, { debug: opts.debug })
+      })
     })
 }
 
@@ -29,10 +31,9 @@ function buildAllLibs() {
     .description('Build all libs/ workspaces.')
     .option('--debug', 'Enable debug output', false)
     .action(async (opts: { debug: boolean }) => {
-      const wsPaths = await getAllWorkspacePaths()
-      const libPaths = wsPaths.filter((p) => p.startsWith('libs/'))
-
-      await timer(['build-all-libs', `Building ${libPaths.length} libraries...`], async (log) => {
+      await timer(['build all-libs', `Building libraries...`], async (log) => {
+        const wsPaths = await getAllWorkspacePaths()
+        const libPaths = wsPaths.filter((p) => p.startsWith('libs/'))
         for (const wsPath of libPaths) {
           const wsDir = upath.join(getRepoRootDirpath(), wsPath)
           log.info(`Building ${wsPath}...`)

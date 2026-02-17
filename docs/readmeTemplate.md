@@ -28,7 +28,7 @@ Scripts are defined in the root [`package.json`](/package.json). Each script pro
 
 The [`devkit`](/apps/devkit) CLI provides development utilities for the monorepo. It is the single consolidated tool for all repo management tasks including builds, code cleanup, insight/analysis, documentation generation, and more.
 
-Run with `yarn dk` (build + run) or `yarn DK` (run without building). The built artifact (`.dist/devkit.cjs`) is committed to git for zero-dependency bootstrapping.
+Run with `yarn devkit`.
 
 ## Workspaces
 

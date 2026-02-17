@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7142  | 7142    | 100%       |
-| Functions | 806   | 806     | 100%       |
-| Branches  | 2527  | 2527    | 100%       |
+| Lines     | 6499  | 6499    | 100%       |
+| Functions | 770   | 770     | 100%       |
+| Branches  | 2371  | 2371    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 563   | 9859          |
-| test      | 431   | 27700         |
+| source    | 561   | 9682          |
+| test      | 444   | 27921         |
 | examples  | 2     | 51            |
-| total     | 996   | 37610         |
+| total     | 1007  | 37654         |
 
 ## Table of Contents
 
@@ -63,7 +63,7 @@ Scripts are defined in the root [`package.json`](/package.json). Each script pro
 
 The [`devkit`](/apps/devkit) CLI provides development utilities for the monorepo. It is the single consolidated tool for all repo management tasks including builds, code cleanup, insight/analysis, documentation generation, and more.
 
-Run with `yarn dk` (build + run) or `yarn DK` (run without building). The built artifact (`.dist/devkit.cjs`) is committed to git for zero-dependency bootstrapping.
+Run with `yarn devkit`.
 
 ## Workspaces
 
@@ -310,6 +310,7 @@ describe(ClassToTest.name, () => {
 - `assertNoMultipleVariadicArguments`: Ensures only one variadic argument per command
 - `assertNoOptionalOrVariadicArguments`: Validates CLI argument ordering
 - `assertNoVariadicArgument`: Validates optional args don't follow variadic args
+- `assertOptionLongNotInUse`: Validates option long name are unique across command hierarchy
 - `assertOptionNameNotInUse`: Validates option names are unique across command hierarchy
 - `assertOptionShortNameIsValid`: Validates option short names are single alphanumeric characters
 - `assertOptionShortNameNotInUse`: Validates option short names are unique across command hierarchy
@@ -317,7 +318,6 @@ describe(ClassToTest.name, () => {
 - `findSubcommand`: Finds subcommand by name or alias
 - `getCommandAncestors`: Returns all ancestor commands excluding this command
 - `getCommandAndAncestors`: Returns command and all ancestor commands in hierarchy
-- `helpers`: Collection of helper functions for CLI command manipulation and validation.
 - `parseOptionFlags`: Parses option flags string into its components
 
 **composition**
@@ -375,7 +375,6 @@ describe(ClassToTest.name, () => {
 - `functionSpy`: Wraps a function so that the given
 - `maxConcurrency`: Creates a throttled version of an async function that limits the rate at which the function can be called.
 - `preserveNameAndLength`: Preserves the name and length of a function or class constructor
-- `sequence`: Creates a function that executes the provided async functions sequentially in order.
 - `setLength`: Set the length of a function.
 - `setName`: Set the name of a function.
 - `thisProxy`: Returns a function that redirects or 'proxies' the 'this' context of the input function to a property of a given key.

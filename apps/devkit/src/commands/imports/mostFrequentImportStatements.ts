@@ -1,16 +1,16 @@
 import { MonoRepo } from '@mono/monorepo'
 import { Command } from 'commander'
 import { topImports } from './internal/topImports'
+import { timer } from '../../lib/timer'
 
 export function mostFrequentImportStatements() {
   return new Command('mostFrequentImportStatements')
     .alias('mfis')
     .argument('[n]', 'Print top n most frequent import statements', '5000')
-    .action(function mostFrequentImportStatements(n = 5000) {
-      const t0 = Date.now()
-      const res = topImports(new MonoRepo(), n).reverse()
-      const elapsed = Date.now() - t0
-      res.forEach((e) => console.log(e.count, e.code))
-      console.log(`Elapsed time: ${elapsed}ms`)
+    .action(async (n = 5000) => {
+      await timer('imports mostFrequestImportStatements', async (log) => {
+        const res = topImports(new MonoRepo(), n).reverse()
+        res.forEach((e) => log.info(e.count, e.code))
+      })
     })
 }

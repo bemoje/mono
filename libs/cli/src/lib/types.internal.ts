@@ -1,5 +1,6 @@
+import type { Command } from './Command'
 import type { Arguments, IArgument, ICommand, IOption, Options } from './types'
-import type { SimplifyDeep, Simplify, AllUnionFields } from 'type-fest'
+import type { Simplify, AllUnionFields } from 'type-fest'
 
 /** Union of all argument usage pattern types */
 export type ArgumentUsage =
@@ -113,7 +114,7 @@ export type ActionHandler<A extends Arguments, O extends Options, C extends ICom
 /**
  * @see Command.prototype.parseArgv
  */
-export type ParseArgvResult<A extends Arguments, O extends Options, C extends ICommand> = SimplifyDeep<{
+export type ParseArgvResult<A extends Arguments, O extends Options, C extends ICommand> = {
   /** The command or subcommand instance */
   get cmd(): C
   /** The part of argv that makes out a subcommand path, or empty array when root command */
@@ -130,10 +131,15 @@ export type ParseArgvResult<A extends Arguments, O extends Options, C extends IC
   action?: string
   /** Calls the action handler with its expected args */
   execute?: () => Promise<void> | void
-}>
+}
 
 export type TriggerDefinition<A extends Arguments, O extends Options, C extends ICommand> = {
   name: keyof O
   predicate: TriggerPredicate<A, O, C>
   action: ActionHandler<A, O, C>
 }
+
+export type InferNewOptions<A extends Arguments, O extends Options, NewOptions extends Options> = Command<
+  A,
+  NewOptions & O
+>

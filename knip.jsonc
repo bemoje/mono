@@ -6,6 +6,7 @@
   "ignoreExportsUsedInFile": true,
   "ignore": [".github/copilot/refactoring.mts"],
   "ignoreDependencies": ["@mono/*", "esbuild"],
+  "ignoreBinaries": ["cls"],
 
   "workspaces": {
     "apps/*": {

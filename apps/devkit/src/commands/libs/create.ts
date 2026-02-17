@@ -32,7 +32,7 @@ function action(workspaceName: string, options: DefaultOptions = {}) {
   const srcPath = upath.join(rootPath, 'src')
 
   // lib filepaths
-  const eslintConfigJsPath = upath.join(rootPath, 'eslint.config.js')
+  const eslintConfigJsPath = upath.join(rootPath, 'eslint.config.mjs')
   const packageJsonPath = upath.join(rootPath, 'package.json')
   const esbuildMjsPath = upath.join(rootPath, 'esbuild.mjs')
   const readmeMdPath = upath.join(rootPath, 'README.md')
@@ -52,7 +52,7 @@ function action(workspaceName: string, options: DefaultOptions = {}) {
   // Create src folder
   fs.mkdirSync(srcPath, { recursive: true })
 
-  // Create eslint.config.js
+  // Create eslint.config.mjs
   fs.outputFileSync(
     eslintConfigJsPath, //
     templates.files.eslintConfigJs.renderString(),

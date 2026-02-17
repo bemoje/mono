@@ -74,6 +74,30 @@ describe(Option.name, () => {
       expect(opt.hidden).toBe(true)
       expect(opt.group).toBe('Debug')
     })
+
+    it('should throw if short name is invalid', () => {
+      expect(() => new Option(mockCmd(), '-ab, --verbose' as never)).toThrow(
+        'Expected short name to be a single alpha-numeric character',
+      )
+    })
+
+    it('should throw if short name is already in use', () => {
+      const cmd = mockCmd()
+      cmd.options.push({ short: 'v' } as never)
+      expect(() => new Option(cmd, '-v, --verbose')).toThrow('Option short name already in use: -v')
+    })
+
+    it('should throw if option name is already in use', () => {
+      const cmd = mockCmd()
+      cmd.options.push({ name: 'verbose', short: 'x', long: 'x' } as never)
+      expect(() => new Option(cmd, '-v, --verbose')).toThrow('Option name already in use: --verbose')
+    })
+
+    it('should throw if option long name is already in use', () => {
+      const cmd = mockCmd()
+      cmd.options.push({ long: 'verbose', short: 'x', name: 'x' } as never)
+      expect(() => new Option(cmd, '-v, --verbose')).toThrow('Option long name already in use: --verbose')
+    })
   })
 
   describe('env variable defaultValue', () => {

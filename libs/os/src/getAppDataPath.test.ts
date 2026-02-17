@@ -1,4 +1,3 @@
-import fs from 'fs-extra'
 import os from 'node:os'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getAppDataPath } from './getAppDataPath'
@@ -27,7 +26,6 @@ describe(getAppDataPath.name, () => {
     it('should resolve windows path', () => {
       delete process.env['APPDATA']
       getOSMock.mockReturnValue('windows')
-      vi.spyOn(fs, 'realpathSync').mockImplementation((p) => String(p))
       const result = getAppDataPath()
       expect(result).toContain('AppData')
     })
@@ -35,7 +33,6 @@ describe(getAppDataPath.name, () => {
     it('should resolve osx path', () => {
       delete process.env['APPDATA']
       getOSMock.mockReturnValue('osx')
-      vi.spyOn(fs, 'realpathSync').mockImplementation((p) => String(p))
       const result = getAppDataPath()
       expect(result).toContain('Application Support')
     })
@@ -43,7 +40,6 @@ describe(getAppDataPath.name, () => {
     it('should resolve linux path', () => {
       delete process.env['APPDATA']
       getOSMock.mockReturnValue('linux')
-      vi.spyOn(fs, 'realpathSync').mockImplementation((p) => String(p))
       const result = getAppDataPath()
       expect(result).toContain('.config')
     })

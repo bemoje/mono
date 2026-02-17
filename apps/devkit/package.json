@@ -1,11 +1,10 @@
 {
   "name": "@bemoje/devkit",
   "description": "Development utilities for the monorepo.",
-  "version": "0.0.6",
+  "version": "0.0.11",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "license": "MIT",
-  "bin": "dist/cli.mjs",
   "files": [
     "dist/"
   ],
@@ -22,5 +21,6 @@
   },
   "scripts": {
     "build": "node esbuild.mjs"
-  }
+  },
+  "bin": "dist/cli.mjs"
 }

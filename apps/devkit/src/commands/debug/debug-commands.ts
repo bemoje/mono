@@ -14,7 +14,7 @@ function debugFullReinstall() {
   return new Command('full-reinstall')
     .description('Completely removes and reinstalls all node_modules and lock files.')
     .action(async () => {
-      await timer('nodeModulesFullReinstall', async (log) => {
+      await timer('debug full-reinstall', async (log) => {
         const root = getRepoRootDirpath()
 
         const paths = (

@@ -21,7 +21,7 @@ describe(updateFile.name, () => {
 
   it('examples', () => {
     expect(async () => {
-      const testFile = './temp-test-updateFile.txt'
+      const testFile = './.temp/test/updateFile.txt'
 
       // Setup mocks
       mockFs.readFile.mockResolvedValue('Hello, World!')
@@ -40,7 +40,7 @@ describe(updateFile.name, () => {
   })
 
   it('should create file and directories if they do not exist', async () => {
-    const testFile = './temp-dir/nested/test-file.txt'
+    const testFile = './.temp/test/dir/nested/test-file.txt'
 
     mockFs.readFile.mockResolvedValue('')
 
@@ -51,7 +51,7 @@ describe(updateFile.name, () => {
   })
 
   it('should handle async transformation functions', async () => {
-    const testFile = './temp-test-async.txt'
+    const testFile = './.temp/test/async.txt'
 
     mockFs.readFile.mockResolvedValueOnce('')
 

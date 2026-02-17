@@ -3,24 +3,24 @@ import { MultiSet } from 'mnemonist'
 import { reduce } from 'iter-tools'
 import { MonoRepo, getAllImports, resolveModuleImportPath } from '@mono/monorepo'
 import { Command } from 'commander'
+import { timer } from '../../lib/timer'
 
 export function mostImportedFiles() {
   return new Command('mostImportedFiles')
     .alias('mif')
     .argument('[n]', 'Print top n most frequent import statements', '5000')
-    .action(function mostImportedFiles(n = 5000) {
-      const t0 = Date.now()
-      const imports = getAllImports(new MonoRepo())
-      const resolved = imports
-        .flatMap((i) => {
-          const resolvedFileName = resolveModuleImportPath(i.parent.parent.path, i.module.from)?.resolvedFileName
-          return i.split().map(() => resolvedFileName)
-        })
-        .filter((s) => !!s) as string[]
-      const res = countUniques(resolved).reverse().entriesArray().slice(0, n)
-      const elapsed = Date.now() - t0
-      res.forEach(([v, c]) => console.log(c, v))
-      console.log(`Elapsed time: ${elapsed}ms`)
+    .action(async (n = 5000) => {
+      await timer('imports mostImportedFiles', async (log) => {
+        const imports = getAllImports(new MonoRepo())
+        const resolved = imports
+          .flatMap((i) => {
+            const resolvedFileName = resolveModuleImportPath(i.parent.parent.path, i.module.from)?.resolvedFileName
+            return i.split().map(() => resolvedFileName)
+          })
+          .filter((s) => !!s) as string[]
+        const res = countUniques(resolved).reverse().entriesArray().slice(0, n)
+        res.forEach(([v, c]) => log.info(c, v))
+      })
     })
 }
 

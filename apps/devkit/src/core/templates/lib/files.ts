@@ -6,7 +6,7 @@ import fs from 'fs-extra'
 const eslintConfigJs = new Template({
   strategy: new TextFileTemplateStrategy(),
   template: [
-    "import eslintConfig from '../../eslint.config.js'", //
+    "import eslintConfig from '../../eslint.config.mjs'", //
     'export default [...eslintConfig]',
     '',
   ],
@@ -38,8 +38,7 @@ const packageJson = new Template({
     module: 'src/index.ts',
     sideEffects: false,
     scripts: {
-      lint: 'yarn eslint . --fix',
-      indexts: 'yarn dk clean index-ts',
+      indexts: 'devkit clean index-ts',
       build: 'node esbuild.mjs',
     },
     devDependencies: {
@@ -56,7 +55,7 @@ const esbuild = new Template({
     `import upath from 'upath'`,
     ``,
     `const dirname = upath.basename(import.meta.dirname)`,
-    `execSync(\`yarn DK build lib \${dirname}\`, { stdio: 'inherit' })`,
+    "execSync(`npx @bemoje/devkit build lib ${dirname}`, { stdio: 'inherit' })",
     ``,
   ],
 })

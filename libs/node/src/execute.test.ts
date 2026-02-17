@@ -37,7 +37,7 @@ describe(execute.name, () => {
 
   afterEach(() => {
     consoleLogSpy.mockRestore()
-    process.chdir(originalCwd)
+    // process.chdir(originalCwd)
   })
 
   it('examples', () => {
