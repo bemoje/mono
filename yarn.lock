@@ -121,6 +121,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bemoje/devkit@npm:0.0.10":
+  version: 0.0.10
+  resolution: "@bemoje/devkit@npm:0.0.10"
+  dependencies:
+    esbuild: "npm:^0.23.0"
+  bin:
+    devkit: dist/cli.mjs
+  checksum: 10c0/fde965d882cfdda22407e09ab5b63f2521c9551b46b6da5c95d1b4fb87bf207ff62fe016a0b1da3c2fc4656f31d158cce6866cd39a8c368754317abcab124c68
+  languageName: node
+  linkType: hard
+
 "@bemoje/devkit@workspace:apps/devkit":
   version: 0.0.0-use.local
   resolution: "@bemoje/devkit@workspace:apps/devkit"
@@ -510,20 +521,20 @@ __metadata:
   linkType: hard
 
 "@eslint-community/eslint-utils@npm:^4.2.0, @eslint-community/eslint-utils@npm:^4.4.0":
-  version: 4.7.0
-  resolution: "@eslint-community/eslint-utils@npm:4.7.0"
+  version: 4.9.1
+  resolution: "@eslint-community/eslint-utils@npm:4.9.1"
   dependencies:
     eslint-visitor-keys: "npm:^3.4.3"
   peerDependencies:
     eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
-  checksum: 10c0/c0f4f2bd73b7b7a9de74b716a664873d08ab71ab439e51befe77d61915af41a81ecec93b408778b3a7856185244c34c2c8ee28912072ec14def84ba2dec70adf
+  checksum: 10c0/dc4ab5e3e364ef27e33666b11f4b86e1a6c1d7cbf16f0c6ff87b1619b3562335e9201a3d6ce806221887ff780ec9d828962a290bb910759fd40a674686503f02
   languageName: node
   linkType: hard
 
 "@eslint-community/regexpp@npm:^4.10.0, @eslint-community/regexpp@npm:^4.6.1":
-  version: 4.12.1
-  resolution: "@eslint-community/regexpp@npm:4.12.1"
-  checksum: 10c0/a03d98c246bcb9109aec2c08e4d10c8d010256538dcb3f56610191607214523d4fb1b00aa81df830b6dffb74c5fa0be03642513a289c567949d3e550ca11cdf6
+  version: 4.12.2
+  resolution: "@eslint-community/regexpp@npm:4.12.2"
+  checksum: 10c0/fddcbc66851b308478d04e302a4d771d6917a0b3740dc351513c0da9ca2eab8a1adf99f5e0aa7ab8b13fa0df005c81adeee7e63a92f3effd7d367a163b721c2d
   languageName: node
   linkType: hard
 
@@ -552,9 +563,9 @@ __metadata:
   linkType: hard
 
 "@eslint/js@npm:^9.8.0":
-  version: 9.33.0
-  resolution: "@eslint/js@npm:9.33.0"
-  checksum: 10c0/4c42c9abde76a183b8e47205fd6c3116b058f82f07b6ad4de40de56cdb30a36e9ecd40efbea1b63a84d08c206aadbb0aa39a890197e1ad6455a8e542df98f186
+  version: 9.39.2
+  resolution: "@eslint/js@npm:9.39.2"
+  checksum: 10c0/00f51c52b04ac79faebfaa65a9652b2093b9c924e945479f1f3945473f78aee83cbc76c8d70bbffbf06f7024626575b16d97b66eab16182e1d0d39daff2f26f5
   languageName: node
   linkType: hard
 
@@ -682,6 +693,8 @@ __metadata:
 "@mono/array@workspace:libs/array":
   version: 0.0.0-use.local
   resolution: "@mono/array@workspace:libs/array"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
@@ -689,6 +702,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mono/cli@workspace:libs/cli"
   dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
     type-fest: "npm:^5.4.4"
   languageName: unknown
   linkType: soft
@@ -696,90 +710,120 @@ __metadata:
 "@mono/composition@workspace:libs/composition":
   version: 0.0.0-use.local
   resolution: "@mono/composition@workspace:libs/composition"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/config@workspace:libs/config":
   version: 0.0.0-use.local
   resolution: "@mono/config@workspace:libs/config"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/crypto@workspace:libs/crypto":
   version: 0.0.0-use.local
   resolution: "@mono/crypto@workspace:libs/crypto"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/date@workspace:libs/date":
   version: 0.0.0-use.local
   resolution: "@mono/date@workspace:libs/date"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/decorators@workspace:libs/decorators":
   version: 0.0.0-use.local
   resolution: "@mono/decorators@workspace:libs/decorators"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/fn@workspace:libs/fn":
   version: 0.0.0-use.local
   resolution: "@mono/fn@workspace:libs/fn"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/fs@workspace:libs/fs":
   version: 0.0.0-use.local
   resolution: "@mono/fs@workspace:libs/fs"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/is@workspace:libs/is":
   version: 0.0.0-use.local
   resolution: "@mono/is@workspace:libs/is"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/iter@workspace:libs/iter":
   version: 0.0.0-use.local
   resolution: "@mono/iter@workspace:libs/iter"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/map@workspace:libs/map":
   version: 0.0.0-use.local
   resolution: "@mono/map@workspace:libs/map"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/monorepo@workspace:libs/monorepo":
   version: 0.0.0-use.local
   resolution: "@mono/monorepo@workspace:libs/monorepo"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/node@workspace:libs/node":
   version: 0.0.0-use.local
   resolution: "@mono/node@workspace:libs/node"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/number@workspace:libs/number":
   version: 0.0.0-use.local
   resolution: "@mono/number@workspace:libs/number"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/object@workspace:libs/object":
   version: 0.0.0-use.local
   resolution: "@mono/object@workspace:libs/object"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/os@workspace:libs/os":
   version: 0.0.0-use.local
   resolution: "@mono/os@workspace:libs/os"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
@@ -798,54 +842,72 @@ __metadata:
 "@mono/regex@workspace:libs/regex":
   version: 0.0.0-use.local
   resolution: "@mono/regex@workspace:libs/regex"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/stacktrace@workspace:libs/stacktrace":
   version: 0.0.0-use.local
   resolution: "@mono/stacktrace@workspace:libs/stacktrace"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/string@workspace:libs/string":
   version: 0.0.0-use.local
   resolution: "@mono/string@workspace:libs/string"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/table@workspace:libs/table":
   version: 0.0.0-use.local
   resolution: "@mono/table@workspace:libs/table"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/template@workspace:libs/template":
   version: 0.0.0-use.local
   resolution: "@mono/template@workspace:libs/template"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/terminal@workspace:libs/terminal":
   version: 0.0.0-use.local
   resolution: "@mono/terminal@workspace:libs/terminal"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/tschema@workspace:libs/tschema":
   version: 0.0.0-use.local
   resolution: "@mono/tschema@workspace:libs/tschema"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/tscode@workspace:libs/tscode":
   version: 0.0.0-use.local
   resolution: "@mono/tscode@workspace:libs/tscode"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
 "@mono/types@workspace:libs/types":
   version: 0.0.0-use.local
   resolution: "@mono/types@workspace:libs/types"
+  dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
   languageName: unknown
   linkType: soft
 
@@ -2565,15 +2627,15 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-unused-imports@npm:^4.1.4":
-  version: 4.1.4
-  resolution: "eslint-plugin-unused-imports@npm:4.1.4"
+  version: 4.4.1
+  resolution: "eslint-plugin-unused-imports@npm:4.4.1"
   peerDependencies:
     "@typescript-eslint/eslint-plugin": ^8.0.0-0 || ^7.0.0 || ^6.0.0 || ^5.0.0
-    eslint: ^9.0.0 || ^8.0.0
+    eslint: ^10.0.0 || ^9.0.0 || ^8.0.0
   peerDependenciesMeta:
     "@typescript-eslint/eslint-plugin":
       optional: true
-  checksum: 10c0/3899f64b0e8b23fa6b81e2754fc10f93d8741e051d70390a8100ca39af7878bde8625f234b76111af69562ef2512104b52c3703e986ccb3ac9adc07911896acf
+  checksum: 10c0/bef630eedc3c239ca1c0a11c6af60485310e3934bd0819d3eb51e0acabdafc722c97d35457750a957541f5cc6a99aa78abb359eb3837d3702d836b6d24cbd573
   languageName: node
   linkType: hard
 
@@ -2683,11 +2745,11 @@ __metadata:
   linkType: hard
 
 "esquery@npm:^1.4.2":
-  version: 1.6.0
-  resolution: "esquery@npm:1.6.0"
+  version: 1.7.0
+  resolution: "esquery@npm:1.7.0"
   dependencies:
     estraverse: "npm:^5.1.0"
-  checksum: 10c0/cb9065ec605f9da7a76ca6dadb0619dfb611e37a81e318732977d90fab50a256b95fee2d925fba7c2f3f0523aa16f91587246693bc09bc34d5a59575fe6e93d2
+  checksum: 10c0/77d5173db450b66f3bc685d11af4c90cffeedb340f34a39af96d43509a335ce39c894fd79233df32d38f5e4e219fa0f7076f6ec90bae8320170ba082c0db4793
   languageName: node
   linkType: hard
 
@@ -3533,18 +3595,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "js-yaml@npm:4.1.0"
-  dependencies:
-    argparse: "npm:^2.0.1"
-  bin:
-    js-yaml: bin/js-yaml.js
-  checksum: 10c0/184a24b4eaacfce40ad9074c64fd42ac83cf74d8c8cd137718d456ced75051229e5061b8633c3366b8aada17945a7a356b337828c19da92b51ae62126575018f
-  languageName: node
-  linkType: hard
-
-"js-yaml@npm:^4.1.1":
+"js-yaml@npm:^4.1.0, js-yaml@npm:^4.1.1":
   version: 4.1.1
   resolution: "js-yaml@npm:4.1.1"
   dependencies:
@@ -4065,6 +4116,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "mono@workspace:."
   dependencies:
+    "@bemoje/devkit": "npm:0.0.10"
     "@eslint/js": "npm:^9.8.0"
     "@sinclair/typebox": "npm:^0.34.37"
     "@types/cli-table": "npm:^0.3.4"
@@ -4924,12 +4976,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0":
+"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4":
   version: 7.7.2
   resolution: "semver@npm:7.7.2"
   bin:
     semver: bin/semver.js
   checksum: 10c0/aca305edfbf2383c22571cb7714f48cadc7ac95371b4b52362fb8eeffdfbc0de0669368b82b2b15978f8848f01d7114da65697e56cd8c37b0dab8c58e543f9ea
+  languageName: node
+  linkType: hard
+
+"semver@npm:^7.6.0":
+  version: 7.7.4
+  resolution: "semver@npm:7.7.4"
+  bin:
+    semver: bin/semver.js
+  checksum: 10c0/5215ad0234e2845d4ea5bb9d836d42b03499546ddafb12075566899fc617f68794bb6f146076b6881d755de17d6c6cc73372555879ec7dce2c2feee947866ad2
   languageName: node
   linkType: hard
 
