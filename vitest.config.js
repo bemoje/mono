@@ -16,7 +16,7 @@ export default defineConfig({
   test: {
     isolate: true,
     passWithNoTests: true,
-    fileParallelism: 10,
+    fileParallelism: true,
     root: getRepoRoot(),
     include: ['{libs,apps}/*/{src,examples}/**/*.test.ts'],
     exclude: ['apps/playground'],
