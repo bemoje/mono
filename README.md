@@ -12,7 +12,7 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 | --------- | ----- | ------- | ---------- |
 | Lines     | 6499  | 6499    | 100%       |
 | Functions | 770   | 770     | 100%       |
-| Branches  | 2371  | 2371    | 100%       |
+| Branches  | 2372  | 2372    | 100%       |
 
 **Lines of Code**
 
