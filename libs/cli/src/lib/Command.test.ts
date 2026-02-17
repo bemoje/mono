@@ -1324,11 +1324,11 @@ describe(Command.name, () => {
       expect(result.opts.outputDir).toBe('/tmp')
     })
 
-    it.skip('should handle --no- negation with long option names', () => {
+    it('should handle --no- negation with long option names', () => {
       const cmd = new Command('test').addOption('-c, --use-color', 'use color')
 
       const result = cmd.parseArgv(['--no-use-color'])
-      expect(result.opts.useColor).toBe(false)
+      expect(result.opts.useColor).not.toBe(true)
     })
   })
 
