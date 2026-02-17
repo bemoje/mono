@@ -1,4 +1,3 @@
-import fs from 'fs-extra'
 import os from 'node:os'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getAppDataPath } from './getAppDataPath'
