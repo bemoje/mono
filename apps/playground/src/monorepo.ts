@@ -12,10 +12,10 @@ import { TsCode } from '@mono/monorepo'
 import { TsFile } from '@mono/monorepo'
 import { Workspace } from '@mono/monorepo'
 
-Profiler.class(Inspector)
+// Profiler.class(Inspector)
 
-Profiler.class(Parenting)
-Profiler.class(ParentRelationTypes)
+// Profiler.class(Parenting)
+// Profiler.class(ParentRelationTypes)
 
 Profiler.class(AbstractBase)
 Profiler.class(AbstractCode)
@@ -29,14 +29,10 @@ Profiler.class(TsFile)
 Profiler.class(Workspace)
 Profiler.class(MonoRepo)
 
-const repo = new MonoRepo()
+console.log(Object.fromEntries(new MonoRepo().workspaces.map((ws) => [ws.name, ws.importedDependenciesRecursive])))
 
-repo.inspector.toObject()
-// fs.writeJsonSync('apps/playground/src/lib/monorepo.ts.json', repo.inspector.toObject(), { spaces: 2 })
+// console.log(repo.inspector.inspect())
 
-repo.workspaces.splice(1, repo.workspaces.length)
-console.log(repo.inspector.inspect())
+// ParentRelationTypes.printAllStats()
 
-ParentRelationTypes.printAllStats()
-
-Profiler.printResults()
+// Profiler.printResults()
