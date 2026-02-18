@@ -13,12 +13,12 @@ export interface UserConfig {
   /**
    * LinkedIn username, used to construct profile URLs and links to recommendations. Also serves as a unique identifier for the candidate. Required for LinkedIn scraping and rendering accurate profile links in the resume.
    */
-  linkedInUsername: string
+  username: string
 
   /**
    * Filepath where the generated PDF resume will be saved. Supports environment variables (e.g., $USERPROFILE) which will be expanded to their actual values. The directory will be created if it does not exist. Defaults to: "$USERPROFILE/Desktop/resume.pdf".
    */
-  outputFilepath: string
+  outpath: string
 
   /**
    * Additional profiles to include in the resume, such as GitHub, Twitter, etc. Each profile should specify the network name, username, and URL. These will be rendered in the contact section of the resume and can also be used to link to projects or other relevant information.

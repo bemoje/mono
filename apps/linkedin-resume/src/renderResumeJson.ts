@@ -44,8 +44,8 @@ export async function renderResumeJson(): Promise<void> {
   if (!userConfig.profiles.some((p: { network: string }) => p.network.toLowerCase() === 'linkedin')) {
     userConfig.profiles.push({
       network: 'LinkedIn',
-      username: userConfig.linkedInUsername,
-      url: `https://www.linkedin.com/in/${userConfig.linkedInUsername}`,
+      username: userConfig.username,
+      url: `https://www.linkedin.com/in/${userConfig.username}`,
     })
   }
 

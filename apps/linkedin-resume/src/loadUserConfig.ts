@@ -5,7 +5,7 @@ import { userConfigFile } from './userConfigFile'
 export async function loadUserConfig(): Promise<UserConfig> {
   const config = userConfigFile.load()
 
-  if (config.linkedInUsername) {
+  if (config.username) {
     return config
   }
 
@@ -18,5 +18,5 @@ export async function loadUserConfig(): Promise<UserConfig> {
     process.exit(1)
   }
 
-  return userConfigFile.update((config) => ({ ...config, linkedInUsername: username }))
+  return userConfigFile.update((config) => ({ ...config, username }))
 }

@@ -16,17 +16,19 @@ const cli = new Command('linkedin-resume')
   .version(version)
   .description(description)
 
-  .argument('[outputFilepath]', 'Optional filepath. Defaults to value set in config file.')
+  .option('-o, --outpath <filepath>', 'output filepath (overrides config)')
 
-  .option('--debug', 'enable debug output')
-  .option('--render', 'skip scraping, only render')
-  .option('--no-headless', 'show scraping browser window')
-  .option('--keep-open', 'keep browser open after scraping')
+  .option('-d, --debug', 'enable debug output')
+  .option('-r, --render', 'skip scraping, only render')
+  .option('-n, --no-headless', 'show scraping browser window')
+  .option('-k, --keep-open', 'keep browser open after scraping')
 
-  .action(async (outputFilepath: string, options: CliOptions) => {
+  .action(async (options: CliOptions) => {
+    const config = await loadUserConfig()
+
     if (options.debug) {
       console.log({ argv: process.argv })
-      console.dir({ config: await loadUserConfig() }, { depth: null })
+      console.dir({ config }, { depth: null })
     }
 
     if (!options.render) {
@@ -43,7 +45,7 @@ const cli = new Command('linkedin-resume')
     console.log('\nRendering resume...')
     await renderResumeJson()
     await renderResumeHtml()
-    await renderPdfFromHtml(outputFilepath, options)
+    await renderPdfFromHtml(options)
   })
 
 cli

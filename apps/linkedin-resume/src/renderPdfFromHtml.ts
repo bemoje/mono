@@ -7,7 +7,7 @@ import { DIST_PATH } from './constants'
 import { expandEnvVars } from './utils/expandEnvVars'
 import puppeteer from 'puppeteer'
 
-export async function renderPdfFromHtml(outputFilepath: string, options: CliOptions): Promise<void> {
+export async function renderPdfFromHtml(options: CliOptions): Promise<void> {
   const htmlPath = upath.join(DIST_PATH, 'resume.html')
   const pdfPath = upath.join(DIST_PATH, 'resume.pdf')
   const htmlFileUrl = pathToFileURL(htmlPath).href
@@ -47,8 +47,8 @@ export async function renderPdfFromHtml(outputFilepath: string, options: CliOpti
   console.log(`output: ${pdfPath}`)
 
   const userConfig = await loadUserConfig()
-  const outputFilepathToUse = expandEnvVars(outputFilepath || userConfig.outputFilepath)
-  await fs.ensureDir(upath.dirname(outputFilepathToUse))
-  await fs.copy(pdfPath, outputFilepathToUse)
-  console.log('\nPDF:', outputFilepathToUse, '\n')
+  const outpathToUse = expandEnvVars(options.outpath || userConfig.outpath)
+  await fs.ensureDir(upath.dirname(outpathToUse))
+  await fs.copy(pdfPath, outpathToUse)
+  console.log('\nPDF:', outpathToUse, '\n')
 }

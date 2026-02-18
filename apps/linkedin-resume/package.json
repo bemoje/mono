@@ -1,7 +1,7 @@
 {
   "name": "linkedin-resume",
   "description": "A CLI tool to generate a LinkedIn resume in PDF format.",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "main": "dist/cli.mjs",
@@ -32,7 +32,6 @@
     "url": "https://github.com/bemoje/mono.git",
     "directory": "apps/linkedin-resume"
   },
-  "homepage": "https://github.com/bemoje/mono/blob/main/apps/linkedin-resume/README.md",
   "scripts": {
     "build": "node esbuild.mjs"
   }

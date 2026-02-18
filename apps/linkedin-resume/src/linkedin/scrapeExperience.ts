@@ -8,8 +8,8 @@ import { parseDate } from './utils/parseDate'
 import { getLinkedInUsername } from './utils/getLinkedInUsername'
 import { DIST_PATH } from '../constants'
 import { CliOptions } from '../types/CliOptions'
-import { prettyStackTrace } from 'libs/stacktrace/src/prettyStackTrace'
-import { toError } from 'libs/node/src/toError'
+import { prettyStackTrace } from '@mono/stacktrace'
+import { toError } from '@mono/node'
 
 interface WorkEntry {
   name: string

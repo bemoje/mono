@@ -5,8 +5,8 @@ import { UserConfig } from './types/UserConfig'
 
 export const UserConfigSchema = Type.Object(
   {
-    linkedInUsername: Type.String({ default: '' }),
-    outputFilepath: Type.String({ default: '$USERPROFILE/Desktop/resume.pdf' }),
+    username: Type.String({ default: '' }),
+    outpath: Type.String({ default: '$USERPROFILE/Desktop/resume.pdf' }),
     profiles: Type.Array(
       Type.Object({
         network: Type.String({ default: '' }),

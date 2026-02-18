@@ -7,8 +7,8 @@ import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { CliOptions } from '../types/CliOptions'
 import { getLinkedInUsername } from './utils/getLinkedInUsername'
 import { DIST_PATH } from '../constants'
-import { prettyStackTrace } from 'libs/stacktrace/src/prettyStackTrace'
-import { toError } from 'libs/node/src/toError'
+import { prettyStackTrace } from '@mono/stacktrace'
+import { toError } from '@mono/node'
 
 interface SkillEntry {
   name: string

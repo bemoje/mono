@@ -3,4 +3,5 @@ export interface CliOptions {
   render?: boolean
   headless?: boolean
   keepOpen?: boolean
+  outpath?: string
 }
