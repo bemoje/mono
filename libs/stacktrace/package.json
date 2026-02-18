@@ -10,6 +10,6 @@
     "build": "node esbuild.mjs"
   },
   "devDependencies": {
-    "@bemoje/devkit": "0.0.10"
+    "@bemoje/devkit": "0.1.0"
   }
 }
