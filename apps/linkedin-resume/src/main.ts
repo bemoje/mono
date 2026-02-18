@@ -24,8 +24,6 @@ const cli = new Command('linkedin-resume')
   .option('--keep-open', 'keep browser open after scraping')
 
   .action(async (outputFilepath: string, options: CliOptions) => {
-    options.headless = options.headless ?? true
-
     if (options.debug) {
       console.log({ argv: process.argv })
       console.dir({ config: await loadUserConfig() }, { depth: null })
