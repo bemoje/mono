@@ -81,7 +81,7 @@ await esbuild.build({
   mainFields: ['module', 'main'],
   sourcemap: true,
   treeShaking: true,
-  external: ['puppeteer', 'commander', 'fs-extra', 'upath', '@sinclair/typebox', 'onetime'],
+  external: ['puppeteer', 'commander', 'fs-extra', 'upath', '@sinclair/typebox'],
   banner: { js: '#!/usr/bin/env node' },
   logOverride: { 'empty-import-meta': 'silent' },
 })
