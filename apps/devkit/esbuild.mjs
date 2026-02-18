@@ -27,8 +27,8 @@ const indexOutFileTemp = upath.joinSafe(distDirpath, wsDirname + '-temp.cjs')
 
 // ensure package details are consistent across package.json and source code, and that version is unique on npm
 void (await (async () => {
-  const packageJsonDirpath = upath.joinSafe(wsDirpath, 'package.json')
-  const pkg = await fs.readJson(packageJsonDirpath)
+  const packageJsonFilepath = upath.joinSafe(wsDirpath, 'package.json')
+  const pkg = await fs.readJson(packageJsonFilepath)
 
   // check if version already exists on npm, and if so, bump patch version
   const npmVersion = cp.execSync(`npm view ${pkg.name} version`, { encoding: 'utf8' })
@@ -37,7 +37,7 @@ void (await (async () => {
     semver[2] = (parseInt(semver[2]) + 1).toString()
     pkg.version = semver.join('.')
     console.info(`Version ${npmVersion} already exists on npm. Bumping version to ${pkg.version}...`)
-    await fs.writeFile(packageJsonDirpath, JSON.stringify(pkg, null, 2) + '\n')
+    await fs.writeFile(packageJsonFilepath, JSON.stringify(pkg, null, 2) + '\n')
   }
 
   // update version in source code
