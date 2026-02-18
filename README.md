@@ -18,10 +18,10 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 586   | 11913         |
-| test      | 444   | 27921         |
+| source    | 588   | 11875         |
+| test      | 445   | 27944         |
 | examples  | 2     | 51            |
-| total     | 1032  | 39885         |
+| total     | 1035  | 39870         |
 
 ## Table of Contents
 
@@ -56,7 +56,9 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 ## Apps
 
+- [devkit](./apps/devkit/README.md) - Development utilities for the monorepo.
 - [linkedin-resume](./apps/linkedin-resume/README.md) - A CLI tool to generate a LinkedIn resume in PDF format.
+- [playground](./apps/playground/README.md) - Scratch/dev workspace for experimentation.
 
 ## Scripts
 
@@ -68,7 +70,7 @@ Scripts are defined in the root [`package.json`](/package.json). Each script pro
 
 The [`devkit`](/apps/devkit) CLI provides development utilities for the monorepo. It is the single consolidated tool for all repo management tasks including builds, code cleanup, insight/analysis, documentation generation, and more.
 
-Run with `yarn devkit`.
+Run with `yarn dk`.
 
 ## Workspaces
 
@@ -104,10 +106,9 @@ Before introducing a new dependency, check if if one of the library packages alr
 ### Configuration
 
 - **Package Manager**: Use `yarn`
-- **Workspaces**: `apps/*`, `packages/*`, `libs/*` (Yarn 4.3.1 workspaces)
+- **Workspaces**: `libs/*`, `apps/*` (Yarn 4.3.1 workspaces)
 - **Build System**: ESBuild with consistent configuration across packages
-- **Module System**: ESNext modules, target Node 21+
-- **Package Manager**: Yarn v4 with strict workspace management
+- **Module System**: ESNext modules
 
 ### libs
 
@@ -118,14 +119,13 @@ Workspaces in the `libs/` directory may have additional directories/files but th
 ```
 libs/<package-name>/
 ├── esbuild.mjs           # Build configuration (standardized)
-├── eslint.config.js      # Extends root ESLint config
+├── eslint.config.mjs     # Extends root ESLint config
 ├── package.json          # Package metadata with build/lint scripts
 ├── README.md             # Package documentation
 ├── tsconfig.json         # Extends ../../tsconfig.json
 └── src/
     ├── index.ts          # Barrel export file
     ├── **/*.ts           # Implementation files
-    ├── **/*.test.ts      # Test files (Vitest)
     └── **/*.test.ts      # Test files (Vitest)
 ```
 
@@ -138,7 +138,7 @@ To run specific test(s), use `yarn test <GLOB_PATTERN>`
 
 To generate coverage reports, see [scripts](#scripts).
 
-Coverage data files are output to the [`.coverage/`](/.coverage) director.
+Coverage data files are output to the [`.coverage/`](/.coverage) directory.
 
 For full coverage reports, use `yarn test-coverage` which will run tests in all workspaces and generate a coverage report for each workspace in the `.coverage/` directory.
 

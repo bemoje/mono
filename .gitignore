@@ -13,4 +13,3 @@ temp/
 .env
 .env.*
 .yarn/install-state.gz
-pr-*-review-*.md
