@@ -95,6 +95,53 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
   }
 
   /**
+   * Get all unique file-level dependencies of the workspace, including transitive dependencies through other local workspaces.
+   *
+   * This method recursively traverses the dependency graph of the workspace, collecting all unique dependencies. It distinguishes between internal dependencies (other local workspaces) and external dependencies (npm packages).
+   *
+   * @returns An object containing two arrays: `internal` for internal workspace dependencies and `external` for npm package dependencies.
+   */
+  get importedDependenciesRecursive(): { internal: string[]; external: string[] } {
+    const repo = this.parent
+    const wsNames = repo.workspaces.map((w) => w.name)
+    const allDeps = recurse(this.tsFiles.filter((f) => f.isSourceFile))
+    const internal = [...allDeps].filter((d) => wsNames.some((name) => name === d)).sort()
+    const external = [...allDeps].filter((d) => !wsNames.some((name) => name === d)).sort()
+
+    /** Collect all deps reachable from a set of files, recursing into local workspace files. */
+    function recurse(
+      files: TsFile[],
+      allDeps = new Set<string>(),
+      visited = new Set<string>(),
+      depth = 0,
+    ): Set<string> {
+      for (const file of files) {
+        if (visited.has(file.path)) continue
+        visited.add(file.path)
+
+        for (const dep of file.dependencies) {
+          allDeps.add(dep)
+
+          // If the dep is an internal workspace, recurse into its source files
+          const depWs = repo.workspaces.find((w) => w.name === dep)
+          if (depWs) {
+            recurse(
+              depWs.tsFiles.filter((f) => f.isSourceFile),
+              allDeps,
+              visited,
+              depth + 1,
+            ).forEach((d) => allDeps.add(d))
+          }
+        }
+      }
+
+      return allDeps
+    }
+
+    return { internal, external }
+  }
+
+  /**
    * Get the source files in the workspace's 'src' directory.
    * Test files are not included.
    */
