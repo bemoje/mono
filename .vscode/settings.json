@@ -64,7 +64,8 @@
     "chown": false,
     "Remove-Item": false,
     "/^node s[/]insight[/].+[.]mjs$/": true,
-    "yarn devkit": true
+    "yarn devkit": true,
+    "gh": true
   },
   "json.schemas": [
     {
