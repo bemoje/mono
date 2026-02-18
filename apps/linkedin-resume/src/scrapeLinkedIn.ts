@@ -6,12 +6,12 @@ import { scrapeProjects } from './linkedin/scrapeProjects'
 import { scrapeEducation } from './linkedin/scrapeEducation'
 import { scrapeExperience } from './linkedin/scrapeExperience'
 import { CliOptions } from './types/CliOptions'
-import { CHROME_PPROFILE_PATH } from './constants'
+import { CHROME_PROFILE_PATH } from './constants'
 
 export async function scrapeLinkedIn(options: CliOptions): Promise<void> {
   const browser = await puppeteer.launch({
     headless: options.headless ? 'shell' : false,
-    userDataDir: CHROME_PPROFILE_PATH,
+    userDataDir: CHROME_PROFILE_PATH,
     args: ['--start-maximized'],
     defaultViewport: null,
   })

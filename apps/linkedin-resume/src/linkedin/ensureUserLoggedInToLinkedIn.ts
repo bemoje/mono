@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer'
 import type { Browser } from 'puppeteer'
-import { CHROME_PPROFILE_PATH } from '../constants'
+import { CHROME_PROFILE_PATH } from '../constants'
 
 /**
  * Ensures the user is logged in to LinkedIn by launching a browser instance and prompting the user to log in if necessary.
@@ -8,7 +8,7 @@ import { CHROME_PPROFILE_PATH } from '../constants'
 export async function ensureUserLoggedInToLinkedIn(): Promise<void> {
   const browser: Browser = await puppeteer.launch({
     headless: false,
-    userDataDir: CHROME_PPROFILE_PATH,
+    userDataDir: CHROME_PROFILE_PATH,
     args: ['--start-maximized'],
     defaultViewport: null,
   })
