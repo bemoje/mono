@@ -115,6 +115,10 @@ export interface ResumeWork {
    */
   skills?: string[]
   /**
+   * Attached media items (images, documents, links) from the LinkedIn entry.
+   */
+  mediaLinks?: ResumeMediaLink[]
+  /**
    * URL to the company logo image (typically a LinkedIn company logo). Falls back to a placeholder initial if empty.
    */
   logoUrl?: string
@@ -156,6 +160,10 @@ export interface ResumeEducation {
    * Skills and technologies acquired during the education, rendered as skill pills.
    */
   skills?: string[]
+  /**
+   * Attached media items (images, documents, links) from the LinkedIn entry.
+   */
+  mediaLinks?: ResumeMediaLink[]
   /**
    * URL to the institution's logo image. Falls back to a placeholder initial if empty.
    */

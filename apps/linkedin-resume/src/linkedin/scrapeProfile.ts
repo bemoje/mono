@@ -15,11 +15,11 @@ export async function scrapeProfile(browser: Browser, options: CliOptions): Prom
     const username = await getLinkedInUsername()
     await page.goto(`https://www.linkedin.com/in/${username}`, {
       waitUntil: 'domcontentloaded',
-      timeout: 60000,
+      timeout: 20000,
     })
 
     // Wait for the profile top card to load
-    await page.waitForSelector('h1', { timeout: 60000 })
+    await page.waitForSelector('h1', { timeout: 15000 })
 
     ////////////////////////////
     ////////////////////////////
