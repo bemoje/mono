@@ -37,8 +37,8 @@
     "precommit:build": "yarn run-s -n build test-coverage-full docs",
     "precommit": "cls && yarn install && yarn precommit:fix && yarn precommit:check && yarn precommit:build",
     "dk": "yarn workspace @bemoje/devkit build && node .dist/devkit.cjs",
-    "publish:devkit": "cd apps/devkit && yarn build && yarn npm publish && cd ../..",
-    "publish:linkedin-resume": "cd apps/linkedin-resume && yarn build && yarn npm publish && cd ../..",
+    "publish:devkit": "yarn workspace @bemoje/devkit run build && yarn workspace @bemoje/devkit npm publish",
+    "publish:linkedin-resume": "yarn workspace linkedin-resume run build && yarn workspace linkedin-resume npm publish",
     "foreach": "yarn workspaces foreach --all --parallel --jobs unlimited --exclude mono --verbose"
   },
   "devDependencies": {
