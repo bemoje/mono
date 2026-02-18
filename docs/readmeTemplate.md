@@ -18,6 +18,10 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 <!-- TOC_TABLE -->
 
+## Apps
+
+- [linkedin-resume](./apps/linkedin-resume/README.md) - A CLI tool to generate a LinkedIn resume in PDF format.
+
 ## Scripts
 
 ### `package.json`

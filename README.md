@@ -18,16 +18,17 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 561   | 9682          |
+| source    | 586   | 11913         |
 | test      | 444   | 27921         |
 | examples  | 2     | 51            |
-| total     | 1007  | 37654         |
+| total     | 1032  | 39885         |
 
 ## Table of Contents
 
 - [mono](#mono)
   - [Status](#status)
   - [Table of Contents](#table-of-contents)
+  - [Apps](#apps)
   - [Scripts](#scripts)
     - [`package.json`](#packagejson)
     - [`devkit` CLI](#devkit-cli)
@@ -52,6 +53,10 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
     - [Test Patterns](#test-patterns)
   - [Debugging Support](#debugging-support)
   - [Exported Modules](#exported-modules)
+
+## Apps
+
+- [linkedin-resume](./apps/linkedin-resume/README.md) - A CLI tool to generate a LinkedIn resume in PDF format.
 
 ## Scripts
 

@@ -69,7 +69,7 @@
   "json.schemas": [
     {
       "url": "https://json.schemastore.org/package.json",
-      "fileMatch": ["package.json"]
+      "fileMatch": ["package.json", "**/package.json"]
     },
     {
       "url": "./docs/package.schema.json",
