@@ -1,0 +1,8 @@
+node_modules/
+src/
+
+dist/linkedin-resume.cjs.map
+
+esbuild.mjs
+eslint.config.mjs
+tsconfig.json

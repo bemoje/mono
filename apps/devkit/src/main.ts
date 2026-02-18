@@ -18,6 +18,9 @@ import { publishCommands } from './commands/publish/publish-commands'
 import { debugCommands } from './commands/debug/debug-commands'
 import version from './core/version'
 import description from './core/description'
+import { configFile } from './core/config/config'
+
+configFile.load()
 
 new Command('devkit')
   .version(version)

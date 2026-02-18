@@ -1,0 +1,351 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Resume for job applications.",
+  "description": "Structured resume data used to generate HTML resumes, cover letters, and fitness evaluations for job applications. Loosely based on the JSON Resume schema (https://jsonresume.org).",
+  "type": "object",
+  "properties": {
+    "basics": {
+      "description": "Core personal and contact details displayed in the profile header of the resume.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Full name of the candidate.",
+          "type": "string"
+        },
+        "label": {
+          "description": "Primary professional title or role, displayed as the headline beneath the name (e.g., 'Full Stack Software Developer').",
+          "type": "string"
+        },
+        "image": {
+          "description": "Filename of the profile photo located in the '.dist/' output directory (e.g., 'profile.jpeg').",
+          "type": "string"
+        },
+        "email": {
+          "description": "Primary contact email address.",
+          "type": "string",
+          "format": "email"
+        },
+        "phone": {
+          "description": "Primary contact phone number, including country code (e.g., '+4525113899').",
+          "type": "string",
+          "format": "phone"
+        },
+        "summary": {
+          "description": "Multiline 'About' text providing a brief overview of the candidate's background, expertise, and current focus. Newlines separate paragraphs in the rendered output.",
+          "type": "string"
+        },
+        "skills": {
+          "description": "A short list of top-level headline skills displayed as pills in the 'About' section. Keep this concise (3-5 items) to highlight key strengths. Distinct from the root-level 'skills' array, which is the comprehensive list.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "location": {
+          "description": "Current geographic location of the candidate, shown in the profile header.",
+          "type": "object",
+          "properties": {
+            "city": {
+              "description": "City of residence.",
+              "type": "string"
+            },
+            "region": {
+              "description": "State, province, or region (e.g., 'Central Denmark Region').",
+              "type": "string"
+            },
+            "countryCode": {
+              "description": "Country name or ISO country code (e.g., 'Denmark').",
+              "type": "string"
+            }
+          },
+          "required": ["city", "countryCode"]
+        },
+        "profiles": {
+          "description": "Links to social media and professional profiles, rendered as buttons in the profile header.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "network": {
+                "description": "Display name of the platform (e.g., 'LinkedIn', 'GitHub').",
+                "type": "string"
+              },
+              "username": {
+                "description": "Username or handle on the platform. Also used to construct URLs (e.g., LinkedIn recommendations link).",
+                "type": "string"
+              },
+              "url": {
+                "description": "Full URL to the profile page.",
+                "type": "string",
+                "format": "uri"
+              }
+            },
+            "required": ["network", "username", "url"]
+          }
+        }
+      },
+      "required": ["name", "label", "image", "email", "phone", "summary", "skills", "location", "profiles"]
+    },
+    "work": {
+      "description": "Professional work experience entries, ordered from most recent to oldest. Consecutive entries with the same company name are automatically grouped under a single company heading with multiple sub-roles in the rendered output.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Company or organization name. Consecutive entries sharing the same name are grouped together visually.",
+            "type": "string"
+          },
+          "location": {
+            "description": "Location of the role (e.g., 'Brande, Central Denmark Region, Denmark').",
+            "type": "string"
+          },
+          "position": {
+            "description": "Job title held at the company (e.g., 'Full Stack Software Developer').",
+            "type": "string"
+          },
+          "startDate": {
+            "description": "Start date of the position in 'YYYY-MM' format (e.g., '2025-11').",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "End date of the position in 'YYYY-MM' format, or an empty string if the position is current (renders as 'Present').",
+            "type": "string"
+          },
+          "duration": {
+            "description": "Human-readable duration string (e.g., '2 yrs 4 mos').",
+            "type": "string"
+          },
+          "summary": {
+            "description": "Brief free-text description of the role. Rendered as a paragraph. Can be empty if highlights cover the role sufficiently.",
+            "type": "string"
+          },
+          "highlights": {
+            "description": "Key accomplishments and responsibilities, rendered as a bulleted list.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skills": {
+            "description": "Technologies, tools, and competencies used in this role, rendered as skill pills.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "logoUrl": {
+            "description": "URL to the company logo image (typically a LinkedIn company logo). Falls back to a placeholder initial if empty.",
+            "type": "string"
+          }
+        },
+        "required": ["name", "position", "startDate", "endDate"]
+      }
+    },
+    "education": {
+      "description": "Academic history entries, ordered from most recent to oldest.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "institution": {
+            "description": "Name of the educational institution (e.g., 'Aarhus University').",
+            "type": "string"
+          },
+          "area": {
+            "description": "Field of study or degree program (e.g., 'Computer Science (4 semesters)'). Can be empty for institutions where a specific program is not applicable.",
+            "type": "string"
+          },
+          "studyType": {
+            "description": "Type of degree or supplementary context about the program (e.g., 'Bachelor', 'Master'). Can be empty.",
+            "type": "string"
+          },
+          "startDate": {
+            "description": "Start date of the education in 'YYYY-MM-DD' or 'YYYY-MM' format.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "End date of the education in 'YYYY-MM-DD' or 'YYYY-MM' format, or empty string if ongoing.",
+            "type": "string"
+          },
+          "score": {
+            "description": "Grade, GPA, or equivalent score achieved. Can be empty.",
+            "type": "string"
+          },
+          "courses": {
+            "description": "List of notable courses completed during the program, rendered as a comma-separated list.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skills": {
+            "description": "Skills and technologies acquired during the education, rendered as skill pills.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "logoUrl": {
+            "description": "URL to the institution's logo image. Falls back to a placeholder initial if empty.",
+            "type": "string"
+          }
+        },
+        "required": ["institution", "startDate", "endDate"]
+      }
+    },
+    "projects": {
+      "description": "Notable personal, open-source, or professional side projects.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Name of the project.",
+            "type": "string"
+          },
+          "description": {
+            "description": "Brief description of the project's purpose and scope.",
+            "type": "string"
+          },
+          "highlights": {
+            "description": "Key features or accomplishments, rendered as a bulleted list.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skills": {
+            "description": "Technologies and skills used in the project, rendered as skill pills.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "startDate": {
+            "description": "Start date of the project in 'YYYY-MM' format.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "End date of the project in 'YYYY-MM' format, or empty string if ongoing.",
+            "type": "string"
+          },
+          "roles": {
+            "description": "Roles held within the project (e.g., 'Lead Developer', 'Maintainer').",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "entity": {
+            "description": "Company or organization the project is associated with, rendered as 'Associated with <entity>'. Empty for personal projects.",
+            "type": "string"
+          },
+          "type": {
+            "description": "Category or type of project (e.g., 'Open Source', 'Internal Tool'). Can be empty.",
+            "type": "string"
+          },
+          "url": {
+            "description": "Primary URL for the project (e.g., GitHub repository). Can be empty.",
+            "type": "string",
+            "oneOf": [{ "format": "uri" }, { "const": "" }]
+          },
+          "mediaLinks": {
+            "description": "Additional external links related to the project (e.g., Spotify, demo sites), rendered as link buttons.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "description": "Display text for the link (e.g., 'GitHub - bemoje/mono', 'Spotify').",
+                  "type": "string"
+                },
+                "url": {
+                  "description": "Full URL of the linked resource.",
+                  "type": "string",
+                  "format": "uri"
+                }
+              },
+              "required": ["title", "url"]
+            }
+          },
+          "logoUrl": {
+            "description": "URL to a project logo or thumbnail image. Falls back to a placeholder initial if empty.",
+            "type": "string"
+          }
+        },
+        "required": ["name", "startDate", "endDate"]
+      }
+    },
+    "languages": {
+      "description": "Spoken languages and proficiency levels.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "description": "Name of the language (e.g., 'Danish', 'English').",
+            "type": "string"
+          },
+          "fluency": {
+            "description": "Proficiency level (e.g., 'Native or bilingual proficiency', 'Professional working proficiency').",
+            "type": "string"
+          }
+        },
+        "required": ["language", "fluency"]
+      }
+    },
+    "recommendations": {
+      "description": "Professional recommendations received, typically from LinkedIn. Rendered with a link to the LinkedIn recommendations page.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Full name of the person who gave the recommendation.",
+            "type": "string"
+          },
+          "headline": {
+            "description": "Professional headline or job title of the recommender (e.g., 'Delivery Director FO at Evidi').",
+            "type": "string"
+          },
+          "date": {
+            "description": "Date the recommendation was given, in human-readable format (e.g., 'June 13, 2025').",
+            "type": "string"
+          },
+          "relationship": {
+            "description": "Professional relationship between the recommender and the candidate (e.g., 'Martin managed Benjamin directly').",
+            "type": "string"
+          },
+          "logoUrl": {
+            "description": "URL to the recommender's profile photo. Falls back to a placeholder initial if empty.",
+            "type": "string"
+          }
+        },
+        "required": ["name", "headline", "date", "relationship"]
+      }
+    },
+    "skills": {
+      "description": "Comprehensive list of all professional skills, typically scraped from LinkedIn. Rendered as a flat list of skill pills in the 'Skills' section. Distinct from 'basics.skills', which is only the top headline skills.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Name of the skill (e.g., 'TypeScript', 'Docker', 'Project Management').",
+            "type": "string"
+          },
+          "associations": {
+            "description": "Contexts where the skill was demonstrated or acquired - work positions, education, projects, endorsements, or LinkedIn skill assessments.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["name"]
+      }
+    }
+  },
+  "required": ["basics"]
+}
