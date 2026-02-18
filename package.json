@@ -42,7 +42,7 @@
     "foreach": "yarn workspaces foreach --all --parallel --jobs unlimited --exclude mono --verbose"
   },
   "devDependencies": {
-    "@bemoje/devkit": "0.0.12",
+    "@bemoje/devkit": "0.0.13",
     "@eslint/js": "^9.8.0",
     "@types/cli-table": "^0.3.4",
     "@types/command-exists": "^1.2.3",
