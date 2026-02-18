@@ -12,7 +12,7 @@ export async function renderPdfFromHtml(outputFilepath: string, options: CliOpti
   const pdfPath = upath.join(DIST_PATH, 'resume.pdf')
   const htmlFileUrl = pathToFileURL(htmlPath).href
 
-  if (!(await fs.exists(htmlPath))) {
+  if (!(await fs.pathExists(htmlPath))) {
     throw new Error(`HTML file not found: ${htmlPath}. Run renderResumeHtml first.`)
   }
 
@@ -40,7 +40,7 @@ export async function renderPdfFromHtml(outputFilepath: string, options: CliOpti
     await browser.close()
   }
 
-  if (!fs.existsSync(pdfPath)) {
+  if (!(await fs.pathExists(pdfPath))) {
     throw new Error(`PDF was not created at ${pdfPath}`)
   }
 
