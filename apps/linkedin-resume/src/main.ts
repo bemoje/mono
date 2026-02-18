@@ -44,8 +44,6 @@ const cli = new Command('linkedin-resume')
     await renderResumeJson()
     await renderResumeHtml()
     await renderPdfFromHtml(outputFilepath, options)
-
-    console.log('\nDone')
   })
 
 cli

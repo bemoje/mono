@@ -121,7 +121,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bemoje/devkit@npm:0.1.0, @bemoje/devkit@workspace:apps/devkit":
+"@bemoje/devkit@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@bemoje/devkit@npm:0.1.0"
+  dependencies:
+    esbuild: "npm:^0.23.0"
+  bin:
+    devkit: dist/cli.mjs
+  checksum: 10c0/0486b529845811dd701122f5a8d68be1b6d013fcc47bf83a49fb1b3aa74f100b025dc79d1e4b37a1b43a26e5756d346b999ac47ecfa32898b55b706a131558f2
+  languageName: node
+  linkType: hard
+
+"@bemoje/devkit@workspace:apps/devkit":
   version: 0.0.0-use.local
   resolution: "@bemoje/devkit@workspace:apps/devkit"
   dependencies:

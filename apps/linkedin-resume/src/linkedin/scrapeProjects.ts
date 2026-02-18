@@ -8,6 +8,8 @@ import { CliOptions } from '../types/CliOptions'
 import { parseDate } from './utils/parseDate'
 import { getLinkedInUsername } from './utils/getLinkedInUsername'
 import { DIST_PATH } from '../constants'
+import { prettyStackTrace } from 'libs/stacktrace/src/prettyStackTrace'
+import { toError } from 'libs/node/src/toError'
 
 interface ProjectEntry {
   name: string
@@ -27,14 +29,20 @@ interface ProjectEntry {
 export async function scrapeProjects(browser: Browser, options: CliOptions): Promise<void> {
   const page = await browser.newPage()
 
+  const projects: ProjectEntry[] = []
+
   try {
     const username = await getLinkedInUsername()
-    await page.goto(`https://www.linkedin.com/in/${username}/details/projects`, {
+    await page.goto(`https://www.linkedin.com/in/${username}/details/projects/?locale=en_US`, {
       waitUntil: 'domcontentloaded',
-      timeout: 60000,
+      timeout: 20000,
     })
 
-    await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 60000 })
+    try {
+      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
+    } catch {
+      console.warn('No projects section found or it took too long to load.')
+    }
     await autoScroll(page)
     await patchEsbuildHelpers(page)
     await injectBrowserHelpers(page)
@@ -46,37 +54,16 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const getVisibleSpans = (globalThis as any).__getVisibleSpans as (el: Element) => string[]
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const extractMedia = (globalThis as any).__extractMedia as (el: Element) => {
+        mediaLinks: { title: string; url: string }[]
+        mediaTexts: string[]
+      }
 
       return topLevelItems.map((li) => {
-        // Extract media links (external anchors with href) before collecting spans
-        const mediaLinks = Array.from(li.querySelectorAll('a[href]'))
-          .filter((a) => {
-            const href = a.getAttribute('href') ?? ''
-            // LinkedIn wraps external media links in redirect URLs or they are direct external links
-            return href.includes('/redirect') || (href.startsWith('http') && !href.includes('linkedin.com'))
-          })
-          .map((a) => {
-            const href = a.getAttribute('href') ?? ''
-            // Extract the actual URL from LinkedIn's redirect wrapper if present
-            let url = href
-            try {
-              const u = new URL(href, location.origin)
-              const redirectUrl = u.searchParams.get('url')
-              if (redirectUrl) url = redirectUrl
-            } catch {
-              /* ignore malformed URLs */
-            }
-            // Get the visible text label of the media link
-            const titleEl = a.querySelector('span[aria-hidden="true"]')
-            const title = titleEl ? titleEl.textContent!.trim() : a.textContent!.trim()
-            return { title, url }
-          })
-          .filter((m) => m.url)
-
-        // Collect the text of media link titles so we can exclude them from content spans
-        const mediaTitles = new Set(mediaLinks.map((m) => m.title))
-
-        const spans = getVisibleSpans(li).filter((text) => !mediaTitles.has(text))
+        const { mediaLinks, mediaTexts } = extractMedia(li)
+        const mediaTextSet = new Set(mediaTexts)
+        const spans = getVisibleSpans(li).filter((text) => !mediaTextSet.has(text))
 
         return {
           spans,
@@ -97,8 +84,6 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
     // Date patterns for project entries
     const PROJ_DATE_RE = /^[A-Z][a-z]{2}\s+\d{4}\s*-\s*([A-Z][a-z]{2}\s+\d{4}|Present)$|^[A-Z][a-z]{2}\s+\d{4}$/
     const ASSOC_RE = /^Associated with\s+/
-
-    const projects: ProjectEntry[] = []
 
     for (const { spans, logoUrl, mediaLinks } of rawEntries) {
       if (spans.length < 2) continue
@@ -181,11 +166,15 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
         logoUrl,
       })
     }
-
+  } catch (e) {
+    const error = toError(e)
+    error.message = 'Error scraping projects: ' + error.message
+    console.error(options.debug ? prettyStackTrace(error) : error.message)
+  } finally {
     const outPath = join(DIST_PATH, 'projects-scraped.json')
     await fs.outputFile(outPath, JSON.stringify(projects, null, 2))
     console.log(`Wrote ${projects.length} projects to ${outPath}`)
-  } finally {
+
     if (!options.keepOpen) {
       await page.close()
     }

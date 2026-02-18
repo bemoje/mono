@@ -50,5 +50,5 @@ export async function renderPdfFromHtml(outputFilepath: string, options: CliOpti
   const outputFilepathToUse = expandEnvVars(outputFilepath || userConfig.outputFilepath)
   await fs.ensureDir(upath.dirname(outputFilepathToUse))
   await fs.copy(pdfPath, outputFilepathToUse)
-  console.log('PDF:', outputFilepathToUse)
+  console.log('\nPDF:', outputFilepathToUse, '\n')
 }
