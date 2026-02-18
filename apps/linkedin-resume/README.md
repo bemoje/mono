@@ -54,11 +54,11 @@ Commands:
 ### Examples
 
 ```sh
-# Scrape and generate with browser visible (default)
+# Scrape and generate in headless mode (default)
 linkedin-resume
 
-# Scrape in headless mode
-linkedin-resume --headless
+# Show the browser window during scraping
+linkedin-resume --no-headless
 
 # Skip scraping, re-render from previously scraped data
 linkedin-resume --render
@@ -112,11 +112,11 @@ linkedin-resume config
   "ignore": {
     // Set to true to hide the entire section, or an array to hide specific entries
     "work": [{ "name": "Company Inc.", "position": "Intern" }],
-    "education": false,
+    "education": true,
     "projects": [{ "name": "Old Project" }],
     "skills": [{ "name": "Microsoft Word" }],
-    "languages": false,
-    "recommendations": false,
+    "languages": true,
+    "recommendations": true,
   },
 }
 ```
