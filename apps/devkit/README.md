@@ -8,10 +8,10 @@ Development utilities for the monorepo.
 
 ```sh
 # install
-npm install devkit -g
+npm install devkit --save-dev
 
 # uninstall
-npm uninstall devkit -g
+npm uninstall devkit --save-dev
 
 # help
 devkit --help

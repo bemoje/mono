@@ -6,17 +6,13 @@
     "scripts": {
       "type": "object",
       "properties": {
-        "ws": {
-          "type": "string",
-          "description": "Execute a command inside a workspace.\n\nUsage: `yarn ws \"@mono/regex\" \"build\"`"
-        },
         "r": {
           "type": "string",
           "description": "Execute/run a file (.ts, .test.ts, .js, .ps1, .mjs).\n\nUsage: `yarn r <filepath>`"
         },
         "clean": {
           "type": "string",
-          "description": "Runs all clean tasks: fixOwnWsImports, indexts, ensureVitestImports, removeEmptyWsFiles, replaceBadDashChars."
+          "description": "Runs all clean tasks in parallel: fixOwnWsImports, indexts, removeEmptyWsFiles, replaceBadDashChars."
         },
         "clean:fixOwnWsImports": {
           "type": "string",
@@ -26,10 +22,6 @@
           "type": "string",
           "description": "Generate barrel export files at src/index.ts (runs script defined in each workspace package.json)."
         },
-        "clean:ensureVitestImports": {
-          "type": "string",
-          "description": "Ensures that all test files have the necessary Vitest imports."
-        },
         "clean:removeEmptyWsFiles": {
           "type": "string",
           "description": "Removes any files that have size 0 bytes for all workspaces."
@@ -38,25 +30,21 @@
           "type": "string",
           "description": "Replaces bad dash characters (em dash U+2014) with regular hyphens in all workspace files."
         },
-        "build": {
+        "check": {
           "type": "string",
-          "description": "Builds all workspaces."
+          "description": "Runs all check tasks in parallel: check:knip."
         },
-        "insight": {
-          "type": "string",
-          "description": "Runs all insight tasks: knip, filesWithMissingCoverage, linesOfCode."
-        },
-        "insight:knip": {
+        "check:knip": {
           "type": "string",
           "description": "Runs knip to find unused exports, dependencies, and files."
         },
-        "insight:filesWithMissingCoverage": {
+        "build": {
           "type": "string",
-          "description": "Lists files with incomplete code coverage."
+          "description": "Removes .dist directory and builds all workspaces."
         },
-        "insight:checkLibsTsDoc": {
+        "insight": {
           "type": "string",
-          "description": "Validates TSDoc documentation for all library exports."
+          "description": "Runs all insight tasks sequentially: linesOfCode."
         },
         "insight:linesOfCode": {
           "type": "string",
@@ -64,15 +52,27 @@
         },
         "docs": {
           "type": "string",
-          "description": "Generates and writes the README.md file with auto-generated documentation."
+          "description": "Generates TSDoc documentation for all library exports, then generates and writes the README.md file."
         },
         "lint": {
           "type": "string",
-          "description": "Runs eslint on all workspaces with auto-fix."
+          "description": "Runs eslint on all workspaces (libs and apps) with caching. Ignores apps/playground and dist directories."
         },
-        "format": {
+        "lint-fix": {
           "type": "string",
-          "description": "Formats all files in the monorepo using prettier."
+          "description": "Runs eslint with auto-fix enabled."
+        },
+        "format-all:check": {
+          "type": "string",
+          "description": "Check formatting of all files in the monorepo using prettier.\n\nUsage: `yarn format-all:check`"
+        },
+        "format:write": {
+          "type": "string",
+          "description": "Formats files in the monorepo using prettier (writes changes)."
+        },
+        "format:check": {
+          "type": "string",
+          "description": "Checks formatting of files in the monorepo using prettier (no changes written)."
         },
         "typecheck": {
           "type": "string",
@@ -88,23 +88,47 @@
         },
         "test-coverage": {
           "type": "string",
-          "description": "Run vitest on all workspaces and emit coverage (html, json summary) for workspaces in libs/ dir."
+          "description": "Run vitest with coverage and bail on first failure.\n\nUsage: `yarn test-coverage`"
+        },
+        "test-coverage-full": {
+          "type": "string",
+          "description": "Run full coverage check via devkit, verifying coverage thresholds."
         },
         "test-coverage:open": {
           "type": "string",
           "description": "Open the coverage index html file with OS default app."
         },
+        "precommit:fix": {
+          "type": "string",
+          "description": "Runs sequential fix tasks: clean, lint-fix, format:write."
+        },
+        "precommit:check": {
+          "type": "string",
+          "description": "Runs parallel check tasks: typecheck, check, test-coverage."
+        },
+        "precommit:build": {
+          "type": "string",
+          "description": "Runs sequential build tasks: build, test-coverage-full, docs."
+        },
         "precommit": {
           "type": "string",
-          "description": "Runs all pre-commit checks: install, clean, typecheck, lint, build, test-coverage, docs, format, insight."
+          "description": "Runs full pre-commit pipeline: install, precommit:fix, precommit:check, precommit:build."
         },
         "dk": {
           "type": "string",
           "description": "Build, then run devkit CLI (apps/devkit)."
         },
-        "DK": {
+        "publish:devkit": {
           "type": "string",
-          "description": "Run devkit CLI (apps/devkit) without building first."
+          "description": "Build and publish the devkit package to npm."
+        },
+        "publish:linkedin-resume": {
+          "type": "string",
+          "description": "Build and publish the linkedin-resume package to npm."
+        },
+        "foreach": {
+          "type": "string",
+          "description": "Run a command for each workspace in parallel (excludes root).\n\nUsage: `yarn foreach run <command>`"
         }
       }
     }
