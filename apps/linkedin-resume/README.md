@@ -32,7 +32,7 @@ linkedin-resume --render
 ## Usage
 
 ```
-Usage: linkedin-resume [options] [command]
+Usage: linkedin-resume [options] [command] [outputFilepath]
 
 A CLI tool to generate a LinkedIn resume in PDF format.
 
@@ -43,7 +43,7 @@ Options:
   -V, --version     output the version number
   --debug           enable debug output
   --render          skip scraping, only render
-  --headless        hide scraping browser window
+  --no-headless     show scraping browser window
   --keep-open       keep browser open after scraping
   -h, --help        display help for command
 

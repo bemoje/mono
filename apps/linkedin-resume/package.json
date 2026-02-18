@@ -32,6 +32,7 @@
     "commander": "^14.0.0",
     "fs-extra": "^11.3.0",
     "puppeteer": "^24.37.3",
+    "onetime": "^7.0.0",
     "upath": "^2.0.1"
   },
   "repository": {

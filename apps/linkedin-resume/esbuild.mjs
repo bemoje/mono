@@ -25,11 +25,11 @@ const distDirpath = upath.joinSafe(repoRootDirpath, '.dist')
 const indexOutFilepath = upath.joinSafe(distDirpath, wsDirname + '.cjs')
 const indexOutFileTemp = upath.joinSafe(distDirpath, wsDirname + '-temp.cjs')
 
-const packageJsonDirpath = upath.joinSafe(wsDirpath, 'package.json')
-const pkg = await fs.readJson(packageJsonDirpath)
-
 // ensure package details are consistent across package.json and source code, and that version is unique on npm
 void (await (async () => {
+  const packageJsonDirpath = upath.joinSafe(wsDirpath, 'package.json')
+  const pkg = await fs.readJson(packageJsonDirpath)
+
   // check if version already exists on npm, and if so, bump patch version
   const npmVersion = cp.execSync(`npm view ${pkg.name} version`, { encoding: 'utf8' })
   if (npmVersion.trim() === pkg.version) {
@@ -81,7 +81,7 @@ await esbuild.build({
   mainFields: ['module', 'main'],
   sourcemap: true,
   treeShaking: true,
-  external: ['puppeteer', 'commander', 'fs-extra', 'upath', '@sinclair/typebox'],
+  external: ['puppeteer', 'commander', 'fs-extra', 'upath', '@sinclair/typebox', 'onetime'],
   banner: { js: '#!/usr/bin/env node' },
   logOverride: { 'empty-import-meta': 'silent' },
 })
@@ -104,10 +104,10 @@ if (await fs.pathExists(indexOutFileTemp + '.map')) {
 // copy to apps/*/dist/ for npm publishing
 const npmDistDir = upath.joinSafe(wsDirpath, 'dist')
 await fs.ensureDir(npmDistDir)
-await fs.copy(indexOutFilepath, upath.joinSafe(npmDistDir, pkg.name + '.cjs'))
+await fs.copy(indexOutFilepath, upath.joinSafe(npmDistDir, wsDirname + '.cjs'))
 if (await fs.pathExists(indexOutFilepath + '.map')) {
-  await fs.copy(indexOutFilepath + '.map', upath.joinSafe(npmDistDir, pkg.name + '.cjs.map'))
+  await fs.copy(indexOutFilepath + '.map', upath.joinSafe(npmDistDir, wsDirname + '.cjs.map'))
 }
 
 // create bin wrapper for cross-platform npx support
-await fs.writeFile(upath.joinSafe(npmDistDir, 'cli.mjs'), `#!/usr/bin/env node\nimport("./${pkg.name}.cjs");\n`)
+await fs.writeFile(upath.joinSafe(npmDistDir, 'cli.mjs'), `#!/usr/bin/env node\nimport("./${wsDirname}.cjs");\n`)
