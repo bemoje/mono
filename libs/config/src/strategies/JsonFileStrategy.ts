@@ -16,6 +16,6 @@ export class JsonFileStrategy<T> implements ConfigDataStrategy<T> {
   }
 
   save(config: T): void {
-    fs.outputFileSync(this.filepath, JSON.stringify(config, null, 2))
+    fs.outputFileSync(this.filepath, JSON.stringify(config, null, 2) + '\n')
   }
 }
