@@ -44,6 +44,7 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
       if (!container) return []
       const topLevelItems = Array.from(container.querySelector('ul')?.children ?? [])
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const getVisibleSpans = (globalThis as any).__getVisibleSpans as (el: Element) => string[]
 
       return topLevelItems.map((li) => {
