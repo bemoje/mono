@@ -4,6 +4,7 @@ import { pathToFileURL } from 'url'
 import { loadUserConfig } from './loadUserConfig'
 import { CliOptions } from './types/CliOptions'
 import { DIST_PATH } from './constants'
+import { expandEnvVars } from './utils/expandEnvVars'
 import puppeteer from 'puppeteer'
 
 export async function renderPdfFromHtml(outputFilepath: string, options: CliOptions): Promise<void> {
@@ -46,7 +47,7 @@ export async function renderPdfFromHtml(outputFilepath: string, options: CliOpti
   console.log(`output: ${pdfPath}`)
 
   const userConfig = await loadUserConfig()
-  const outputFilepathToUse = outputFilepath || userConfig.outputFilepath
+  const outputFilepathToUse = expandEnvVars(outputFilepath || userConfig.outputFilepath)
   await fs.ensureDir(upath.dirname(outputFilepathToUse))
   await fs.copy(pdfPath, outputFilepathToUse)
   console.log('PDF:', outputFilepathToUse)
