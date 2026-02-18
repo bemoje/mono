@@ -19,7 +19,7 @@ jobs:
           node-version: '21'
 
       - name: Install dependencies
-        run: corepack enable && yarn install --frozen-lockfile
+        run: corepack enable && yarn install
 
       # - name: Build
       #   run: yarn build
