@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import { join } from 'path/posix'
 import { autoScroll } from './utils/autoScroll'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
+import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { CliOptions } from '../types/CliOptions'
 import { getLinkedInUsername } from './utils/getLinkedInUsername'
 import { DIST_PATH } from '../constants'
@@ -37,6 +38,7 @@ export async function scrapeProfile(browser: Browser, options: CliOptions): Prom
 
     await autoScroll(page)
     await patchEsbuildHelpers(page)
+    await injectBrowserHelpers(page)
 
     if (options.debug) {
       // Dump page text for diagnostics
@@ -112,20 +114,8 @@ export async function scrapeProfile(browser: Browser, options: CliOptions): Prom
         document.querySelector('main img[src*="profile"]')
       const image = (imgEl as HTMLImageElement | null)?.src ?? ''
 
-      // Walk DOM nodes preserving <br> as newlines
-      const getTextWithBreaks = (el: Element): string => {
-        let text = ''
-        for (const node of el.childNodes) {
-          if (node.nodeType === Node.TEXT_NODE) {
-            text += node.textContent
-          } else if (node.nodeName === 'BR') {
-            text += '\n'
-          } else {
-            text += getTextWithBreaks(node as Element)
-          }
-        }
-        return text
-      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const getTextWithBreaks = (globalThis as any).__getTextWithBreaks as (el: Element) => string
 
       // About section - try id anchor then look for the section heading
       let summary = ''

@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import { join } from 'path/posix'
 import { autoScroll } from './utils/autoScroll'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
+import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { CliOptions } from '../types/CliOptions'
 import { parseDate } from './utils/parseDate'
 import { getLinkedInUsername } from './utils/getLinkedInUsername'
@@ -36,31 +37,14 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
     await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 60000 })
     await autoScroll(page)
     await patchEsbuildHelpers(page)
+    await injectBrowserHelpers(page)
 
     const rawEntries = await page.evaluate(() => {
       const container = document.querySelector('.scaffold-finite-scroll__content')
       if (!container) return []
       const topLevelItems = Array.from(container.querySelector('ul')?.children ?? [])
 
-      const getTextWithBreaks = (el: Element): string => {
-        let text = ''
-        for (const node of el.childNodes) {
-          if (node.nodeType === Node.TEXT_NODE) {
-            text += node.textContent
-          } else if (node.nodeName === 'BR') {
-            text += '\n'
-          } else {
-            text += getTextWithBreaks(node as Element)
-          }
-        }
-        return text.trim()
-      }
-
-      const getVisibleSpans = (el: Element): string[] => {
-        return Array.from(el.querySelectorAll('span'))
-          .filter((span) => !span.className.includes('visually-hidden') && span.hasAttribute('aria-hidden'))
-          .map((span) => getTextWithBreaks(span))
-      }
+      const getVisibleSpans = (globalThis as any).__getVisibleSpans as (el: Element) => string[]
 
       return topLevelItems.map((li) => {
         // Extract media links (external anchors with href) before collecting spans
