@@ -5,6 +5,7 @@ import { autoScroll } from './utils/autoScroll'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { getLinkedInUsername } from './utils/getLinkedInUsername'
+import { parseDate } from './utils/parseDate'
 import { CliOptions } from '../types/CliOptions'
 import { DIST_PATH } from '../constants'
 
@@ -82,18 +83,12 @@ export async function scrapeEducation(browser: Browser, options: CliOptions): Pr
         }
       }
 
-      // Parse dates
+      // Parse dates - education dates append day precision
       function parseEducationDate(d: string): string {
         if (!d) return ''
-        // Year only: "2022" → "2022-01-01"
         if (/^\d{4}$/.test(d)) return `${d}-01-01`
-        // Month + year: "Sep 2022" → parse to "2022-09-01"
-        try {
-          const date = new Date(Date.parse('2 ' + d))
-          return date.toISOString().slice(0, 7) + '-01'
-        } catch {
-          return d
-        }
+        const parsed = parseDate(d)
+        return parsed && parsed !== d ? parsed + '-01' : d
       }
 
       const dateParts = dateStr.split(/\s*-\s*/)
