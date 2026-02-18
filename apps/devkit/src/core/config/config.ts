@@ -44,3 +44,4 @@ export const ConfigSchema = Type.Object(
 export type ConfigSchema = Static<typeof ConfigSchema>
 export const dataPath = upath.join(repoRootPath, 'devkit.config.json')
 export const configFile = new ConfigFile(ConfigSchema, dataPath)
+configFile.load()
