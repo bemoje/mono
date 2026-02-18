@@ -264,7 +264,8 @@ function renderLanguages(resume: Resume): string {
 }
 
 function renderRecommendations(resume: Resume): string {
-  const username = resume.basics.profiles.find((p) => p.network === 'LinkedIn')!.username
+  const linkedInProfile = resume.basics.profiles.find((p) => p.network.toLowerCase() === 'linkedin')
+  const username = linkedInProfile?.username ?? ''
   const href = `https://www.linkedin.com/in/${username}/details/recommendations`
 
   if (!resume.recommendations?.length) return ''
