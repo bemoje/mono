@@ -8,6 +8,8 @@ import { parseDate } from './utils/parseDate'
 import { getLinkedInUsername } from './utils/getLinkedInUsername'
 import { DIST_PATH } from '../constants'
 import { CliOptions } from '../types/CliOptions'
+import { prettyStackTrace } from 'libs/stacktrace/src/prettyStackTrace'
+import { toError } from 'libs/node/src/toError'
 
 interface WorkEntry {
   name: string
@@ -19,21 +21,28 @@ interface WorkEntry {
   summary: string
   highlights: string[]
   skills: string[]
+  mediaLinks: { title: string; url: string }[]
   logoUrl: string
 }
 
 export async function scrapeExperience(browser: Browser, options: CliOptions): Promise<void> {
   const page = await browser.newPage()
 
+  const experiences: WorkEntry[] = []
+
   try {
     const username = await getLinkedInUsername()
-    await page.goto(`https://www.linkedin.com/in/${username}/details/experience`, {
+    await page.goto(`https://www.linkedin.com/in/${username}/details/experience/?locale=en_US`, {
       waitUntil: 'domcontentloaded',
-      timeout: 60000,
+      timeout: 20000,
     })
 
     // Wait for the experience list to appear
-    await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 60000 })
+    try {
+      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
+    } catch {
+      console.warn('No experience section found or it took too long to load.')
+    }
 
     // Scroll to load all lazy-loaded entries
     await autoScroll(page)
@@ -47,11 +56,22 @@ export async function scrapeExperience(browser: Browser, options: CliOptions): P
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const getVisibleSpans = (globalThis as any).__getVisibleSpans as (el: Element) => string[]
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const extractMedia = (globalThis as any).__extractMedia as (el: Element) => {
+        mediaLinks: { title: string; url: string }[]
+        mediaTexts: string[]
+      }
 
-      return topLevelItems.map((li) => ({
-        spans: getVisibleSpans(li),
-        logoUrl: li.querySelector('img')?.src ?? '',
-      }))
+      return topLevelItems.map((li) => {
+        const { mediaLinks, mediaTexts } = extractMedia(li)
+        const mediaTextSet = new Set(mediaTexts)
+        const spans = getVisibleSpans(li).filter((text) => !mediaTextSet.has(text))
+        return {
+          spans,
+          logoUrl: li.querySelector('img')?.src ?? '',
+          mediaLinks,
+        }
+      })
     })
 
     // Detect whether entry is grouped (multi-role) or single-role, then parse
@@ -61,9 +81,7 @@ export async function scrapeExperience(browser: Browser, options: CliOptions): P
       /^(Full-time|Part-time|Self-employed|Contract|Freelance|Internship|Apprenticeship|Seasonal)$/i
     const ARRANGEMENT_RE = /^(Hybrid|Remote|On-site|On site)$/i
 
-    const experiences: WorkEntry[] = []
-
-    for (const { spans, logoUrl } of rawEntries) {
+    for (const { spans, logoUrl, mediaLinks } of rawEntries) {
       if (spans.length < 3) continue
 
       // Grouped: line[0]=company, line[1]=total duration (e.g. "2 yrs"), then repeating role blocks
@@ -88,7 +106,9 @@ export async function scrapeExperience(browser: Browser, options: CliOptions): P
           }
           const skillsStr = i < spans.length && spans[i]?.startsWith('Skills:') ? spans[i++] : ''
 
-          experiences.push(buildEntry(position, companyName, dateStr, location, contentLines, skillsStr, logoUrl))
+          experiences.push(
+            buildEntry(position, companyName, dateStr, location, contentLines, skillsStr, logoUrl, mediaLinks),
+          )
         }
       } else {
         // Single-role: [position, company · type, dateRange, location · arrangement, summary?, skills?]
@@ -111,7 +131,9 @@ export async function scrapeExperience(browser: Browser, options: CliOptions): P
             contentLines.push(spans[i])
           }
         }
-        experiences.push(buildEntry(position, companyName, dateStr, location, contentLines, skillsStr, logoUrl))
+        experiences.push(
+          buildEntry(position, companyName, dateStr, location, contentLines, skillsStr, logoUrl, mediaLinks),
+        )
       }
     }
 
@@ -129,6 +151,7 @@ export async function scrapeExperience(browser: Browser, options: CliOptions): P
       contentLines: string[],
       skillsStr: string,
       logoUrl: string,
+      mediaLinks: { title: string; url: string }[],
     ): WorkEntry {
       const location = locationRaw.replace(/\s*·\s*(Hybrid|Remote|On-site|On site)$/i, '').trim()
 
@@ -171,14 +194,29 @@ export async function scrapeExperience(browser: Browser, options: CliOptions): P
         highlights = parts
       }
 
-      return { name, location, position, startDate, endDate, duration, summary, highlights, skills, logoUrl }
+      return {
+        name,
+        location,
+        position,
+        startDate,
+        endDate,
+        duration,
+        summary,
+        highlights,
+        skills,
+        mediaLinks,
+        logoUrl,
+      }
     }
-
-    // Write output
+  } catch (e) {
+    const error = toError(e)
+    error.message = 'Error scraping experience: ' + error.message
+    console.error(options.debug ? prettyStackTrace(error) : error.message)
+  } finally {
     const outPath = join(DIST_PATH, 'work-scraped.json')
     await fs.outputFile(outPath, JSON.stringify(experiences, null, 2))
     console.log(`Wrote ${experiences.length} experiences to ${outPath}`)
-  } finally {
+
     if (!options.keepOpen) {
       await page.close()
     }

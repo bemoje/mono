@@ -134,6 +134,24 @@
               "type": "string"
             }
           },
+          "mediaLinks": {
+            "description": "Attached media items (images, documents, links) from the LinkedIn entry.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "description": "Display text for the link.",
+                  "type": "string"
+                },
+                "url": {
+                  "description": "Full URL of the linked resource.",
+                  "type": "string"
+                }
+              },
+              "required": ["title", "url"]
+            }
+          },
           "logoUrl": {
             "description": "URL to the company logo image (typically a LinkedIn company logo). Falls back to a placeholder initial if empty.",
             "type": "string"
@@ -184,6 +202,24 @@
             "type": "array",
             "items": {
               "type": "string"
+            }
+          },
+          "mediaLinks": {
+            "description": "Attached media items (images, documents, links) from the LinkedIn entry.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "description": "Display text for the link.",
+                  "type": "string"
+                },
+                "url": {
+                  "description": "Full URL of the linked resource.",
+                  "type": "string"
+                }
+              },
+              "required": ["title", "url"]
             }
           },
           "logoUrl": {

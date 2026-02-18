@@ -129,7 +129,7 @@ function renderExperienceGroup(group: ExperienceGroup): string {
   if (group.roles.length === 1) {
     const job = group.roles[0]
     return `
-      <div class="entry">
+      <div class="entry entry-single">
         <div class="entry-logo">${entryLogo(job)}</div>
         <div class="entry-content">
           <h3 class="entry-title">${esc(job.position)}</h3>
@@ -266,7 +266,7 @@ function renderLanguages(resume: Resume): string {
 function renderRecommendations(resume: Resume): string {
   const linkedInProfile = resume.basics.profiles.find((p) => p.network.toLowerCase() === 'linkedin')
   const username = linkedInProfile?.username ?? ''
-  const href = `https://www.linkedin.com/in/${username}/details/recommendations`
+  const href = `https://www.linkedin.com/in/${username}/details/recommendations/?locale=en_US`
 
   if (!resume.recommendations?.length) return ''
   return `

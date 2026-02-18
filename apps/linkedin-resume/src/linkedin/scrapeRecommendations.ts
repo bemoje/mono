@@ -6,6 +6,8 @@ import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { CliOptions } from '../types/CliOptions'
 import { getLinkedInUsername } from './utils/getLinkedInUsername'
 import { DIST_PATH } from '../constants'
+import { prettyStackTrace } from 'libs/stacktrace/src/prettyStackTrace'
+import { toError } from 'libs/node/src/toError'
 
 interface RecommendationEntry {
   name: string
@@ -18,14 +20,21 @@ interface RecommendationEntry {
 export async function scrapeRecommendations(browser: Browser, options: CliOptions): Promise<void> {
   const page = await browser.newPage()
 
+  const recommendations: RecommendationEntry[] = []
+
   try {
     const username = await getLinkedInUsername()
-    await page.goto(`https://www.linkedin.com/in/${username}/details/recommendations`, {
+    await page.goto(`https://www.linkedin.com/in/${username}/details/recommendations/?locale=en_US`, {
       waitUntil: 'domcontentloaded',
-      timeout: 60000,
+      timeout: 20000,
     })
 
-    await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 60000 })
+    try {
+      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
+    } catch (error) {
+      console.warn('No recommendations section found or it took too long to load.')
+    }
+
     await autoScroll(page)
     await patchEsbuildHelpers(page)
 
@@ -62,8 +71,6 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
     // [6+] = recommendation body text (skip per user request)
     const DATE_RE = /^([A-Z][a-z]+\s+\d{1,2},\s*\d{4})/
     const NOISE_RE = /^(· \d|All LinkedIn members$|^On$|^Off$)/
-
-    const recommendations: RecommendationEntry[] = []
 
     for (const { spans, logoUrl } of rawEntries) {
       if (spans.length < 3) continue
@@ -109,11 +116,15 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
         logoUrl,
       })
     }
-
+  } catch (e) {
+    const error = toError(e)
+    error.message = 'Error scraping recommendations: ' + error.message
+    console.error(options.debug ? prettyStackTrace(error) : error.message)
+  } finally {
     const outPath = join(DIST_PATH, 'recommendations-scraped.json')
     await fs.outputFile(outPath, JSON.stringify(recommendations, null, 2))
     console.log(`Wrote ${recommendations.length} recommendations to ${outPath}`)
-  } finally {
+
     if (!options.keepOpen) {
       await page.close()
     }

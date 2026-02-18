@@ -15,9 +15,9 @@ export async function ensureUserLoggedInToLinkedIn(): Promise<void> {
 
   try {
     const page = await browser.newPage()
-    await page.goto('https://www.linkedin.com/feed/', {
+    await page.goto('https://www.linkedin.com/feed/?locale=en_US', {
       waitUntil: 'domcontentloaded',
-      timeout: 60000,
+      timeout: 20000,
     })
 
     const url = page.url()
