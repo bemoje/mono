@@ -1380,6 +1380,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/humanize-duration@npm:^3":
+  version: 3.27.4
+  resolution: "@types/humanize-duration@npm:3.27.4"
+  checksum: 10c0/0d92b036ac284c4ae248dca6efa826f9d397e7369f2d5e11de1813e05b32fd44e3d696f999acdc5a7eb412efc33668b8a68f6ad671392c0bbcf797a6329d674f
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:*":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
@@ -3593,6 +3600,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"humanize-duration@npm:^3.33.2":
+  version: 3.33.2
+  resolution: "humanize-duration@npm:3.33.2"
+  checksum: 10c0/eae493c113f1c11c96e42195002e8016ab7c08bfcc3414ba5459027da4faaa2df012429bc4eae200873a65d0a86b7cc6a9656783aa45705ffe6106b5256af973
+  languageName: node
+  linkType: hard
+
 "iconv-lite@npm:^0.6.2":
   version: 0.6.3
   resolution: "iconv-lite@npm:0.6.3"
@@ -4452,6 +4466,7 @@ __metadata:
     "@types/command-exists": "npm:^1.2.3"
     "@types/date-fns": "npm:^2.6.3"
     "@types/fs-extra": "npm:^11.0.4"
+    "@types/humanize-duration": "npm:^3"
     "@types/memoizee": "npm:^0"
     "@types/node": "npm:^24.3.1"
     "@types/source-map-support": "npm:^0.5.10"
@@ -4472,6 +4487,7 @@ __metadata:
     fs-extra: "npm:^11.3.0"
     glob: "npm:^11.0.0"
     globals: "npm:^15.8.0"
+    humanize-duration: "npm:^3.33.2"
     iter-tools: "npm:^7.5.4"
     knip: "npm:^5.83.1"
     memoizee: "npm:^0.4.17"
