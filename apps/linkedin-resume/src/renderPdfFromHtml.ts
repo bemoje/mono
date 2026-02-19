@@ -1,13 +1,14 @@
 import fs from 'fs-extra'
 import upath from 'upath'
 import { pathToFileURL } from 'url'
-import { loadUserConfig } from './loadUserConfig'
 import { CliOptions } from './types/CliOptions'
 import { DIST_PATH } from './constants'
 import { expandEnvVars } from './utils/expandEnvVars'
 import puppeteer from 'puppeteer'
+import { Logger } from '@mono/node'
+import { userConfigFile } from './userConfigFile'
 
-export async function renderPdfFromHtml(options: CliOptions): Promise<void> {
+export async function renderPdfFromHtml(options: CliOptions, logger: Logger): Promise<void> {
   const htmlPath = upath.join(DIST_PATH, 'resume.html')
   const pdfPath = upath.join(DIST_PATH, 'resume.pdf')
   const htmlFileUrl = pathToFileURL(htmlPath).href
@@ -19,7 +20,7 @@ export async function renderPdfFromHtml(options: CliOptions): Promise<void> {
   await fs.ensureDir(upath.dirname(pdfPath))
 
   if (options.debug) {
-    console.log('Generating PDF from:', htmlFileUrl)
+    logger.log('Generating PDF from:', htmlFileUrl)
   }
 
   const browser = await puppeteer.launch({ headless: true })
@@ -44,11 +45,11 @@ export async function renderPdfFromHtml(options: CliOptions): Promise<void> {
     throw new Error(`PDF was not created at ${pdfPath}`)
   }
 
-  console.log(`output: ${pdfPath}`)
+  logger.log(pdfPath)
 
-  const userConfig = await loadUserConfig()
+  const userConfig = userConfigFile.load()
   const outpathToUse = expandEnvVars(options.outpath || userConfig.outpath)
   await fs.ensureDir(upath.dirname(outpathToUse))
   await fs.copy(pdfPath, outpathToUse)
-  console.log('\nPDF:', outpathToUse, '\n')
+  logger.log(outpathToUse)
 }

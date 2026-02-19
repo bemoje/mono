@@ -7,20 +7,14 @@ export const UserConfigSchema = Type.Object(
   {
     username: Type.String({ default: '' }),
     outpath: Type.String({ default: '$USERPROFILE/Desktop/resume.pdf' }),
-    profiles: Type.Array(
+    social: Type.Array(
       Type.Object({
         network: Type.String({ default: '' }),
         username: Type.String({ default: '' }),
         url: Type.String({ default: '' }),
       }),
       {
-        default: [
-          {
-            network: 'GitHub',
-            username: 'USER_NAME',
-            url: 'https://github.com/USER_NAME',
-          },
-        ],
+        default: [],
       },
     ),
     ignore: Type.Optional(
@@ -51,12 +45,11 @@ export const UserConfigSchema = Type.Object(
               Type.Literal(true),
               Type.Array(
                 Type.Object({
-                  institution: Type.Optional(Type.String()),
+                  name: Type.Optional(Type.String()),
                   area: Type.Optional(Type.String()),
                   studyType: Type.Optional(Type.String()),
                   startDate: Type.Optional(Type.String()),
                   endDate: Type.Optional(Type.String()),
-                  score: Type.Optional(Type.String()),
                   logoUrl: Type.Optional(Type.String()),
                 }),
                 {

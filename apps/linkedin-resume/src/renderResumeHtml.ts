@@ -3,11 +3,12 @@ import { DIST_PATH } from './constants'
 import upath from 'upath'
 import css from './renderResumeHtml.css'
 import type { Resume, ResumeWork } from './types/Resume'
-import { loadUserConfig } from './loadUserConfig'
-import { entriesOf } from '@mono/object'
+import { loadResumeJson } from './LoadResumeJson'
+import { userConfigFile } from './userConfigFile'
+import { Logger } from '@mono/node'
 
-export async function renderResumeHtml(): Promise<void> {
-  const resume = await loadResume()
+export async function renderResumeHtml(logger: Logger): Promise<void> {
+  const resume = await loadResumeJson()
 
   const lines: string[] = []
   lines.push(`<!DOCTYPE html>`)
@@ -15,7 +16,7 @@ export async function renderResumeHtml(): Promise<void> {
   lines.push(`<head>`)
   lines.push(`<meta charset="utf-8" />`)
   lines.push(`<meta name="viewport" content="width=device-width, initial-scale=1" />`)
-  lines.push(`<title>CV - ${esc(resume.basics.name)}</title>`)
+  lines.push(`<title>Resume - ${esc(resume.basics.name)}</title>`)
   lines.push(`<link rel="stylesheet" href="resume.css" />`)
   lines.push(`</head>`)
   lines.push(`<body>`)
@@ -42,11 +43,11 @@ export async function renderResumeHtml(): Promise<void> {
 
   const outPath = upath.join(DIST_PATH, 'resume.html')
   await fs.outputFile(outPath, html)
-  console.log(`output: ${outPath}`)
+  logger.log(outPath)
 
   const cssPath = upath.join(DIST_PATH, 'resume.css')
   await fs.outputFile(cssPath, css)
-  console.log(`output: ${cssPath}`)
+  logger.log(cssPath)
 }
 
 function renderProfile(resume: Resume): string {
@@ -60,14 +61,14 @@ function renderProfile(resume: Resume): string {
       <img class="profile-photo" src="${esc(b.image)}" alt="${esc(b.name)}" />
       <div class="profile-info">
         <h1>${esc(b.name)}</h1>
-        <p class="profile-headline">${esc(b.label)}</p>
+        <p class="profile-headline">${esc(b.headline)}</p>
         <p class="profile-location">${esc(locationStr)}</p>
         <div class="profile-contact">
           ${b.email ? `<a href="mailto:${esc(b.email)}">${esc(b.email)}</a>` : ''}
           ${b.phone ? `<a href="tel:${esc(b.phone)}">${esc(b.phone)}</a>` : ''}
         </div>
         <div class="profile-links">
-          ${(b.profiles ?? []).map((p) => `<a href="${esc(p.url)}" class="profile-link">${esc(p.network)}</a>`).join(' ')}
+          ${(b.social ?? []).map((p) => `<a href="${esc(p.url)}" class="profile-link">${esc(p.network)}</a>`).join(' ')}
         </div>
       </div>
     </div>
@@ -82,11 +83,11 @@ function renderAbout(resume: Resume): string {
   lines.push(`<div class="about-text">`)
   lines.push(`${nl2p(resume.basics.summary)}`)
   lines.push(`</div>`)
-  if (resume.basics.skills?.length) {
+  if (resume.basics.topSkills?.length) {
     lines.push(`<div class="entry">`)
     lines.push(`<div class="entry-content">`)
     lines.push(`<div class="skill-pills">`)
-    resume.basics.skills.forEach((s) => {
+    resume.basics.topSkills.forEach((s) => {
       lines.push(`<span class="pill">${esc(s)}</span>`)
     })
     lines.push(`</div>`)
@@ -158,15 +159,16 @@ function renderExperienceGroup(group: ExperienceGroup): string {
 
 function renderSubRole(job: ResumeWork): string {
   return `
-        <div class="sub-role">
-          <div class="sub-role-dot"></div>
-          <div class="sub-role-content">
-            <h4 class="entry-title">${esc(job.position)}</h4>
-            <p class="entry-meta">${formatDateRange(job.startDate, job.endDate)}${job.duration ? ` · ${esc(job.duration)}` : ''}</p>
-            ${job.location ? `<p class="entry-meta">${esc(job.location)}</p>` : ''}
-            ${renderJobBody(job)}
-          </div>
-        </div>`
+    <div class="sub-role">
+      <div class="sub-role-dot"></div>
+      <div class="sub-role-content">
+        <h4 class="entry-title">${esc(job.position)}</h4>
+        <p class="entry-meta">${formatDateRange(job.startDate, job.endDate)}${job.duration ? ` · ${esc(job.duration)}` : ''}</p>
+        ${job.location ? `<p class="entry-meta">${esc(job.location)}</p>` : ''}
+        ${renderJobBody(job)}
+      </div>
+    </div>
+  `
 }
 
 function renderJobBody(job: ResumeWork): string {
@@ -194,9 +196,9 @@ function renderEducation(resume: Resume): string {
         .map(
           (edu) => `
         <div class="entry">
-          <div class="entry-logo">${entryLogo(edu, 'institution')}</div>
+          <div class="entry-logo">${entryLogo(edu)}</div>
           <div class="entry-content">
-            <h3 class="entry-title">${esc(edu.institution)}</h3>
+            <h3 class="entry-title">${esc(edu.name)}</h3>
             ${edu.area ? `<p class="entry-subtitle">${esc(edu.area)}</p>` : ''}
             ${edu.studyType ? `<p class="entry-meta">${esc(edu.studyType)}</p>` : ''}
             <p class="entry-meta">${formatDateRange(edu.startDate, edu.endDate)}</p>
@@ -264,8 +266,7 @@ function renderLanguages(resume: Resume): string {
 }
 
 function renderRecommendations(resume: Resume): string {
-  const linkedInProfile = resume.basics.profiles.find((p) => p.network.toLowerCase() === 'linkedin')
-  const username = linkedInProfile?.username ?? ''
+  const username = userConfigFile.load().username
   const href = `https://www.linkedin.com/in/${username}/details/recommendations/?locale=en_US`
 
   if (!resume.recommendations?.length) return ''
@@ -292,40 +293,6 @@ function renderRecommendations(resume: Resume): string {
 }
 
 // --- Utils ---
-
-async function loadResume() {
-  const resume = (await fs.readJson(upath.join(DIST_PATH, 'resume.json'))) as Resume
-
-  const userConfig = await loadUserConfig()
-
-  if (userConfig.ignore) {
-    const ignore = userConfig.ignore
-    const keys = ['work', 'education', 'projects', 'skills', 'languages', 'recommendations'] as const
-
-    for (const section of keys) {
-      const entries = resume[section]
-      const rules = ignore[section]
-
-      if (!rules || !entries) {
-        continue
-      }
-
-      const filteredSection =
-        rules === true
-          ? undefined
-          : entries.filter((item) => {
-              return !rules.some((rule) => {
-                return entriesOf(rule).every(([key, value]) => {
-                  return item[key] === value
-                })
-              })
-            })
-
-      Reflect.set(resume, section, filteredSection)
-    }
-  }
-  return resume
-}
 
 function esc(s: string): string {
   return (s ?? '')
@@ -358,13 +325,9 @@ function companyInitial(name: string): string {
   return `<div class="logo-placeholder">${letter}</div>`
 }
 
-function entryLogo(
-  item: { logoUrl?: string; name?: string; institution?: string },
-  nameField: 'name' | 'institution' = 'name',
-): string {
-  const label = (nameField === 'institution' ? (item as { institution?: string }).institution : item.name) ?? ''
+function entryLogo(item: { logoUrl?: string; name: string }): string {
   if (item.logoUrl) {
-    return `<img class="entry-logo-img" src="${esc(item.logoUrl)}" alt="${esc(label)}" />`
+    return `<img class="entry-logo-img" src="${esc(item.logoUrl)}" alt="${esc(item.name)}" />`
   }
-  return companyInitial(label)
+  return companyInitial(item.name)
 }

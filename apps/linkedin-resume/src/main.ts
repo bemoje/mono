@@ -5,12 +5,12 @@ import { renderResumeJson } from './renderResumeJson'
 import { renderPdfFromHtml } from './renderPdfFromHtml'
 import { loadUserConfig } from './loadUserConfig'
 import type { CliOptions } from './types/CliOptions'
-import { CONFIG_PATH, DIST_PATH } from './constants'
-import fs from 'fs-extra'
+import { CONFIG_PATH } from './constants'
 import cp from 'child_process'
-import { ensureUserLoggedInToLinkedIn } from './linkedin/ensureUserLoggedInToLinkedIn'
+import { userLogin } from './userLogin'
 import description from './core/description'
 import version from './core/version'
+import { timer } from '@mono/node'
 
 const cli = new Command('linkedin-resume')
   .version(version)
@@ -24,28 +24,24 @@ const cli = new Command('linkedin-resume')
   .option('-k, --keep-open', 'keep browser open after scraping')
 
   .action(async (options: CliOptions) => {
-    const config = await loadUserConfig()
+    await timer('', async (logger) => {
+      const config = await loadUserConfig()
 
-    if (options.debug) {
-      console.log({ argv: process.argv })
-      console.dir({ config }, { depth: null })
-    }
+      if (options.debug) {
+        logger.debug({ argv: process.argv, config, options })
+      }
 
-    if (!options.render) {
-      console.log('\nEnsuring logged in to LinkedIn...')
-      await ensureUserLoggedInToLinkedIn()
+      if (!options.render) {
+        await timer('login', (logger) => userLogin(options, logger))
+        await timer('scrape', (logger) => scrapeLinkedIn(options, logger))
+      }
 
-      console.log('\nClearing previous scrape data...')
-      await fs.emptyDir(DIST_PATH)
-
-      console.log('\nScraping LinkedIn...')
-      await scrapeLinkedIn(options)
-    }
-
-    console.log('\nRendering resume...')
-    await renderResumeJson()
-    await renderResumeHtml()
-    await renderPdfFromHtml(options)
+      await timer('render', async (logger) => {
+        await renderResumeJson(logger)
+        await renderResumeHtml(logger)
+        await renderPdfFromHtml(options, logger)
+      })
+    })
   })
 
 cli

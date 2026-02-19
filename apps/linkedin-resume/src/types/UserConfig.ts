@@ -4,8 +4,8 @@ import {
   ResumeRecommendation,
   ResumeWork,
   ResumeProject,
-  ResumeProfile,
   ResumeSkill,
+  ResumeSocial,
 } from './Resume'
 import { PickPrimitive } from '@mono/types'
 
@@ -23,7 +23,7 @@ export interface UserConfig {
   /**
    * Additional profiles to include in the resume, such as GitHub, Twitter, etc. Each profile should specify the network name, username, and URL. These will be rendered in the contact section of the resume and can also be used to link to projects or other relevant information.
    */
-  profiles: ResumeProfile[]
+  social: ResumeSocial[]
 
   /**
    * Defines which entries to omit for each section of the resume when rendering.
@@ -40,7 +40,7 @@ export interface UserConfigIgnore {
    */
   work?: true | Partial<PickPrimitive<ResumeWork>>[]
   /**
-   * If set to true, all education entries will be ignored. If set to an array of partial objects, only education entries matching the specified primitive values (e.g., institution, area) will be ignored.
+   * If set to true, all education entries will be ignored. If set to an array of partial objects, only education entries matching the specified primitive values (e.g., name, area) will be ignored.
    */
   education?: true | Partial<PickPrimitive<ResumeEducation>>[]
   /**

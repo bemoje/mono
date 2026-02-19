@@ -1,28 +1,41 @@
 import type { Browser } from 'puppeteer'
-import fs from 'fs-extra'
-import { join } from 'path/posix'
 import { autoScroll } from './utils/autoScroll'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { CliOptions } from '../types/CliOptions'
-import { getLinkedInUsername } from './utils/getLinkedInUsername'
-import { DIST_PATH } from '../constants'
+import { ResumeLanguage, ResumeProfile } from '../types/Resume'
+import { onScrapeError } from './utils/onScrapeError'
+import { scrapeOutputJson } from './utils/scrapeOutputJson'
+import { userConfigFile } from '../userConfigFile'
+import { getPageUrl } from './utils/getPageUrl'
+import { Logger } from '@mono/node'
 
-export async function scrapeProfile(browser: Browser, options: CliOptions): Promise<void> {
+export async function scrapeProfile(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
+  const config = userConfigFile.load()
+  const username = config.username
+
+  const languages: ResumeLanguage[] = []
+  const profileData = {
+    social: [
+      {
+        network: 'LinkedIn',
+        username,
+        url: getPageUrl(username, 'profile'),
+      },
+      ...(config.social ?? []),
+    ],
+  } as ResumeProfile
+
   const page = await browser.newPage()
 
   try {
-    const username = await getLinkedInUsername()
-    await page.goto(`https://www.linkedin.com/in/${username}`, {
+    await page.goto(getPageUrl(username, 'profile'), {
       waitUntil: 'domcontentloaded',
       timeout: 20000,
     })
 
     // Wait for the profile top card to load
     await page.waitForSelector('h1', { timeout: 15000 })
-
-    ////////////////////////////
-    ////////////////////////////
 
     // Expand all "...see more" buttons so truncated sections (About, etc.) are fully visible
     await page.evaluate(() => {
@@ -40,48 +53,8 @@ export async function scrapeProfile(browser: Browser, options: CliOptions): Prom
     await patchEsbuildHelpers(page)
     await injectBrowserHelpers(page)
 
-    if (options.debug) {
-      // Dump page text for diagnostics
-      const debugDump = await page.evaluate(() => {
-        const result: Record<string, unknown> = {}
-
-        // All h1 text
-        result.h1s = Array.from(document.querySelectorAll('h1')).map((el) => el.textContent!.trim())
-
-        // Top card area
-        const topCard =
-          document.querySelector('.pv-top-card') ||
-          document.querySelector('[data-view-name="profile-card"]') ||
-          document.querySelector('main section:first-of-type')
-        if (topCard) {
-          result.topCardSpans = Array.from(topCard.querySelectorAll('span'))
-            .map((s) => s.textContent!.trim())
-            .filter(Boolean)
-            .slice(0, 30)
-          result.topCardDivText = Array.from(topCard.querySelectorAll('div'))
-            .map((d) => d.textContent!.trim())
-            .filter((t) => t.length > 2 && t.length < 100)
-            .slice(0, 20)
-        }
-
-        // All sections with ids
-        result.sectionIds = Array.from(document.querySelectorAll('section [id]')).map((el) => el.id)
-
-        // Contact info link
-        const contactLinks = Array.from(document.querySelectorAll('a')).filter(
-          (a) => a.href.includes('contact-info') || a.textContent!.toLowerCase().includes('contact'),
-        )
-        result.contactLinks = contactLinks.map((a) => ({ href: a.href, text: a.textContent!.trim() }))
-
-        return result
-      })
-      const debugPath = join('.temp', 'personal-raw-debug.json')
-      await fs.outputFile(debugPath, JSON.stringify(debugDump, null, 2))
-      console.log(`Wrote debug dump to ${debugPath}`)
-    }
-
     // Scrape profile top card
-    const profile = await page.evaluate(() => {
+    const scraped = await page.evaluate(() => {
       // Name
       const name = document.querySelector('h1')?.textContent?.trim() ?? ''
 
@@ -142,7 +115,7 @@ export async function scrapeProfile(browser: Browser, options: CliOptions): Prom
       const split = summary.split(/\s+top skills\s/i)
       summary = (split[0]?.trim() || '').replace(/\n{3,}/g, '\n\n')
 
-      const skills =
+      const topSkills =
         split[1]
           ?.trim()
           .split('•')
@@ -150,7 +123,7 @@ export async function scrapeProfile(browser: Browser, options: CliOptions): Prom
           .filter(Boolean) ?? []
 
       // --- Scrape languages section ---
-      const languages: { language: string; fluency: string }[] = []
+      const languages: ResumeLanguage[] = []
 
       // Try #languages anchor first
       const anchor = document.querySelector('#languages')
@@ -167,166 +140,128 @@ export async function scrapeProfile(browser: Browser, options: CliOptions): Prom
         }
       }
 
-      if (!container) return { name, headline, location, image, summary, skills, languages }
-
-      // Each language is in a list item with visible spans
-      const items = container.querySelectorAll('li')
-      for (const li of items) {
-        const spans = Array.from(li.querySelectorAll('span[aria-hidden="true"]'))
-          .map((s) => s.textContent!.trim())
-          .filter(Boolean)
-        if (spans.length >= 1) {
-          languages.push({
-            language: spans[0],
-            fluency: spans[1] ?? '',
-          })
+      if (container) {
+        // Each language is in a list item with visible spans
+        const items = container.querySelectorAll('li')
+        for (const li of items) {
+          const spans = Array.from(li.querySelectorAll('span[aria-hidden="true"]'))
+            .map((s) => s.textContent!.trim())
+            .filter(Boolean)
+          if (spans.length >= 1) {
+            languages.push({
+              language: spans[0],
+              fluency: spans[1] ?? '',
+            })
+          }
         }
       }
 
-      return { name, headline, location, image, summary, skills, languages }
+      return { profile: { name, headline, location, image, summary, topSkills }, languages }
     })
 
+    languages.push(...scraped.languages)
+
+    profileData.name = scraped.profile.name
+    profileData.headline = scraped.profile.headline
+    profileData.image = scraped.profile.image
+    profileData.location = scraped.profile.location
+    profileData.summary = scraped.profile.summary
+    profileData.topSkills = scraped.profile.topSkills
+
     // --- Contact info: click to open the overlay modal ---
-
-    const { email, phone, websites } = await (async () => {
-      let email = ''
-      let phone = ''
-      let websites: string[] = []
-
-      try {
-        // Click the contact info link
-        const clicked = await page.evaluate(() => {
-          const link = document.querySelector('a[href*="/overlay/contact-info/"]')
-          if (link) {
-            ;(link as HTMLElement).click()
-            return true
-          }
-          // Fallback: look for "Contact info" text link
-          const allLinks = Array.from(document.querySelectorAll('a'))
-          const contactLink = allLinks.find((a) => /contact\s*info/i.test(a.textContent!))
-          if (contactLink) {
-            contactLink.click()
-            return true
-          }
-          return false
-        })
-
-        if (clicked) {
-          // Wait for the modal to appear
-          await page
-            .waitForSelector('[class*="contact-info"]', { timeout: 5000 })
-            .catch(() => page.waitForSelector('.artdeco-modal', { timeout: 3000 }))
-            .catch(() => page.waitForSelector('.pv-contact-info', { timeout: 3000 }))
-
-          await new Promise((r) => setTimeout(r, 1000))
-
-          const contactInfo = await page.evaluate(() => {
-            const info: { email: string; phone: string; websites: string[]; debug: string[] } = {
-              email: '',
-              phone: '',
-              websites: [],
-              debug: [],
-            }
-
-            // Try structured sections
-            const sections = document.querySelectorAll(
-              '.pv-contact-info__contact-type, .ci-email, .ci-phone, .ci-vanity-url, [class*="contact-info"] section',
-            )
-
-            for (const section of sections) {
-              const text = section.textContent!.trim()
-              info.debug.push(text.slice(0, 120))
-
-              const links = Array.from(section.querySelectorAll('a'))
-              const mailLink = links.find((a) => a.href?.startsWith('mailto:'))
-              if (mailLink) {
-                info.email = mailLink.href.replace('mailto:', '')
-                continue
-              }
-
-              // Email by content
-              const emailMatch = text.match(/[\w.+-]+@[\w.-]+\.\w{2,}/)
-              if (emailMatch && !info.email) {
-                info.email = emailMatch[0]
-                continue
-              }
-
-              // Phone by content
-              const phoneMatch = text.match(/(\+?\d[\d\s()-]{6,}\d)/)
-              if (phoneMatch && !info.phone) {
-                info.phone = phoneMatch[1].trim()
-                continue
-              }
-
-              // Websites
-              for (const link of links) {
-                if (link.href && !link.href.includes('linkedin.com') && !link.href.startsWith('mailto:')) {
-                  info.websites.push(link.href)
-                }
-              }
-            }
-
-            // Fallback: scan entire modal for email/phone if not found
-            if (!info.email || !info.phone) {
-              const modal =
-                document.querySelector('.pv-contact-info') ||
-                document.querySelector('.artdeco-modal') ||
-                document.querySelector('[class*="contact-info"]')
-              if (modal) {
-                const modalText = modal.textContent!
-                if (!info.email) {
-                  const m = modalText.match(/[\w.+-]+@[\w.-]+\.\w{2,}/)
-                  if (m) info.email = m[0]
-                }
-                if (!info.phone) {
-                  const m = modalText.match(/(\+?\d[\d\s()-]{6,}\d)/)
-                  if (m) info.phone = m[1].trim()
-                }
-                // Also dump modal text for debugging
-                info.debug.push('MODAL_FULL: ' + modalText.replace(/\s+/g, ' ').slice(0, 500))
-              }
-            }
-
-            return info
-          })
-
-          if (options.debug) {
-            const contactDebugPath = join('.temp', 'contact-debug.json')
-
-            await fs.outputFile(contactDebugPath, JSON.stringify(contactInfo, null, 2))
-            console.log(`Wrote contact debug to ${contactDebugPath}`)
-          }
-
-          email = contactInfo.email
-          phone = contactInfo.phone
-          websites = contactInfo.websites
-        } else {
-          console.warn('  ✗ Could not find contact info link to click')
-        }
-      } catch (err) {
-        console.warn(`  ✗ Contact info extraction failed: ${(err as Error).message}`)
+    await page.evaluate(() => {
+      const link = document.querySelector('a[href*="/overlay/contact-info/"]') as HTMLElement | undefined
+      if (link) {
+        return link.click?.()
       }
-      return { email, phone, websites }
-    })()
+      // Fallback: look for "Contact info" text link
+      Array.from(document.querySelectorAll('a'))
+        .filter((a) => /contact\s*info/i.test(a.textContent!))
+        .forEach((el) => el.click?.())
+    })
 
-    const result = {
-      image: profile.image,
-      name: profile.name,
-      label: profile.headline,
-      location: profile.location,
-      email,
-      phone,
-      websites,
-      profiles: [] as { network: string; username: string; url: string }[],
-      summary: profile.summary,
-      languages: profile.languages,
-      skills: profile.skills,
-    }
+    // Wait for the modal to appear
+    await page
+      .waitForSelector('[class*="contact-info"]', { timeout: 5000 })
+      .catch(() => page.waitForSelector('.artdeco-modal', { timeout: 3000 }))
+      .catch(() => page.waitForSelector('.pv-contact-info', { timeout: 3000 }))
 
-    const dataOutputPath = join(DIST_PATH, 'profile-scraped.json')
-    await fs.outputFile(dataOutputPath, JSON.stringify(result, null, 2))
-    console.log(`Wrote profile to ${dataOutputPath}`)
+    await new Promise((r) => setTimeout(r, 1500))
+
+    const contactInfo = await page.evaluate(() => {
+      const data = {
+        email: '',
+        phone: '',
+        websites: [] as string[],
+      }
+
+      // Try structured sections
+      const sections = document.querySelectorAll(
+        '.pv-contact-info__contact-type, .ci-email, .ci-phone, .ci-vanity-url, [class*="contact-info"] section',
+      )
+
+      for (const section of sections) {
+        const text = section.textContent!.trim()
+
+        const links = Array.from(section.querySelectorAll('a'))
+        const mailLink = links.find((a) => a.href?.startsWith('mailto:'))
+        if (mailLink) {
+          data.email = mailLink.href.replace('mailto:', '')
+          continue
+        }
+
+        // Email by content
+        const emailMatch = text.match(/[\w.+-]+@[\w.-]+\.\w{2,}/)
+        if (emailMatch && !data.email) {
+          data.email = emailMatch[0]
+          continue
+        }
+
+        // Phone by content
+        const phoneMatch = text.match(/(\+?\d[\d\s()-]{6,}\d)/)
+        if (phoneMatch && !data.phone) {
+          data.phone = phoneMatch[1].trim()
+          continue
+        }
+
+        // Websites
+        for (const link of links) {
+          if (link.href && !link.href.includes('linkedin.com') && !link.href.startsWith('mailto:')) {
+            data.websites.push(link.href)
+          }
+        }
+      }
+
+      // Fallback: scan entire modal for email/phone if not found
+      if (!data.email || !data.phone) {
+        const modal =
+          document.querySelector('.pv-contact-info') ||
+          document.querySelector('.artdeco-modal') ||
+          document.querySelector('[class*="contact-info"]')
+        if (modal) {
+          const modalText = modal.textContent!
+          if (!data.email) {
+            const m = modalText.match(/[\w.+-]+@[\w.-]+\.\w{2,}/)
+            if (m) data.email = m[0]
+          }
+          if (!data.phone) {
+            const m = modalText.match(/(\+?\d[\d\s()-]{6,}\d)/)
+            if (m) data.phone = m[1].trim()
+          }
+        }
+      }
+
+      return data
+    })
+
+    profileData.email = contactInfo.email
+    profileData.phone = contactInfo.phone
+    profileData.websites = contactInfo.websites
+  } catch (e) {
+    onScrapeError(e, 'profile', options, logger)
   } finally {
+    await scrapeOutputJson(profileData, 'profile', logger, options)
+    await scrapeOutputJson(languages, 'languages', logger, options)
     if (!options.keepOpen) {
       await page.close()
     }

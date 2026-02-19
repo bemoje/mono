@@ -1,28 +1,23 @@
 import type { Browser } from 'puppeteer'
-import fs from 'fs-extra'
-import { join } from 'path/posix'
 import { autoScroll } from './utils/autoScroll'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { CliOptions } from '../types/CliOptions'
-import { getLinkedInUsername } from './utils/getLinkedInUsername'
-import { DIST_PATH } from '../constants'
-import { prettyStackTrace } from '@mono/stacktrace'
-import { toError } from '@mono/node'
+import { scrapeOutputJson } from './utils/scrapeOutputJson'
+import { onScrapeError } from './utils/onScrapeError'
+import { ResumeSkill } from '../types/Resume'
+import { userConfigFile } from '../userConfigFile'
+import { getPageUrl } from './utils/getPageUrl'
+import { Logger } from '@mono/node'
 
-interface SkillEntry {
-  name: string
-  associations: string[]
-}
-
-export async function scrapeSkills(browser: Browser, options: CliOptions): Promise<void> {
+export async function scrapeSkills(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const page = await browser.newPage()
 
-  const skills: SkillEntry[] = []
+  const skills: ResumeSkill[] = []
 
   try {
-    const username = await getLinkedInUsername()
-    await page.goto(`https://www.linkedin.com/in/${username}/details/skills/?locale=en_US`, {
+    const username = userConfigFile.load().username
+    await page.goto(getPageUrl(username, 'skills'), {
       waitUntil: 'domcontentloaded',
       timeout: 20000,
     })
@@ -30,7 +25,8 @@ export async function scrapeSkills(browser: Browser, options: CliOptions): Promi
     try {
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
     } catch {
-      console.warn('No skills section found or it took too long to load.')
+      logger.warn('No skills section found or it took too long to load.')
+      throw 'ignore'
     }
     await autoScroll(page)
     await patchEsbuildHelpers(page)
@@ -50,12 +46,6 @@ export async function scrapeSkills(browser: Browser, options: CliOptions): Promi
       }))
     })
 
-    if (options.debug) {
-      const debugPath = join('.temp', 'skills-raw-debug.json')
-      await fs.outputFile(debugPath, JSON.stringify(rawEntries, null, 2))
-      console.log(`Wrote raw skill spans to ${debugPath}`)
-    }
-
     // Each skill entry typically has spans:
     // [0] = skill name
     // [1..] = endorsement info, associated experiences, etc.
@@ -70,14 +60,9 @@ export async function scrapeSkills(browser: Browser, options: CliOptions): Promi
       skills.push({ name, associations })
     }
   } catch (e) {
-    const error = toError(e)
-    error.message = 'Error scraping skills: ' + error.message
-    console.error(options.debug ? prettyStackTrace(error) : error.message)
+    onScrapeError(e, 'skills', options, logger)
   } finally {
-    const outPath = join(DIST_PATH, 'skills-scraped.json')
-    await fs.outputFile(outPath, JSON.stringify(skills, null, 2))
-    console.log(`Wrote ${skills.length} skills to ${outPath}`)
-
+    await scrapeOutputJson(skills, 'skills', logger, options)
     if (!options.keepOpen) {
       await page.close()
     }

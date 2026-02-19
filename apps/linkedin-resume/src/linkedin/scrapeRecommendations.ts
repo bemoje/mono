@@ -1,38 +1,31 @@
 import type { Browser } from 'puppeteer'
-import fs from 'fs-extra'
-import { join } from 'path/posix'
 import { autoScroll } from './utils/autoScroll'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { CliOptions } from '../types/CliOptions'
-import { getLinkedInUsername } from './utils/getLinkedInUsername'
-import { DIST_PATH } from '../constants'
-import { prettyStackTrace } from '@mono/stacktrace'
-import { toError } from '@mono/node'
+import { onScrapeError } from './utils/onScrapeError'
+import { ResumeRecommendation } from '../types/Resume'
+import { scrapeOutputJson } from './utils/scrapeOutputJson'
+import { userConfigFile } from '../userConfigFile'
+import { getPageUrl } from './utils/getPageUrl'
+import { Logger } from '@mono/node'
 
-interface RecommendationEntry {
-  name: string
-  headline: string
-  date: string
-  relationship: string
-  logoUrl: string
-}
-
-export async function scrapeRecommendations(browser: Browser, options: CliOptions): Promise<void> {
+export async function scrapeRecommendations(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const page = await browser.newPage()
 
-  const recommendations: RecommendationEntry[] = []
+  const recommendations: ResumeRecommendation[] = []
 
   try {
-    const username = await getLinkedInUsername()
-    await page.goto(`https://www.linkedin.com/in/${username}/details/recommendations/?locale=en_US`, {
+    const username = userConfigFile.load().username
+    await page.goto(getPageUrl(username, 'recommendations'), {
       waitUntil: 'domcontentloaded',
       timeout: 20000,
     })
 
     try {
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
-    } catch (error) {
-      console.warn('No recommendations section found or it took too long to load.')
+    } catch {
+      logger.warn('No recommendations section found or it took too long to load.')
+      throw 'ignore'
     }
 
     await autoScroll(page)
@@ -54,12 +47,6 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
         logoUrl: li.querySelector('img')?.src ?? '',
       }))
     })
-
-    if (options.debug) {
-      const debugPath = join('.temp', 'recommendations-raw-debug.json')
-      await fs.outputFile(debugPath, JSON.stringify(rawEntries, null, 2))
-      console.log(`Wrote raw recommendation spans to ${debugPath}`)
-    }
 
     // Each recommendation entry spans:
     // [0] = recommender name
@@ -117,14 +104,9 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
       })
     }
   } catch (e) {
-    const error = toError(e)
-    error.message = 'Error scraping recommendations: ' + error.message
-    console.error(options.debug ? prettyStackTrace(error) : error.message)
+    onScrapeError(e, 'recommendations', options, logger)
   } finally {
-    const outPath = join(DIST_PATH, 'recommendations-scraped.json')
-    await fs.outputFile(outPath, JSON.stringify(recommendations, null, 2))
-    console.log(`Wrote ${recommendations.length} recommendations to ${outPath}`)
-
+    await scrapeOutputJson(recommendations, 'recommendations', logger, options)
     if (!options.keepOpen) {
       await page.close()
     }

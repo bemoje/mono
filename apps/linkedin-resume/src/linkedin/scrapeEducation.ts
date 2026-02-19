@@ -1,35 +1,24 @@
-import { toError } from '@mono/node'
-import { prettyStackTrace } from '@mono/stacktrace'
 import type { Browser } from 'puppeteer'
-import fs from 'fs-extra'
-import { join } from 'path/posix'
 import { autoScroll } from './utils/autoScroll'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
-import { getLinkedInUsername } from './utils/getLinkedInUsername'
 import { parseDate } from './utils/parseDate'
 import { CliOptions } from '../types/CliOptions'
-import { DIST_PATH } from '../constants'
+import { onScrapeError } from './utils/onScrapeError'
+import { scrapeOutputJson } from './utils/scrapeOutputJson'
+import { userConfigFile } from '../userConfigFile'
+import { getPageUrl } from './utils/getPageUrl'
+import { ResumeEducation } from '../types/Resume'
+import { Logger } from '@mono/node'
 
-export async function scrapeEducation(browser: Browser, options: CliOptions): Promise<void> {
+export async function scrapeEducation(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const page = await browser.newPage()
 
-  const entries: {
-    institution: string
-    area: string
-    studyType: string
-    startDate: string
-    endDate: string
-    score: string
-    courses: string[]
-    skills: string[]
-    mediaLinks: { title: string; url: string }[]
-    logoUrl: string
-  }[] = []
+  const entries: ResumeEducation[] = []
 
   try {
-    const username = await getLinkedInUsername()
-    await page.goto(`https://www.linkedin.com/in/${username}/details/education/?locale=en_US`, {
+    const username = userConfigFile.load().username
+    await page.goto(getPageUrl(username, 'education'), {
       waitUntil: 'domcontentloaded',
       timeout: 20000,
     })
@@ -37,7 +26,8 @@ export async function scrapeEducation(browser: Browser, options: CliOptions): Pr
     try {
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
     } catch {
-      console.warn('No education section found or it took too long to load.')
+      logger.warn('No education section found or it took too long to load.')
+      throw 'ignore'
     }
     await autoScroll(page)
     await patchEsbuildHelpers(page)
@@ -75,7 +65,7 @@ export async function scrapeEducation(browser: Browser, options: CliOptions): Pr
     for (const { spans, logoUrl, mediaLinks } of rawEntries) {
       if (spans.length < 2) continue
 
-      const institution = spans[0]
+      const name = spans[0]
       let area = ''
       let dateStr = ''
       let idx = 1
@@ -137,28 +127,24 @@ export async function scrapeEducation(browser: Browser, options: CliOptions): Pr
 
       const studyType = otherLines.join('\n').trim()
 
-      entries.push({
-        institution,
+      const entry: ResumeEducation = {
+        name,
         area,
         studyType,
         startDate,
         endDate,
-        score: '',
         courses,
         skills,
         mediaLinks,
         logoUrl,
-      })
+      }
+
+      entries.push(entry)
     }
   } catch (e) {
-    const error = toError(e)
-    error.message = 'Error scraping education: ' + error.message
-    console.error(options.debug ? prettyStackTrace(error) : error.message)
+    onScrapeError(e, 'education', options, logger)
   } finally {
-    const outPath = join(DIST_PATH, 'education-scraped.json')
-    await fs.outputFile(outPath, JSON.stringify(entries, null, 2))
-    console.log(`Wrote ${entries.length} education entries to ${outPath}`)
-
+    await scrapeOutputJson(entries, 'education', logger, options)
     if (!options.keepOpen) {
       await page.close()
     }

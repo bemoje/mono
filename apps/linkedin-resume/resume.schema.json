@@ -12,7 +12,7 @@
           "description": "Full name of the candidate.",
           "type": "string"
         },
-        "label": {
+        "headline": {
           "description": "Primary professional title or role, displayed as the headline beneath the name (e.g., 'Full Stack Software Developer').",
           "type": "string"
         },
@@ -60,7 +60,7 @@
           },
           "required": ["city", "countryCode"]
         },
-        "profiles": {
+        "social": {
           "description": "Links to social media and professional profiles, rendered as buttons in the profile header.",
           "type": "array",
           "items": {
@@ -84,7 +84,7 @@
           }
         }
       },
-      "required": ["name", "label", "image", "email", "phone", "summary", "skills", "location", "profiles"]
+      "required": ["name", "headline", "image", "email", "phone", "summary", "skills", "location", "social"]
     },
     "work": {
       "description": "Professional work experience entries, ordered from most recent to oldest. Consecutive entries with the same company name are automatically grouped under a single company heading with multiple sub-roles in the rendered output.",
@@ -166,7 +166,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "institution": {
+          "name": {
             "description": "Name of the educational institution (e.g., 'Aarhus University').",
             "type": "string"
           },
@@ -184,10 +184,6 @@
           },
           "endDate": {
             "description": "End date of the education in 'YYYY-MM-DD' or 'YYYY-MM' format, or empty string if ongoing.",
-            "type": "string"
-          },
-          "score": {
-            "description": "Grade, GPA, or equivalent score achieved. Can be empty.",
             "type": "string"
           },
           "courses": {
@@ -227,7 +223,7 @@
             "type": "string"
           }
         },
-        "required": ["institution", "startDate", "endDate"]
+        "required": ["name", "startDate", "endDate"]
       }
     },
     "projects": {

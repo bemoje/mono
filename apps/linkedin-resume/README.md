@@ -100,7 +100,7 @@ linkedin-resume config
   "outputFilepath": "$USERPROFILE/Desktop/resume.pdf",
 
   // Additional profiles to display in the resume header
-  "profiles": [
+  "social": [
     {
       "network": "GitHub",
       "username": "johndoe",
@@ -133,7 +133,7 @@ Supported fields per section:
 | Section           | Matchable fields                                                                         |
 | ----------------- | ---------------------------------------------------------------------------------------- |
 | `work`            | `name`, `location`, `position`, `startDate`, `endDate`, `duration`, `summary`, `logoUrl` |
-| `education`       | `institution`, `area`, `studyType`, `startDate`, `endDate`, `score`, `logoUrl`           |
+| `education`       | `name`, `area`, `studyType`, `startDate`, `endDate`, `logoUrl`                           |
 | `projects`        | `name`, `description`, `startDate`, `endDate`, `entity`, `type`, `url`, `logoUrl`        |
 | `skills`          | `name`                                                                                   |
 | `languages`       | `language`, `fluency`                                                                    |

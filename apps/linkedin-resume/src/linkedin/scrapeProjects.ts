@@ -1,39 +1,24 @@
 import type { Browser } from 'puppeteer'
-import fs from 'fs-extra'
-import { join } from 'path/posix'
 import { autoScroll } from './utils/autoScroll'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { CliOptions } from '../types/CliOptions'
 import { parseDate } from './utils/parseDate'
-import { getLinkedInUsername } from './utils/getLinkedInUsername'
-import { DIST_PATH } from '../constants'
-import { prettyStackTrace } from '@mono/stacktrace'
-import { toError } from '@mono/node'
+import { onScrapeError } from './utils/onScrapeError'
+import { scrapeOutputJson } from './utils/scrapeOutputJson'
+import { userConfigFile } from '../userConfigFile'
+import { ResumeProject } from '../types/Resume'
+import { getPageUrl } from './utils/getPageUrl'
+import { Logger } from '@mono/node'
 
-interface ProjectEntry {
-  name: string
-  description: string
-  highlights: string[]
-  skills: string[]
-  startDate: string
-  endDate: string
-  roles: string[]
-  entity: string
-  type: string
-  url: string
-  mediaLinks: { title: string; url: string }[]
-  logoUrl: string
-}
-
-export async function scrapeProjects(browser: Browser, options: CliOptions): Promise<void> {
+export async function scrapeProjects(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const page = await browser.newPage()
 
-  const projects: ProjectEntry[] = []
+  const projects: ResumeProject[] = []
 
   try {
-    const username = await getLinkedInUsername()
-    await page.goto(`https://www.linkedin.com/in/${username}/details/projects/?locale=en_US`, {
+    const username = userConfigFile.load().username
+    await page.goto(getPageUrl(username, 'projects'), {
       waitUntil: 'domcontentloaded',
       timeout: 20000,
     })
@@ -41,7 +26,8 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
     try {
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
     } catch {
-      console.warn('No projects section found or it took too long to load.')
+      logger.warn('No projects section found or it took too long to load.')
+      throw 'ignore'
     }
     await autoScroll(page)
     await patchEsbuildHelpers(page)
@@ -72,14 +58,6 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
         }
       })
     })
-
-    if (options.debug) {
-      // Dump raw spans for diagnostic on first run
-      const debugPath = join('.temp', 'projects-raw-debug.json')
-
-      await fs.outputFile(debugPath, JSON.stringify(rawEntries, null, 2))
-      console.log(`Wrote raw project spans to ${debugPath}`)
-    }
 
     // Date patterns for project entries
     const PROJ_DATE_RE = /^[A-Z][a-z]{2}\s+\d{4}\s*-\s*([A-Z][a-z]{2}\s+\d{4}|Present)$|^[A-Z][a-z]{2}\s+\d{4}$/
@@ -167,14 +145,9 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
       })
     }
   } catch (e) {
-    const error = toError(e)
-    error.message = 'Error scraping projects: ' + error.message
-    console.error(options.debug ? prettyStackTrace(error) : error.message)
+    onScrapeError(e, 'projects', options, logger)
   } finally {
-    const outPath = join(DIST_PATH, 'projects-scraped.json')
-    await fs.outputFile(outPath, JSON.stringify(projects, null, 2))
-    console.log(`Wrote ${projects.length} projects to ${outPath}`)
-
+    await scrapeOutputJson(projects, 'projects', logger, options)
     if (!options.keepOpen) {
       await page.close()
     }

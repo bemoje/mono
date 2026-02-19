@@ -1,38 +1,24 @@
 import type { Browser } from 'puppeteer'
-import fs from 'fs-extra'
-import { join } from 'path/posix'
 import { autoScroll } from './utils/autoScroll'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { parseDate } from './utils/parseDate'
-import { getLinkedInUsername } from './utils/getLinkedInUsername'
-import { DIST_PATH } from '../constants'
 import { CliOptions } from '../types/CliOptions'
-import { prettyStackTrace } from '@mono/stacktrace'
-import { toError } from '@mono/node'
+import { onScrapeError } from './utils/onScrapeError'
+import { scrapeOutputJson } from './utils/scrapeOutputJson'
+import { userConfigFile } from '../userConfigFile'
+import { ResumeWork } from '../types/Resume'
+import { getPageUrl } from './utils/getPageUrl'
+import { Logger } from '@mono/node'
 
-interface WorkEntry {
-  name: string
-  location: string
-  position: string
-  startDate: string
-  endDate: string
-  duration: string | undefined
-  summary: string
-  highlights: string[]
-  skills: string[]
-  mediaLinks: { title: string; url: string }[]
-  logoUrl: string
-}
-
-export async function scrapeExperience(browser: Browser, options: CliOptions): Promise<void> {
+export async function scrapeExperience(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const page = await browser.newPage()
 
-  const experiences: WorkEntry[] = []
+  const experiences: ResumeWork[] = []
 
   try {
-    const username = await getLinkedInUsername()
-    await page.goto(`https://www.linkedin.com/in/${username}/details/experience/?locale=en_US`, {
+    const username = userConfigFile.load().username
+    await page.goto(getPageUrl(username, 'experience'), {
       waitUntil: 'domcontentloaded',
       timeout: 20000,
     })
@@ -41,7 +27,8 @@ export async function scrapeExperience(browser: Browser, options: CliOptions): P
     try {
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
     } catch {
-      console.warn('No experience section found or it took too long to load.')
+      logger.warn('No experience section found or it took too long to load.')
+      throw 'ignore'
     }
 
     // Scroll to load all lazy-loaded entries
@@ -152,7 +139,7 @@ export async function scrapeExperience(browser: Browser, options: CliOptions): P
       skillsStr: string,
       logoUrl: string,
       mediaLinks: { title: string; url: string }[],
-    ): WorkEntry {
+    ): ResumeWork {
       const location = locationRaw.replace(/\s*·\s*(Hybrid|Remote|On-site|On site)$/i, '').trim()
 
       // Parse date range: "Mon YYYY - Mon YYYY · X yrs Y mos"
@@ -209,14 +196,9 @@ export async function scrapeExperience(browser: Browser, options: CliOptions): P
       }
     }
   } catch (e) {
-    const error = toError(e)
-    error.message = 'Error scraping experience: ' + error.message
-    console.error(options.debug ? prettyStackTrace(error) : error.message)
+    onScrapeError(e, 'experience', options, logger)
   } finally {
-    const outPath = join(DIST_PATH, 'work-scraped.json')
-    await fs.outputFile(outPath, JSON.stringify(experiences, null, 2))
-    console.log(`Wrote ${experiences.length} experiences to ${outPath}`)
-
+    await scrapeOutputJson(experiences, 'experience', logger, options)
     if (!options.keepOpen) {
       await page.close()
     }
