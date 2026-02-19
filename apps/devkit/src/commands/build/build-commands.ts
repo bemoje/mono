@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { timer } from '../../lib/timer'
+import { timer } from '@mono/node'
 import { buildLibsWorkspace } from '../../lib/buildLibsWorkspace'
 import { getAllWorkspacePaths } from '../../lib/workspaces'
 import upath from 'upath'

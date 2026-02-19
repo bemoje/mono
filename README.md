@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 6531  | 6531    | 100%       |
-| Functions | 772   | 772     | 100%       |
-| Branches  | 2389  | 2389    | 100%       |
+| Lines     | 6575  | 6575    | 100%       |
+| Functions | 781   | 781     | 100%       |
+| Branches  | 2409  | 2409    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 588   | 12054         |
-| test      | 445   | 27944         |
+| source    | 593   | 11974         |
+| test      | 445   | 27839         |
 | examples  | 2     | 51            |
-| total     | 1035  | 40049         |
+| total     | 1040  | 39864         |
 
 ## Table of Contents
 
@@ -507,6 +507,7 @@ describe(ClassToTest.name, () => {
 
 - `StringStream`: Extension of Node's native Readable class for converting a string into a Readable stream.
 - `argvHasHelpFlag`: Checks if the command line arguments contain a help flag (--help or -h).
+- `createLogger`: Creates a logger instance with colored output and consistent formatting.
 - `execInherit`: Executes a command synchronously with inherited stdio, returning a promise with the output.
 - `execOutput`: Helper function to execute a shell command and return stdout and stderr without throwing on error. If there was an error and nothing was sent to stderr, the error.message takes its place.
 - `execute`: Execute one or multiple shell commands.
@@ -520,7 +521,7 @@ describe(ClassToTest.name, () => {
 - `spawnNodeProcess`: Spawn a child node process.
 - `startPowerShellScript`: Executes a PowerShell script with arguments and returns stdout/stderr.
 - `streamToString`: Drain a Readable into a string.
-- `timer`: Executes a task and logs the execution time with the specified name.
+- `timer`: Executes a task and logs the execution time.
 - `toError`: Converts the given value to an Error object. If the value is already an Error object, it is returned as is. If the value is not an Error object, it is converted to a string and used as the error message.
 
 **number**

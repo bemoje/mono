@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import upath from 'upath'
 import { execSync } from 'node:child_process'
 import { glob } from 'glob'
-import { timer } from '../../lib/timer'
+import { timer } from '@mono/node'
 import { getRepoRootDirpath } from '../../lib/getRepoRootDirpath'
 
 export function debugCommands() {
