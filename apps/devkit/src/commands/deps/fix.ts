@@ -4,7 +4,7 @@ import { addDefaultsOptions, DefaultOptions } from '../common/addDefaultsOptions
 import { Command, Option } from 'commander'
 import { confirmPrompt } from '../../lib/confirmPrompt'
 import { MonoRepo } from '@mono/monorepo'
-import { timer } from '../../lib/timer'
+import { timer } from '@mono/node'
 
 //
 

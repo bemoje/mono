@@ -3,7 +3,7 @@ import { MultiSet } from 'mnemonist'
 import { reduce } from 'iter-tools'
 import { MonoRepo, getAllImports, resolveModuleImportPath } from '@mono/monorepo'
 import { Command } from 'commander'
-import { timer } from '../../lib/timer'
+import { timer } from '@mono/node'
 
 export function mostImportedFiles() {
   return new Command('mostImportedFiles')

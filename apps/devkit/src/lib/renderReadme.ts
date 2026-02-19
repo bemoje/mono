@@ -9,7 +9,7 @@ import { importLibs } from './importLibs'
 import { getNamedExportTsDocSummary } from './tsdoc'
 import { arrayTableToMarkdown } from './arrayTableToMarkdown'
 import { getLinesOfCode } from './getLinesOfCode'
-import type { Logger } from './createLogger'
+import type { Logger } from '@mono/node'
 
 export const README_TEMPLATE_PATH = 'docs/readmeTemplate.md'
 

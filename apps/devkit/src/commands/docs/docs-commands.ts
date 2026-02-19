@@ -1,8 +1,8 @@
 import { Command } from 'commander'
 import fs from 'fs-extra'
 import cp from 'node:child_process'
-import { timer } from '../../lib/timer'
 import { renderReadme } from '../../lib/renderReadme'
+import { timer } from '@mono/node'
 
 export function docsCommands() {
   return new Command('docs').alias('do').description('Documentation generation tools.').addCommand(docsReadme())

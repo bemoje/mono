@@ -1,7 +1,7 @@
 import { MonoRepo } from '@mono/monorepo'
 import { Command } from 'commander'
 import { topImports } from './internal/topImports'
-import { timer } from '../../lib/timer'
+import { timer } from '@mono/node'
 
 export function mostFrequentImportStatements() {
   return new Command('mostFrequentImportStatements')

@@ -2,7 +2,7 @@ import { Command } from 'commander'
 import fs from 'fs-extra'
 import cp from 'node:child_process'
 import { setTimeout } from 'timers/promises'
-import { timer } from '../../lib/timer'
+import { timer } from '@mono/node'
 import { getRepoRootDirpath } from '../../lib/getRepoRootDirpath'
 import { getRepoPackageJson, getRepoPackageJsonPath } from '../../lib/getRepoPackageJson'
 

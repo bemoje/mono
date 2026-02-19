@@ -1,7 +1,7 @@
 import { Command } from 'commander'
 import { execSync } from 'node:child_process'
 import { getRepoRootDirpath } from '../../lib/getRepoRootDirpath'
-import { timer } from '../../lib/timer'
+import { timer } from '@mono/node'
 import { findWorkspacePackageName } from '../../lib/workspaces'
 
 export function wsCommand() {
