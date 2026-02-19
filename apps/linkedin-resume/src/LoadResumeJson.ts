@@ -8,12 +8,12 @@ import { userConfigFile } from './userConfigFile'
 /**
  * Loads the resume JSON file and applies any user-defined ignore rules to filter out specific sections or entries.
  */
-export async function loadResumeJson() {
+export async function loadResumeJson(options?: { applyIgnoreRules?: boolean }): Promise<Resume> {
   const resume = (await fs.readJson(upath.join(DIST_PATH, 'resume.json'))) as Resume
 
   const userConfig = userConfigFile.load()
 
-  if (userConfig.ignore) {
+  if (userConfig.ignore && options?.applyIgnoreRules !== false) {
     const ignore = userConfig.ignore
     const keys = ['work', 'education', 'projects', 'skills', 'languages', 'recommendations'] as const
 

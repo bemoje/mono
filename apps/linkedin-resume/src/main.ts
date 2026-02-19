@@ -11,6 +11,7 @@ import { userLogin } from './userLogin'
 import description from './core/description'
 import version from './core/version'
 import { timer } from '@mono/node'
+import { renderResumeMd } from './renderResumeMd'
 
 const cli = new Command('linkedin-resume')
   .version(version)
@@ -39,6 +40,7 @@ const cli = new Command('linkedin-resume')
       await timer('render', async (logger) => {
         await renderResumeJson(logger)
         await renderResumeHtml(logger)
+        await renderResumeMd(logger)
         await renderPdfFromHtml(options, logger)
       })
     })
