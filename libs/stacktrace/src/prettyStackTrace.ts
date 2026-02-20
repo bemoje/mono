@@ -8,11 +8,11 @@ import { inspect } from 'node:util'
  * Formats stack traces with colors and improved readability for debugging.
  */
 export function prettyStackTrace(error: Error, options: { omitStack?: boolean; omitProps?: boolean } = {}) {
-  return [renderMessage(error) + ' ' + renderProps(error, options), renderStack(error, options), ''].join('\n')
+  return [renderMessage(error), renderProps(error, options), renderStack(error, options), ''].join('\n')
 }
 
 function renderMessage(error: Error) {
-  return colors.red(error.message)
+  return colors.red(error.name + ': ' + error.message)
 }
 
 function renderStack(error: Error, options: { omitStack?: boolean; omitProps?: boolean }) {
@@ -68,5 +68,5 @@ function renderProps(error: Error, options: { omitStack?: boolean; omitProps?: b
     }
   }
   // const data = _.pick(error, keys)
-  return inspect(data, { colors: true, depth: 2, breakLength: 80, showHidden: false, getters: false })
+  return inspect(data, { colors: true })
 }
