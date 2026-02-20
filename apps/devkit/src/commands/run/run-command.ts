@@ -1,6 +1,5 @@
 import { Command } from 'commander'
 import cp from 'node:child_process'
-import * as esbuild from 'esbuild'
 import fs from 'fs-extra'
 import upath from 'upath'
 import { getRepoRootDirpath } from '../../lib/getRepoRootDirpath'
@@ -9,9 +8,11 @@ export function runCommand() {
   return new Command('run')
     .alias('r')
     .description('Compile and run a file. Supports .ts, .test.ts, .js, .mjs, .cjs, .ps1')
+
     .argument('<filepath>', 'Path to file to run')
     .argument('[args...]', 'Additional arguments to pass to the script')
     .allowUnknownOption(true)
+
     .action(async (filepath: string, args: string[]) => {
       const root = getRepoRootDirpath()
       const relative = upath.isAbsolute(filepath) ? upath.relative(root, filepath) : upath.normalizeSafe(filepath)
@@ -53,8 +54,8 @@ export function runCommand() {
       const importSourceMapLine = `import 'source-map-support/register'`
       const importPrettyStackTraceLine = `import { enablePrettyStackTrace } from '@mono/stacktrace';\nenablePrettyStackTrace()`
 
-      const wsPath = relative.split(/\\|\//).slice(0, 2).join('/')
-      const wsTsconfigPath = upath.join(wsPath, 'tsconfig.json')
+      // const wsPath = relative.split(/\\|\//).slice(0, 2).join('/')
+      // const wsTsconfigPath = upath.join(wsPath, 'tsconfig.json')
       const outfile = `.dist/temp/runner.cjs`
 
       const tscodeOriginal = fs.readFileSync(relative, 'utf8')
@@ -76,29 +77,34 @@ export function runCommand() {
           fs.writeFileSync(relative, tscode)
         }
 
-        await esbuild.build({
-          entryPoints: [relative],
-          bundle: true,
-          outfile,
-          tsconfig: wsTsconfigPath,
-          platform: 'node',
-          format: 'cjs',
-          target: ['node20'],
-          external: ['type-fest'],
-          keepNames: true,
-          minify: false,
-          mainFields: ['module', 'main'],
-          sourcemap: true,
+        cp.execSync(`tsx ${outfile} ${args.join(' ')}`, {
+          stdio: 'inherit',
+          cwd: root,
         })
+
+        // await esbuild.build({
+        //   entryPoints: [relative],
+        //   bundle: true,
+        //   outfile,
+        //   tsconfig: wsTsconfigPath,
+        //   platform: 'node',
+        //   format: 'cjs',
+        //   target: ['node20'],
+        //   external: ['type-fest'],
+        //   keepNames: true,
+        //   minify: false,
+        //   mainFields: ['module', 'main'],
+        //   sourcemap: true,
+        // })
       } finally {
         if (changedSourceFile) {
           fs.writeFileSync(relative, tscodeOriginal)
         }
       }
 
-      cp.spawn('node', [outfile, ...args], {
-        stdio: 'inherit',
-        cwd: root,
-      })
+      // cp.spawn('node', [outfile, ...args], {
+      //   stdio: 'inherit',
+      //   cwd: root,
+      // })
     })
 }

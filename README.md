@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 6575  | 6575    | 100%       |
-| Functions | 781   | 781     | 100%       |
-| Branches  | 2409  | 2409    | 100%       |
+| Lines     | 6596  | 6596    | 100%       |
+| Functions | 782   | 782     | 100%       |
+| Branches  | 2414  | 2414    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 593   | 11974         |
-| test      | 445   | 27839         |
+| source    | 593   | 12231         |
+| test      | 445   | 27848         |
 | examples  | 2     | 51            |
-| total     | 1040  | 39864         |
+| total     | 1040  | 40130         |
 
 ## Table of Contents
 
@@ -407,12 +407,12 @@ describe(ClassToTest.name, () => {
 - `IsArrayWhereEach`: Creates a validator function that checks whether the input is an array where all elements are valid according to every validator provided.
 - `IsFileExt`: Creates a validator function that checks if a string has the specified file extension (case-insensitive).
 - `IsLength`: Creates a function that validates if the length of the input is equal to the specified length. The returned function accepts any value with a 'length' property and is named 'isLen' concatenated with the specified length.
+- `ValidatorError`: Custom error class for validation failures, providing detailed information about the input, expected outcome, and cause of failure.
 - `createGtValidator`: Creates a validator function that checks if a value is a number greater than the specified limit.
 - `createGteValidator`: Creates a validator function that checks if a value is a number greater than or equal to the specified limit.
 - `createLtValidator`: Creates a validator function that checks if a value is a number less than the specified limit.
 - `createLteValidator`: Creates a validator function that checks if a value is a number less than or equal to the specified limit.
-- `ensureThat`: Ensures a value meets validation criteria, throwing an error if it doesn't.
-- `ensureThatDefined`: Same as ensureThat except that if the value is undefined, it is considered valid.
+- `ensureThat`: Validates a value using the provided sync or async validator function(s). If validation fails, an error is thrown with details about the failure. Validators can return strings indicating the reason for failure, which will be included in the error message.
 - `isArray`: Checks if the provided value is an array.
 - `isChar`: Determines whether a string is a single character.
 - `isClass`: Checks if the given value is a constructor function using 'class' syntax. WARNING: If the running code is minified or mangled, this function may not work as expected. However, it should be resistant to minification/mangling if the 'class' keyword is present in the first line of the function.

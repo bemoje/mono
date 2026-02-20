@@ -6,7 +6,7 @@
     {
       "label": "RUN",
       "type": "shell",
-      "command": "yarn devkit run ${relativeFile}",
+      "command": "node apps/devkit/dist/cli.mjs run ${relativeFile}",
       "args": [],
       "detail": "Run file (.ts, .test.ts, .js, .ps1, .mjs)",
       "presentation": {

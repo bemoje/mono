@@ -104,7 +104,7 @@
         },
         "precommit:check": {
           "type": "string",
-          "description": "Runs parallel check tasks: typecheck, check, test-coverage."
+          "description": "Runs parallel check tasks: typecheck, check."
         },
         "precommit:build": {
           "type": "string",
@@ -112,7 +112,7 @@
         },
         "precommit": {
           "type": "string",
-          "description": "Runs full pre-commit pipeline: install, precommit:fix, precommit:check, precommit:build."
+          "description": "Runs full pre-commit pipeline: install, precommit:fix, test-coverage, precommit:check, precommit:build."
         },
         "dk": {
           "type": "string",
