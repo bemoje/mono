@@ -1,152 +1,231 @@
-import fs from 'fs-extra'
-import { ensureThat, TAsyncValidator, TSyncValidator } from './ensureThat'
-import { describe, expect, it } from 'vitest'
+import { describe, it, expect, expectTypeOf, vi, beforeEach } from 'vitest'
+import { ensureThat } from './ensureThat'
+import * as ValidatorErrorModule from './ValidatorError'
 
 describe(ensureThat.name, () => {
-  it('should validate with validator that returns boolean', () => {
-    const isPositive = (n: number) => n >= 0
-    try {
-      ensureThat(-5, isPositive)
-    } catch (error) {
-      const err = error as Error
-      expect(err).toBeInstanceOf(Error)
-      expect(err.message).toBe(`Expected '${isPositive.name}'. Got: -5`)
-    }
-  })
-  it('should validate with validator that returns boolean or string', () => {
-    const isPositive = (n: number) => (n >= 0 ? true : 'Not positive')
-    try {
-      ensureThat(-5, isPositive)
-    } catch (error) {
-      const err = error as Error
-      expect(err).toBeInstanceOf(Error)
-      expect(err.message).toBe(`Not positive. Got: -5`)
-    }
-  })
-  it('should throw the provided error type', () => {
-    const isPositive = (n: number) => (n >= 0 ? true : 'Not positive')
-    try {
-      ensureThat(-5, isPositive, { Err: TypeError })
-    } catch (error) {
-      expect(error).toBeInstanceOf(TypeError)
-    }
-  })
-  it('should validate correctly using additional args', () => {
-    const isLargerThan = (n: number, min: number) => n > min
-    expect(() => ensureThat(5, isLargerThan, { args: [3] })).not.toThrow()
-    expect(() => ensureThat(5, isLargerThan, { args: [7] })).toThrow()
-  })
-  it('should validate correctly using "is" option to set alternative expected outcome', () => {
-    const isLargerThan = (n: number, min: number) => n > min
-    expect(() => ensureThat(5, isLargerThan, { args: [3], is: false })).toThrow()
-    expect(() => ensureThat(5, isLargerThan, { args: [7], is: false })).not.toThrow()
+  const isZero = (n: unknown) => typeof n === 'number' && n === 0
+  const isPos = (n: unknown) => typeof n === 'number' && n >= 0
+  const isNeg = (n: unknown) => typeof n === 'number' && n < 0
+
+  const isZeroAsync = async (n: unknown) => typeof n === 'number' && n === 0
+  const isPosAsync = async (n: unknown) => typeof n === 'number' && n >= 0
+
+  let errSpy = vi.spyOn(ValidatorErrorModule, 'ValidatorError')
+
+  beforeEach(() => {
+    errSpy = vi.spyOn(ValidatorErrorModule, 'ValidatorError')
   })
 
-  describe('types', () => {
-    it('sync', () => {
-      const isString01: TSyncValidator<string, string> = (value: string, ..._args: any[]): boolean => {
-        return typeof value === 'string'
-      }
-      const isString02: TSyncValidator<string, string> = (value: string, ..._args: any[]): value is string => {
-        return typeof value === 'string'
-      }
-      const isString03: TSyncValidator<string, string> = (value: string, ..._args: any[]): boolean | string => {
-        if (typeof value !== 'string') return 'Expected string'
-        return true
-      }
-      const isString04: TSyncValidator<string, string> = (value: string, ..._args: any[]): true | string => {
-        if (typeof value !== 'string') return 'Expected string'
-        return true
-      }
-      const isString05: TSyncValidator<string, unknown> = (value: unknown, ..._args: any[]): boolean => {
-        return typeof value === 'string'
-      }
-      const isString06: TSyncValidator<string, unknown> = (value: unknown, ..._args: any[]): value is string => {
-        return typeof value === 'string'
-      }
-      const isString07: TSyncValidator<string, unknown> = (value: unknown, ..._args: any[]): boolean | string => {
-        if (typeof value !== 'string') return 'Expected string'
-        return true
-      }
-      const isString08: TSyncValidator<string, unknown> = (value: unknown, ..._args: any[]): true | string => {
-        if (typeof value !== 'string') return 'Expected string'
-        return true
-      }
+  const expectErrorData = (data: ConstructorParameters<typeof ValidatorErrorModule.ValidatorError>[1]) => {
+    expect(errSpy).toHaveBeenCalledWith(
+      // message
+      expect.any(String),
+      // data
+      expect.objectContaining(data),
+    )
+  }
 
-      expect(ensureThat('string', isString01)).toBe('string')
-      expect(ensureThat('string', isString02)).toBe('string')
-      expect(ensureThat('string', isString03)).toBe('string')
-      expect(ensureThat('string', isString04)).toBe('string')
+  const expectThrowsWith = (
+    f: () => void,
+    data: ConstructorParameters<typeof ValidatorErrorModule.ValidatorError>[1],
+  ) => {
+    expect(f).toThrow()
+    expectErrorData(data)
+  }
 
-      expect(ensureThat('string', isString05)).toBe('string')
-      expect(ensureThat('string', isString06)).toBe('string')
-      expect(ensureThat('string', isString07)).toBe('string')
-      expect(ensureThat('string', isString08)).toBe('string')
+  describe('should pass when all validators return true', () => {
+    it('validator => true => pass', () => {
+      expect(() => ensureThat(3, isPos)).not.toThrow()
+    })
+    it('[validator] => [true] => pass', () => {
+      expect(() => ensureThat(3, [isPos])).not.toThrow()
+    })
+    it('validator[] => [true, true] => pass', () => {
+      expect(() => ensureThat(0, [isZero, isPos])).not.toThrow()
+    })
+  })
 
-      expect(() => ensureThat(1, isString05)).toThrow("Expected 'isString05'. Got: 1")
-      expect(() => ensureThat(1, isString06)).toThrow("Expected 'isString06'. Got: 1")
-      expect(() => ensureThat(1, isString07)).toThrow('Expected string. Got: 1')
-      expect(() => ensureThat(1, isString08)).toThrow('Expected string. Got: 1')
+  describe('should throw when all validators return false', () => {
+    it('validator => false => throws', () => {
+      expectThrowsWith(() => ensureThat(-1, isPos), {
+        cause: { isPos: false },
+      })
+    })
+    it('[validator] => [false] => throws', () => {
+      expectThrowsWith(() => ensureThat(-1, [isPos]), {
+        cause: { isPos: false },
+      })
+    })
+    it('validator[] => [false, false] => throws', () => {
+      expectThrowsWith(() => ensureThat(3, [isZero, isNeg]), {
+        cause: { isZero: false, isNeg: false },
+      })
+    })
+  })
+
+  describe('should throw when any validator returns false', () => {
+    it('validator[] => [false, true] => throws', () => {
+      expectThrowsWith(() => ensureThat(0, [isNeg, isZero]), {
+        cause: { isNeg: false },
+      })
+    })
+    it('validator[] => [true, false] => throws', () => {
+      expectThrowsWith(() => ensureThat(0, [isZero, isNeg]), {
+        cause: { isNeg: false },
+      })
+    })
+  })
+
+  describe('should negate all validator return values when negate option is enabled', () => {
+    // all true
+    it('validator => true, negate => false => throws', () => {
+      expectThrowsWith(() => ensureThat(3, isPos, { negate: true }), {
+        cause: { isPos: true },
+      })
+    })
+    it('[validator] => [true], negate => [false] => throws', () => {
+      expectThrowsWith(() => ensureThat(3, [isPos], { negate: true }), {
+        cause: { isPos: true },
+      })
+    })
+    it('validator[] => [true, true], negate => [false, false] => throws', () => {
+      expectThrowsWith(() => ensureThat(0, [isZero, isPos], { negate: true }), {
+        cause: { isZero: true, isPos: true },
+      })
     })
 
-    it('async', async () => {
-      const isString09: TAsyncValidator<string, string> = async (
-        value: string,
-        ..._args: any[]
-      ): Promise<boolean> => {
-        return typeof value === 'string'
-      }
-      const isString10: TAsyncValidator<string, string> = async (
-        value: string,
-        ..._args: any[]
-      ): Promise<boolean | string> => {
-        if (typeof value !== 'string') return 'Expected string'
-        return true
-      }
-      const isString11: TAsyncValidator<string, string> = async (
-        value: string,
-        ..._args: any[]
-      ): Promise<true | string> => {
-        if (typeof value !== 'string') return 'Expected string'
-        return true
-      }
-      const isString12: TAsyncValidator<string, unknown> = async (
-        value: unknown,
-        ..._args: any[]
-      ): Promise<boolean> => {
-        return typeof value === 'string'
-      }
-      const isString13: TAsyncValidator<string, unknown> = async (
-        value: unknown,
-        ..._args: any[]
-      ): Promise<boolean | string> => {
-        if (typeof value !== 'string') return 'Expected string'
-        return true
-      }
-      const isString14: TAsyncValidator<string, unknown> = async (
-        value: unknown,
-        ..._args: any[]
-      ): Promise<true | string> => {
-        if (typeof value !== 'string') return 'Expected string'
-        return true
-      }
-
-      expect(await ensureThat('string', isString09)).toBe('string')
-      expect(await ensureThat('string', isString10)).toBe('string')
-      expect(await ensureThat('string', isString11)).toBe('string')
-
-      expect(await ensureThat('string', isString12)).toBe('string')
-      expect(await ensureThat('string', isString13)).toBe('string')
-      expect(await ensureThat('string', isString14)).toBe('string')
-
-      await expect(() => ensureThat(1, isString12)).rejects.toThrow("Expected 'isString12'. Got: 1")
-      await expect(() => ensureThat(1, isString13)).rejects.toThrow('Expected string. Got: 1')
-      await expect(() => ensureThat(1, isString14)).rejects.toThrow('Expected string. Got: 1')
+    // both true and false
+    it('validator[] => [true, false], negate => [false, true] => throws', () => {
+      expectThrowsWith(() => ensureThat(0, [isZero, isNeg], { negate: true }), {
+        cause: { isZero: true },
+      })
+    })
+    it('validator[] => [false, true], negate => [true, false] => throws', () => {
+      expectThrowsWith(() => ensureThat(0, [isNeg, isZero], { negate: true }), {
+        cause: { isZero: true },
+      })
     })
 
-    it('async fs', async () => {
-      const isExistent = (value: string) => fs.exists(value)
-      expect(await ensureThat(process.cwd(), isExistent)).toBe(process.cwd())
+    // all false
+    it('[validator] => false, negate => true => pass', () => {
+      expect(() => ensureThat(3, isNeg, { negate: true })).not.toThrow()
+    })
+    it('[validator] => [false], negate => [true] => pass', () => {
+      expect(() => ensureThat(3, [isNeg], { negate: true })).not.toThrow()
+    })
+    it('validator[] => [false, false], negate => [true, true] => pass', () => {
+      expect(() => ensureThat(3, [isZero, isNeg], { negate: true })).not.toThrow()
+    })
+  })
+
+  describe('should always pass when no validators are provided', () => {
+    it('[] => [] => pass', () => {
+      expect(() => ensureThat(2 as never, [])).not.toThrow()
+    })
+    it('[] => [], negate => pass', () => {
+      expect(() => ensureThat(2 as never, [], { negate: true })).not.toThrow()
+    })
+  })
+
+  describe('async', () => {
+    it('only async validators', async () => {
+      await expect(ensureThat(0, isZeroAsync)).resolves.toBe(0)
+      await expect(ensureThat(0, [isZeroAsync])).resolves.toBe(0)
+      await expect(ensureThat(0, [isZeroAsync, isPosAsync])).resolves.toBe(0)
+
+      await expect(ensureThat(1, isZeroAsync)).rejects.toThrow()
+      await expect(ensureThat(1, [isZeroAsync])).rejects.toThrow()
+      await expect(ensureThat(1, [isZeroAsync, isPosAsync])).rejects.toThrow()
+    })
+
+    it('mixed sync and async validators', async () => {
+      await expect(ensureThat(0, [isZero, isZeroAsync])).resolves.toBe(0)
+      await expect(ensureThat(3, [isZero, isZeroAsync])).rejects.toThrow()
+    })
+  })
+
+  describe('unnamed functions', () => {
+    it('anonymous validator', () => {
+      expect(() => ensureThat(5, (n: unknown) => true)).not.toThrow()
+
+      expect(() => ensureThat(5, (n: unknown) => false)).toThrow()
+      expectErrorData({
+        cause: { '[0]': false },
+      })
+
+      expect(() => ensureThat(5, [isZero, (n: unknown) => false])).toThrow()
+      expectErrorData({
+        cause: { 'isZero': false, '[1]': false },
+      })
+    })
+  })
+
+  describe('validators returning strings', () => {
+    const stringFail = (n: unknown) => 'failure reason' as string | true
+
+    it('string-returning validator failure', () => {
+      expect(() => ensureThat(1, stringFail)).toThrow()
+      expectErrorData({
+        cause: { stringFail: 'failure reason' },
+      })
+    })
+
+    it('anonymous string-returning validator failure', () => {
+      expect(() => ensureThat(1, (n: unknown) => 'failure reason' as string | true)).toThrow()
+      expectErrorData({
+        cause: { '[0]': 'failure reason' },
+      })
+    })
+
+    it('anonymous mixed boolean and string returning validator failure', () => {
+      expect(() => ensureThat(1, [isZero, (n: unknown) => 'failure reason' as string | true])).toThrow()
+      expectErrorData({
+        cause: { 'isZero': false, '[1]': 'failure reason' },
+      })
+    })
+
+    it('string-returning validator with negate', () => {
+      expect(() => ensureThat(1, stringFail, { negate: true })).not.toThrow()
+      expect(() => ensureThat(1, [stringFail], { negate: true })).not.toThrow()
+    })
+  })
+
+  describe('typing tests', () => {
+    const unknownParam = (n: unknown) => true
+    const stringParam = (n: string) => true
+
+    const syncBool = (n: number) => n > 0
+    const syncString = (n: number) => (n > 0 ? true : 'bad')
+    const asyncBool = async (n: number) => n > 0
+    const asyncString = async (n: number) => (n > 0 ? true : 'bad')
+
+    it('accepts single sync validator', () => {
+      expectTypeOf(ensureThat).toBeFunction()
+    })
+
+    it('accepts array of sync validators', () => {
+      ensureThat(1, [syncBool, syncString])
+    })
+
+    it('infers return type correctly (sync)', () => {
+      expectTypeOf(ensureThat(1, unknownParam)).toEqualTypeOf<number>()
+      expectTypeOf(ensureThat(undefined, unknownParam)).toEqualTypeOf<undefined>()
+      expectTypeOf(ensureThat(2 as never, unknownParam)).toEqualTypeOf<never>()
+      expectTypeOf(ensureThat(null, unknownParam)).toEqualTypeOf<null>()
+      expectTypeOf(ensureThat('x', stringParam)).toEqualTypeOf<string>()
+      expectTypeOf(ensureThat(undefined, unknownParam)).toEqualTypeOf<undefined>()
+      expectTypeOf(ensureThat(1, syncBool)).toEqualTypeOf<number>()
+    })
+
+    it('accepts async validators', async () => {
+      await ensureThat(1, asyncBool)
+      await ensureThat(1, [asyncBool, asyncString])
+    })
+
+    it('infers return type correctly (async)', async () => {
+      const result = ensureThat(1, asyncBool)
+      expectTypeOf(result).toEqualTypeOf<Promise<1>>()
+      await result
     })
   })
 })
