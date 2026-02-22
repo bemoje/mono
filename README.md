@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 6596  | 6596    | 100%       |
-| Functions | 782   | 782     | 100%       |
-| Branches  | 2414  | 2414    | 100%       |
+| Lines     | 7569  | 7569    | 100%       |
+| Functions | 786   | 786     | 100%       |
+| Branches  | 2426  | 2426    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 593   | 12231         |
-| test      | 445   | 27848         |
+| source    | 604   | 13193         |
+| test      | 440   | 27287         |
 | examples  | 2     | 51            |
-| total     | 1040  | 40130         |
+| total     | 1046  | 40531         |
 
 ## Table of Contents
 
@@ -305,6 +305,7 @@ describe(ClassToTest.name, () => {
 - `arrTableToCsv`: Converts a 2D array to a CSV string.
 - `arrTableToObjects`: Converts a 2D array representing a table into an array of objects.
 - `arrayToString`: Short and condensed string representation of an array, easy to read for error outputs or similar.
+- `countUniques`: Count unique occurrences of values in an iterable, returning a sorted map by count descending.
 
 **cli**
 
@@ -312,8 +313,8 @@ describe(ClassToTest.name, () => {
 - `Command`: A type-safe CLI composer that can parse argv and generate help without execution coupling.
 - `Help`: This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the expected interface of the Command instance to parse, are both similar, but different and not compatible without custom adaptations,
 - `Option`: Represents a command-line option with support for short/long flags and various configurations.
+- `assertAddRequiredArgumentAllowed`: Assert that adding a required argument to the given command is allowed. This is not allowed if the command already has variadic or optional arguments.
 - `assertNoMultipleVariadicArguments`: Ensures only one variadic argument per command
-- `assertNoOptionalOrVariadicArguments`: Validates CLI argument ordering
 - `assertNoVariadicArgument`: Validates optional args don't follow variadic args
 - `assertOptionLongNotInUse`: Validates option long name are unique across command hierarchy
 - `assertOptionNameNotInUse`: Validates option names are unique across command hierarchy
@@ -323,6 +324,8 @@ describe(ClassToTest.name, () => {
 - `findSubcommand`: Finds subcommand by name or alias
 - `getCommandAncestors`: Returns all ancestor commands excluding this command
 - `getCommandAndAncestors`: Returns command and all ancestor commands in hierarchy
+- `hasNoOptionalArguments`: Validator that checks if a command has no optional arguments. This is used to determine if it's allowed to add a required argument to the command.
+- `hasNoVariadicArguments`: Validator that checks if a command has no variadic arguments. This is used to determine if it's allowed to add a required argument to the command.
 - `parseOptionFlags`: Parses option flags string into its components
 
 **composition**
@@ -635,6 +638,8 @@ describe(ClassToTest.name, () => {
 - `hasBasename`: Checks if a file path has any of the specified basenames.
 - `hasExtname`: Checks if a file path has any of the specified file extensions.
 - `hasParentDirname`: Whether fspath is a subpath of a parent directory with the given name.
+- `isDotFile`: Determines if a given filepath is a dotfile.
+- `isExtValid`: Check if a file extension is valid. Invalid: - empty string - single dot: "." - illegal characters: <>"|?\*:
 - `isRelative`: Whether a path is a relative string, ie. not absolute.
 - `isUnc`: Determines if a given filepath is a UNC path.
 - `isValidWin32`: Check whether a provided windows filesystem path string is valid according to: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx

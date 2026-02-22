@@ -5,8 +5,5 @@
   "type": "module",
   "private": true,
   "module": "src/index.ts",
-  "sideEffects": false,
-  "scripts": {
-    "build": "node esbuild.mjs"
-  }
+  "sideEffects": false
 }

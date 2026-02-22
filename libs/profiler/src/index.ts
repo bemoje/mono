@@ -1,3 +1,7 @@
 export * from './Profiler/Profiler'
-import { Profiler } from './Profiler/Profiler'
-export default Profiler
+
+import * as MODULE_1 from './Profiler/Profiler'
+
+export default {
+  ...MODULE_1, //
+}

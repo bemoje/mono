@@ -1,8 +1,8 @@
 import upath from 'upath'
-import fs from 'fs-extra'
 import { buildFile } from './buildFile'
 import { buildStats } from './buildStats'
 import { getWsPaths } from './getWsPaths'
+import { getRepoPackageJson } from './getRepoPackageJson'
 
 /**
  * Builds a library workspace from its directory path.
@@ -14,14 +14,20 @@ export async function buildLibsWorkspace(
   const { debug, ...optionsOverride } = options
   importMetaDirname = upath.normalizeSafe(importMetaDirname)
   const wsPaths = getWsPaths(importMetaDirname)
-  const repoPkg = fs.readJsonSync(wsPaths.pkg)
+
+  const repoPkg = await getRepoPackageJson()
+  const external = new Set([
+    ...Object.keys(repoPkg.dependencies || {}),
+    ...Object.keys(repoPkg.devDependencies || {}),
+  ])
+  external.delete('onetime')
 
   await buildFile(
     wsPaths.indexTs,
     (optionsOverride as { format?: string }).format === 'esm' ? wsPaths.indexMjs : wsPaths.indexCjs,
     wsPaths.tsconfig,
     {
-      external: [...Object.keys(repoPkg.dependencies || {}), ...Object.keys(repoPkg.devDependencies || {})],
+      external: Array.from(external),
       ...optionsOverride,
     },
   )

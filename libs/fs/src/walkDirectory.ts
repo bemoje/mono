@@ -101,10 +101,10 @@ function convertToWalkdirOptions(options: WalkDirectoryOptions): WalkOptions {
   return result
 }
 
-interface WalkDirectoryOptionsWithoutStats extends WalkDirectoryOptions {
+export interface WalkDirectoryOptionsWithoutStats extends WalkDirectoryOptions {
   stats?: false
 }
 
-interface WalkDirectoryOptionsWithStats extends WalkDirectoryOptions {
+export interface WalkDirectoryOptionsWithStats extends WalkDirectoryOptions {
   stats: true
 }

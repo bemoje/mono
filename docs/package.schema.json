@@ -114,10 +114,6 @@
           "type": "string",
           "description": "Runs full pre-commit pipeline: install, precommit:fix, test-coverage, precommit:check, precommit:build."
         },
-        "dk": {
-          "type": "string",
-          "description": "Build, then run devkit CLI (apps/devkit)."
-        },
         "publish:devkit": {
           "type": "string",
           "description": "Build and publish the devkit package to npm."

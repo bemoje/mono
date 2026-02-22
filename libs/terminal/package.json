@@ -7,12 +7,5 @@
   "sideEffects": false,
   "engines": {
     "node": ">=20.0.0"
-  },
-  "scripts": {
-    "indexts": "devkit clean index-ts",
-    "build": "node esbuild.mjs"
-  },
-  "devDependencies": {
-    "@bemoje/devkit": "0.1.0"
   }
 }

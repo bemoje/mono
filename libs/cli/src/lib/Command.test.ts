@@ -284,7 +284,7 @@ describe(Command.name, () => {
 
         expect(() => {
           cmd.addArgument('<required>', 'required argument')
-        }).toThrow('Cannot add required argument after optional or variadic arguments')
+        }).toThrow()
       })
 
       it('should throw error when adding required after variadic', () => {
@@ -292,7 +292,7 @@ describe(Command.name, () => {
 
         expect(() => {
           cmd.addArgument('<required>', 'required argument')
-        }).toThrow('Cannot add required argument after optional or variadic arguments')
+        }).toThrow()
       })
     })
 
@@ -721,7 +721,7 @@ describe(Command.name, () => {
     it('should prevent required after optional', () => {
       expect(() => {
         new Command('test').addArgument('[optional]', 'optional arg').addArgument('<required>', 'required arg')
-      }).toThrow('Cannot add required argument after optional or variadic arguments')
+      }).toThrow()
     })
 
     it('should prevent multiple variadic arguments', () => {

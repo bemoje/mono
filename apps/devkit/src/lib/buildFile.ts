@@ -1,4 +1,4 @@
-import * as esbuild from 'esbuild'
+import type { BuildOptions } from 'esbuild'
 import upath from 'upath'
 import fs from 'fs-extra'
 import cp from 'node:child_process'
@@ -14,10 +14,12 @@ export async function buildFile(
   filepath: string,
   outfile: string,
   tsconfig: string,
-  optionsOverride: esbuild.BuildOptions = {},
+  optionsOverride: BuildOptions = {},
 ) {
   const parsed = upath.parse(outfile)
   const outfileTemp = upath.joinSafe(parsed.dir, parsed.name + '-temp' + upath.extname(outfile))
+
+  const esbuild = await import('esbuild')
 
   const result = await esbuild.build({
     entryPoints: [filepath],
@@ -33,6 +35,7 @@ export async function buildFile(
     minifyIdentifiers: false,
     keepNames: true,
     mainFields: ['module', 'main'],
+    external: ['esbuild', 'type-fest'],
     sourcemap: true,
     treeShaking: true,
     ...optionsOverride,

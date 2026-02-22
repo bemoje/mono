@@ -4,12 +4,5 @@
   "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
-  "type": "module",
-  "scripts": {
-    "indexts": "devkit clean index-ts",
-    "build": "node esbuild.mjs"
-  },
-  "devDependencies": {
-    "@bemoje/devkit": "0.1.0"
-  }
+  "type": "module"
 }

@@ -1,6 +1,6 @@
 import type { ArgumentOptions, ArgumentUsage } from './types.internal'
 import { assertNoMultipleVariadicArguments } from './helpers/assertNoMultipleVariadicArguments'
-import { assertNoOptionalOrVariadicArguments } from './helpers/assertNoOptionalOrVariadicArguments'
+import { assertAddRequiredArgumentAllowed } from './helpers/assertAddRequiredArgumentAllowed'
 import { assertNoVariadicArgument } from './helpers/assertNoVariadicArgument'
 import type { IArgument, ICommand } from './types'
 
@@ -26,13 +26,12 @@ export class Argument implements IArgument {
     this.name = name
     this.description = description || ''
     if (usage.startsWith('<')) {
+      this.required = true
       if (nameMatch.endsWith('...')) {
         assertNoMultipleVariadicArguments(cmd)
-        this.required = true
         this.variadic = true
       } else {
-        assertNoOptionalOrVariadicArguments(cmd)
-        this.required = true
+        assertAddRequiredArgumentAllowed(cmd)
       }
     } else if (usage.startsWith('[')) {
       if (nameMatch.endsWith('...')) {

@@ -5,12 +5,5 @@
   "private": true,
   "type": "module",
   "module": "src/index.ts",
-  "sideEffects": false,
-  "scripts": {
-    "indexts": "devkit clean index-ts",
-    "build": "node esbuild.mjs"
-  },
-  "devDependencies": {
-    "@bemoje/devkit": "0.1.0"
-  }
+  "sideEffects": false
 }

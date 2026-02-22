@@ -38,7 +38,7 @@ const packageJson = new Template({
     module: 'src/index.ts',
     sideEffects: false,
     scripts: {
-      indexts: 'devkit clean index-ts',
+      indexts: 'devkit fix-index-ts',
       build: 'node esbuild.mjs',
     },
     devDependencies: {

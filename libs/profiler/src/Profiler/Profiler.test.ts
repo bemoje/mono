@@ -1,6 +1,6 @@
 import colors from 'ansi-colors'
 import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
-import { FunctionProfiler } from '../FunctionProfiler/FunctionProfiler'
+import { FunctionProfiler } from '../internal/FunctionProfiler/FunctionProfiler'
 import { inspect } from 'node:util'
 import { Profiler } from './Profiler'
 

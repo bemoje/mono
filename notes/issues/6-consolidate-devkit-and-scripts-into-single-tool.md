@@ -126,9 +126,9 @@ Yes, absolutely - this is a significant restructuring effort. I've audited the f
 12. **Absorb util shared functions** into devkit's internal lib (these are the foundation: `getRepoRootDirpath`, `buildFile`, `buildLibsWorkspace`, `getAllWorkspace*`, etc.)
 13. **Absorb clean** → `devkit clean` subcommands:
     - `ensureVitestImports` → `devkit clean vitest-imports`
-    - `indextsWs` → `devkit clean index-ts` (already per-workspace)
-    - `removeEmptyWsFiles` → `devkit clean empty-files`
-    - `replaceBadDashChars` → `devkit clean dash-chars`
+    - `indextsWs` → `devkit fix-index-ts` (already per-workspace)
+    - `removeEmptyWsFiles` → `devkit fix-empty-files`
+    - `replaceBadDashChars` → `devkit fix-dash-chars`
 14. **Absorb insight** → `devkit insight` subcommands:
     - `filesWithMissingCoverage` → `devkit insight coverage`
     - `linesOfCode` → `devkit insight loc`
@@ -157,7 +157,7 @@ Yes, absolutely - this is a significant restructuring effort. I've audited the f
 23. **Update every lib's esbuild.mjs** - replace `import { buildLibsWorkspace } from buildLibsWorkspace.mjs'` with either:
     - a devkit CLI call: `devkit build <workspace>`, or
     - keep a minimal standalone esbuild.mjs wrapper that calls the now-built-in devkit function
-24. **Update every lib's package.json** - replace `"indexts": "node ../../s/clean/indextsWs.mjs"` with `node devkit.cjs clean index-ts`
+24. **Update every lib's package.json** - replace `"indexts": "node ../../s/clean/indextsWs.mjs"` with `node devkit.cjs fix-index-ts`
 25. **Update root package.json scripts** - replace all `node mono.` and `node devkit.cjs ...` references with unified `node devkit.cjs <command>` calls
 26. **Update tasks.json** - change run command
 27. **Update .github prompts** - update references to old script paths

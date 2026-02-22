@@ -1,0 +1,44 @@
+{
+  "templates": {
+    "commands": {
+      "openFileInIDE": "code {{filepath}}",
+      "addDependency": "yarn add {{dependency}}",
+      "addDevDependency": "yarn add {{dependency}} --dev",
+      "removeDependency": "yarn workspace {{workspace}} remove {{dependency}}"
+    },
+    "files": {
+      "eslintConfigJs": [
+        "import eslintConfig from '../../eslint.config.mjs'",
+        "export default [...eslintConfig]",
+        ""
+      ],
+      "packageJson": {
+        "name": "{{libraryName}}",
+        "version": "0.0.1",
+        "packageManager": "yarn@4.3.1",
+        "type": "module",
+        "private": true,
+        "module": "src/index.ts",
+        "sideEffects": false,
+        "scripts": {
+          "indexts": "devkit clean index-ts",
+          "build": "node esbuild.mjs"
+        },
+        "devDependencies": {}
+      },
+      "esbuild": [
+        "import { execSync } from 'node:child_process'",
+        "import upath from 'upath'",
+        "",
+        "const dirname = upath.basename(import.meta.dirname)",
+        "execSync(`npx @bemoje/devkit build lib ${dirname}`, { stdio: 'inherit' })",
+        ""
+      ],
+      "readmeMd": ["# {{libraryName}}", ""],
+      "tsconfigJson": {
+        "extends": "../../tsconfig.json"
+      },
+      "indexTs": [""]
+    }
+  }
+}

@@ -2,7 +2,7 @@ node_modules/
 .eslintcache
 .dist/
 **/dist/
-apps/devkit/dist/
+!apps/devkit/dist/
 .yarn/sdks
 *.wip.*
 *.wip/

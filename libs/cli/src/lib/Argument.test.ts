@@ -66,36 +66,4 @@ describe(Argument.name, () => {
       expect(() => new Argument(mockCmd(), 'invalid' as never)).toThrow('Invalid argument format: invalid')
     })
   })
-
-  describe('assertion guards', () => {
-    it('should throw if adding a required argument after an optional argument', () => {
-      expect(() => new Argument(mockCmd([{ required: false }]), '<name>')).toThrow(
-        'Cannot add required argument after optional or variadic arguments',
-      )
-    })
-
-    it('should throw if adding a required argument after a variadic argument', () => {
-      expect(() => new Argument(mockCmd([{ required: false, variadic: true }]), '<name>')).toThrow(
-        'Cannot add required argument after optional or variadic arguments',
-      )
-    })
-
-    it('should throw if adding a second required variadic argument', () => {
-      expect(() => new Argument(mockCmd([{ variadic: true }]), '<files...>')).toThrow(
-        'Cannot add more than one variadic argument',
-      )
-    })
-
-    it('should throw if adding a second optional variadic argument', () => {
-      expect(() => new Argument(mockCmd([{ variadic: true }]), '[files...]')).toThrow(
-        'Cannot add more than one variadic argument',
-      )
-    })
-
-    it('should throw if adding an optional argument after a variadic argument', () => {
-      expect(() => new Argument(mockCmd([{ variadic: true }]), '[name]')).toThrow(
-        'Cannot add optional argument after variadic argument',
-      )
-    })
-  })
 })

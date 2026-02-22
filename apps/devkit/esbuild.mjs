@@ -81,7 +81,7 @@ await esbuild.build({
   mainFields: ['module', 'main'],
   sourcemap: true,
   treeShaking: true,
-  external: ['esbuild'],
+  external: ['esbuild', 'type-fest', 'd'],
   banner: { js: '#!/usr/bin/env node' },
   logOverride: { 'empty-import-meta': 'silent' },
 })

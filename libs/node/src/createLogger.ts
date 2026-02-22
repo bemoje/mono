@@ -1,6 +1,5 @@
 import colors from 'ansi-colors'
 import { isPrimitive } from 'es-toolkit/predicate'
-import { inspect } from 'node:util'
 
 export interface Logger {
   start: (...args: unknown[]) => void
@@ -28,7 +27,6 @@ export function createLogger(name: string): Logger {
   const grayArgs = createColoredArgs(colors.gray)
   const cyanArgs = createColoredArgs(colors.cyan)
   const yellowArgs = createColoredArgs(colors.yellow)
-  const redArgs = createColoredArgs(colors.red)
 
   return {
     start: (...args: unknown[]) => console.info(...START, ...args),
@@ -37,8 +35,7 @@ export function createLogger(name: string): Logger {
     log: (...args: unknown[]) => console.log(...(NAME ? [NAME, ...args] : args)),
     warn: (...args: unknown[]) => console.warn(...WARN, ...yellowArgs(args)),
     debug: (...args: unknown[]) => console.debug(...DEBUG, ...cyanArgs(args)),
-    error: (...args: unknown[]) =>
-      console.error(inspect([NAME, ERROR, ...redArgs(args)]), { depth: null, colors: true }),
+    error: (...args: unknown[]) => args.forEach((arg) => console.error(...ERROR, arg)),
   }
 }
 

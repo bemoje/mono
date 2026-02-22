@@ -15,19 +15,19 @@ import { ValidatorError } from './ValidatorError'
  *
  * @example
  * ```ts
- * ensureThat(42, [isPositiveNumber, isInteger])
- * //=> returns 4
- * ensureThat(3.1, [isPositiveNumber, isInteger])
- * //=> throws ValidationError { cause: { isInteger: false } }
+ * ensureThat(42, Number.isInteger)
+ * //=> 42
+ * ensureThat(-3.142, [Number.isInteger, (n) => n > 0 ? true : 'Must be positive'])
+ * // => throws ValidationError { cause: { isInteger: false, [1]: false } }
  * ```
  */
 export function ensureThat<T extends Validator, V extends Parameters<T>[0]>(
   value: V,
   validator: T | T[],
-  options?: { negate?: boolean },
+  options?: { message?: string; negate?: boolean },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> extends ReturnType<T> ? Promise<V> : V {
-  const validators = [validator].flat() as T[]
+  const validators = [validator].flat(2) as T[]
   const retvals = validators.map((v) => v(value))
   const isAsync = retvals.some(isPromise)
 
@@ -45,15 +45,14 @@ function handleResult<T extends Validator, V extends Parameters<T>[0]>(
   validators: T[],
   retvals: ValidatorResult[],
   value: V,
-  options?: { negate?: boolean },
+  opts?: { message?: string; negate?: boolean },
 ) {
-  const negate = !options?.negate
+  const negate = !!opts?.negate
   const expected = !negate
   const causeEntries = validators
     .map((validator, i) => {
       const retval = retvals[i]
-      const expected = !options?.negate
-      const actual = retval === true
+      const actual = isString(retval) ? false : !!retval
       const valid = actual === expected
       if (!valid) {
         const res = isString(retval) ? retval.trim() : actual
@@ -67,11 +66,19 @@ function handleResult<T extends Validator, V extends Parameters<T>[0]>(
     return value as Parameters<T>[0]
   }
 
-  const message = `Expected [${validators.map((o, i) => o.name || `[${i}]`).join(', ')}] to return \`${expected}\` for input: \`${String(value).slice(0, 30)}\``
+  const message =
+    opts?.message?.trim() ||
+    [
+      `Expected [${validators.map((o, i) => o.name || `[${i}]`).join(', ')}]`,
+      `to return '${expected}'`,
+      `for input: '${String(value).slice(0, 30)}'`,
+    ]
+      .filter(Boolean)
+      .join(' ')
 
   throw new ValidatorError(message, {
     input: value,
-    negate: options?.negate,
+    negate: negate,
     cause: Object.fromEntries(causeEntries),
   })
 }

@@ -4,8 +4,8 @@
   "include": ["nsTypes", "nsExports", "classMembers"],
 
   "ignoreExportsUsedInFile": true,
-  "ignore": [".github/copilot/refactoring.mts"],
-  "ignoreDependencies": ["@mono/*", "esbuild"],
+  "ignore": [".github/copilot/refactoring.mts", "scripts/enablePrettyStackTrace.cjs"],
+  "ignoreDependencies": ["@mono/*", "tsconfig-paths"],
   "ignoreBinaries": ["cls"],
 
   "workspaces": {

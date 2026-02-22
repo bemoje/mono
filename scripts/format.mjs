@@ -31,6 +31,9 @@ const existentFiles = files
     return !file.startsWith('.dist/')
   })
   .filter((file) => {
+    return !file.includes('/dist/')
+  })
+  .filter((file) => {
     return fs.existsSync(file)
   })
 
@@ -39,7 +42,7 @@ if (existentFiles.length === 0) {
   process.exit(0)
 }
 
-const prettierCmd = `yarn prettier ${args.join(' ')} ${existentFiles.join(' ')}`
+const prettierCmd = `yarn prettier --ignore-unknown ${args.join(' ')} ${existentFiles.join(' ')}`
 
 // console.debug(`Running: ${prettierCmd}`)
 cp.execSync(prettierCmd, { stdio: 'inherit' })
