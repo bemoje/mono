@@ -233698,7 +233698,7 @@ var {
 } = import_index.default;
 
 // src/core/version.ts
-var version_default = `1.1.0`;
+var version_default = `1.1.1`;
 
 // src/core/description.ts
 var description_default = `Development utilities for the monorepo.`;
