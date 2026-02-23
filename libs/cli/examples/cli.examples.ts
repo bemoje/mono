@@ -26,9 +26,9 @@ export function subcommands(): void {
   const cmd = new Command('cli')
     .setVersion('1.0.0')
     .setDescription('Root command')
-    .addArgument('<input>', '', {})
-    .addArgument('[output]', '', { defaultValue: 'out.txt' })
-    .addArgument('<str...>')
+    .addArgument('<input>', {})
+    .addArgument('[output]', { defaultValue: 'out.txt' })
+    .addArgument('[str...]')
     .addOption('-f, --file-path [path...]')
     .addOption('-v, --verbose', '', { env: 'VERBOSE' })
 
@@ -56,3 +56,4 @@ export function subcommands(): void {
   console.log(subcmd.renderHelp({ noColor: false }))
   console.log('------------')
 }
+subcommands()

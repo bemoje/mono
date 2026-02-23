@@ -36,11 +36,16 @@
         "execSync(`npx @bemoje/devkit build lib ${dirname}`, { stdio: 'inherit' })",
         ""
       ],
-      "readmeMd": ["# {{libraryName}}", ""],
+      "readmeMd": [
+        "# {{libraryName}}",
+        ""
+      ],
       "tsconfigJson": {
         "extends": "../../tsconfig.json"
       },
-      "indexTs": [""]
+      "indexTs": [
+        ""
+      ]
     }
   }
 }

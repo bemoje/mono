@@ -63,7 +63,7 @@ export class Help implements IHelp {
   @lazyProp
   visibleArguments(): IArgument[] {
     // If there are any arguments with a description then return all the arguments.
-    if (this.cmd.arguments.find((argument: IArgument) => argument.description)) {
+    if (this.cmd.arguments.find((argument: IArgument) => !!argument.description)) {
       return [...this.cmd.arguments]
     }
     return []
@@ -211,7 +211,7 @@ export class Help implements IHelp {
       return extraDescription
     }
 
-    return option.description
+    return option.description ?? ''
   }
 
   /**
@@ -235,7 +235,7 @@ export class Help implements IHelp {
       }
       return extraDescription
     }
-    return argument.description
+    return argument.description ?? ''
   }
 
   /**

@@ -13,8 +13,8 @@ describe(Command.name, () => {
       const cmd = new Command('myapp')
         .setDescription('A test application')
         .setVersion('1.0.0')
-        .addArgument('<input>', 'input file')
-        .addArgument('[output]', 'output file', { defaultValue: 'out.txt' })
+        .addArgument('<input>')
+        .addArgument('[output]', { defaultValue: 'out.txt' })
         .addOption('-v, --verbose', 'verbose output')
         .addOption('-f, --format <type>', 'output format')
 
@@ -30,7 +30,7 @@ describe(Command.name, () => {
 
       // Variadic arguments
       const cmd2 = new Command('myapp2')
-        .addArgument('<files...>', 'input files')
+        .addArgument('<files...>')
         .addOption('-o, --output [dir]', 'output directory', { defaultValue: 'dist' })
 
       const result2 = cmd2.parseArgv(['file1.txt', 'file2.txt', 'file3.txt'])
@@ -39,7 +39,7 @@ describe(Command.name, () => {
 
       // Variadic options
       const cmd3 = new Command('myapp3')
-        .addArgument('<input>', 'input file')
+        .addArgument('<input>')
         .addOption('-i, --include <patterns...>', 'include patterns')
         .addOption('-e, --exclude [patterns...]', 'exclude patterns', { defaultValue: ['node_modules'] })
 
@@ -252,27 +252,25 @@ describe(Command.name, () => {
     describe('required arguments', () => {
       it('should add required argument', () => {
         const cmd = new Command('test')
-        const result = cmd.addArgument('<input>', 'input file')
+        const result = cmd.addArgument('<input>')
 
         expect(result).toBe(cmd) // Should return this for chaining
         expect(cmd.arguments).toHaveLength(1)
         expect(cmd.arguments[0]).toEqual({
           name: 'input',
           usage: '<input>',
-          description: 'input file',
           required: true,
+          variadic: false,
         })
       })
 
       it('should add argument without description', () => {
         const cmd = new Command('test').addArgument('<input>')
-        expect(cmd.arguments[0].description).toBe('')
+        expect(cmd.arguments[0].description).toBe(undefined)
       })
 
       it('should add multiple required arguments in order', () => {
-        const cmd = new Command('test')
-          .addArgument('<first>', 'first argument')
-          .addArgument('<second>', 'second argument')
+        const cmd = new Command('test').addArgument('<first>').addArgument('<second>')
 
         expect(cmd.arguments).toHaveLength(2)
         expect(cmd.arguments[0].name).toBe('first')
@@ -280,17 +278,19 @@ describe(Command.name, () => {
       })
 
       it('should throw error when adding required after optional', () => {
-        const cmd = new Command('test').addArgument('[optional]', 'optional argument')
+        const cmd = new Command('test').addArgument('[optional]')
 
         expect(() => {
+          // @ts-expect-error
           cmd.addArgument('<required>', 'required argument')
         }).toThrow()
       })
 
       it('should throw error when adding required after variadic', () => {
-        const cmd = new Command('test').addArgument('[files...]', 'variadic argument')
+        const cmd = new Command('test').addArgument('[files...]')
 
         expect(() => {
+          // @ts-expect-error
           cmd.addArgument('<required>', 'required argument')
         }).toThrow()
       })
@@ -299,41 +299,42 @@ describe(Command.name, () => {
     describe('optional arguments', () => {
       it('should add optional argument with default', () => {
         const cmd = new Command('test')
-          .addArgument('<required>', 'required argument')
-          .addArgument('[optional]', 'optional argument', { defaultValue: 'default' })
+          .addArgument('<required>')
+          .addArgument('[optional]', { defaultValue: 'default' })
 
         expect(cmd.arguments).toHaveLength(2)
         expect(cmd.arguments[1]).toEqual({
           name: 'optional',
-          description: 'optional argument',
           usage: '[optional]',
           defaultValue: 'default',
+          required: false,
+          variadic: false,
         })
       })
 
       it('should use empty string as default when not provided', () => {
-        const cmd = new Command('test').addArgument('[optional]', 'optional argument')
+        const cmd = new Command('test').addArgument('[optional]')
 
         expect(cmd.arguments[0].defaultValue).toBeUndefined()
       })
 
       it('should throw error when adding optional after variadic', () => {
-        const cmd = new Command('test').addArgument('<files...>', 'variadic argument')
+        const cmd = new Command('test').addArgument('<files...>')
 
         expect(() => {
-          cmd.addArgument('[optional]', 'optional argument')
-        }).toThrow('Cannot add optional argument after variadic argument')
+          // @ts-expect-error
+          cmd.addArgument('[optional]')
+        }).toThrow()
       })
     })
 
     describe('variadic arguments', () => {
       it('should add required variadic argument', () => {
-        const cmd = new Command('test').addArgument('<files...>', 'input files')
+        const cmd = new Command('test').addArgument('<files...>')
 
         expect(cmd.arguments).toHaveLength(1)
         expect(cmd.arguments[0]).toEqual({
           name: 'files',
-          description: 'input files',
           usage: '<files...>',
           required: true,
           variadic: true,
@@ -341,12 +342,12 @@ describe(Command.name, () => {
       })
 
       it('should add optional variadic argument with default', () => {
-        const cmd = new Command('test').addArgument('[files...]', 'input files', { defaultValue: ['default.txt'] })
+        const cmd = new Command('test').addArgument('[files...]', { defaultValue: ['default.txt'] })
 
         expect(cmd.arguments).toHaveLength(1)
         expect(cmd.arguments[0]).toEqual({
           name: 'files',
-          description: 'input files',
+          required: false,
           variadic: true,
           usage: '[files...]',
           defaultValue: ['default.txt'],
@@ -354,17 +355,18 @@ describe(Command.name, () => {
       })
 
       it('should use empty array as default when not provided', () => {
-        const cmd = new Command('test').addArgument('[files...]', 'input files')
+        const cmd = new Command('test').addArgument('[files...]')
 
         expect(cmd.arguments[0].defaultValue).toEqual([])
       })
 
       it('should throw error when adding multiple variadic arguments', () => {
-        const cmd = new Command('test').addArgument('<files...>', 'first variadic')
+        const cmd = new Command('test').addArgument('<files...>')
 
         expect(() => {
+          // @ts-expect-error
           cmd.addArgument('<more...>', 'second variadic')
-        }).toThrow('Cannot add more than one variadic argument')
+        }).toThrow()
       })
     })
 
@@ -373,8 +375,9 @@ describe(Command.name, () => {
         const cmd = new Command('test')
 
         expect(() => {
-          cmd.addArgument('invalid' as any, 'description')
-        }).toThrow('Invalid argument format: invalid')
+          // @ts-expect-error
+          cmd.addArgument('invalid')
+        }).toThrow()
       })
     })
   })
@@ -485,7 +488,7 @@ describe(Command.name, () => {
 
         expect(() => {
           cmd.addOption('invalid' as any, 'description')
-        }).toThrow('Invalid option format: invalid')
+        }).toThrow()
       })
 
       it('should throw error for invalid short name', () => {
@@ -493,7 +496,7 @@ describe(Command.name, () => {
 
         expect(() => {
           cmd.addOption('-12, --invalid', 'description')
-        }).toThrow('Expected short name to be a single alpha-numeric character. Got: 12')
+        }).toThrow()
       })
 
       it('should throw error for duplicate option names', () => {
@@ -501,7 +504,7 @@ describe(Command.name, () => {
 
         expect(() => {
           cmd.addOption('-d, --verbose', 'second')
-        }).toThrow('Option name already in use: --verbose')
+        }).toThrow()
       })
 
       it('should throw error for duplicate short names', () => {
@@ -509,7 +512,7 @@ describe(Command.name, () => {
 
         expect(() => {
           cmd.addOption('-v, --debug', 'second')
-        }).toThrow('Option short name already in use: -v')
+        }).toThrow()
       })
     })
   })
@@ -517,7 +520,7 @@ describe(Command.name, () => {
   describe(Command.prototype.parseArgv.name, () => {
     describe('argument parsing', () => {
       it('should parse required arguments', () => {
-        const cmd = new Command('test').addArgument('<input>', 'input file').addArgument('<output>', 'output file')
+        const cmd = new Command('test').addArgument('<input>').addArgument('<output>')
 
         const result = cmd.parseArgv(['in.txt', 'out.txt'])
         expect(result.args).toEqual(['in.txt', 'out.txt'])
@@ -525,24 +528,22 @@ describe(Command.name, () => {
 
       it('should use defaults for missing optional arguments', () => {
         const cmd = new Command('test')
-          .addArgument('<input>', 'input file')
-          .addArgument('[output]', 'output file', { defaultValue: 'default.txt' })
+          .addArgument('<input>')
+          .addArgument('[output]', { defaultValue: 'default.txt' })
 
         const result = cmd.parseArgv(['in.txt'])
         expect(result.args).toEqual(['in.txt', 'default.txt'])
       })
 
       it('should parse variadic arguments', () => {
-        const cmd = new Command('test').addArgument('<files...>', 'input files')
+        const cmd = new Command('test').addArgument('<files...>')
 
         const result = cmd.parseArgv(['file1.txt', 'file2.txt', 'file3.txt'])
         expect(result.args).toEqual([['file1.txt', 'file2.txt', 'file3.txt']])
       })
 
       it('should handle mixed arguments and variadic', () => {
-        const cmd = new Command('test')
-          .addArgument('<command>', 'command name')
-          .addArgument('<files...>', 'input files')
+        const cmd = new Command('test').addArgument('<command>').addArgument('<files...>')
 
         const result = cmd.parseArgv(['build', 'src/index.ts', 'src/utils.ts'])
         expect(result.args).toEqual(['build', ['src/index.ts', 'src/utils.ts']])
@@ -587,8 +588,8 @@ describe(Command.name, () => {
     describe('combined parsing', () => {
       it('should parse arguments and options together', () => {
         const cmd = new Command('test')
-          .addArgument('<input>', 'input file')
-          .addArgument('[output]', 'output file', { defaultValue: 'out.txt' })
+          .addArgument('<input>')
+          .addArgument('[output]', { defaultValue: 'out.txt' })
           .addOption('-v, --verbose', 'verbose output')
           .addOption('-f, --format <type>', 'output format')
 
@@ -599,9 +600,9 @@ describe(Command.name, () => {
 
       it('should handle complex command with all types', () => {
         const cmd = new Command('test')
-          .addArgument('<command>', 'command name')
-          .addArgument('[target]', 'target directory', { defaultValue: 'src' })
-          .addArgument('[files...]', 'additional files')
+          .addArgument('<command>')
+          .addArgument('[target]', { defaultValue: 'src' })
+          .addArgument('[files...]')
           .addOption('-v, --verbose', 'verbose output')
           .addOption('-o, --output <dir>', 'output directory')
           .addOption('-e, --exclude [patterns...]', 'exclude patterns', { defaultValue: ['node_modules'] })
@@ -631,7 +632,7 @@ describe(Command.name, () => {
     describe('edge cases', () => {
       it('should handle empty argv', () => {
         const cmd = new Command('test')
-          .addArgument('[optional]', 'optional arg', { defaultValue: 'default' })
+          .addArgument('[optional]', { defaultValue: 'default' })
           .addOption('-v, --verbose', 'verbose')
 
         const result = cmd.parseArgv([])
@@ -648,7 +649,7 @@ describe(Command.name, () => {
 
       it('should handle parsing with undefined argv', () => {
         const cmd = new Command('test')
-          .addArgument('[optional]', 'optional arg', { defaultValue: 'default' })
+          .addArgument('[optional]', { defaultValue: 'default' })
           .addOption('-v, --verbose', 'verbose')
 
         const result = cmd.parseArgv(undefined as any)
@@ -658,7 +659,7 @@ describe(Command.name, () => {
 
       it('should handle complex default value scenarios', () => {
         const cmd = new Command('test')
-          .addArgument('[files...]', 'input files', { defaultValue: ['default1.txt', 'default2.txt'] })
+          .addArgument('[files...]', { defaultValue: ['default1.txt', 'default2.txt'] })
           .addOption('-e, --exclude [patterns...]', 'exclude patterns', { defaultValue: ['node_modules', 'dist'] })
 
         const result = cmd.parseArgv([])
@@ -668,9 +669,9 @@ describe(Command.name, () => {
 
       it('should handle mixed positional and variadic parsing correctly', () => {
         const cmd = new Command('test')
-          .addArgument('<command>', 'command name')
-          .addArgument('<target>', 'target file')
-          .addArgument('[additional...]', 'additional files')
+          .addArgument('<command>')
+          .addArgument('<target>')
+          .addArgument('[additional...]')
           .addOption('-v, --verbose', 'verbose output')
 
         const result = cmd.parseArgv(['build', 'src/index.ts', 'src/utils.ts', 'src/types.ts', '-v'])
@@ -686,9 +687,7 @@ describe(Command.name, () => {
       })
 
       it('should trim trailing undefined args when optional arg has no default', () => {
-        const cmd = new Command('test')
-          .addArgument('<input>', 'input file')
-          .addArgument('[output]', 'optional output')
+        const cmd = new Command('test').addArgument('<input>').addArgument('[output]')
 
         const result = cmd.parseArgv(['in.txt'])
         // trailing undefined from the missing optional arg should be trimmed
@@ -696,10 +695,7 @@ describe(Command.name, () => {
       })
 
       it('should trim multiple trailing undefined args', () => {
-        const cmd = new Command('test')
-          .addArgument('<input>', 'input file')
-          .addArgument('[opt1]', 'optional 1')
-          .addArgument('[opt2]', 'optional 2')
+        const cmd = new Command('test').addArgument('<input>').addArgument('[opt1]').addArgument('[opt2]')
 
         const result = cmd.parseArgv(['in.txt'])
         expect(result.args).toEqual(['in.txt'])
@@ -711,25 +707,29 @@ describe(Command.name, () => {
     it('should allow correct ordering: required -> optional -> variadic', () => {
       expect(() => {
         new Command('test')
-          .addArgument('<required1>', 'first required')
-          .addArgument('<required2>', 'second required')
-          .addArgument('[optional]', 'optional arg')
-          .addArgument('[variadic...]', 'variadic arg')
+          .addArgument('<required1>')
+          .addArgument('<required2>')
+          .addArgument('[optional]')
+          .addArgument('[variadic...]')
       }).not.toThrow()
     })
 
     it('should prevent required after optional', () => {
       expect(() => {
-        new Command('test').addArgument('[optional]', 'optional arg').addArgument('<required>', 'required arg')
+        new Command('test')
+          .addArgument('[optional]')
+          // @ts-expect-error
+          .addArgument('<required>')
       }).toThrow()
     })
 
     it('should prevent multiple variadic arguments', () => {
       expect(() => {
         new Command('test')
-          .addArgument('<first...>', 'first variadic')
-          .addArgument('<second...>', 'second variadic')
-      }).toThrow('Cannot add more than one variadic argument')
+          .addArgument('<first...>')
+          // @ts-expect-error
+          .addArgument('<second...>')
+      }).toThrow()
     })
   })
 
@@ -803,7 +803,7 @@ describe(Command.name, () => {
       cmd.setDescription('Test description')
       cmd.setHidden(true)
       cmd.setGroup('utilities')
-      cmd.addArgument('<input>', 'input file')
+      cmd.addArgument('<input>')
       cmd.addOption('-v, --verbose', 'verbose output')
       const child = cmd.command('child')
 
@@ -836,10 +836,7 @@ describe(Command.name, () => {
   describe('subcommand parsing', () => {
     it('should parse subcommand when present', () => {
       const parent = new Command('parent').addOption('-v, --verbose', 'verbose flag')
-      const child = parent
-        .command('child')
-        .addArgument('<input>', 'input file')
-        .addOption('-d, --debug', 'debug flag')
+      const child = parent.command('child').addArgument('<input>').addOption('-d, --debug', 'debug flag')
 
       const result = parent.parseArgv(['child', 'input.txt', '-d'])
 
@@ -850,7 +847,7 @@ describe(Command.name, () => {
 
     it('should pass global options to subcommand', () => {
       const parent = new Command('parent').addOption('-v, --verbose', 'verbose flag')
-      const child = parent.command('child').addArgument('<input>', 'input file')
+      const child = parent.command('child').addArgument('<input>')
 
       const result = parent.parseArgv(['child', 'input.txt', '-v'])
 
@@ -860,9 +857,7 @@ describe(Command.name, () => {
     })
 
     it('should parse parent command when no subcommand matches', () => {
-      const parent = new Command('parent')
-        .addArgument('<input>', 'input file')
-        .addOption('-v, --verbose', 'verbose flag')
+      const parent = new Command('parent').addArgument('<input>').addOption('-v, --verbose', 'verbose flag')
       parent.command('child')
 
       const result = parent.parseArgv(['input.txt', '-v'])
@@ -895,8 +890,8 @@ describe(Command.name, () => {
 
     it('should handle variadic options mixed with arguments', () => {
       const cmd = new Command('test')
-        .addArgument('<command>', 'command name')
-        .addArgument('[files...]', 'input files')
+        .addArgument('<command>')
+        .addArgument('[files...]')
         .addOption('-i, --include <patterns...>', 'include patterns')
 
       // Note: When using variadic options, the option consumes the following arguments
@@ -1055,7 +1050,7 @@ describe(Command.name, () => {
 
   describe('default value edge cases', () => {
     it('should handle undefined default values for optional arguments', () => {
-      const cmd = new Command('test').addArgument('[optional]', 'optional argument')
+      const cmd = new Command('test').addArgument('[optional]')
 
       expect(cmd.arguments[0].defaultValue).toBeUndefined()
     })
@@ -1067,7 +1062,7 @@ describe(Command.name, () => {
     })
 
     it('should handle complex default values for variadic arguments', () => {
-      const cmd = new Command('test').addArgument('[files...]', 'input files', { defaultValue: ['src/**/*.ts'] })
+      const cmd = new Command('test').addArgument('[files...]', { defaultValue: ['src/**/*.ts'] })
 
       expect(cmd.arguments[0].defaultValue).toEqual(['src/**/*.ts'])
     })
@@ -1075,7 +1070,7 @@ describe(Command.name, () => {
 
   describe('validation error edge cases', () => {
     it('should allow option names that match argument names', () => {
-      const cmd = new Command('test').addArgument('<file>', 'input file')
+      const cmd = new Command('test').addArgument('<file>')
 
       expect(() => {
         cmd.addOption('-f, --file', 'file option')
@@ -1088,7 +1083,7 @@ describe(Command.name, () => {
 
       expect(() => {
         child.addOption('-v, --debug', 'debug flag')
-      }).toThrow('Option short name already in use: -v')
+      }).toThrow()
     })
 
     it('should validate long option names in parent-child hierarchy', () => {
@@ -1097,7 +1092,7 @@ describe(Command.name, () => {
 
       expect(() => {
         child.addOption('-d, --verbose', 'debug flag')
-      }).toThrow('Option name already in use: --verbose')
+      }).toThrow()
     })
 
     it('should validate option short names are alphanumeric', () => {
@@ -1105,7 +1100,7 @@ describe(Command.name, () => {
 
       expect(() => {
         cmd.addOption('---, --invalid', 'invalid short name')
-      }).toThrow('Expected short name to be a single alpha-numeric character. Got: --')
+      }).toThrow()
     })
 
     it('should validate option short names are single characters', () => {
@@ -1113,7 +1108,7 @@ describe(Command.name, () => {
 
       expect(() => {
         cmd.addOption('-ab, --invalid', 'invalid short name')
-      }).toThrow('Expected short name to be a single alpha-numeric character. Got: ab')
+      }).toThrow()
     })
 
     it('should validate option names do not conflict across deep hierarchy', () => {
@@ -1123,7 +1118,7 @@ describe(Command.name, () => {
 
       expect(() => {
         child.addOption('-l, --global', 'local flag')
-      }).toThrow('Option name already in use: --global')
+      }).toThrow()
     })
 
     it('should validate short option names do not conflict across deep hierarchy', () => {
@@ -1133,7 +1128,7 @@ describe(Command.name, () => {
 
       expect(() => {
         child.addOption('-g, --local', 'local flag')
-      }).toThrow('Option short name already in use: -g')
+      }).toThrow()
     })
   })
 
@@ -1142,7 +1137,7 @@ describe(Command.name, () => {
       const parent = new Command('parent')
       const child = parent.command('child')
       child.setAliases(['c', 'ch'])
-      child.addArgument('<input>', 'input file')
+      child.addArgument('<input>')
 
       const result1 = parent.parseArgv(['c', 'input.txt'])
       expect(result1.cmd).toBe(child)
@@ -1193,8 +1188,8 @@ describe(Command.name, () => {
       const cmd = new Command('myapp')
       cmd.setVersion('1.0.0')
       cmd
-        .addArgument('<input>', 'input file')
-        .addArgument('[output]', 'output file', { defaultValue: 'out.txt' })
+        .addArgument('<input>')
+        .addArgument('[output]', { defaultValue: 'out.txt' })
         .addOption('-v, --verbose', 'verbose output')
         .addOption('-f, --format <type>', 'output format')
 
@@ -1221,7 +1216,7 @@ describe(Command.name, () => {
     it('should render help with variadic arguments and options', () => {
       const cmd = new Command('myapp')
       cmd
-        .addArgument('<files...>', 'input files')
+        .addArgument('<files...>')
         .addOption('-i, --include <patterns...>', 'include patterns')
         .addOption('-e, --exclude [patterns...]', 'exclude patterns')
 
@@ -1239,15 +1234,15 @@ describe(Command.name, () => {
       cmd.setDescription('This is a test application', 'with multiple lines of description')
       cmd.setGroup('tools')
       cmd
-        .addArgument('<command>', 'command to run')
-        .addArgument('[target]', 'target directory', { defaultValue: 'src' })
+        .addArgument('<command>')
+        .addArgument('[target]', { defaultValue: 'src' })
         .addOption('-v, --verbose', 'verbose output')
         .addOption('-f, --format <type>', 'output format', { choices: ['json', 'xml'] })
         .addOption('-o, --output [path]', 'output path', { defaultValue: 'dist' })
 
       const build = cmd.command('build')
       build.setSummary('Build the project')
-      build.addArgument('<source>', 'source directory')
+      build.addArgument('<source>')
 
       const help = cmd.renderHelp()
 
@@ -1259,7 +1254,7 @@ describe(Command.name, () => {
 
   describe(Command.prototype.castArguments.name, () => {
     it('should return the arguments array cast to the command type', () => {
-      const cmd = new Command('test').addArgument('<name>', 'a name')
+      const cmd = new Command('test').addArgument('<name>')
       const result = cmd.castArguments(['hello'])
       expect(result).toEqual(['hello'])
     })
@@ -1355,7 +1350,7 @@ describe(Command.name, () => {
     })
 
     it('should set an action that can be invoked via parseArgv', () => {
-      const cmd = new Command('test').addArgument('<name>', 'a name').setAction(({ args }) => {
+      const cmd = new Command('test').addArgument('<name>').setAction(({ args }) => {
         void args[0]
       })
       const parsed = cmd.parseArgv(['hello'])

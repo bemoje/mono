@@ -1,17 +1,90 @@
+import type { WithRequired } from '@mono/types'
 import type { Command } from './Command'
 import type { Arguments, IArgument, ICommand, IOption, Options } from './types'
-import type { Simplify, AllUnionFields } from 'type-fest'
+import type { Simplify, AllUnionFields, SetFieldType, SetRequired } from 'type-fest'
+
+/** required variadic argument */
+export type RequiredVariadicArgumentUsage = `<${string}...>`
+
+/** optional variadic argument */
+export type OptionalVariadicArgumentUsage = `[${string}...]`
+
+/** required argument */
+export type RequiredArgumentUsage = `<${string}>`
+
+/** optional argument */
+export type OptionalArgumentUsage = `[${string}]`
 
 /** Union of all argument usage pattern types */
 export type ArgumentUsage =
-  // required argument
-  | `<${string}>`
-  // optional argument
-  | `[${string}]`
-  // required variadic argument
-  | `<${string}...>`
-  // optional variadic argument
-  | `[${string}...]`
+  | RequiredVariadicArgumentUsage
+  | OptionalVariadicArgumentUsage
+  | RequiredArgumentUsage
+  | OptionalArgumentUsage
+
+export type InferArgumentName<T extends ArgumentUsage> = T extends `<${infer Name}...>`
+  ? Name
+  : T extends `<${infer Name}>`
+    ? Name
+    : T extends `[${infer Name}...]`
+      ? Name
+      : T extends `[${infer Name}]`
+        ? Name
+        : never
+
+export type InferArgumentRequired<T extends ArgumentUsage> = T extends RequiredArgumentUsage
+  ? true
+  : T extends OptionalArgumentUsage
+    ? false
+    : never
+
+export type InferArgumentVariadic<T extends ArgumentUsage> = T extends RequiredVariadicArgumentUsage
+  ? true
+  : T extends OptionalVariadicArgumentUsage
+    ? true
+    : T extends RequiredArgumentUsage
+      ? false
+      : T extends OptionalArgumentUsage
+        ? false
+        : never
+
+export type InferArgumentDefaultValue<T extends ArgumentUsage> = T extends OptionalVariadicArgumentUsage
+  ? string[]
+  : T extends OptionalArgumentUsage
+    ? string
+    : never
+
+export type InferArgument<T extends ArgumentUsage> = Simplify<
+  {
+    usage: T
+    name: InferArgumentName<T>
+    description: string
+    choices?: string[]
+  } & (T extends RequiredVariadicArgumentUsage
+    ? {
+        required: true
+        variadic: true
+        defaultValue?: undefined | never
+        defaultValueDescription?: undefined | never
+      }
+    : T extends OptionalVariadicArgumentUsage
+      ? { required: false; variadic: true; defaultValue: string[]; defaultValueDescription?: string }
+      : T extends RequiredArgumentUsage
+        ? {
+            required: true
+            variadic: false
+            defaultValue?: undefined | never
+            defaultValueDescription?: undefined | never
+          }
+        : T extends OptionalArgumentUsage
+          ? { required: false; variadic: false; defaultValue?: string; defaultValueDescription?: string }
+          : never)
+>
+
+export type InferArgumentOptions<T extends ArgumentUsage> = Omit<
+  InferArgument<T>,
+  'usage' | 'name' | 'required' | 'variadic'
+>
 
 /** Required positional argument descriptor. Usage: `<name>` */
 export type IRequiredArgument = ArgOpts
@@ -21,6 +94,12 @@ export type IOptionalArgument = ArgOpts<{
   defaultValue?: string
   defaultValueDescription?: string
 }>
+
+export type IOptionalArgumentWithDefault = SetFieldType<
+  SetRequired<IOptionalArgument, 'defaultValue'>,
+  'defaultValue',
+  string
+>
 
 /** Required variadic argument accepting variadic values. Usage: `<name...>` */
 export type IRequiredVariadicArgument = ArgOpts
@@ -33,16 +112,28 @@ export type IOptionalVariadicArgument = ArgOpts<{
 
 /** Helper type for extracting argument configuration options */
 export type ArgOpts<T extends object = object> = Simplify<
-  Omit<
-    IArgument,
-    'name' | 'description' | 'required' | 'variadic' | 'usage' | 'defaultValue' | 'defaultValueDescription'
-  > &
-    T
+  Omit<IArgument, 'name' | 'required' | 'variadic' | 'usage' | 'defaultValue' | 'defaultValueDescription'> & T
 >
 
 export type ArgumentOptions = AllUnionFields<
   IRequiredArgument | IOptionalArgument | IRequiredVariadicArgument | IOptionalVariadicArgument
 >
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type InferAddArgumentUsage<T extends Command<any, any>> =
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  T extends Command<infer A, any>
+    ? A extends string[]
+      ? ArgumentUsage
+      : A extends (string | (string | undefined))[]
+        ? OptionalArgumentUsage | OptionalVariadicArgumentUsage
+        : never
+    : never
+
+export type InferAddArgumentUsageSpecific<T extends Command<any, any>, Usage extends ArgumentUsage> =
+  Usage extends InferAddArgumentUsage<T> ? Usage : never
+
+export type InferNewArgument<Opts> = Opts extends { choices: infer C extends string[] } ? C[number] : string
 
 /** Union of all option usage pattern types */
 export type OptionUsage<Long extends string> =

@@ -5,21 +5,23 @@ import { strFirstCharToUpperCase } from '@mono/string'
 import colors from 'ansi-colors'
 import type { CamelCase, SetFieldType, Simplify } from 'type-fest'
 import { parseArgs } from 'node:util'
-import { Argument } from './Argument'
 import { Help } from './Help'
 import { findSubcommand } from './helpers/findSubcommand'
 import { getCommandAncestors } from './helpers/getCommandAncestors'
 import { lazyProp } from '@mono/decorators'
 import { Option } from './Option'
 import { findOption } from './helpers/findOption'
-import type { Arguments, ICommand, Options } from './types'
+import type { Arguments, IArgument, ICommand, Options } from './types'
 import type {
   ActionHandler,
-  ArgumentOptions,
-  ArgumentUsage,
   IBooleanOption,
+  InferAddArgumentUsage,
+  InferAddArgumentUsageSpecific,
+  InferArgumentOptions,
+  InferNewArgument,
   InferNewOptions,
   IOptionalArgument,
+  IOptionalArgumentWithDefault,
   IOptionalOption,
   IOptionalVariadicArgument,
   IOptionalVariadicOption,
@@ -56,7 +58,7 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
   /** Category for organizing related commands in help output */
   group?: string
   /** Positional arguments this command accepts */
-  arguments: Argument[]
+  arguments: IArgument[]
   /** CLI options (flags) this command recognizes */
   options: Option[]
   /** Subcommands registered with this command */
@@ -78,6 +80,8 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
 
     // Make parent non-enumerable to avoid circular references for toJSON compatibility
     Object.defineProperty(this, 'parent', { value: parent, enumerable: false })
+
+    this.addHelpOption()
   }
 
   @lazyProp
@@ -174,36 +178,75 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     return sub as any
   }
 
-  /** Add optional argument with default, eg.: `[name]` */
-  addArgument(
-    usage: `[${string}]`,
-    description: string,
-    options: SetFieldType<WithRequired<IOptionalArgument, 'defaultValue'>, 'defaultValue', string>,
-  ): Command<[...A, string], O>
   /** Add required variadic argument, eg.: `<name...>` */
-  addArgument(
-    usage: `<${string}...>`,
-    description?: string,
-    options?: IRequiredVariadicArgument,
-  ): Command<[...A, string[]], O>
-  /** Add optional variadic argument with defaults, eg.: `[name...]` */
-  addArgument(
-    usage: `[${string}...]`,
-    description?: string,
-    options?: IOptionalVariadicArgument,
-  ): Command<[...A, string[]], O>
-  /** Add optional argument, eg.: `[name]` */
-  addArgument(
-    usage: `[${string}]`,
-    description?: string,
-    options?: SetFieldType<IOptionalArgument, 'defaultValue', undefined | never>,
-  ): Command<[...A, string | undefined], O>
-  /** Add required argument, eg.: `<name>` */
-  addArgument(usage: `<${string}>`, description?: string, options?: IRequiredArgument): Command<[...A, string], O>
+  addArgument<const Opts extends IRequiredVariadicArgument>(
+    usage: InferAddArgumentUsageSpecific<this, `<${string}...>`>,
+    options?: Opts,
+  ): Command<[...A, InferNewArgument<Opts>[]], O>
 
-  addArgument(usage: ArgumentUsage, description?: string, options?: Partial<ArgumentOptions>) {
-    const ins = new Argument(this, usage, description ?? '', options)
-    this.arguments.push(ins)
+  /** Add required argument, eg.: `<name>` */
+  addArgument<const Opts extends IRequiredArgument>(
+    usage: InferAddArgumentUsageSpecific<this, `<${string}>`>,
+    options?: Opts,
+  ): Command<[...A, InferNewArgument<Opts>], O>
+
+  /** Add optional variadic argument with defaults, eg.: `[name...]` */
+  addArgument<const Opts extends IOptionalVariadicArgument>(
+    usage: InferAddArgumentUsageSpecific<this, `[${string}...]`>,
+    options?: Opts,
+  ): Command<[...A, InferNewArgument<Opts>[]], O>
+
+  /** Add optional argument with default, eg.: `[name]` */
+  addArgument<const Opts extends IOptionalArgumentWithDefault>(
+    usage: InferAddArgumentUsageSpecific<this, `[${string}]`>,
+    options: Opts,
+  ): Command<[...A, InferNewArgument<Opts>], O>
+
+  /** Add optional argument, eg.: `[name]` */
+  addArgument<const Opts extends IOptionalArgument>(
+    usage: InferAddArgumentUsageSpecific<this, `[${string}]`>,
+    options?: Opts,
+  ): Command<[...A, InferNewArgument<Opts> | undefined], O>
+
+  // Implementation
+  addArgument<Usage extends InferAddArgumentUsage<this>>(usage: Usage, options?: InferArgumentOptions<Usage>) {
+    if (!/^<(.*?)>$|^\[(.*?)\]$/.test(usage)) {
+      throw new Error(`Invalid argument format: ${usage}`)
+    }
+
+    const name = usage.slice(1, -1).replace(/\.\.\.$/, '')
+    const required = usage.startsWith('<')
+    const variadic = usage.slice(0, -1).endsWith('...')
+
+    const prevArg = this.arguments[this.arguments.length - 1]
+
+    if (prevArg?.variadic) {
+      throw new Error(`Cannot add argument ${usage} after variadic argument ${prevArg.usage}`)
+    }
+
+    if (required && prevArg && !prevArg?.required) {
+      throw new Error(`Cannot add required argument ${usage} after optional argument ${prevArg?.usage || 'none'}`)
+    }
+
+    if (required && prevArg?.defaultValue) {
+      throw new Error(
+        `Cannot add required argument ${usage} after optional argument with default value ${prevArg.usage}`,
+      )
+    }
+
+    const arg: IArgument = {
+      usage,
+      name,
+      required,
+      variadic,
+      ...options,
+    }
+
+    if (variadic && !required && !arg.defaultValue) {
+      arg.defaultValue = [] as string[]
+    }
+
+    this.arguments.push(arg)
     return this as never
   }
 

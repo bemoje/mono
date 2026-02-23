@@ -8,7 +8,7 @@ export type Options = Record<string, undefined | boolean | string | string[]>
 export interface IArgument {
   usage: string
   name: string
-  description: string
+  description?: string
   required?: boolean
   variadic?: boolean
   choices?: string[]
