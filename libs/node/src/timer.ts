@@ -14,7 +14,7 @@ export function timer<T>(
   const [name, description] = Array.isArray(arg) ? arg : [arg, '']
   const log = createLogger(name)
 
-  if (name) {
+  if (name && description) {
     log.start(description)
   }
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { arrLast, arrRemoveDuplicates } from '@mono/array'
 import { setName } from '@mono/fn'
-import { entriesOf, objSortKeys, valuesOf } from '@mono/object'
+import { entriesOf, filterObject, objSortKeys, valuesOf } from '@mono/object'
 import { strFirstCharToUpperCase } from '@mono/string'
 import colors from 'ansi-colors'
 import type { CamelCase, SetFieldType, Simplify, SetRequired } from 'type-fest'
@@ -10,6 +10,7 @@ import { Help } from './Help'
 import { findCommand } from './helpers/findCommand'
 import { getCommandAncestors } from './helpers/getCommandAncestors'
 import { lazyProp } from '@mono/decorators'
+import { timer } from '@mono/node'
 import { findOption } from './helpers/findOption'
 import type { Arguments, Argument, ICommand, Option, Options, SubCommands } from './types'
 import type {
@@ -33,6 +34,7 @@ import type {
   OptionUsage,
   ParseArgvResult,
   HookDefinition,
+  HookActionHandler,
   HookPredicate,
 } from './types.internal'
 import { parseOptionFlags } from './helpers/parseOptionFlags'
@@ -45,11 +47,11 @@ import { getCommandAndAncestors } from './helpers/getCommandAndAncestors'
 export class Command<
   A extends Arguments = [],
   O extends Options = { help?: boolean; debug?: boolean },
-  Subs extends SubCommands = {},
+  Subs extends SubCommands = SubCommands,
 > implements ICommand
 {
   /** Parent command in the hierarchy, undefined for root command */
-  parent?: Command<Arguments, Options, SubCommands>
+  parent?: Command<Arguments, Options & O>
   /** The command name used to invoke it */
   name: string
   /** Semantic version string displayed by --version flag */
@@ -71,9 +73,9 @@ export class Command<
   /** Subcommands registered with this command */
   commands: Subs
   /** Main action handler executed when command is invoked */
-  protected action: ActionHandler<A, O, Subs>
+  protected action?: ActionHandler<A, O, Subs>
   /** Option-driven actions (e.g., --help, --version) executed when their conditions match */
-  protected hooks: HookDefinition<A, O, Subs>[]
+  protected hooks: HookDefinition<Arguments, Options & O>[]
 
   constructor(name: string, parent?: ICommand) {
     this.name = name
@@ -82,7 +84,6 @@ export class Command<
     this.arguments = []
     this.options = []
     this.commands = {} as Subs
-    this.action = setName('help', ({ cmd }) => console.log(cmd.renderHelp()))
     this.hooks = []
 
     // Make parent non-enumerable to avoid circular references for toJSON compatibility
@@ -90,15 +91,15 @@ export class Command<
 
     if (!parent) {
       this.addOption('-D, --debug', { description: 'Display debug information' }) //
-        .addHook('debug', ({ cmd, ...data }) => {
+        .addOptionHook('debug', ({ cmd, ...data }) => {
           console.debug(inspect(cmd, { depth: 1, colors: true }))
           console.debug(inspect(data, { depth: 3, colors: true }))
         })
 
       this.addOption('-h, --help', { description: 'Display help information' }) //
-        .addHook('help', ({ cmd }) => {
+        .addOptionHook('help', ({ cmd }) => {
           console.log(cmd.renderHelp())
-          process.exit(0)
+          this.exit(0)
         })
     }
   }
@@ -155,12 +156,9 @@ export class Command<
     this.version = version
     if (findOption(this, 'version')) return this
     return this.addOption('-V, --version', { description: 'Display semver version' }) //
-      .addHook('version', ({ cmd }) => {
-        const version = getCommandAndAncestors(cmd).find((c) => c.version)?.version
-        if (version) {
-          console.log(version)
-          process.exit(0)
-        }
+      .addOptionHook('version', ({ cmd }) => {
+        console.log(getCommandAndAncestors(cmd).find((c) => c.version)?.version)
+        this.exit(0)
       })
   }
 
@@ -192,8 +190,13 @@ export class Command<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   command<Name extends string, Sub extends Command<any, any, any> = Command<[], O, {}>>(
     name: Name,
-    cb?: (cmd: Command<[], O>, parent: this) => Sub,
+    cb?: (cmd: Command<[], O, {}>, parent: this) => Sub,
   ): Sub {
+    if (this.arguments.length) {
+      throw new Error(
+        `Cannot add subcommand "${name}" to "${this.name}" because it already has arguments defined.`,
+      )
+    }
     const sub = this.createSubcommand(name)
     const inherit = this.options
     sub.options.push(...inherit)
@@ -230,7 +233,7 @@ export class Command<
   addCommand<Name extends string, Sub extends Command<any, any, any> = Command<[], O, {}>>(
     name: Name,
     cb: (cmd: Command<[], O, {}>, parent: this) => Sub,
-  ): Command<A, O, Subs & { [K in Name]: Sub }> {
+  ): Command<A, O, (SubCommands extends Subs ? {} : Subs) & { [K in Name]: Sub }> {
     this.command(name, cb)
     return this as never
   }
@@ -402,6 +405,8 @@ export class Command<
 
     // If defined, set environment variable as defaultValue
     if (ins.env && ins.defaultValue === undefined && typeof process.env[ins.env] === 'string') {
+      ins.required = false
+      ins.flags = ins.flags.replace('<', '[').replace('>', ']')
       if (ins.type === 'boolean') {
         ins.defaultValue = /^(t(rue)?|y(es)?|1)$/i.test(process.env[ins.env]!)
       } else if (ins.variadic) {
@@ -418,12 +423,12 @@ export class Command<
   }
 
   /** Parses command-line arguments with subcommand support and type-safe validation. */
-  parseArgv(argv: string[] = process.argv.slice(2)): ParseArgvResult<Arguments, Options & O, SubCommands> {
+  parseArgv(argv: string[] = process.argv.slice(2)): ParseArgvResult<Arguments, Options & O> {
     // navigate to subcommand if found
     const sub = findCommand(this, argv[0])
     if (sub) {
       // recurse into subcommand
-      return sub.parseArgv(argv.slice(1)) as unknown as ParseArgvResult<Arguments, Options & O, SubCommands>
+      return sub.parseArgv(argv.slice(1)) as unknown as ParseArgvResult<Arguments, Options & O>
     }
 
     // Map long option names to their camelCased names
@@ -491,22 +496,14 @@ export class Command<
 
     // Merge default option values with parsed options
     for (const option of this.options) {
-      Reflect.set(parsed.values, option.name, parsed.values[option.name] ?? option.defaultValue)
+      if (option.defaultValue !== undefined && option.name in parsed.values) {
+        ;(parsed.values as Record<string, unknown>)[option.name] ??= option.defaultValue
+      }
     }
 
-    // sort options by value: defined -> true -> false -> undefined
+    // sort options by value: defined -> true -> false
     parsed.values = objSortKeys(parsed.values, (a, b) => {
-      return a[1] === undefined
-        ? 1
-        : a[1] === false
-          ? 1
-          : b[1] === false
-            ? -1
-            : a[1] === true
-              ? 1
-              : b[1] === true
-                ? -1
-                : 0
+      return a[1] === false ? 1 : b[1] === false ? -1 : a[1] === true ? 1 : b[1] === true ? -1 : 0
     })
 
     // Handle positional arguments
@@ -528,41 +525,37 @@ export class Command<
 
     // validation
     const errors = this.arguments
-      .map((argDef, index) => {
-        const arg = parsedArguments[index]
-        if (argDef.required) {
-          if (argDef.variadic ? Array.isArray(arg) && arg.length === 0 : arg === undefined) {
-            return `Missing required argument [${index}]: ${argDef.usage}`
+      .map((def, index) => {
+        const value = parsedArguments[index]
+
+        if (def.required) {
+          if (def.variadic ? Array.isArray(value) && value.length === 0 : value === undefined) {
+            return `Missing argument [${index}] ${def.usage}`
           }
         }
-        const choices = argDef.choices
-        if (choices) {
-          const values = [arg].flat()
-          if (!values.every((v) => choices.includes(v as string))) {
-            return `Invalid value for argument [${index}] ${argDef.usage}: ${arg}. Allowed values are: ${choices.join(', ')}`
+
+        if (def.choices && value !== undefined) {
+          if (![value].flat().every((v) => def.choices!.includes(v as string))) {
+            return `Invalid argument [${index}] ${def.usage}: Got \`${value}\`. Accepted values: [${def.choices.map((c) => `\`${c}\``).join(',')}]`
           }
         }
-        return ''
       })
       .concat(
         entriesOf(parsed.values).map(([key, value]) => {
-          const optionDef = this.options.find((o) => o.name === key)!
-          if (!optionDef) {
+          const def = this.options.find((o) => o.name === key)!
+
+          if (!def) {
             return `Unknown option --${key}`
           }
-          if (optionDef.argName && optionDef.required && value === undefined) {
-            return `Required option value ${optionDef.flags} is undefined`
-          }
-          if (value !== undefined && optionDef.choices) {
-            const values = (optionDef.variadic ? value : [value]) as string[]
-            if (!values.every((v) => optionDef.choices!.includes(v))) {
-              return `Invalid value for option ${optionDef.flags}: ${value}. Allowed values are: ${optionDef.choices.join(', ')}`
+
+          if (def.choices && value !== undefined) {
+            if (!((def.variadic ? value : [value]) as string[]).every((v) => def.choices!.includes(v))) {
+              return `Invalid option value ${def.flags}: Got \`${value}\`. Accepted values: [${def.choices.map((c) => `\`${c}\``).join(',')}]`
             }
           }
-          return ''
         }),
       )
-      .filter(Boolean)
+      .filter((s) => s !== undefined)
       .reduce(
         (acc, curr) => {
           return (acc ?? []).concat(curr)
@@ -570,65 +563,116 @@ export class Command<
         undefined as string[] | undefined,
       )
 
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const cmd = this
-    const path = getCommandAncestors(cmd).map((c) => c.name)
-    const args = parsedArguments as A
-    const opts = parsed.values as unknown as O
-    const action = this.action
+    const path = getCommandAncestors(this).map((c) => c.name)
+    const fullName = [...path, this.name].join(' ')
+    const args = parsedArguments
+    const opts = filterObject(parsed.values, (value) => value !== undefined)
+
     const hooks = this.hooks.filter((t) =>
-      t.predicate({ path, argv, args, opts, errors, action: action.name, cmd }),
+      t.predicate({
+        path,
+        name: this.name,
+        argv,
+        args: args as Arguments,
+        opts: opts as Options & O,
+        errors,
+        cmd: this as Command<Arguments, Options & O>,
+      }),
     )
-    const execute = setName(action.name, async () => {
+
+    const execute = setName(this.name, async () => {
       for (const hook of hooks) {
-        await hook.action({ cmd, path, argv, args, opts, errors })
+        await hook.action({
+          path,
+          name: this.name,
+          argv,
+          args: args as Arguments,
+          opts: opts as Options & O,
+          errors,
+          cmd: this as Command<Arguments, Options & O>,
+        })
       }
-      if (errors) {
-        errors.forEach((e) => console.error(colors.red(`Error: ${e}`)))
-        console.error(`Use --help for usage information.`)
-        process.exit(1)
-      }
-      return action({ path, argv, args, opts, cmd })
+
+      await timer([fullName, this.description], async (logger) => {
+        if (errors) {
+          errors.forEach((msg) => logger.error(colors.red(msg)))
+          this.exit(1)
+        }
+
+        if (this.action) {
+          return this.action(...(args as A), opts as O, {
+            path,
+            name: this.name,
+            argv,
+            args: args as A,
+            opts: opts as O,
+            errors,
+            cmd: this,
+            logger,
+          })
+        }
+
+        console.log(this.renderHelp())
+      })
     })
 
     return {
-      get cmd() {
-        return cmd
-      },
-      ...{ path, argv, args, opts, errors, hooks },
-      ...{ action: action.name, execute },
-    } as unknown as ParseArgvResult<Arguments, Options & O, Subs>
+      path,
+      name: this.name,
+      argv,
+      args: args as Arguments,
+      opts: opts as Options & O,
+      errors,
+      cmd: this as Command<Arguments, Options & O>,
+      hooks,
+      execute,
+    } as unknown as ParseArgvResult<Arguments, Options & O>
   }
 
   setAction(fn: ActionHandler<A, O, Subs>): this {
-    this.action = setName(fn.name || 'main', fn as never)
+    this.action = setName(this.name, fn as never)
     return this
   }
 
   /**
-   * Register an action to be invoked when a boolean option is set to true.
+   * Exit the process with the given code. This is a separate method to allow overriding in tests or environments where process.exit is not desirable.
+   */
+  exit(code: number): never {
+    process.exit(code)
+  }
+
+  /**
+   * Register an action to be invoked when an option is set to true or string value.
    *
    * Hooks execute in addition to or instead of the main action handler,
    * allowing for option-driven behavior. For example, `--help` and `--version`
    * are implemented as hooks.
    *
-   * @param name - The option name (must be a boolean option)
+   * @param optionName - The option name.
    * @param action - Handler called when the option evaluates to true
    * @returns This command instance for chaining
    */
-  addHook(name: keyof O, action: ActionHandler<A, O, Subs>): this {
+  addOptionHook(optionName: keyof O, action: HookActionHandler<Arguments, Options & O>): this {
+    const def = findOption(this, optionName as string)!
+    if (!def.group && /\.exit\(.*\);?\s*\}$/.test(action.toString())) {
+      def.group = 'Command Options'
+    }
     this.hooks.push({
-      name,
-      predicate: setName('has' + strFirstCharToUpperCase(name as string), (({ opts }) => {
-        return typeof opts[name] === 'boolean' && opts[name] === true
-      }) as HookPredicate<A, O, Subs>),
-      action: setName(name as string, action),
+      optionName,
+      predicate: setName('has' + strFirstCharToUpperCase(optionName as string), (({ opts }) => {
+        return (
+          opts[optionName] !== undefined &&
+          opts[optionName] !== false &&
+          !(Array.isArray(opts[optionName]) && opts[optionName].length === 0)
+        )
+      }) as HookPredicate<Arguments, Options & O>),
+      action: setName(optionName as string, action),
     } as never)
     return this
   }
 
   /** Returns a new Command instance. Override this method in subclasses. */
-  protected createSubcommand(name: string): Command<[], O> {
-    return new Command<[], O>(name, this)
+  protected createSubcommand(name: string): Command<[], O, {}> {
+    return new Command<[], O, {}>(name, this)
   }
 }

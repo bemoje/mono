@@ -1,35 +1,68 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Logger } from '@mono/node'
 import type { Command } from './Command'
 import type { Arguments, Argument, Option, Options, SubCommands } from './types'
 import type { Simplify, AllUnionFields, SetFieldType, SetRequired } from 'type-fest'
 
-export type HookPredicate<A extends Arguments, O extends Options, Subs extends SubCommands> = (data: {
+export type ActionHandler<A extends Arguments, O extends Options, Subs extends SubCommands> = (
+  ...args: [
+    ...A,
+    O,
+    {
+      path: string[]
+      name: string
+      argv: string[]
+      args: A
+      opts: O
+      errors?: string[]
+      cmd: Command<A, O, Subs>
+      logger: Logger
+    },
+  ]
+) => Promise<void> | void
+
+export type HookPredicate<
+  A extends Arguments = Arguments,
+  O extends Options = Options,
+  Subs extends SubCommands = SubCommands,
+> = (data: {
   path: string[]
+  name: string
   argv: string[]
   args: A
   opts: O
   errors?: string[]
-  action: string
   cmd: Command<A, O, Subs>
 }) => boolean
 
-export type ActionHandler<A extends Arguments, O extends Options, Subs extends SubCommands> = (data: {
+export type HookActionHandler<
+  A extends Arguments = Arguments,
+  O extends Options = Options,
+  Subs extends SubCommands = SubCommands,
+> = (data: {
   path: string[]
+  name: string
   argv: string[]
   args: A
   opts: O
   errors?: string[]
   cmd: Command<A, O, Subs>
-}) => Promise<void> | void
+}) => Promise<void> | void | never
 
 /**
  * @see Command.prototype.parseArgv
  */
-export type ParseArgvResult<A extends Arguments, O extends Options, Subs extends SubCommands> = {
+export type ParseArgvResult<
+  A extends Arguments = Arguments,
+  O extends Options = Options,
+  Subs extends SubCommands = SubCommands,
+> = {
   /** The command or subcommand instance */
   get cmd(): Command<A, O, Subs>
   /** The part of argv that makes out a subcommand path, or empty array when root command */
   path: string[]
+  /** Command namer */
+  name: string
   /** Original argv array passed in or from process.argv, excluding subcommand path */
   argv: string[]
   /** Parsed arguments */
@@ -40,16 +73,19 @@ export type ParseArgvResult<A extends Arguments, O extends Options, Subs extends
   errors?: string[]
   /** Names of all triggered hooks whose predicate returned true */
   hooks: HookDefinition<A, O, Subs>[]
-  /** name of the trigger or 'main' for action handler */
-  action: string
+
   /** Calls the action handler with its expected args */
   execute: () => Promise<void>
 }
 
-export type HookDefinition<A extends Arguments, O extends Options, Subs extends SubCommands> = {
+export type HookDefinition<
+  A extends Arguments = Arguments,
+  O extends Options = Options,
+  Subs extends SubCommands = SubCommands,
+> = {
   name: keyof O
   predicate: HookPredicate<A, O, Subs>
-  action: ActionHandler<A, O, Subs>
+  action: HookActionHandler<A, O, Subs>
 }
 
 //

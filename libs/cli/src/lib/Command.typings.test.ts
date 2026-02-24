@@ -128,11 +128,6 @@ describe(Command.name + ' type inference', () => {
       const result = cmd.parseArgv([])
       expectTypeOf(result.execute).toEqualTypeOf<() => Promise<void>>()
     })
-
-    it('should type action as optional string', () => {
-      const result = new Command('test').parseArgv([])
-      expectTypeOf(result.action).toEqualTypeOf<string>()
-    })
   })
 
   describe('combined arguments and options', () => {
@@ -174,7 +169,7 @@ describe(Command.name + ' type inference', () => {
     })
 
     it('should reset arguments for subcommand', () => {
-      const parent = new Command('parent').addArgument('<input>')
+      const parent = new Command('parent').addOption('-v, --verbose', { description: 'verbose' })
       const sub = parent.command('sub')
       type _A = AssertExtends<CmdArgs<typeof sub>, []>
     })

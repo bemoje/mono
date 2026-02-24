@@ -1,9 +1,14 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import assert from 'node:assert'
 import { Command } from './Command'
 import { findCommand } from './helpers/findCommand'
 
 describe(Command.name, () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'info').mockImplementation(() => {})
+    vi.spyOn(console, 'log').mockImplementation(() => {})
+  })
+
   it('examples', () => {
     expect(() => {
       // Basic command setup
@@ -781,9 +786,9 @@ describe(Command.name, () => {
       cmd.setDescription('Test description')
       cmd.setHidden(true)
       cmd.setGroup('utilities')
-      cmd.addArgument('<input>')
       cmd.addOption('-v, --verbose', { description: 'verbose output' })
       const child = cmd.command('child')
+      cmd.addArgument('<input>')
 
       expect(cmd.name).toBe('test')
       expect(cmd.version).toBe('1.0.0')
@@ -826,15 +831,13 @@ describe(Command.name, () => {
     })
 
     it('should parse parent command when no subcommand matches', () => {
-      const parent = new Command('parent')
-        .addArgument('<input>')
-        .addOption('-v, --verbose', { description: 'verbose flag' })
+      const parent = new Command('parent').addOption('-v, --verbose', { description: 'verbose flag' })
       parent.command('child')
 
-      const result = parent.parseArgv(['input.txt', '-v'])
+      const result = parent.parseArgv(['-v'])
 
       expect(result.cmd).toBe(parent)
-      expect(result.args).toEqual(['input.txt'])
+      expect(result.args).toEqual([])
       expect(result.opts).toEqual({ verbose: true })
     })
   })
@@ -1122,8 +1125,6 @@ describe(Command.name, () => {
       cmd.setDescription('This is a test application', 'with multiple lines of description')
       cmd.setGroup('tools')
       cmd
-        .addArgument('<command>')
-        .addArgument('[target]', { defaultValue: 'src' })
         .addOption('-v, --verbose', { description: 'verbose output' })
         .addOption('-f, --format <type>', { description: 'output format', choices: ['json', 'xml'] })
         .addOption('-o, --output [path]', { description: 'output path', defaultValue: 'dist' })
@@ -1158,7 +1159,7 @@ describe(Command.name, () => {
     it('should use default predicate when none provided', () => {
       const cmd = new Command('test')
         .addOption('-v, --verbose', { description: 'verbose' })
-        .addHook('verbose', () => {})
+        .addOptionHook('verbose', () => {})
 
       const parsed = cmd.parseArgv(['-v'])
       expect(parsed.hooks).toHaveLength(1)
@@ -1169,7 +1170,7 @@ describe(Command.name, () => {
       const cmd = new Command('test')
         .addOption('-v, --verbose', { description: 'verbose' })
         .setAction(() => {})
-        .addHook('verbose', () => {
+        .addOptionHook('verbose', () => {
           hookCalled = true
         })
 
@@ -1185,7 +1186,7 @@ describe(Command.name, () => {
         .setAction(() => {
           mainCalled = true
         })
-        .addHook('verbose', () => {})
+        .addOptionHook('verbose', () => {})
 
       const parsed = cmd.parseArgv([])
       void parsed.execute!()
@@ -1196,6 +1197,20 @@ describe(Command.name, () => {
       const cmd = new Command('test')
       const parsed = cmd.parseArgv([])
       expect(parsed.execute).toBeDefined()
+    })
+
+    it('should not trigger hook for empty variadic option', () => {
+      let hookCalled = false
+      const cmd = new Command('test')
+        .addOption('-i, --include [patterns...]', { description: 'include patterns' })
+        .addOptionHook('include', () => {
+          hookCalled = true
+        })
+
+      const parsed = cmd.parseArgv([])
+      expect(parsed.hooks).toHaveLength(0)
+      void parsed.execute!()
+      expect(hookCalled).toBe(false)
     })
   })
 
@@ -1235,14 +1250,6 @@ describe(Command.name, () => {
       const handler = () => {}
       const result = cmd.setAction(handler)
       expect(result).toBe(cmd)
-    })
-
-    it('should set an action that can be invoked via parseArgv', () => {
-      const cmd = new Command('test').addArgument('<name>').setAction(({ args }) => {
-        void args[0]
-      })
-      const parsed = cmd.parseArgv(['hello'])
-      expect(parsed.action).toBe('main')
     })
   })
 
@@ -1294,7 +1301,10 @@ describe(Command.name, () => {
       expect(cIdx).toBeLessThan(dIdx)
       expect(dIdx).toBeLessThan(fIdx) // true before false
       expect(eIdx).toBeLessThan(fIdx) // true before false
-      expect(fIdx).toBeLessThan(gIdx) // false before undefined
+      // undefined options are filtered out of opts
+      expect(keys).not.toContain('ggg')
+      expect(keys).not.toContain('iii')
+      expect(keys).not.toContain('jjj')
     })
 
     it('should correctly sort two-element comparisons: defined vs undefined', () => {
@@ -1305,7 +1315,8 @@ describe(Command.name, () => {
         .addOption('-b, --bbb', { description: 'bool opt' })
       const result = sub.parseArgv(['-a', 'x'])
       const keys = Object.keys(result.opts)
-      expect(keys.indexOf('aaa')).toBeLessThan(keys.indexOf('bbb'))
+      expect(keys).toContain('aaa')
+      expect(keys).not.toContain('bbb')
     })
 
     it('should correctly sort two-element comparisons: true vs false', () => {
@@ -1338,7 +1349,8 @@ describe(Command.name, () => {
         .addOption('-b, --bbb <val>', { description: 'string opt' })
       const result = sub.parseArgv(['-b', 'x'])
       const keys = Object.keys(result.opts)
-      expect(keys.indexOf('bbb')).toBeLessThan(keys.indexOf('aaa'))
+      expect(keys).toContain('bbb')
+      expect(keys).not.toContain('aaa')
     })
 
     it('should correctly sort two-element comparisons: true vs defined', () => {
@@ -1371,7 +1383,8 @@ describe(Command.name, () => {
         .addOption('-b, --bbb', { description: 'bool opt 2' })
       const result = sub.parseArgv(['--no-aaa'])
       const keys = Object.keys(result.opts)
-      expect(keys.indexOf('aaa')).toBeLessThan(keys.indexOf('bbb'))
+      expect(keys).toContain('aaa')
+      expect(keys).not.toContain('bbb')
     })
 
     it('should correctly sort two-element comparisons: defined vs false', () => {
@@ -1395,6 +1408,31 @@ describe(Command.name, () => {
       // Both defined, order is stable (original order preserved)
       expect(Object.keys(result.opts)).toContain('aaa')
       expect(Object.keys(result.opts)).toContain('bbb')
+    })
+
+    it('should correctly sort two-element comparisons: false vs false', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      sub
+        .addOption('-a, --aaa', { description: 'bool opt 1' })
+        .addOption('-b, --bbb', { description: 'bool opt 2' })
+      const result = sub.parseArgv(['--no-aaa', '--no-bbb'])
+      const keys = Object.keys(result.opts)
+      // Both false, order is stable (original order preserved)
+      expect(keys).toContain('aaa')
+      expect(keys).toContain('bbb')
+    })
+
+    it('should correctly sort two-element comparisons: true vs undefined', () => {
+      const parent = new Command('root')
+      const sub = parent.command('sub')
+      sub
+        .addOption('-a, --aaa', { description: 'bool opt 1' })
+        .addOption('-b, --bbb', { description: 'bool opt 2' })
+      const result = sub.parseArgv(['-a'])
+      const keys = Object.keys(result.opts)
+      expect(keys).toContain('aaa')
+      expect(keys).not.toContain('bbb')
     })
   })
 
@@ -1438,7 +1476,7 @@ describe(Command.name, () => {
         .setAction(() => {
           mainCalled = true
         })
-        .addHook('verbose', () => {})
+        .addOptionHook('verbose', () => {})
       const parsed = cmd.parseArgv(['-v'])
       await parsed.execute()
       expect(mainCalled).toBe(true)
@@ -1566,14 +1604,14 @@ describe(Command.name, () => {
       const cmd = new Command('test').addArgument('<input>')
       const result = cmd.parseArgv([])
       expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Missing required argument'))).toBe(true)
+      expect(result.errors!.some((e) => e.includes('Missing argument'))).toBe(true)
     })
 
     it('should report error for missing required variadic argument', () => {
       const cmd = new Command('test').addArgument('<files...>')
       const result = cmd.parseArgv([])
       expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Missing required argument'))).toBe(true)
+      expect(result.errors!.some((e) => e.includes('Missing argument'))).toBe(true)
     })
 
     it('should report error for invalid argument choices', () => {
@@ -1583,14 +1621,13 @@ describe(Command.name, () => {
       })
       const result = cmd.parseArgv(['staging'])
       expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Invalid value for argument'))).toBe(true)
+      expect(result.errors!.some((e) => e.includes('Invalid argument'))).toBe(true)
     })
 
-    it('should report error for required option with missing value', () => {
+    it('should not report error when required option flag is not used at all', () => {
       const cmd = new Command('test').addOption('-f, --file <path>', { description: 'file' })
       const result = cmd.parseArgv([])
-      expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Required option value'))).toBe(true)
+      expect(result.errors).toBeUndefined()
     })
 
     it('should report error for invalid option choices', () => {
@@ -1600,7 +1637,7 @@ describe(Command.name, () => {
       })
       const result = cmd.parseArgv(['-f', 'csv'])
       expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Invalid value for option'))).toBe(true)
+      expect(result.errors!.some((e) => e.includes('Invalid option value'))).toBe(true)
     })
 
     it('should not report errors when all validations pass', () => {
@@ -1618,7 +1655,7 @@ describe(Command.name, () => {
       })
       const result = cmd.parseArgv(['-t', 'a', 'x'])
       expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Invalid value for option'))).toBe(true)
+      expect(result.errors!.some((e) => e.includes('Invalid option value'))).toBe(true)
     })
 
     it('should report error for unknown option', () => {
@@ -1683,6 +1720,15 @@ describe(Command.name, () => {
         const cmd = new Command('test').addArgument('<first>', { defaultValue: 'x' } as never)
         ;(cmd as unknown as Command).addArgument('<second>' as never)
       }).toThrow(/after optional argument with default value/)
+    })
+  })
+
+  describe('subcommand after arguments', () => {
+    it('should throw when adding subcommand to command with arguments', () => {
+      const cmd = new Command('test').addArgument('<input>')
+      expect(() => {
+        ;(cmd as unknown as Command).command('sub')
+      }).toThrow(/already has arguments defined/)
     })
   })
 })

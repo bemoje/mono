@@ -1,5 +1,5 @@
 import colors from 'ansi-colors'
-import { isPrimitive } from 'es-toolkit/predicate'
+import { isPrimitive, isString } from 'es-toolkit/predicate'
 
 export interface Logger {
   start: (...args: unknown[]) => void
@@ -41,6 +41,18 @@ export function createLogger(name: string): Logger {
 
 function createColoredArgs(colorFn: (str: string) => string) {
   return (args: unknown[]) => {
-    return args.map((arg) => (isPrimitive(arg) ? colorFn(String(arg)) : arg))
+    return args.map((arg) => {
+      if (isString(arg)) {
+        if (arg === colors.stripColor(arg)) {
+          return colorFn(arg)
+        } else {
+          return arg
+        }
+      } else if (isPrimitive(arg)) {
+        return colorFn(String(arg))
+      } else {
+        return arg
+      }
+    })
   }
 }

@@ -26,7 +26,7 @@ cmd
   .setAction(async (a) => {
     console.log('Subcommand executed', a)
   })
-  .addHook('wow', async ({ args, cmd, opts }) => {
+  .addOptionHook('wow', async ({ args, cmd, opts }) => {
     console.log('Trigger executed because args includes WOW', args)
     console.log({ opts })
   })
