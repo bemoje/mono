@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7569  | 7569    | 100%       |
-| Functions | 786   | 786     | 100%       |
-| Branches  | 2427  | 2427    | 100%       |
+| Lines     | 7605  | 7605    | 100%       |
+| Functions | 777   | 777     | 100%       |
+| Branches  | 2471  | 2471    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 604   | 13193         |
-| test      | 440   | 27287         |
-| examples  | 2     | 51            |
-| total     | 1046  | 40531         |
+| source    | 597   | 13289         |
+| test      | 437   | 27346         |
+| examples  | 1     | 44            |
+| total     | 1035  | 40679         |
 
 ## Table of Contents
 
@@ -309,23 +309,12 @@ describe(ClassToTest.name, () => {
 
 **cli**
 
-- `Argument`: Defines a command-line argument
 - `Command`: A type-safe CLI composer that can parse argv and generate help without execution coupling.
 - `Help`: This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the expected interface of the Command instance to parse, are both similar, but different and not compatible without custom adaptations,
-- `Option`: Represents a command-line option with support for short/long flags and various configurations.
-- `assertAddRequiredArgumentAllowed`: Assert that adding a required argument to the given command is allowed. This is not allowed if the command already has variadic or optional arguments.
-- `assertNoMultipleVariadicArguments`: Ensures only one variadic argument per command
-- `assertNoVariadicArgument`: Validates optional args don't follow variadic args
-- `assertOptionLongNotInUse`: Validates option long name are unique across command hierarchy
-- `assertOptionNameNotInUse`: Validates option names are unique across command hierarchy
-- `assertOptionShortNameIsValid`: Validates option short names are single alphanumeric characters
-- `assertOptionShortNameNotInUse`: Validates option short names are unique across command hierarchy
+- `findCommand`: Finds subcommand by name or alias
 - `findOption`: Finds option by name, short name or long name
-- `findSubcommand`: Finds subcommand by name or alias
 - `getCommandAncestors`: Returns all ancestor commands excluding this command
 - `getCommandAndAncestors`: Returns command and all ancestor commands in hierarchy
-- `hasNoOptionalArguments`: Validator that checks if a command has no optional arguments. This is used to determine if it's allowed to add a required argument to the command.
-- `hasNoVariadicArguments`: Validator that checks if a command has no variadic arguments. This is used to determine if it's allowed to add a required argument to the command.
 - `parseOptionFlags`: Parses option flags string into its components
 
 **composition**
