@@ -1,5 +1,5 @@
 import { entriesOf } from '@mono/object'
-import type { Argument, Option } from '../../types'
+import type { Argument, Option } from '../types'
 
 /** Validate parsed arguments and option values, returning errors or undefined */
 export function validateParsed(

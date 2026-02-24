@@ -1,4 +1,4 @@
-import type { Option } from '../../types'
+import type { Option } from '../types'
 
 /** Merge default option values into parsed values where not already set */
 export function mergeOptionDefaults(values: Record<string, unknown>, options: Option[]): void {

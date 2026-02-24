@@ -1,5 +1,5 @@
 import { arrLast } from '@mono/array'
-import type { Argument } from '../../types'
+import type { Argument } from '../types'
 
 /** Map positional strings to argument definitions, trimming trailing undefineds */
 export function resolveArguments(positionals: string[], args: Argument[]): unknown[] {

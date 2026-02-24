@@ -1,4 +1,4 @@
-import type { Option } from '../../types'
+import type { Option } from '../types'
 
 /** Collect consecutive positional tokens into variadic string option values */
 export function collectVariadicOptionValues(

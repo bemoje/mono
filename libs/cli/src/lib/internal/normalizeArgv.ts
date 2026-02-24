@@ -1,4 +1,4 @@
-import type { Option } from '../../types'
+import type { Option } from '../types'
 
 /** Map long option names (kebab-case) to their camelCased equivalents in argv */
 export function normalizeArgv(argv: string[], options: Option[]): string[] {
