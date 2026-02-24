@@ -1,4 +1,8 @@
-import { beforeEach, describe, expect, it, vitest } from 'vitest'
+import { beforeEach } from "vitest";
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
+import { vitest } from "vitest";
 import { FunctionProfiler } from '../FunctionProfiler/FunctionProfiler'
 import { IProfilerFactory } from '../ProfilerFactory/IProfilerFactory'
 import { ProfilerWrapMethodsStrategy } from './ProfilerWrapMethodsStrategy'

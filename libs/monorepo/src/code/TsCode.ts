@@ -1,6 +1,7 @@
 import { AbstractCode } from './AbstractCode'
 import { ImportStatement } from './imports/ImportStatement'
-import { Inspector, Parenting } from '@mono/composition'
+import { Inspector } from "@mono/composition";
+import { Parenting } from "@mono/composition";
 import { lazyProp } from '@mono/decorators'
 import { arrRemoveDuplicates } from '@mono/array'
 import { rexec } from '@mono/regex'

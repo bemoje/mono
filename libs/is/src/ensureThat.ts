@@ -1,5 +1,7 @@
-import { isPromise, isString } from 'es-toolkit/predicate'
-import type { Validator, ValidatorResult } from '@mono/types'
+import { isPromise } from "es-toolkit/predicate";
+import { isString } from "es-toolkit/predicate";
+import type { Validator } from "@mono/types";
+import type { ValidatorResult } from "@mono/types";
 import { ValidatorError } from './ValidatorError'
 
 /**

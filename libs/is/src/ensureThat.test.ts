@@ -1,4 +1,9 @@
-import { describe, it, expect, expectTypeOf, vi, beforeEach } from 'vitest'
+import { describe } from "vitest";
+import { it } from "vitest";
+import { expect } from "vitest";
+import { expectTypeOf } from "vitest";
+import { vi } from "vitest";
+import { beforeEach } from "vitest";
 import { ensureThat } from './ensureThat'
 import * as ValidatorErrorModule from './ValidatorError'
 

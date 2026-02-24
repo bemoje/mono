@@ -1,5 +1,7 @@
 import { roundToNearest } from './roundToNearest'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('roundToNearest', () => {
   it('should round to the nearest specified number', () => {

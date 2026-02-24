@@ -1,6 +1,8 @@
 import { isString } from 'es-toolkit/predicate'
 import { IsArrayWhereEach } from './IsArrayWhereEach'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe(IsArrayWhereEach.name, () => {
   const isLengthOf2 = (value: unknown) => (value as string).length === 2

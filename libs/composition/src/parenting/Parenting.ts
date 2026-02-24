@@ -1,7 +1,9 @@
 import { DefaultMap } from 'mnemonist'
-import { defineLazyProperty, hasProperty } from '@mono/object'
+import { defineLazyProperty } from "@mono/object";
+import { hasProperty } from "@mono/object";
 import type { FunctionPrototype } from '@mono/types'
-import { ParentingTarget, ParentingTargetConstructor } from './types'
+import { ParentingTarget } from "./types";
+import { ParentingTargetConstructor } from "./types";
 import { ParentRelationTypes } from './ParentRelationTypes'
 import { View } from '../View'
 

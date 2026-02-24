@@ -1,6 +1,9 @@
-import { JsonFileTemplateStrategy, Template, TextFileTemplateStrategy } from '@mono/template'
+import { JsonFileTemplateStrategy } from "@mono/template";
+import { Template } from "@mono/template";
+import { TextFileTemplateStrategy } from "@mono/template";
 import { Type } from '@sinclair/typebox'
-import { repoRootPackageJsonPath, tsconfigBaseJsonBasename } from '../../constants/paths'
+import { repoRootPackageJsonPath } from "../../constants/paths";
+import { tsconfigBaseJsonBasename } from "../../constants/paths";
 import fs from 'fs-extra'
 
 const eslintConfigJs = new Template({

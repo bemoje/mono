@@ -1,5 +1,9 @@
-import { describe, expect, expectTypeOf, it } from 'vitest'
-import type { Arguments, Options } from './types'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { expectTypeOf } from "vitest";
+import { it } from "vitest";
+import type { Arguments } from "./types";
+import type { Options } from "./types";
 import { Command } from './Command'
 
 // Helper to extract the A (Arguments) generic from a Command

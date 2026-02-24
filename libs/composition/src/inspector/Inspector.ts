@@ -3,11 +3,18 @@ import { isObjectLike } from 'es-toolkit/compat'
 import { mapValues } from 'es-toolkit/object'
 import { cloneDeep } from 'es-toolkit/object'
 import { omit } from 'es-toolkit/compat'
-import { ClassInspectorMixin, IgnoreValuesOptions, InspectorOptions } from './types'
-import { defineLazyProperty, defineMethod, defineValue, hasOwnProperty, hasProperty } from '@mono/object'
+import { ClassInspectorMixin } from "./types";
+import { IgnoreValuesOptions } from "./types";
+import { InspectorOptions } from "./types";
+import { defineLazyProperty } from "@mono/object";
+import { defineMethod } from "@mono/object";
+import { defineValue } from "@mono/object";
+import { hasOwnProperty } from "@mono/object";
+import { hasProperty } from "@mono/object";
 import { ignoreValuesFilterDefaults } from './defaults/ignoreValuesFilterDefaults'
 import { inspectorDefaults } from './defaults/inspectorDefaults'
-import { inspect, InspectOptions as NativeInspectOptions } from 'node:util'
+import { inspect } from "node:util";
+import { InspectOptions as NativeInspectOptions } from "node:util";
 import { getClassChain } from '@mono/object'
 import { View } from '../View'
 

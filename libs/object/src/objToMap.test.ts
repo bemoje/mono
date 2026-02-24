@@ -1,5 +1,7 @@
 import { objToMap } from './objToMap'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('objToMap', () => {
   it('should convert an object with string keys to a Map', () => {

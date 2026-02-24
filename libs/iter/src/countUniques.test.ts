@@ -1,5 +1,7 @@
 import { countUniques } from './countUniques'
-import { describe, it, expect } from 'vitest'
+import { describe } from "vitest";
+import { it } from "vitest";
+import { expect } from "vitest";
 
 // Helper to convert ExtMap to plain object for easier assertions
 function extMapToObject<K, V>(map: any): Record<string, V> {

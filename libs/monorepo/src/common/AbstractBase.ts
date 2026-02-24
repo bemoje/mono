@@ -1,4 +1,7 @@
-import { Inspector, InspectorTarget, Parenting, ParentingTarget } from '@mono/composition'
+import { Inspector } from "@mono/composition";
+import { InspectorTarget } from "@mono/composition";
+import { Parenting } from "@mono/composition";
+import { ParentingTarget } from "@mono/composition";
 
 declare module './AbstractBase' {
   export interface AbstractBase extends InspectorTarget {}

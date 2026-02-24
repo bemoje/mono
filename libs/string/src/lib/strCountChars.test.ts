@@ -1,5 +1,7 @@
 import { strCountChars } from './strCountChars'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('strCountChars', () => {
   it('should count the number of occurrences of each character in a string', () => {

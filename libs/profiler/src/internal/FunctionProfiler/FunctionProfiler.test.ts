@@ -1,4 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
+import { afterEach } from "vitest";
+import { beforeEach } from "vitest";
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
+import { vitest } from "vitest";
 import { FunctionProfiler } from './FunctionProfiler'
 import { inspect } from 'node:util'
 import { StandaloneFunctionIdentifier } from '../FunctionIdentifier/StandaloneFunctionIdentifier'

@@ -1,7 +1,8 @@
 import fs from 'fs-extra'
 import { DIST_PATH } from './constants'
 import upath from 'upath'
-import type { Resume, ResumeWork } from './types/Resume'
+import type { Resume } from "./types/Resume";
+import type { ResumeWork } from "./types/Resume";
 import { loadResumeJson } from './LoadResumeJson'
 import { userConfigFile } from './userConfigFile'
 import { Logger } from '@mono/node'

@@ -1,4 +1,5 @@
-import { Inspector, Parenting } from '@mono/composition'
+import { Inspector } from "@mono/composition";
+import { Parenting } from "@mono/composition";
 import { lazyProp } from '@mono/decorators'
 import { TsCode } from '../code/TsCode'
 import { TsFile } from './TsFile'

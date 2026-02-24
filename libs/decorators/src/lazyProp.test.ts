@@ -1,6 +1,8 @@
 import { setTimeout as setTimeoutPromise } from 'node:timers/promises'
 import { lazyProp } from './lazyProp'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe(lazyProp.name, () => {
   it('should define a lazy property', () => {

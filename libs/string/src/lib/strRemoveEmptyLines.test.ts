@@ -1,5 +1,7 @@
 import { strRemoveEmptyLines } from './strRemoveEmptyLines'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('strRemoveEmptyLines', () => {
   it('removes all lines that are empty or only contain whitespace', () => {

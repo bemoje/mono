@@ -1,5 +1,9 @@
 import os from 'node:os'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach } from "vitest";
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
+import { vi } from "vitest";
 import { getAppDataPath } from './getAppDataPath'
 
 vi.mock('./getOS', () => ({ getOS: vi.fn(() => 'windows') }))

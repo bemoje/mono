@@ -1,4 +1,9 @@
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest'
+import { describe } from "vitest";
+import { it } from "vitest";
+import { expect } from "vitest";
+import { vi } from "vitest";
+import { beforeAll } from "vitest";
+import { afterAll } from "vitest";
 import { msSinceDate } from './msSinceDate'
 
 describe(msSinceDate.name, () => {

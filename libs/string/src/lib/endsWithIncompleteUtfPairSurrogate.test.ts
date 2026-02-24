@@ -1,5 +1,7 @@
 import { endsWithIncompleteUtfPairSurrogate } from './endsWithIncompleteUtfPairSurrogate'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('endsWithIncompleteUtfPairSurrogate', () => {
   const HIGH_SURROGATE_START = 55_296

@@ -1,5 +1,7 @@
 import { isDefined } from './isDefined'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe(isDefined.name, () => {
   it('should return true if value is defined', () => {

@@ -1,5 +1,7 @@
 import { objSortKeys } from './objSortKeys'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('objSortKeys', () => {
   it('should return a new object with keys sorted in ascending order', () => {

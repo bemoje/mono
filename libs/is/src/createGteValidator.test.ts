@@ -1,5 +1,7 @@
 import { createGteValidator } from './createGteValidator'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe(createGteValidator.name, () => {
   it('should create a validator with correct name', () => {

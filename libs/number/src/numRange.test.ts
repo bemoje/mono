@@ -1,5 +1,7 @@
 import { numRange } from './numRange'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe(numRange.name, () => {
   it('should return an array of numbers from start to end, inclusive', () => {

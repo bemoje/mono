@@ -2,7 +2,8 @@ import fs from 'node:fs'
 import path from '@mono/path'
 import upath from 'upath'
 import { AbstractBase } from '../common/AbstractBase'
-import { Inspector, Parenting } from '@mono/composition'
+import { Inspector } from "@mono/composition";
+import { Parenting } from "@mono/composition";
 import { lazyProp } from '@mono/decorators'
 import type { Stats } from 'node:fs'
 import { Workspace } from '../repo/Workspace'

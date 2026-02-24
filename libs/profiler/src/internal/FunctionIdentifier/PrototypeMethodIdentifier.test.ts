@@ -1,6 +1,8 @@
 import { AbstractFunctionIdentifier } from './AbstractFunctionIdentifier'
 import { AbstractMethodIdentifier } from './AbstractMethodIdentifier'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 import { inspect } from 'node:util'
 import { PrototypeMethodIdentifier } from './PrototypeMethodIdentifier'
 

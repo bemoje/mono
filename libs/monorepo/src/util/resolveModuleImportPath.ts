@@ -1,4 +1,5 @@
-import { resolveModuleName, createCompilerHost } from 'typescript'
+import { resolveModuleName } from "typescript";
+import { createCompilerHost } from "typescript";
 import upath from 'upath'
 import { getRepoRootDirpath } from './getRepoRootDirpath'
 import fs from 'fs-extra/esm'

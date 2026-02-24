@@ -1,5 +1,7 @@
 import { titleCaseWord } from './titleCaseWord'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe(titleCaseWord.name, () => {
   it('should capitalize the first character and lowercase the rest of a single word', () => {

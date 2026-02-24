@@ -1,5 +1,6 @@
 import colors from 'ansi-colors'
-import { isPrimitive, isString } from 'es-toolkit/predicate'
+import { isPrimitive } from "es-toolkit/predicate";
+import { isString } from "es-toolkit/predicate";
 
 /**
  * Logger interface defining methods for different log levels.

@@ -1,5 +1,6 @@
 import { AbstractCode } from './AbstractCode'
-import { Inspector, Parenting } from '@mono/composition'
+import { Inspector } from "@mono/composition";
+import { Parenting } from "@mono/composition";
 import { lazyProp } from '@mono/decorators'
 
 /**

@@ -1,5 +1,7 @@
 import { roundWith } from './roundWith'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('roundWith', () => {
   it('should round a number to a given precision', () => {

@@ -1,5 +1,7 @@
 import { round } from './round'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('round', () => {
   it('correctly rounds to nearest whole number', () => {

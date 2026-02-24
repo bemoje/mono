@@ -1,4 +1,6 @@
-import { GenericMap, mapGetOrDefault, TimeoutWeakMap } from '@mono/map'
+import { GenericMap } from "@mono/map";
+import { mapGetOrDefault } from "@mono/map";
+import { TimeoutWeakMap } from "@mono/map";
 import { isFunction } from 'es-toolkit/predicate'
 import { ms } from 'enhanced-ms'
 import { memoizeSync } from './memoizeSync'

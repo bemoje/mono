@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 import { preserveNameAndLength } from './preserveNameAndLength'
 
 describe(preserveNameAndLength.name, () => {

@@ -1,5 +1,7 @@
 import { assertValidSchema } from '@mono/tschema'
-import { Static, TObject, Type } from '@sinclair/typebox'
+import { Static } from "@sinclair/typebox";
+import { TObject } from "@sinclair/typebox";
+import { Type } from "@sinclair/typebox";
 import { TemplateStrategy } from '../interfaces/TemplateStrategy'
 import { TSchema } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'

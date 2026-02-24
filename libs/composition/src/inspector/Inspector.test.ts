@@ -1,6 +1,9 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 import { inspect } from 'node:util'
-import { Inspector, InspectorTarget } from './Inspector'
+import { Inspector } from "./Inspector";
+import { InspectorTarget } from "./Inspector";
 
 describe(Inspector.name, () => {
   it('examples', () => {

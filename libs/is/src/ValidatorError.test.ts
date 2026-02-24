@@ -1,4 +1,5 @@
-import { describe, it } from 'vitest'
+import { describe } from "vitest";
+import { it } from "vitest";
 import { ValidatorError } from './ValidatorError'
 import { strict as assert } from 'node:assert'
 

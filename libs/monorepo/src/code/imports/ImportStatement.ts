@@ -1,7 +1,8 @@
 import { CodeBlock } from '../CodeBlock'
 import { ImportKeywords } from './ImportKeywords'
 import { ImportSpecifiers } from './ImportSpecifiers'
-import { Inspector, Parenting } from '@mono/composition'
+import { Inspector } from "@mono/composition";
+import { Parenting } from "@mono/composition";
 import { lazyProp } from '@mono/decorators'
 import { ModuleSpecifier } from './ModuleSpecifier'
 import { TsCode } from '../TsCode'

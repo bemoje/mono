@@ -2,11 +2,13 @@ import fs from 'node:fs'
 import { readJsonSync } from 'fs-extra/esm'
 import path from 'upath'
 import { AbstractBase } from './common/AbstractBase'
-import { Inspector, Parenting } from '@mono/composition'
+import { Inspector } from "@mono/composition";
+import { Parenting } from "@mono/composition";
 import { lazyProp } from '@mono/decorators'
 import { type PackageJson } from '@mono/types'
 import { Workspace } from './repo/Workspace'
-import { TsConfigJson, SetFieldType } from 'type-fest'
+import { TsConfigJson } from "type-fest";
+import { SetFieldType } from "type-fest";
 import { CompilerOptions } from 'typescript'
 import { getRepoRootDirpath } from './util/getRepoRootDirpath'
 

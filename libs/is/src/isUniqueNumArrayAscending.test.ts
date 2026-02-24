@@ -1,5 +1,7 @@
 import { isUniqueNumArrayAscending } from './isUniqueNumArrayAscending'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe(isUniqueNumArrayAscending.name, () => {
   it('examples', () => {

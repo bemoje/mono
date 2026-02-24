@@ -2,7 +2,8 @@ import upath from 'upath'
 import { templates } from '../templates/templates'
 import { ConfigFile } from '@mono/config'
 import { repoRootPath } from '../constants/paths'
-import { Static, Type } from '@sinclair/typebox'
+import { Static } from "@sinclair/typebox";
+import { Type } from "@sinclair/typebox";
 
 export const ConfigSchema = Type.Object(
   {

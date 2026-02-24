@@ -1,5 +1,7 @@
 import { isChar } from './isChar'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe(isChar.name, () => {
   it('should return true for single character strings', () => {

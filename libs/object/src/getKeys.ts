@@ -1,10 +1,8 @@
-import {
-  getKeysPreset,
-  GetKeysOptions,
-  KeysPrimitiveTypeFrom,
-  OptsKeysVariants,
-  OptsKeyTypeVariants,
-} from './getKeysPreset'
+import { getKeysPreset } from "./getKeysPreset";
+import { GetKeysOptions } from "./getKeysPreset";
+import { KeysPrimitiveTypeFrom } from "./getKeysPreset";
+import { OptsKeysVariants } from "./getKeysPreset";
+import { OptsKeyTypeVariants } from "./getKeysPreset";
 
 /**
  * Returns an array of the own property keys of an object.

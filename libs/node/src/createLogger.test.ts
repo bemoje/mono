@@ -1,6 +1,10 @@
 import colors from 'ansi-colors'
-import { describe, expect, it, vi } from 'vitest'
-import { createLogger, type Logger } from './createLogger'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
+import { vi } from "vitest";
+import { createLogger } from "./createLogger";
+import type { Logger } from "./createLogger";
 
 describe(createLogger.name, () => {
   it('should return an object with all logger methods', () => {

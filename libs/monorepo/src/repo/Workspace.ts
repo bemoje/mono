@@ -6,7 +6,8 @@ import path from 'upath'
 import { AbstractBase } from '../common/AbstractBase'
 import { difference } from 'es-toolkit/array'
 import { union } from 'es-toolkit/array'
-import { Inspector, Parenting } from '@mono/composition'
+import { Inspector } from "@mono/composition";
+import { Parenting } from "@mono/composition";
 import { lazyProp } from '@mono/decorators'
 import { MonoRepo } from '../MonoRepo'
 import { type PackageJson } from '@mono/types'

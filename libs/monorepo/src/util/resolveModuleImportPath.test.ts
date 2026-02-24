@@ -1,7 +1,11 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
+import { vi } from "vitest";
 import upath from 'upath'
 import fs from 'fs-extra/esm'
-import { resolveModuleName, createCompilerHost } from 'typescript'
+import { resolveModuleName } from "typescript";
+import { createCompilerHost } from "typescript";
 
 vi.mock('upath', () => ({
   default: {

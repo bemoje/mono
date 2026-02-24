@@ -1,5 +1,7 @@
 import { strWrapBetween } from './strWrapBetween'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('strWrapBetween', () => {
   it('example', () => {

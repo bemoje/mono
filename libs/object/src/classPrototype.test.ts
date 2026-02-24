@@ -1,5 +1,7 @@
 import { classPrototype } from './classPrototype'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe(classPrototype.name, () => {
   it('should return the class prototype object for a class constructor', () => {

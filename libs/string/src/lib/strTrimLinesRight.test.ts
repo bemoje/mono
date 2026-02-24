@@ -1,5 +1,7 @@
 import { strTrimLinesRight } from './strTrimLinesRight'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('strTrimLinesRight', () => {
   it('trims all lines', () => {

@@ -1,7 +1,9 @@
 import type { AnyGetter } from '@mono/types'
 import type { AnyFunction } from '@mono/types'
 import type { AnySetter } from '@mono/types'
-import { defineGetter, defineMethod, defineSetter } from '@mono/object'
+import { defineGetter } from "@mono/object";
+import { defineMethod } from "@mono/object";
+import { defineSetter } from "@mono/object";
 import { isFunction } from 'es-toolkit/predicate'
 import { preserveNameAndLength } from './preserveNameAndLength'
 

@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 import { expectType } from 'tsd'
 import { ExtMap } from './ExtMap'
 import { mapUpdate } from './mapUpdate'

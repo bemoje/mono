@@ -1,6 +1,9 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 import assert from 'node:assert'
-import { Type, Static } from '@sinclair/typebox'
+import { Type } from "@sinclair/typebox";
+import { Static } from "@sinclair/typebox";
 import { SchemaConfigStrategy } from './SchemaConfigStrategy'
 
 describe(SchemaConfigStrategy.name, () => {

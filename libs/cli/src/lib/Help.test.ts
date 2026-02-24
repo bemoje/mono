@@ -1,6 +1,11 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 import { Help } from './Help'
-import type { Argument, ICommand, IHelp, Option } from './types'
+import type { Argument } from "./types";
+import type { ICommand } from "./types";
+import type { IHelp } from "./types";
+import type { Option } from "./types";
 
 function mockOption(overrides: Partial<Option> = {}): Option {
   return {

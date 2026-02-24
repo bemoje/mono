@@ -1,7 +1,9 @@
 import type { TFunction } from '@mono/types'
-import { FunctionProfiler, FunctionProfilerResult } from '../internal/FunctionProfiler/FunctionProfiler'
+import { FunctionProfiler } from "../internal/FunctionProfiler/FunctionProfiler";
+import { FunctionProfilerResult } from "../internal/FunctionProfiler/FunctionProfiler";
 import type { FunctionPrototype } from '@mono/types'
-import { inspect, InspectOptions } from 'node:util'
+import { inspect } from "node:util";
+import { InspectOptions } from "node:util";
 import { isFunction } from 'es-toolkit/predicate'
 import { ModuleMethodProfilerFactory } from '../internal/ProfilerFactory/ModuleMethodProfilerFactory'
 import { profilerWrap } from '../internal/FunctionProfiler/profilerWrap'

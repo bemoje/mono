@@ -1,6 +1,10 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 import assert from 'node:assert'
-import { Type, TString, TArray } from '@sinclair/typebox'
+import { Type } from "@sinclair/typebox";
+import { TString } from "@sinclair/typebox";
+import { TArray } from "@sinclair/typebox";
 import { TemplateStrategy } from './TemplateStrategy'
 
 // Mock implementation for testing the interface

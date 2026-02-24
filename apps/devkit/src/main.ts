@@ -8,7 +8,9 @@ import { Command } from '@mono/cli'
 import version from './core/version'
 import description from './core/description'
 //
-import { configAction, configDirpathHook, configFilepathHook } from './commands/config'
+import { configAction } from "./commands/config";
+import { configDirpathHook } from "./commands/config";
+import { configFilepathHook } from "./commands/config";
 import { buildLibsAction } from './commands/build_libs'
 import { fixWorkspaceImportsAction } from './commands/fix_workspace_imports'
 import { listTopImportStatementsAction } from './commands/list_top_import_statements'

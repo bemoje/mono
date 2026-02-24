@@ -1,8 +1,13 @@
-import { describe, expect, it, beforeEach, afterEach } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
+import { beforeEach } from "vitest";
+import { afterEach } from "vitest";
 import assert from 'node:assert'
 import fs from 'fs-extra'
 import upath from 'upath'
-import { Type, Static } from '@sinclair/typebox'
+import { Type } from "@sinclair/typebox";
+import { Static } from "@sinclair/typebox";
 import { ConfigFile } from './ConfigFile'
 import { getTempDataPath } from '@mono/os'
 

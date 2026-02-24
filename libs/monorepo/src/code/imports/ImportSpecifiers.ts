@@ -1,6 +1,7 @@
 import { CodeBlock } from '../CodeBlock'
 import { ImportStatement } from './ImportStatement'
-import { Inspector, Parenting } from '@mono/composition'
+import { Inspector } from "@mono/composition";
+import { Parenting } from "@mono/composition";
 
 @Parenting.compose
 /**

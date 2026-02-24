@@ -1,11 +1,9 @@
-import {
-  filterIterable,
-  mapIterable,
-  mapIterableKeys,
-  mapIterableValues,
-  reduceIterable,
-  toObjectIterable,
-} from '@mono/iter'
+import { filterIterable } from "@mono/iter";
+import { mapIterable } from "@mono/iter";
+import { mapIterableKeys } from "@mono/iter";
+import { mapIterableValues } from "@mono/iter";
+import { reduceIterable } from "@mono/iter";
+import { toObjectIterable } from "@mono/iter";
 import { isIterable } from 'iter-tools'
 import { mapLoad } from './mapLoad'
 import { keysArray } from './keysArray'
@@ -18,9 +16,12 @@ import { sortByValues } from './sortByValues'
 import { mapUpdate } from './mapUpdate'
 import { mapGetOrDefault } from './mapGetOrDefault'
 import { mapReverse } from './mapReverse'
-import { View, inheritProxifiedPrototype } from '@mono/composition'
-import { entriesOf, defineMethod } from '@mono/object'
-import { inspect, InspectOptions } from 'node:util'
+import { View } from "@mono/composition";
+import { inheritProxifiedPrototype } from "@mono/composition";
+import { entriesOf } from "@mono/object";
+import { defineMethod } from "@mono/object";
+import { inspect } from "node:util";
+import { InspectOptions } from "node:util";
 
 declare module './ExtMap' {
   export interface ExtMap<K, V> extends Map<K, V> {

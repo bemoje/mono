@@ -1,16 +1,14 @@
 import fs from 'fs-extra'
 import upath from 'upath'
 import { DIST_PATH } from './constants'
-import {
-  Resume,
-  ResumeEducation,
-  ResumeLanguage,
-  ResumeProfile,
-  ResumeProject,
-  ResumeRecommendation,
-  ResumeSkill,
-  ResumeWork,
-} from './types/Resume'
+import { Resume } from "./types/Resume";
+import { ResumeEducation } from "./types/Resume";
+import { ResumeLanguage } from "./types/Resume";
+import { ResumeProfile } from "./types/Resume";
+import { ResumeProject } from "./types/Resume";
+import { ResumeRecommendation } from "./types/Resume";
+import { ResumeSkill } from "./types/Resume";
+import { ResumeWork } from "./types/Resume";
 import { scrapeReadJson } from './linkedin/utils/scrapeReadJson'
 import { Logger } from '@mono/node'
 

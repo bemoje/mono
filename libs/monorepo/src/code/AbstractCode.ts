@@ -1,5 +1,6 @@
 import { AbstractBase } from '../common/AbstractBase'
-import { Inspector, Parenting } from '@mono/composition'
+import { Inspector } from "@mono/composition";
+import { Parenting } from "@mono/composition";
 import { File } from '../file/File'
 
 /**

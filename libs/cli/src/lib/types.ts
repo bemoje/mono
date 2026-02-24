@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Command } from './Command'
-import type { Simplify, AllUnionFields, SetFieldType, SetRequired } from 'type-fest'
+import type { Simplify } from "type-fest";
+import type { AllUnionFields } from "type-fest";
+import type { SetFieldType } from "type-fest";
+import type { SetRequired } from "type-fest";
 
 /** Logger interface defining methods for different log levels. */
 export interface Logger {

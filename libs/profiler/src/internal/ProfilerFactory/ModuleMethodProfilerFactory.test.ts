@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 import { FunctionProfiler } from '../FunctionProfiler/FunctionProfiler'
 import { ModuleMethodIdentifier } from '../FunctionIdentifier/ModuleMethodIdentifier'
 import { ModuleMethodProfilerFactory } from './ModuleMethodProfilerFactory'

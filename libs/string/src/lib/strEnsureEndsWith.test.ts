@@ -1,5 +1,7 @@
 import { strEnsureEndsWith } from './strEnsureEndsWith'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('strEnsureEndsWith', () => {
   it('should return the original string if it already ends with the specified substring', () => {

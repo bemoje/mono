@@ -1,4 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe } from "vitest";
+import { it } from "vitest";
+import { expect } from "vitest";
 import { hoursToMs } from './hoursToMs'
 
 describe(hoursToMs.name, () => {

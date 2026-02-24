@@ -1,5 +1,7 @@
 import { determineNumberLocale } from './determineNumberLocale'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe(determineNumberLocale.name, () => {
   describe('indistinguishable', () => {

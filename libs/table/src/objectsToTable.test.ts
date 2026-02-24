@@ -1,5 +1,7 @@
 import { objectsToTable } from './objectsToTable'
-import { describe, it, expect } from 'vitest'
+import { describe } from "vitest";
+import { it } from "vitest";
+import { expect } from "vitest";
 
 describe('objectsToTable', () => {
   it('should convert an array of objects to a table with default headers', () => {

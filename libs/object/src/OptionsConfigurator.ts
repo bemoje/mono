@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { SetFieldType, Simplify, RequiredKeysOf, OptionalKeysOf } from 'type-fest'
-import { KindGuard, ReturnType, Static, TObject, TSchema, Type } from '@sinclair/typebox'
+import type { SetFieldType } from "type-fest";
+import type { Simplify } from "type-fest";
+import type { RequiredKeysOf } from "type-fest";
+import type { OptionalKeysOf } from "type-fest";
+import { KindGuard } from "@sinclair/typebox";
+import { ReturnType } from "@sinclair/typebox";
+import { Static } from "@sinclair/typebox";
+import { TObject } from "@sinclair/typebox";
+import { TSchema } from "@sinclair/typebox";
+import { Type } from "@sinclair/typebox";
 import { entriesOf } from './entriesOf'
 import { keysOf } from './keysOf'
 

@@ -1,4 +1,7 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe } from "vitest";
+import { it } from "vitest";
+import { expect } from "vitest";
+import { vi } from "vitest";
 import { filterObject } from './filterObject'
 
 describe(filterObject.name, () => {

@@ -1,5 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { getRepoPackageJson, getRepoPackageJsonPath } from './getRepoPackageJson'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
+import { getRepoPackageJson } from "./getRepoPackageJson";
+import { getRepoPackageJsonPath } from "./getRepoPackageJson";
 
 describe(getRepoPackageJsonPath.name, () => {
   it('should return a path ending with package.json', () => {

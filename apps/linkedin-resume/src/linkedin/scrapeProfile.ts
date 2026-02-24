@@ -3,7 +3,8 @@ import { autoScroll } from './utils/autoScroll'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { CliOptions } from '../types/CliOptions'
-import { ResumeLanguage, ResumeProfile } from '../types/Resume'
+import { ResumeLanguage } from "../types/Resume";
+import { ResumeProfile } from "../types/Resume";
 import { onScrapeError } from './utils/onScrapeError'
 import { scrapeOutputJson } from './utils/scrapeOutputJson'
 import { userConfigFile } from '../userConfigFile'

@@ -1,5 +1,6 @@
 import { AbstractMethodIdentifier } from './AbstractMethodIdentifier'
-import { MethodTargetType, MethodType } from './types'
+import { MethodTargetType } from "./types";
+import { MethodType } from "./types";
 import { setNonEnumerable } from '@mono/object'
 
 /**

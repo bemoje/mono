@@ -1,5 +1,6 @@
 import { isPromise } from 'node:util/types'
-import { createLogger, type Logger } from './createLogger'
+import { createLogger } from "./createLogger";
+import type { Logger } from "./createLogger";
 import colors from 'ansi-colors'
 import humanizeDuration from 'humanize-duration'
 

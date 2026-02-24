@@ -1,4 +1,7 @@
-import { Static, TArray, TString, Type } from '@sinclair/typebox'
+import { Static } from "@sinclair/typebox";
+import { TArray } from "@sinclair/typebox";
+import { TString } from "@sinclair/typebox";
+import { Type } from "@sinclair/typebox";
 import { TemplateStrategy } from '../interfaces/TemplateStrategy'
 
 /**

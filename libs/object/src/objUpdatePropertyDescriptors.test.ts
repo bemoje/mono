@@ -1,5 +1,7 @@
 import { objUpdatePropertyDescriptors } from './objUpdatePropertyDescriptors'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe(objUpdatePropertyDescriptors.name, () => {
   it('should update property descriptors of specified properties on the object', () => {

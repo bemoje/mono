@@ -1,4 +1,5 @@
-import { Logger, toError } from '@mono/node'
+import { Logger } from "@mono/node";
+import { toError } from "@mono/node";
 import { prettyStackTrace } from '@mono/stacktrace'
 import { CliOptions } from '../../types/CliOptions'
 import { ResumeSection } from '../../types/ResumeSection'

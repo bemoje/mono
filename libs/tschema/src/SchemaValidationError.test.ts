@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 import { SchemaValidationError } from './SchemaValidationError'
 import { Type } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'

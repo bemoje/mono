@@ -1,4 +1,7 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
+import { vi } from "vitest";
 import assert from 'node:assert'
 import { getDefaultBrowserWindows } from './getDefaultBrowserWindows'
 import { execSync } from 'node:child_process'

@@ -1,5 +1,7 @@
 import { isHex } from './isHex'
-import { describe, expect, it } from 'vitest'
+import { describe } from "vitest";
+import { expect } from "vitest";
+import { it } from "vitest";
 
 describe('isHex', () => {
   it('should return true for valid hexadecimal numbers', () => {
