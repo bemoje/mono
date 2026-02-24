@@ -1,5 +1,5 @@
 import type { CamelCase } from 'type-fest'
-import type { OptionUsage } from '../types.internal'
+import type { OptionUsage } from '../types'
 
 /**
  * Parses option flags string into its components

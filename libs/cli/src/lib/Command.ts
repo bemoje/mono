@@ -41,7 +41,7 @@ import type {
   HookDefinition,
   HookActionHandler,
   HookPredicate,
-} from './types.internal'
+} from './types'
 import { parseOptionFlags } from './helpers/parseOptionFlags'
 import { kebabCase } from 'es-toolkit/string'
 import { getCommandAndAncestors } from './helpers/getCommandAndAncestors'
