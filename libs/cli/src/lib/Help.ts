@@ -1,7 +1,6 @@
 import { lazyProp } from '@mono/decorators'
 import type { IHelp, Argument, ICommand, Option } from './types'
 import C from 'ansi-colors'
-import colors from 'ansi-colors'
 
 /**
  * This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the
@@ -150,7 +149,7 @@ export class Help implements IHelp {
       this.cmd.name +
       ' ' +
       [
-        ...(this.cmd.commands.length ? [this.usageDisplaySubcommandAs] : []),
+        ...(Object.keys(this.cmd.commands).length ? [this.usageDisplaySubcommandAs] : []),
         ...(this.cmd.options.length ? [this.usageDisplayOptionsAs] : []),
         ...this.cmd.arguments.map((arg) => {
           return arg.required

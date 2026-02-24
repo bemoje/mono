@@ -282,7 +282,7 @@ export class Command<
     }
 
     if (required && prevArg && !prevArg?.required) {
-      throw new Error(`Cannot add required argument ${usage} after optional argument ${prevArg?.usage || 'none'}`)
+      throw new Error(`Cannot add required argument ${usage} after optional argument ${prevArg?.usage}`)
     }
 
     if (required && prevArg?.defaultValue) {
@@ -527,9 +527,9 @@ export class Command<
     }
 
     // validation
-    const errors = parsedArguments
-      .map((arg, index) => {
-        const argDef = this.arguments[index]
+    const errors = this.arguments
+      .map((argDef, index) => {
+        const arg = parsedArguments[index]
         if (argDef.required) {
           if (argDef.variadic ? Array.isArray(arg) && arg.length === 0 : arg === undefined) {
             return `Missing required argument [${index}]: ${argDef.usage}`
