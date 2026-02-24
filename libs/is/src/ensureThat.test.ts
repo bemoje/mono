@@ -190,6 +190,16 @@ describe(ensureThat.name, () => {
     })
   })
 
+  describe('custom message option', () => {
+    it('should use custom message when provided', () => {
+      expect(() => ensureThat(-1, isPos, { message: 'Custom error' })).toThrow()
+      expectErrorData({
+        cause: { isPos: false },
+      })
+      expect(errSpy).toHaveBeenCalledWith('Custom error', expect.any(Object))
+    })
+  })
+
   describe('typing tests', () => {
     const unknownParam = (n: unknown) => true
     const stringParam = (n: string) => true
