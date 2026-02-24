@@ -5,5 +5,9 @@
   "type": "module",
   "private": true,
   "module": "src/index.ts",
-  "sideEffects": false
+  "sideEffects": false,
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "publish": "yarn build && cd dist && npm publish && cd ../../"
+  }
 }

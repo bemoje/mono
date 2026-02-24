@@ -1,5 +1,8 @@
 import { lazyProp } from '@mono/decorators'
-import type { IHelp, Argument, ICommand, Option } from './types'
+import type { IHelp } from './types'
+import type { Argument } from './types'
+import type { ICommand } from './types'
+import type { Option } from './types'
 import C from 'ansi-colors'
 
 /**
@@ -182,7 +185,10 @@ export class Help implements IHelp {
    * (Fallback to description for backwards compatibility.)
    */
   subcommandDescription(sub: ICommand): string {
-    return sub.summary || (sub.description.includes('\n') ? sub.description.split('\n')[0] : '')
+    return (
+      sub.summary ||
+      (sub.description?.includes('\n') ? sub.description.trim().split('\n')[0] : sub.description.trim())
+    )
   }
 
   /**
@@ -297,11 +303,11 @@ export class Help implements IHelp {
     return str
       .split(' ')
       .map((word: string, index, arr) => {
-        if (word === this.usageDisplaySubcommandAs) return C.blue(word)
+        if (word === this.usageDisplaySubcommandAs) return C.green(word)
         if (word === this.usageDisplayOptionsAs) return C.blue(word)
         if (word[0] === '<') return C.red(word)
         if (word[0] === '[') return C.cyan(word)
-        if (arr[index + 1]?.startsWith('[')) return C.green(word)
+        if (arr[index + 1]?.startsWith('[')) return C.magenta(word)
         return this.styleCommandText(word) // Restrict to initial words?
       })
       .join(' ')
@@ -325,7 +331,7 @@ export class Help implements IHelp {
    * Style subcommand descriptions for display in help output.
    */
   styleSubcommandDescription(str: string): string {
-    return C.gray(this.styleDescriptionText(str))
+    return this.styleDescriptionText(str)
   }
 
   /**
@@ -339,7 +345,7 @@ export class Help implements IHelp {
    * Base style used by descriptions. Override in subclass to apply custom formatting.
    */
   styleDescriptionText(str: string): string {
-    return str
+    return C.gray(str)
   }
 
   /**
@@ -355,14 +361,20 @@ export class Help implements IHelp {
   styleSubcommandTerm(str: string): string {
     // This is very like usage with lots of parts! Assume default string which is formed like:
     //    subcommand [opts] <foo> [bar]
-    return str
+    const res = str
       .split(' ')
       .map((word: string) => {
-        if (word === this.usageDisplayOptionsAs) return this.styleOptionText(word)
-        if (word[0] === '[' || word[0] === '<') return this.styleArgumentText(word)
+        if (word === this.usageDisplayOptionsAs) return C.dim(word)
+        if (word[0] === '[' || word[0] === '<') return C.dim(word)
         return this.styleSubcommandText(word) // Restrict to initial words?
       })
       .join(' ')
+    const split = res.split('|')
+    if (split.length === 1) {
+      return res
+    }
+    split[0] = C.green(split[0])
+    return split.join('|')
   }
 
   /**

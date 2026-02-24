@@ -1,4 +1,5 @@
-import type { ICommand, Option } from '../types'
+import type { ICommand } from "../types";
+import type { Option } from "../types";
 
 /**
  * Finds option by name, short name or long name

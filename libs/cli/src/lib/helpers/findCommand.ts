@@ -1,6 +1,6 @@
-import { valuesOf } from '@mono/object'
-import type { ICommand } from '../types'
 import type { Command } from '../Command'
+import type { ICommand } from '../types'
+import { valuesOf } from '@mono/object'
 
 /**
  * Finds subcommand by name or alias

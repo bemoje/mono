@@ -81,22 +81,20 @@ describe(Command.name, () => {
 
     it('should execute help hook body', async () => {
       const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
       const cmd = new Command('test')
       const parsed = cmd.parseArgv(['-h'])
       await parsed.execute()
       expect(logSpy).toHaveBeenCalled()
-      expect(exitSpy).toHaveBeenCalledWith(0)
+      expect(process.exitCode).toBe(0)
     })
 
     it('should execute version hook body', async () => {
       const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
       const cmd = new Command('test').setVersion('2.5.0')
       const parsed = cmd.parseArgv(['-V'])
       await parsed.execute()
       expect(logSpy).toHaveBeenCalledWith('2.5.0')
-      expect(exitSpy).toHaveBeenCalledWith(0)
+      expect(process.exitCode).toBe(0)
     })
 
     it('should execute main action after hooks', async () => {
@@ -114,13 +112,12 @@ describe(Command.name, () => {
 
     it('should print errors and exit when validation fails', async () => {
       const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
       const cmd = new Command('test').addArgument('<required>')
       const parsed = cmd.parseArgv([])
       expect(parsed.errors).toBeDefined()
       await parsed.execute()
       expect(errorSpy).toHaveBeenCalled()
-      expect(exitSpy).toHaveBeenCalledWith(1)
+      expect(process.exitCode).toBe(1)
     })
   })
 })

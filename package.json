@@ -24,6 +24,7 @@
     "insight": "yarn run-s -n \"insight:*\"",
     "docs": "devkit build-readme",
     "lint": "yarn eslint '{libs,apps}/**/*' --config eslint.config.mjs --cache --ignore-pattern apps/playground --ignore-pattern '**/dist/**'",
+    "lint-fix-imports": "yarn lint --fix && yarn lint --fix --rule 'split-and-sort-imports/split-imports: warn' --rule 'unused-imports/no-unused-imports:off'",
     "lint-fix": "yarn lint --fix",
     "format-all:check": "yarn prettier -u ./ '{.github,.vscode,scripts,docs,apps,libs}/**/*' --check",
     "format:write": "node scripts/format.mjs --write --ignore-unknown --list-different",
@@ -40,6 +41,8 @@
     "precommit": "cls && yarn install && yarn precommit:fix && yarn test-coverage && yarn build && yarn precommit:check && yarn precommit:docs",
     "publish:devkit": "yarn workspace @bemoje/devkit run build && cd apps/devkit && npm publish && cd ../../",
     "publish:linkedin-resume": "yarn workspace linkedin-resume run build && cd apps/linkedin-resume && npm publish && cd ../../",
+    "publish:array": "yarn workspace @mono/array run build && cd libs/array/dist && npm publish && cd ../../../",
+    "publish:cli": "yarn workspace @mono/cli run build && cd libs/cli/dist && npm publish && cd ../../../",
     "foreach": "yarn workspaces foreach --all --parallel --jobs unlimited --exclude mono --verbose",
     "devkit": "node -r source-map-support/register apps/devkit/dist/devkit.cjs",
     "dk": "yarn workspace @bemoje/devkit run build && yarn devkit",
@@ -48,6 +51,7 @@
   "devDependencies": {
     "@bemoje/devkit": "workspace:^",
     "@eslint/js": "^9.8.0",
+    "@sngn/eslint-plugin-split-and-sort-imports": "^0.4.3",
     "@types/cli-table": "^0.3.4",
     "@types/command-exists": "^1.2.3",
     "@types/date-fns": "^2.6.3",
@@ -61,7 +65,7 @@
     "esbuild": "^0.23.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-unused-imports": "^4.1.4",
+    "eslint-plugin-unused-imports": "4",
     "globals": "^15.8.0",
     "knip": "^5.83.1",
     "npm-run-all2": "^8.0.4",
@@ -76,6 +80,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@bemoje/cli": "2.0.1",
     "@sinclair/typebox": "^0.34.37",
     "@types/node": "^24.3.1",
     "ansi-colors": "^4.1.3",

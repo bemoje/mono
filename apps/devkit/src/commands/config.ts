@@ -1,31 +1,25 @@
-import { Command } from 'commander'
 import { configFile } from '../core/config/config'
 import { execSync } from 'node:child_process'
 import { templates } from '../core/templates/templates'
 import upath from 'upath'
+import { Command } from '@mono/cli'
 
-export function config() {
-  configFile.load()
-  return new Command('config')
-    .alias('c')
-    .description('Edit the config')
+export function configAction() {
+  execSync(
+    templates.commands.openFileInIDE.renderString({
+      filepath: configFile.filepath, //
+    }),
+  )
+}
 
-    .option('-f, --filepath', 'Print the path the repo config file.')
-    .option('-d, --dirpath', 'Print the path the repo config data directory.')
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function configFilepathHook({ cmd }: { cmd: Command<any, any> }) {
+  console.log('config file:', configFile.filepath)
+  cmd.exit(0)
+}
 
-    .action((opts: { filepath?: boolean; dirpath?: boolean }) => {
-      if (opts.filepath) {
-        return console.log('config file:', configFile.filepath)
-      }
-
-      if (opts.dirpath) {
-        return console.log('config dir:', upath.dirname(configFile.filepath))
-      }
-
-      execSync(
-        templates.commands.openFileInIDE.renderString({
-          filepath: configFile.filepath, //
-        }),
-      )
-    })
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function configDirpathHook({ cmd }: { cmd: Command<any, any> }) {
+  console.log('config dir:', upath.dirname(configFile.filepath))
+  cmd.exit(0)
 }

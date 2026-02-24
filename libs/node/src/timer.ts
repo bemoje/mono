@@ -29,6 +29,7 @@ export function timer<T>(
   }) as T
 
   function done(retval: T) {
+    if (process.exitCode) return retval
     const ns = process.hrtime.bigint() - t0
     const ms = Math.floor(Number(ns) / 1000000)
     log.done(colors.dim(humanizeDuration(ms)))

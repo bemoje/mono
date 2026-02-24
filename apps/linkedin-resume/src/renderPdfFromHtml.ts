@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import upath from 'upath'
-import { pathToFileURL } from 'url'
+import { pathToFileURL } from 'node:url'
 import { CliOptions } from './types/CliOptions'
 import { DIST_PATH } from './constants'
 import { expandEnvVars } from './utils/expandEnvVars'

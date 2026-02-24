@@ -13,7 +13,6 @@ export * from './lib/root'
 export * from './lib/suffixFilename'
 export * from './lib/toCwdRelative'
 export * from './lib/toWin32'
-export * from './lib/upath'
 
 import * as MODULE_01 from './lib/cwd'
 import * as MODULE_02 from './lib/dirnameDeep'
@@ -30,7 +29,6 @@ import * as MODULE_12 from './lib/root'
 import * as MODULE_13 from './lib/suffixFilename'
 import * as MODULE_14 from './lib/toCwdRelative'
 import * as MODULE_15 from './lib/toWin32'
-import * as MODULE_16 from './lib/upath'
 
 export default {
   ...MODULE_01, //
@@ -48,5 +46,4 @@ export default {
   ...MODULE_13,
   ...MODULE_14,
   ...MODULE_15,
-  ...MODULE_16,
 }

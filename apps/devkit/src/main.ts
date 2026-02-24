@@ -3,71 +3,226 @@ import { enablePrettyStackTrace } from '@mono/stacktrace'
 enablePrettyStackTrace()
 import 'dotenv/config'
 //
-import { Command } from 'commander'
+import { Command } from '@mono/cli'
 //
 import version from './core/version'
 import description from './core/description'
 //
-import { config } from './commands/config'
-import { build_libs } from './commands/build_libs'
-import { fix_workspace_imports } from './commands/fix_workspace_imports'
-import { insert_import_statements } from './commands/insert_import_statements'
-import { list_top_import_statements } from './commands/list_top_import_statements'
-import { list_imported_files } from './commands/list_imported_files'
-import { list_import_statements } from './commands/list_import_statements'
-import { fix_dash_chars } from './commands/fix_dash_chars'
-import { missing_coverage_files } from './commands/missing_coverage_files'
-import { list_lib_module_exports } from './commands/list_lib_module_exports'
-import { lines_of_code } from './commands/lines_of_code'
-import { build_readme } from './commands/build_readme'
-import { clear_node_modules } from './commands/clear_node_modules'
-import { fix_vitest_imports } from './commands/fix_vitest_imports'
-import { fix_index_ts } from './commands/fix_index_ts'
-import { run } from './commands/run'
-import { exec } from './commands/exec'
-import { create_libs_workspace } from './commands/create_workspace'
-import { missing_tsdoc_files } from './commands/missing_tsdoc_files'
-import { fix_empty_files } from './commands/fix_empty_files'
+import { configAction, configDirpathHook, configFilepathHook } from './commands/config'
+import { buildLibsAction } from './commands/build_libs'
+import { fixWorkspaceImportsAction } from './commands/fix_workspace_imports'
+import { listTopImportStatementsAction } from './commands/list_top_import_statements'
+import { listImportedFilesAction } from './commands/list_imported_files'
+import { listImportStatementsAction } from './commands/list_import_statements'
+import { fixDashCharsAction } from './commands/fix_dash_chars'
+import { missingCoverageFilesAction } from './commands/missing_coverage_files'
+import { listLibModuleExportsAction } from './commands/list_lib_module_exports'
+import { linesOfCodeAction } from './commands/lines_of_code'
+import { buildReadmeAction } from './commands/build_readme'
+import { clearNodeModulesAction } from './commands/clear_node_modules'
+import { fixVitestImportsAction } from './commands/fix_vitest_imports'
+import { fixIndexTsAction } from './commands/fix_index_ts'
+import { runAction } from './commands/run'
+import { createLibsWorkspaceAction } from './commands/create_workspace'
+import { missingTsdocFilesAction } from './commands/missing_tsdoc_files'
+import { fixEmptyFilesAction } from './commands/fix_empty_files'
+import { configFile } from './core/config/config'
+import { listImportedDependenciesAction } from './commands/list_imported_dependencies'
+import { listImportedBuiltinNodeDependencies } from './commands/listImportedBuiltinNodeDependencies'
+
 //
 
-void new Command('devkit')
-  .version(version)
-  .description(description)
+const cli = new Command('devkit')
+  .setVersion(version)
+  .setDescription(description)
 
   // config
-  .addCommand(config())
+  .addCommand('config', (cmd) => {
+    return cmd
+      .setDescription('Edit the config')
+
+      .addOption('-f, --filepath', { description: 'Print the path the repo config file.' })
+      .addOption('-d, --dirpath', { description: 'Print the path the repo config data directory.' })
+
+      .addOptionHook('filepath', configFilepathHook)
+      .addOptionHook('dirpath', configDirpathHook)
+
+      .setAction(configAction)
+  })
 
   // dev
-  .addCommand(run())
-  .addCommand(exec())
-  .addCommand(create_libs_workspace())
-  .addCommand(insert_import_statements())
-  .addCommand(clear_node_modules())
+  .addCommand('run', (cmd) => {
+    return cmd
+      .setAliases('r')
+      .setDescription('Compile and run a file. Supports .ts, .test.ts, .js, .mjs, .cjs, .ps1')
+      .addArgument('<filepath>', { description: 'Path to file to run' })
+      .addArgument('[args...]', { description: 'Additional arguments to pass to the script' })
+      .setAction(runAction)
+  })
+
+  .addCommand('create-libs-workspace', (cmd) => {
+    return cmd
+      .setDescription('Create a new library in the libs folder.')
+      .addArgument('<workspace>', { description: 'The name of the library to create.' })
+      .addOption('-y, --yes', { description: 'Skip confirmation.' })
+      .addOption('-d, --dryRun', { description: 'Dry run. No changes made.' })
+      .addOption('-q, --quiet', { description: 'Omit output from package manager.' })
+      .addOption('-s, --silent', { description: 'No output.' })
+      .setAction(createLibsWorkspaceAction)
+  })
+
+  .addCommand('clear-node-modules', (cmd) => {
+    return cmd
+      .setDescription('Completely removes and reinstalls all node_modules and lock files.')
+      .setAction(clearNodeModulesAction)
+  })
 
   // build
-  .addCommand(build_readme())
-  .addCommand(build_libs())
+  .addCommand('build-readme', (cmd) => {
+    return cmd
+      .setGroup('Build Commands')
+      .setDescription('Generate the root README.md from template.')
+      .setAction(buildReadmeAction)
+  })
+
+  .addCommand('build-libs', (cmd) => {
+    return cmd
+      .setGroup('Build Commands')
+      .setDescription('Build all libs/ workspaces.')
+      .addArgument('[dirnames...]', { description: 'libs dirnames. Defaults to all.' })
+      .setAction(buildLibsAction)
+  })
 
   // check
-  .addCommand(missing_tsdoc_files())
-  .addCommand(missing_coverage_files())
+  .addCommand('missing-tsdoc-files', (cmd) => {
+    return cmd
+      .setGroup('Check Commands')
+      .setDescription('Validate TSDoc documentation for all library exports.')
+      .setAction(missingTsdocFilesAction)
+  })
+
+  .addCommand('missing-coverage-files', (cmd) => {
+    return cmd
+      .setGroup('Check Commands')
+      .setDescription('Show files with missing test coverage.')
+      .addOption('-c, --check', { description: 'Exit with error code if files with missing coverage are found.' })
+      .setAction(missingCoverageFilesAction)
+  })
 
   // fix
-  .addCommand(fix_workspace_imports())
-  .addCommand(fix_vitest_imports())
-  .addCommand(fix_index_ts())
-  .addCommand(fix_empty_files())
-  .addCommand(fix_dash_chars())
+  .addCommand('fix-workspace-imports', (cmd) => {
+    return cmd
+      .setGroup('Fix Commands')
+      .setDescription('Fix incorrect workspace imports.')
+
+      .addOption('-y, --yes', { description: 'Skip confirmation.' })
+      .addOption('-d, --dryRun', { description: 'Dry run. No changes made.' })
+      .addOption('-q, --quiet', { description: 'Omit output from package manager.' })
+      .addOption('-s, --silent', { description: 'No output.' })
+      .addOption('-w, --workspaces [names...]', {
+        description: 'Comma-sep list of workspace names to fix. Defaults to all.',
+      })
+      .addOption('-f, --fixes [names...]', {
+        description: 'Fixes to apply.',
+        choices: ['imports'],
+        defaultValue: ['imports'],
+      })
+      .setAction(fixWorkspaceImportsAction)
+  })
+
+  .addCommand('fix-vitest-imports', (cmd) => {
+    return cmd
+      .setGroup('Fix Commands')
+      .setDescription('Ensure all test files have necessary Vitest imports.')
+      .addArgument('[glob]', {
+        description: 'File glob pattern',
+        defaultValue: '{libs,apps,packages}/*/src/**/*.test.{ts,tsx}',
+      })
+      .setAction(fixVitestImportsAction)
+  })
+
+  .addCommand('fix-index-ts', (cmd) => {
+    return cmd
+      .setGroup('Fix Commands')
+      .setDescription('Generate barrel export index.ts for a workspace.')
+      .addArgument('[dirnames...]', { description: 'Workspace dirnames within libs/*' })
+      .addOption('-i, --ignore <dirnames...>', {
+        description: 'Workspace dirnames to ignore (relative to repo root)',
+      })
+      .setAction(fixIndexTsAction)
+  })
+
+  .addCommand('fix-empty-files', (cmd) => {
+    return cmd
+      .setGroup('Fix Commands')
+      .setDescription('Remove empty files from all workspaces.')
+      .setAction(fixEmptyFilesAction)
+  })
+
+  .addCommand('fix-dash-chars', (cmd) => {
+    return cmd
+      .setGroup('Fix Commands')
+      .setDescription('Replace bad dash characters (em-dash) with regular dashes.')
+      .setAction(fixDashCharsAction)
+  })
 
   // insights
-  .addCommand(list_import_statements())
-  .addCommand(list_imported_files())
-  .addCommand(list_top_import_statements())
-  .addCommand(lines_of_code())
-  .addCommand(list_lib_module_exports())
+  .addCommand('list-import-statements', (cmd) => {
+    return cmd
+      .setGroup('Insight Commands')
+      .setDescription('List all import statements found in libs source files.')
+      .setAction(listImportStatementsAction)
+  })
 
-  // start CLI
-  .parseAsync()
+  .addCommand('list-imported-files', (cmd) => {
+    return cmd
+      .setGroup('Insight Commands')
+      .setDescription('List the most imported files across the repo.')
+      .addArgument('[n]', { description: 'Print top n most frequent import statements', defaultValue: '5000' })
+      .setAction(listImportedFilesAction)
+  })
+
+  .addCommand('list-top-import-statements', (cmd) => {
+    return cmd
+      .setGroup('Insight Commands')
+      .setDescription('List the most used import statements across the repo.')
+      .addArgument('[n]', { description: 'Print top n most frequent import statements', defaultValue: '5000' })
+      .setAction(listTopImportStatementsAction)
+  })
+
+  .addCommand('list-imported-dependencies', (cmd) => {
+    return cmd
+      .setGroup('Insight Commands')
+      .setDescription('List all imported internal and external dependencies for each workspace.')
+      .setAction(listImportedDependenciesAction)
+  })
+
+  .addCommand('list-imported-node-dependencies', (cmd) => {
+    return cmd
+      .setGroup('Insight Commands')
+      .setDescription('List all imported built-in node dependencies for each workspace.')
+      .setAction(listImportedBuiltinNodeDependencies)
+  })
+
+  .addCommand('count-lines-of-code', (cmd) => {
+    return cmd
+      .setGroup('Insight Commands')
+      .setDescription('Count lines of code in the repo.')
+      .setAction(linesOfCodeAction)
+  })
+
+  .addCommand('list-lib-module-exports', (cmd) => {
+    return cmd
+      .setGroup('Insight Commands')
+      .setDescription('List all available modules and their exports from the libs directory.')
+      .setAction(listLibModuleExportsAction)
+  })
+
+configFile.load()
+
+void cli
+  .parseArgv()
+  .execute()
   .catch((error) => {
     console.error(error)
     process.exit(1)

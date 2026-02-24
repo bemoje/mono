@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
+    "rootDir": "../..",
+    "skipLibCheck": true,
+    "noEmitOnError": false
+  },
+  "include": [
+    "src/**/*.ts",
+    "../array/src/**/*.ts",
+    "../composition/src/**/*.ts",
+    "../decorators/src/**/*.ts",
+    "../fn/src/**/*.ts",
+    "../is/src/**/*.ts",
+    "../iter/src/**/*.ts",
+    "../map/src/**/*.ts",
+    "../node/src/**/*.ts",
+    "../number/src/**/*.ts",
+    "../object/src/**/*.ts",
+    "../string/src/**/*.ts",
+    "../types/src/**/*.ts"
+  ],
+  "exclude": ["**/*.test.ts"]
+}

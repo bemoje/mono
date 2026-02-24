@@ -4,7 +4,7 @@ import { tsExtractImports } from '@mono/tscode'
 import fs from 'fs-extra'
 import { ExtMap } from '@mono/map'
 import { reduce } from 'iter-tools'
-import cp from 'child_process'
+import cp from 'node:child_process'
 
 function parseNameFromImportStatement(line: string): string {
   return line

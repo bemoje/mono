@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from '@mono/path'
+import upath from 'upath'
 import { AbstractBase } from '../common/AbstractBase'
 import { Inspector, Parenting } from '@mono/composition'
 import { lazyProp } from '@mono/decorators'
@@ -23,7 +24,7 @@ export class File<P extends Workspace = Workspace> extends AbstractBase<P> {
 
   constructor(parent: P, filepath: string) {
     super(parent)
-    this.path = path.normalize(filepath)
+    this.path = upath.normalize(filepath)
   }
 
   @lazyProp(1000)
@@ -50,7 +51,7 @@ export class File<P extends Workspace = Workspace> extends AbstractBase<P> {
     return hasExtnamePrefix(this.path, SemanticExtnamePrefix.test)
   }
   get isIndexFile() {
-    return path.parse(this.path).name === 'index'
+    return upath.parse(this.path).name === 'index'
   }
 
   get isSourceFile() {

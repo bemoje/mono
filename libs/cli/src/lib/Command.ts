@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { arrRemoveDuplicates } from '@mono/array'
 import { setName } from '@mono/fn'
-import { filterObject, objSortKeys, valuesOf } from '@mono/object'
+import { filterObject } from "@mono/object";
+import { objSortKeys } from "@mono/object";
+import { valuesOf } from "@mono/object";
 import { collectVariadicOptionValues } from './internal/collectVariadicOptionValues'
 import { mergeOptionDefaults } from './internal/mergeOptionDefaults'
 import { normalizeArgv } from './internal/normalizeArgv'
@@ -9,39 +11,46 @@ import { resolveArguments } from './internal/resolveArguments'
 import { validateParsed } from './internal/validateParsed'
 import { strFirstCharToUpperCase } from '@mono/string'
 import colors from 'ansi-colors'
-import type { CamelCase, SetFieldType, Simplify, SetRequired } from 'type-fest'
-import { inspect, parseArgs } from 'node:util'
+import type { CamelCase } from "type-fest";
+import type { SetFieldType } from "type-fest";
+import type { Simplify } from "type-fest";
+import type { SetRequired } from "type-fest";
+import { inspect } from "node:util";
+import { parseArgs } from "node:util";
 import { Help } from './Help'
 import { findCommand } from './helpers/findCommand'
 import { getCommandAncestors } from './helpers/getCommandAncestors'
 import { lazyProp } from '@mono/decorators'
 import { timer } from '@mono/node'
 import { findOption } from './helpers/findOption'
-import type { Arguments, Argument, ICommand, Option, Options, SubCommands } from './types'
-import type {
-  ActionHandler,
-  ArgumentOptions,
-  ArgumentUsage,
-  BooleanOptionOptions,
-  AllowedArgumentUsage,
-  InferAddedArgumentType,
-  InferAddOptionResult,
-  OptionalArgumentOptions,
-  OptionalArgumentOptionsWithDefaultValue,
-  OptionalOptionOptions,
-  OptionalVariadicArgumentOptions,
-  OptionalVariadicOptionOptions,
-  RequiredArgumentOptions,
-  RequiredOptionOptions,
-  RequiredVariadicArgumentOptions,
-  RequiredVariadicOptionOptions,
-  OptionOptions,
-  OptionUsage,
-  ParseArgvResult,
-  HookDefinition,
-  HookActionHandler,
-  HookPredicate,
-} from './types'
+import type { Arguments } from "./types";
+import type { Argument } from "./types";
+import type { ICommand } from "./types";
+import type { Option } from "./types";
+import type { Options } from "./types";
+import type { SubCommands } from "./types";
+import type { ActionHandler } from './types'
+import type { ArgumentOptions } from './types'
+import type { ArgumentUsage } from './types'
+import type { BooleanOptionOptions } from './types'
+import type { AllowedArgumentUsage } from './types'
+import type { InferAddedArgumentType } from './types'
+import type { InferAddOptionResult } from './types'
+import type { OptionalArgumentOptions } from './types'
+import type { OptionalArgumentOptionsWithDefaultValue } from './types'
+import type { OptionalOptionOptions } from './types'
+import type { OptionalVariadicArgumentOptions } from './types'
+import type { OptionalVariadicOptionOptions } from './types'
+import type { RequiredArgumentOptions } from './types'
+import type { RequiredOptionOptions } from './types'
+import type { RequiredVariadicArgumentOptions } from './types'
+import type { RequiredVariadicOptionOptions } from './types'
+import type { OptionOptions } from './types'
+import type { OptionUsage } from './types'
+import type { ParseArgvResult } from './types'
+import type { HookDefinition } from './types'
+import type { HookActionHandler } from './types'
+import type { HookPredicate } from './types'
 import { parseOptionFlags } from './helpers/parseOptionFlags'
 import { kebabCase } from 'es-toolkit/string'
 import { getCommandAndAncestors } from './helpers/getCommandAndAncestors'
@@ -81,11 +90,6 @@ export class Command<
   protected action?: ActionHandler<A, O, Subs>
   /** Option-driven actions (e.g., --help, --version) executed when their conditions match */
   protected hooks: HookDefinition<Arguments, Options & O>[]
-  /**
-   * The exit handler function that is called when the command exits.
-   * By default, it calls `process.exit(code)`.
-   */
-  protected exitHandler: (code: number) => never = (code: number) => process.exit(code)
 
   constructor(name: string, parent?: ICommand) {
     this.name = name
@@ -109,7 +113,7 @@ export class Command<
       this.addOption('-h, --help', { description: 'Display help information' }) //
         .addOptionHook('help', ({ cmd }) => {
           console.log(cmd.renderHelp())
-          this.exit(0)
+          process.exitCode = 0
         })
     }
   }
@@ -168,7 +172,7 @@ export class Command<
     return this.addOption('-V, --version', { description: 'Display semver version' }) //
       .addOptionHook('version', ({ cmd }) => {
         console.log(getCommandAndAncestors(cmd).find((c) => c.version)?.version)
-        this.exit(0)
+        process.exitCode = 0
       })
   }
 
@@ -429,13 +433,13 @@ export class Command<
    * allowing for option-driven behavior. For example, `--help` and `--version`
    * are implemented as hooks.
    */
-  addOptionHook(optionName: keyof O, action: HookActionHandler<Arguments, Options & O>): this {
+  addOptionHook(optionName: keyof O, action: HookActionHandler<Arguments, O>): this {
     const def = findOption(this, optionName as string)!
-    if (!def.group && /\.exit\(.*\);?\s*\}$/.test(action.toString())) {
+    if (!def.group && /process\.exitCode ?= ?.+;?\s*\}$/.test(action.toString())) {
       def.group = 'Command Options'
     }
     this.hooks.push({
-      optionName,
+      name: optionName,
       predicate: setName('has' + strFirstCharToUpperCase(optionName as string), (({ opts }) => {
         return (
           opts[optionName] !== undefined &&
@@ -496,14 +500,18 @@ export class Command<
     const execute = async () => {
       for (const hook of hooks) {
         await hook.action(data)
+        if (process.exitCode) {
+          return
+        }
       }
       await timer([[...path, this.name].join(' '), this.description], async (logger) => {
         if (errors) {
           errors.forEach((msg) => logger.error(colors.red(msg)))
-          this.exit(1)
+          process.exitCode = 1
+          return
         }
         if (this.action) {
-          return this.action(...(args as A), opts as O, {
+          return await this.action(...(args as A), opts as O, {
             ...data,
             args: args as A,
             opts: opts as O,
@@ -525,21 +533,6 @@ export class Command<
   setAction(fn: ActionHandler<A, O, Subs>): this {
     this.action = setName(this.name, fn as never)
     return this
-  }
-
-  /**
-   * Sets a custom exit handler function that will be called when the command needs to exit, such as after displaying help or version information, or when validation fails.
-   * This allows for overriding the default behavior of calling `process.exit`, which can be useful in testing environments or when integrating with other systems that require a different exit strategy.
-   */
-  setExitHandler(fn: (code: number) => never): void {
-    this.exitHandler = fn
-  }
-
-  /**
-   * Exit the process with the given code. This is a separate method to allow overriding in tests or environments where process.exit is not desirable.
-   */
-  exit(code: number): never {
-    this.exitHandler(code)
   }
 
   /** Returns a new Command instance. Override this method in subclasses. */

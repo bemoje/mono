@@ -1,29 +1,23 @@
 import fs from 'fs-extra'
 import upath from 'upath'
-import { addDefaultsOptions, DefaultOptions } from '../lib/addDefaultsOptions'
 import { cliExecSync } from '../lib/cliExec'
-import { Command } from 'commander'
 import { repoRootPackageJsonPath, tsconfigBasePathsJsonPath } from '../core/constants/paths'
 import { templates } from '../core/templates/templates'
 
-/**
- * Command for @see action
- */
-export function create_libs_workspace() {
-  return addDefaultsOptions(new Command('create-libs-workspace'))
-    .alias('clw')
-    .description('Create a new library in the libs folder.')
-    .argument('<workspaceName>', 'The name of the library to create.')
-    .action(action)
+export interface CreateWorkspaceOptions {
+  yes?: boolean
+  dryRun?: boolean
+  quiet?: boolean
+  silent?: boolean
+  debug?: boolean
 }
 
 /**
  * Create a new library in the libs folder.
  *
  * @param workspaceName - The name of the library to create.
- * @param scope - The scope of the library. Defaults to the repo root package.json 'name' property.
  */
-function action(workspaceName: string, options: DefaultOptions = {}) {
+export function createLibsWorkspaceAction(workspaceName: string, options: CreateWorkspaceOptions = {}) {
   // lib dirpaths
   const CWD = upath.normalize(process.cwd())
   const rootPath = upath.join(CWD, 'libs', workspaceName)

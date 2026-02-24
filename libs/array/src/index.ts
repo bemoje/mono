@@ -23,7 +23,6 @@ export * from './arrTableRemoveColumns'
 export * from './arrTableToCsv'
 export * from './arrTableToObjects'
 export * from './arrayToString'
-export * from './countUniques'
 
 import * as MODULE_01 from './arrAverage'
 import * as MODULE_02 from './arrEachToString'
@@ -50,7 +49,6 @@ import * as MODULE_22 from './arrTableRemoveColumns'
 import * as MODULE_23 from './arrTableToCsv'
 import * as MODULE_24 from './arrTableToObjects'
 import * as MODULE_25 from './arrayToString'
-import * as MODULE_26 from './countUniques'
 
 export default {
   ...MODULE_01, //
@@ -78,5 +76,4 @@ export default {
   ...MODULE_23,
   ...MODULE_24,
   ...MODULE_25,
-  ...MODULE_26,
 }

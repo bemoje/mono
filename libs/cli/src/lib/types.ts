@@ -1,7 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Command } from './Command'
-import type { Logger } from '@mono/node'
 import type { Simplify, AllUnionFields, SetFieldType, SetRequired } from 'type-fest'
+
+/** Logger interface defining methods for different log levels. */
+export interface Logger {
+  start: (...args: unknown[]) => void
+  done: (...args: unknown[]) => void
+  info: (...args: unknown[]) => void
+  log: (...args: unknown[]) => void
+  warn: (...args: unknown[]) => void
+  error: (...args: unknown[]) => void
+  debug: (...args: unknown[]) => void
+}
 
 /** Parsed command-line arguments */
 export type Arguments = (undefined | string | string[])[]

@@ -298,11 +298,11 @@ describe(Help.name, () => {
       expect(help.subcommandDescription(sub)).toBe('First line')
     })
 
-    it('should return empty for single-line description without summary', () => {
+    it('should return description for single-line description without summary', () => {
       const sub = mockCmd({ summary: undefined, description: 'Single line' })
       const cmd = mockCmd()
       const help = new Help(cmd)
-      expect(help.subcommandDescription(sub)).toBe('')
+      expect(help.subcommandDescription(sub)).toBe('Single line')
     })
   })
 
@@ -617,7 +617,7 @@ describe(Help.name, () => {
   describe('style pass-through methods', () => {
     it('should pass through text', () => {
       const help = new Help(mockCmd())
-      expect(help.styleDescriptionText('desc')).toBe('desc')
+      expect(help.styleDescriptionText('desc')).toContain('desc')
       expect(help.styleOptionText('opt')).toBe('opt')
       expect(help.styleArgumentText('arg')).toBe('arg')
       expect(help.styleSubcommandText('sub')).toBe('sub')

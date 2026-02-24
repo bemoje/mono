@@ -1,0 +1,9 @@
+{
+  "name": "@mono/libs",
+  "version": "0.0.1",
+  "packageManager": "yarn@4.3.1",
+  "type": "module",
+  "private": true,
+  "module": "src/index.ts",
+  "sideEffects": false
+}

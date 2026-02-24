@@ -1,7 +1,8 @@
+import eslintConfigPrettier from 'eslint-config-prettier'
 import globals from 'globals'
 import pluginJs from '@eslint/js'
+import splitAndSortImports from '@sngn/eslint-plugin-split-and-sort-imports'
 import tseslint from 'typescript-eslint'
-import eslintConfigPrettier from 'eslint-config-prettier'
 import unusedImports from 'eslint-plugin-unused-imports'
 
 export default [
@@ -13,7 +14,11 @@ export default [
   eslintConfigPrettier,
 
   {
-    plugins: { 'unused-imports': unusedImports },
+    plugins: {
+      'split-and-sort-imports': splitAndSortImports,
+
+      'unused-imports': unusedImports,
+    },
     rules: {
       // IMPORTANT: check no missing 'await'
       '@typescript-eslint/no-floating-promises': 'error',
@@ -23,6 +28,10 @@ export default [
 
       // PLUGIN: unused imports
       'unused-imports/no-unused-imports': 'warn',
+
+      // PLUGIN: split imports
+      // 'split-and-sort-imports/split-imports': ['warn'],
+      // 'split-and-sort-imports/sort-imports': ['warn', { separateGroups: true }],
     },
   },
 

@@ -241,14 +241,4 @@ describe(Command.name, () => {
       expect(result).toBe(cmd)
     })
   })
-
-  describe('setExitHandler', () => {
-    it('should set a custom exit handler', () => {
-      const cmd = new Command('test')
-      const customExit = (_code: number) => undefined as never
-      cmd.setExitHandler(customExit)
-      // @ts-expect-error - accessing protected property for test verification
-      expect(cmd.exitHandler).toBe(customExit)
-    })
-  })
 })
