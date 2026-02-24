@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { arrLast, arrRemoveDuplicates } from '@mono/array'
+import { arrRemoveDuplicates } from '@mono/array'
 import { setName } from '@mono/fn'
-import { entriesOf, filterObject, objSortKeys, valuesOf } from '@mono/object'
+import { filterObject, objSortKeys, valuesOf } from '@mono/object'
+import { collectVariadicOptionValues } from './internal/parseArgv/collectVariadicOptionValues'
+import { mergeOptionDefaults } from './internal/parseArgv/mergeOptionDefaults'
+import { normalizeArgv } from './internal/parseArgv/normalizeArgv'
+import { resolveArguments } from './internal/parseArgv/resolveArguments'
+import { validateParsed } from './internal/parseArgv/validateParsed'
 import { strFirstCharToUpperCase } from '@mono/string'
 import colors from 'ansi-colors'
 import type { CamelCase, SetFieldType, Simplify, SetRequired } from 'type-fest'
@@ -76,6 +81,11 @@ export class Command<
   protected action?: ActionHandler<A, O, Subs>
   /** Option-driven actions (e.g., --help, --version) executed when their conditions match */
   protected hooks: HookDefinition<Arguments, Options & O>[]
+  /**
+   * The exit handler function that is called when the command exits.
+   * By default, it calls `process.exit(code)`.
+   */
+  protected exitHandler: (code: number) => never = (code: number) => process.exit(code)
 
   constructor(name: string, parent?: ICommand) {
     this.name = name
@@ -424,35 +434,17 @@ export class Command<
 
   /** Parses command-line arguments with subcommand support and type-safe validation. */
   parseArgv(argv: string[] = process.argv.slice(2)): ParseArgvResult<Arguments, Options & O> {
-    // navigate to subcommand if found
     const sub = findCommand(this, argv[0])
-    if (sub) {
-      // recurse into subcommand
-      return sub.parseArgv(argv.slice(1)) as unknown as ParseArgvResult<Arguments, Options & O>
-    }
+    if (sub) return sub.parseArgv(argv.slice(1)) as unknown as ParseArgvResult<Arguments, Options & O>
 
-    // Map long option names to their camelCased names
-    this.options.forEach((o) => {
-      if (o.long === o.name) return
-      argv = argv.map((a) => {
-        if (a === `--${o.long}`) return `--${o.name}`
-        if (a === `--no-${o.long}`) return `--no-${o.name}`
-        return a
-      })
-    })
+    argv = normalizeArgv(argv, this.options)
 
-    // parse
     const parsed = parseArgs({
       args: argv,
       options: Object.fromEntries(
         this.options.map((o) => [
           o.name,
-          {
-            type: o.type,
-            short: o.short,
-            default: o.defaultValue,
-            multiple: !!o.variadic,
-          },
+          { type: o.type, short: o.short, default: o.defaultValue, multiple: !!o.variadic },
         ]),
       ),
       allowPositionals: true,
@@ -461,162 +453,19 @@ export class Command<
       allowNegative: true,
     })
 
-    // Find variadic options and collect their consecutive arguments
-    for (let i = 0; i < parsed.tokens.length; i++) {
-      const token = parsed.tokens[i]
-      if (token.kind === 'option') {
-        const optionDescriptor = this.options.find((o) => o.name === token.name)
-        if (optionDescriptor && optionDescriptor.variadic && optionDescriptor.type === 'string') {
-          // This is a variadic option, collect consecutive positional arguments
-          const values = [token.value] // Start with the option's own value
-          let j = i + 1
+    collectVariadicOptionValues(parsed, this.options)
+    mergeOptionDefaults(parsed.values as Record<string, unknown>, this.options)
 
-          // Look for consecutive positionals
-          while (j < parsed.tokens.length && parsed.tokens[j].kind === 'positional') {
-            const positionalToken = parsed.tokens[j]
-            if (positionalToken.kind === 'positional') {
-              values.push(positionalToken.value)
-              // Remove from processed positionals
-              const posIndex = parsed.positionals.indexOf(positionalToken.value)
-              if (posIndex !== -1) {
-                parsed.positionals.splice(posIndex, 1)
-              }
-            }
-            j++
-          }
-          // Update the option value with all collected values (filter out undefined)
-          Reflect.set(
-            parsed.values,
-            token.name,
-            values.filter((v): v is string => v !== undefined),
-          )
-        }
-      }
-    }
-
-    // Merge default option values with parsed options
-    for (const option of this.options) {
-      if (option.defaultValue !== undefined && option.name in parsed.values) {
-        ;(parsed.values as Record<string, unknown>)[option.name] ??= option.defaultValue
-      }
-    }
-
-    // sort options by value: defined -> true -> false
     parsed.values = objSortKeys(parsed.values, (a, b) => {
       return a[1] === false ? 1 : b[1] === false ? -1 : a[1] === true ? 1 : b[1] === true ? -1 : 0
     })
 
-    // Handle positional arguments
-    const parsedArguments = this.arguments.map((arg, index) => {
-      if (arg.variadic) {
-        // Variadic argument gets all remaining positionals
-        const remainingArgs = parsed.positionals.slice(index)
-        return remainingArgs.length > 0 ? remainingArgs : arg.defaultValue
-      } else {
-        // Regular argument gets positional at index or default
-        return parsed.positionals[index] ?? arg.defaultValue
-      }
-    })
-
-    // Trim trailing undefined values, but wihout affecting arg indices
-    while (parsedArguments.length && arrLast(parsedArguments) === undefined) {
-      parsedArguments.pop()
-    }
-
-    // validation
-    const errors = this.arguments
-      .map((def, index) => {
-        const value = parsedArguments[index]
-
-        if (def.required) {
-          if (def.variadic ? Array.isArray(value) && value.length === 0 : value === undefined) {
-            return `Missing argument [${index}] ${def.usage}`
-          }
-        }
-
-        if (def.choices && value !== undefined) {
-          if (![value].flat().every((v) => def.choices!.includes(v as string))) {
-            return `Invalid argument [${index}] ${def.usage}: Got \`${value}\`. Accepted values: [${def.choices.map((c) => `\`${c}\``).join(',')}]`
-          }
-        }
-      })
-      .concat(
-        entriesOf(parsed.values).map(([key, value]) => {
-          const def = this.options.find((o) => o.name === key)!
-
-          if (!def) {
-            return `Unknown option --${key}`
-          }
-
-          if (def.choices && value !== undefined) {
-            if (!((def.variadic ? value : [value]) as string[]).every((v) => def.choices!.includes(v))) {
-              return `Invalid option value ${def.flags}: Got \`${value}\`. Accepted values: [${def.choices.map((c) => `\`${c}\``).join(',')}]`
-            }
-          }
-        }),
-      )
-      .filter((s) => s !== undefined)
-      .reduce(
-        (acc, curr) => {
-          return (acc ?? []).concat(curr)
-        },
-        undefined as string[] | undefined,
-      )
-
-    const path = getCommandAncestors(this).map((c) => c.name)
-    const fullName = [...path, this.name].join(' ')
-    const args = parsedArguments
+    const args = resolveArguments(parsed.positionals, this.arguments)
     const opts = filterObject(parsed.values, (value) => value !== undefined)
+    const errors = validateParsed(args, parsed.values, this.arguments, this.options)
+    const path = getCommandAncestors(this).map((c) => c.name)
 
-    const hooks = this.hooks.filter((t) =>
-      t.predicate({
-        path,
-        name: this.name,
-        argv,
-        args: args as Arguments,
-        opts: opts as Options & O,
-        errors,
-        cmd: this as Command<Arguments, Options & O>,
-      }),
-    )
-
-    const execute = setName(this.name, async () => {
-      for (const hook of hooks) {
-        await hook.action({
-          path,
-          name: this.name,
-          argv,
-          args: args as Arguments,
-          opts: opts as Options & O,
-          errors,
-          cmd: this as Command<Arguments, Options & O>,
-        })
-      }
-
-      await timer([fullName, this.description], async (logger) => {
-        if (errors) {
-          errors.forEach((msg) => logger.error(colors.red(msg)))
-          this.exit(1)
-        }
-
-        if (this.action) {
-          return this.action(...(args as A), opts as O, {
-            path,
-            name: this.name,
-            argv,
-            args: args as A,
-            opts: opts as O,
-            errors,
-            cmd: this,
-            logger,
-          })
-        }
-
-        console.log(this.renderHelp())
-      })
-    })
-
-    return {
+    const data = {
       path,
       name: this.name,
       argv,
@@ -624,9 +473,33 @@ export class Command<
       opts: opts as Options & O,
       errors,
       cmd: this as Command<Arguments, Options & O>,
-      hooks,
-      execute,
-    } as unknown as ParseArgvResult<Arguments, Options & O>
+    }
+
+    const hooks = this.hooks.filter((t) => t.predicate(data))
+
+    const execute = async () => {
+      for (const hook of hooks) {
+        await hook.action(data)
+      }
+      await timer([[...path, this.name].join(' '), this.description], async (logger) => {
+        if (errors) {
+          errors.forEach((msg) => logger.error(colors.red(msg)))
+          this.exit(1)
+        }
+        if (this.action) {
+          return this.action(...(args as A), opts as O, {
+            ...data,
+            args: args as A,
+            opts: opts as O,
+            cmd: this,
+            logger,
+          })
+        }
+        console.log(this.renderHelp())
+      })
+    }
+
+    return { ...data, hooks, execute } as unknown as ParseArgvResult<Arguments, Options & O>
   }
 
   setAction(fn: ActionHandler<A, O, Subs>): this {
@@ -634,11 +507,8 @@ export class Command<
     return this
   }
 
-  /**
-   * Exit the process with the given code. This is a separate method to allow overriding in tests or environments where process.exit is not desirable.
-   */
-  exit(code: number): never {
-    process.exit(code)
+  setExitHandler(fn: (code: number) => never): void {
+    this.exitHandler = fn
   }
 
   /**
@@ -669,6 +539,13 @@ export class Command<
       action: setName(optionName as string, action),
     } as never)
     return this
+  }
+
+  /**
+   * Exit the process with the given code. This is a separate method to allow overriding in tests or environments where process.exit is not desirable.
+   */
+  exit(code: number): never {
+    process.exit(code)
   }
 
   /** Returns a new Command instance. Override this method in subclasses. */
