@@ -320,16 +320,6 @@ export class Command<
     return this as never
   }
 
-  /** Cast an arguments array */
-  castArguments(args: Arguments): A {
-    return args as A
-  }
-
-  /** Cast an options object */
-  castOptions(opts: Options): O {
-    return opts as O
-  }
-
   /** Add optional string option, eg.: `-o, --output [path]` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} [${string}]`,

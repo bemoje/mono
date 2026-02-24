@@ -71,7 +71,7 @@ describe(Command.name, () => {
         })
       })
 
-      it('should use empty string as default when not provided', () => {
+      it('should use undefined as default when not provided', () => {
         const cmd = new Command('test').addArgument('[optional]')
 
         expect(cmd.arguments[0].defaultValue).toBeUndefined()
