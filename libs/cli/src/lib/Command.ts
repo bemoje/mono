@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { arrRemoveDuplicates } from '@mono/array'
 import { setName } from '@mono/fn'
-import { filterObject } from "@mono/object";
-import { objSortKeys } from "@mono/object";
-import { valuesOf } from "@mono/object";
+import { filterObject } from '@mono/object'
+import { objSortKeys } from '@mono/object'
+import { valuesOf } from '@mono/object'
 import { collectVariadicOptionValues } from './internal/collectVariadicOptionValues'
 import { mergeOptionDefaults } from './internal/mergeOptionDefaults'
 import { normalizeArgv } from './internal/normalizeArgv'
@@ -11,24 +11,24 @@ import { resolveArguments } from './internal/resolveArguments'
 import { validateParsed } from './internal/validateParsed'
 import { strFirstCharToUpperCase } from '@mono/string'
 import colors from 'ansi-colors'
-import type { CamelCase } from "type-fest";
-import type { SetFieldType } from "type-fest";
-import type { Simplify } from "type-fest";
-import type { SetRequired } from "type-fest";
-import { inspect } from "node:util";
-import { parseArgs } from "node:util";
+import type { CamelCase } from 'type-fest'
+import type { SetFieldType } from 'type-fest'
+import type { Simplify } from 'type-fest'
+import type { SetRequired } from 'type-fest'
+import { inspect } from 'node:util'
+import { parseArgs } from 'node:util'
 import { Help } from './Help'
 import { findCommand } from './helpers/findCommand'
 import { getCommandAncestors } from './helpers/getCommandAncestors'
 import { lazyProp } from '@mono/decorators'
 import { timer } from '@mono/node'
 import { findOption } from './helpers/findOption'
-import type { Arguments } from "./types";
-import type { Argument } from "./types";
-import type { ICommand } from "./types";
-import type { Option } from "./types";
-import type { Options } from "./types";
-import type { SubCommands } from "./types";
+import type { Arguments } from './types'
+import type { Argument } from './types'
+import type { ICommand } from './types'
+import type { Option } from './types'
+import type { Options } from './types'
+import type { SubCommands } from './types'
 import type { ActionHandler } from './types'
 import type { ArgumentOptions } from './types'
 import type { ArgumentUsage } from './types'

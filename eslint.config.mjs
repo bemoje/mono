@@ -3,7 +3,7 @@ import globals from 'globals'
 import pluginJs from '@eslint/js'
 import splitAndSortImports from '@sngn/eslint-plugin-split-and-sort-imports'
 import tseslint from 'typescript-eslint'
-import unusedImports from 'eslint-plugin-unused-imports'
+// import unusedImports from 'eslint-plugin-unused-imports'
 
 export default [
   { files: ['**/*.{js,mjs,cjs,ts}', '*.{js,mjs,cjs,ts}'] },
@@ -17,7 +17,7 @@ export default [
     plugins: {
       'split-and-sort-imports': splitAndSortImports,
 
-      'unused-imports': unusedImports,
+      // 'unused-imports': unusedImports,
     },
     rules: {
       // IMPORTANT: check no missing 'await'
@@ -27,11 +27,11 @@ export default [
       '@typescript-eslint/ban-ts-comment': 'off',
 
       // PLUGIN: unused imports
-      'unused-imports/no-unused-imports': 'warn',
+      // 'unused-imports/no-unused-imports': 'warn',
 
       // PLUGIN: split imports
-      // 'split-and-sort-imports/split-imports': ['warn'],
-      // 'split-and-sort-imports/sort-imports': ['warn', { separateGroups: true }],
+      'split-and-sort-imports/split-imports': ['warn'],
+      'split-and-sort-imports/sort-imports': ['off', { separateGroups: true }],
     },
   },
 
