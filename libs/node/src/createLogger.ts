@@ -1,6 +1,9 @@
 import colors from 'ansi-colors'
 import { isPrimitive, isString } from 'es-toolkit/predicate'
 
+/**
+ * Logger interface defining methods for different log levels.
+ */
 export interface Logger {
   start: (...args: unknown[]) => void
   done: (...args: unknown[]) => void
@@ -39,6 +42,10 @@ export function createLogger(name: string): Logger {
   }
 }
 
+/**
+ * Creates a function that applies the given color function to string and primitive arguments.
+ * Non-string and non-primitive arguments are returned unchanged.
+ */
 function createColoredArgs(colorFn: (str: string) => string) {
   return (args: unknown[]) => {
     return args.map((arg) => {

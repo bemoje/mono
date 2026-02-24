@@ -39,9 +39,9 @@ describe(timer.name, () => {
     vi.restoreAllMocks()
   })
 
-  it('should call log.start when name is provided', () => {
+  it('should call log.start when name and description is provided', () => {
     const spy = vi.spyOn(console, 'info').mockImplementation(() => {})
-    timer('named-task', () => {})
+    timer(['named-task', 'This is a named task'], () => {})
     // start + done = at least 2 calls
     expect(spy.mock.calls.length).toBeGreaterThanOrEqual(2)
     vi.restoreAllMocks()

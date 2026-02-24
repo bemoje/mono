@@ -1,3 +1,4 @@
+import colors from 'ansi-colors'
 import { describe, expect, it, vi } from 'vitest'
 import { createLogger, type Logger } from './createLogger'
 
@@ -114,6 +115,17 @@ describe(createLogger.name, () => {
     const callArgs = spy.mock.calls[0]
     // Non-primitive arg should be passed through unchanged
     expect(callArgs).toContain(obj)
+    spy.mockRestore()
+  })
+
+  it('should pass through already-colored string args unchanged', () => {
+    const spy = vi.spyOn(console, 'info').mockImplementation(() => {})
+    const coloredStr = colors.red('already colored')
+    const log = createLogger('test')
+    log.info(coloredStr)
+    const callArgs = spy.mock.calls[0]
+    // The already-colored string should be passed through without additional coloring
+    expect(callArgs).toContain(coloredStr)
     spy.mockRestore()
   })
 
