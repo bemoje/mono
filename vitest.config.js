@@ -23,7 +23,7 @@ export default defineConfig({
     reporters: ['dot'],
     coverage: {
       enabled: false,
-      reporter: ['html', 'json-summary', 'text-summary'],
+      reporter: ['html', 'json', 'json-summary', 'text-summary'],
       include: ['{libs,apps}/*/src/**/*.ts'],
       exclude: ['{libs,apps}/*/{src,examples}/**/*{temp,wip,benchmark}*.ts', 'apps/**'],
       reportsDirectory: `.coverage/html`,
