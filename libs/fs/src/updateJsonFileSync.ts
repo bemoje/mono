@@ -11,7 +11,7 @@ export function updateJsonFileSync<T extends object, R extends object>(
   let content = defaultValue
   try {
     content = fs.readJsonSync(filepath)
-  } catch (error) {
+  } catch (_) {
     //
   }
   const updated = update(content)

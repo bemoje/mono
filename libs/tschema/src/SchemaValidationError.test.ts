@@ -11,7 +11,7 @@ describe('SchemaValidationError', () => {
     const value = { name: 'John' }
     const message = 'Custom error message'
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const error = new SchemaValidationError(errors as any, value, message)
 
     expect(error).toBeInstanceOf(SchemaValidationError)

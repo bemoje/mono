@@ -23,7 +23,7 @@ export type Arguments = (undefined | string | string[])[]
 export type Options = Record<string, undefined | boolean | string | string[]>
 
 /** Result of parsing command-line input, including arguments, options, triggered actions, and execution method */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export type SubCommands = { [name: string]: Command<Arguments, Options, any> }
 
 /** Base descriptor for command-line arguments with shared properties */

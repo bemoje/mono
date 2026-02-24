@@ -1,8 +1,8 @@
 import { beforeEach } from 'vitest'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 import { formatAsStringTable } from './formatAsStringTable'
 import { format } from 'date-fns'
 import { startCase } from 'es-toolkit/string'
@@ -38,7 +38,7 @@ describe('formatAsStringTable', () => {
   const spy = vi.fn()
 
   beforeEach(() => {
-    vi.clearAllMocks
+    vi.clearAllMocks()
   })
 
   it('should format number props as string using the correct formatter', () => {

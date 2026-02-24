@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { afterEach } from "vitest";
-import { beforeEach } from "vitest";
-import { describe } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { expect } from "vitest";
+import { afterEach } from 'vitest'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
+import { expect } from 'vitest'
 import { MonoRepo } from './MonoRepo'
 import * as fs from 'node:fs'
 import * as fse from 'fs-extra/esm'
@@ -426,7 +425,7 @@ describe(MonoRepo.name, () => {
       mockFs.readdirSync.mockReturnValueOnce([mockDirent2] as any)
 
       const repo = new MonoRepo()
-      repo.workspaces
+      void repo.workspaces
 
       expect(Workspace).toHaveBeenCalledWith(repo, '/libs//lib1')
       expect(Workspace).toHaveBeenCalledWith(repo, '/apps//app1')

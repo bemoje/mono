@@ -19,7 +19,7 @@ export async function streamToString(stream: Readable): Promise<string> {
     for await (const chunk of stream) {
       chunks.push(Buffer.from(chunk).toString())
     }
-  } catch (error) {
+  } catch (_) {
     return ''
   }
   return chunks.join('')

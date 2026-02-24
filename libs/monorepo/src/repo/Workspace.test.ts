@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { beforeEach } from "vitest";
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 import assert from 'node:assert'
 import { Workspace } from './Workspace'
 import { MonoRepo } from '../MonoRepo'
@@ -190,8 +189,8 @@ describe(Workspace.name, () => {
     })
 
     it('should cache the result (lazy prop)', () => {
-      workspace.packageJson
-      workspace.packageJson
+      void workspace.packageJson
+      void workspace.packageJson
 
       expect(mockFsExtra.readJsonSync).toHaveBeenCalledTimes(1)
     })

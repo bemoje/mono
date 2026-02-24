@@ -59,11 +59,11 @@ function renderProps(error: Error, options: { omitStack?: boolean; omitProps?: b
   const ignore = ['name', 'message', 'frames', 'stack']
   const keys = Object.getOwnPropertyNames(error).filter((key) => !ignore.includes(key))
   if (!keys.length) return ''
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = {} as any
   for (const [k, v] of Object.entries(error)) {
     if (keys.includes(k)) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+       
       data[k] = v
     }
   }

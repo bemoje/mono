@@ -13,7 +13,7 @@ export async function updateJsonFile<T extends object, R extends object>(
   let content = defaultValue
   try {
     content = await fs.readJson(filepath)
-  } catch (error) {
+  } catch (_) {
     //
   }
   const updated = await update(content)

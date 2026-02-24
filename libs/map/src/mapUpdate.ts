@@ -19,9 +19,9 @@ export function mapUpdate<K, V>(
 ): typeof ins
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function mapUpdate<K, V>(ins: any, key: K, update: (value: V | undefined, key: K, map: any) => V) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument
+   
   const newValue = update(ins.get(key), key, ins)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+   
   ins.set(key, newValue)
   return ins
 }

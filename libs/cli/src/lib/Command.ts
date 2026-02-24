@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { arrRemoveDuplicates } from '@mono/array'
 import { setName } from '@mono/fn'
 import { filterObject } from '@mono/object'

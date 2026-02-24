@@ -23,7 +23,7 @@ export function bindArgs<
 >(fn: T, boundArgs: BoundArgs) {
   type NewArgs = RemoveArrayElements<
     Parameters<T>,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+     
     // @ts-expect-error
     UnionToTuple<Extract<keyof BoundArgs, number>>
   >

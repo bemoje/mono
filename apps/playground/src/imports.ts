@@ -1,4 +1,5 @@
-import { DefaultMap, MultiSet } from 'mnemonist'
+import { DefaultMap } from "mnemonist";
+import { MultiSet } from "mnemonist";
 import { globSync } from 'glob'
 import { tsExtractImports } from '@mono/tscode'
 import fs from 'fs-extra'

@@ -1,4 +1,5 @@
-import { ImportStatement, tsExtractImports } from '@mono/tscode'
+import { ImportStatement } from "@mono/tscode";
+import { tsExtractImports } from "@mono/tscode";
 import { parseImportStatement } from '@mono/tscode'
 import { globSync } from 'glob'
 import fs from 'fs-extra'

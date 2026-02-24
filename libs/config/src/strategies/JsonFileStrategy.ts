@@ -10,7 +10,7 @@ export class JsonFileStrategy<T> implements ConfigDataStrategy<T> {
   load(): T | undefined {
     try {
       return fs.readJsonSync(this.filepath)
-    } catch (error) {
+    } catch (_) {
       return undefined
     }
   }

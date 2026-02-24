@@ -1,4 +1,5 @@
-import { Inspector, InspectorTarget } from '@mono/composition'
+import { Inspector } from "@mono/composition";
+import { InspectorTarget } from "@mono/composition";
 
 declare module './inspector' {
   export interface A extends InspectorTarget {}

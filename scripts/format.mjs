@@ -1,7 +1,5 @@
 import cp from 'child_process'
 import fs from 'fs'
-import { addExt } from "upath";
-import { extname } from "upath";
 
 const args = process.argv.slice(2)
 
