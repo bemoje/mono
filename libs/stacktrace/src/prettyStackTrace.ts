@@ -1,5 +1,5 @@
 import colors from 'ansi-colors'
-import path from 'node:path'
+import upath from 'upath'
 import { parse } from 'stacktrace-parser'
 import { StackFrame } from 'stacktrace-parser'
 import { inspect } from 'node:util'
@@ -26,12 +26,12 @@ function renderStack(error: Error, options: { omitStack?: boolean; omitProps?: b
   }, 0)
 
   const stack = frames.map((frame) => {
-    if (frame.file) frame.file = path.relative(process.cwd(), frame.file)
+    if (frame.file) frame.file = upath.relative(process.cwd(), frame.file.replace(/^file:[\\/]+/, ''))
     const { methodName, file, lineNumber, column } = frame
     let s = '  '
     let fp: string = ''
     if (file) {
-      const base = path.basename(file)
+      const base = upath.basename(file)
       if (file.startsWith('node:')) {
         s += colors.gray(methodName)
         fp = colors.gray(file)
