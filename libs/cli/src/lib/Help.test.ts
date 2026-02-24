@@ -217,9 +217,15 @@ describe(Help.name, () => {
     })
 
     it('should include [cmd] when commands exist', () => {
-      const cmd = mockCmd({})
+      const cmd = mockCmd({ commands: { sub: mockCmd({ name: 'sub' }) } })
       const help = new Help(cmd)
-      expect(help.commandUsage()).toContain('test')
+      expect(help.commandUsage()).toContain('[cmd]')
+    })
+
+    it('should not include [cmd] when no commands exist', () => {
+      const cmd = mockCmd({ commands: {} })
+      const help = new Help(cmd)
+      expect(help.commandUsage()).not.toContain('[cmd]')
     })
 
     it('should include [opts] when options exist', () => {
@@ -266,6 +272,14 @@ describe(Help.name, () => {
       const cmd = mockCmd({ description: 'My command' })
       const help = new Help(cmd)
       expect(help.commandDescription()).toBe('My command')
+    })
+
+    it('should include aliases when present', () => {
+      const cmd = mockCmd({ description: 'My command', aliases: ['mc', 'm'] })
+      const help = new Help(cmd)
+      const result = help.commandDescription()
+      expect(result).toContain('Aliases: mc, m')
+      expect(result).toContain('My command')
     })
   })
 
@@ -342,6 +356,13 @@ describe(Help.name, () => {
       const result = help.optionDescription(mockOption({ description: '', env: 'VERBOSE' }))
       expect(result).toBe('(env: VERBOSE)')
     })
+
+    it('should return empty string when description is undefined and no extra info', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.optionDescription(mockOption({ description: undefined as unknown as string }))
+      expect(result).toBe('')
+    })
   })
 
   describe(Help.prototype.argumentDescription.name, () => {
@@ -379,6 +400,13 @@ describe(Help.name, () => {
       const help = new Help(cmd)
       const result = help.argumentDescription(mockArgument({ description: '', defaultValue: '3000' }))
       expect(result).toBe('(default: 3000)')
+    })
+
+    it('should return empty string when description is undefined and no extra info', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.argumentDescription(mockArgument({ description: undefined as unknown as string }))
+      expect(result).toBe('')
     })
   })
 

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import assert from 'node:assert'
 import { Command } from './Command'
 import { findCommand } from './helpers/findCommand'
@@ -1395,6 +1395,294 @@ describe(Command.name, () => {
       // Both defined, order is stable (original order preserved)
       expect(Object.keys(result.opts)).toContain('aaa')
       expect(Object.keys(result.opts)).toContain('bbb')
+    })
+  })
+
+  describe('hook execution via execute()', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('should execute debug hook body', async () => {
+      const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {})
+      const cmd = new Command('test')
+      const parsed = cmd.parseArgv(['-D'])
+      await parsed.execute()
+      expect(debugSpy).toHaveBeenCalledTimes(2)
+    })
+
+    it('should execute help hook body', async () => {
+      const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
+      const cmd = new Command('test')
+      const parsed = cmd.parseArgv(['-h'])
+      await parsed.execute()
+      expect(logSpy).toHaveBeenCalled()
+      expect(exitSpy).toHaveBeenCalledWith(0)
+    })
+
+    it('should execute version hook body', async () => {
+      const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
+      const cmd = new Command('test').setVersion('2.5.0')
+      const parsed = cmd.parseArgv(['-V'])
+      await parsed.execute()
+      expect(logSpy).toHaveBeenCalledWith('2.5.0')
+      expect(exitSpy).toHaveBeenCalledWith(0)
+    })
+
+    it('should execute main action after hooks', async () => {
+      let mainCalled = false
+      const cmd = new Command('test')
+        .addOption('-v, --verbose', { description: 'verbose' })
+        .setAction(() => {
+          mainCalled = true
+        })
+        .addHook('verbose', () => {})
+      const parsed = cmd.parseArgv(['-v'])
+      await parsed.execute()
+      expect(mainCalled).toBe(true)
+    })
+
+    it('should print errors and exit when validation fails', async () => {
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
+      const cmd = new Command('test').addArgument('<required>')
+      const parsed = cmd.parseArgv([])
+      expect(parsed.errors).toBeDefined()
+      await parsed.execute()
+      expect(errorSpy).toHaveBeenCalled()
+      expect(exitSpy).toHaveBeenCalledWith(1)
+    })
+  })
+
+  describe(Command.prototype.addCommand.name, () => {
+    it('should add subcommand via callback and return parent', () => {
+      const parent = new Command('parent')
+      const result = parent.addCommand('child', (cmd) => {
+        cmd.setDescription('child command')
+        return cmd
+      })
+      expect(result).toBe(parent)
+      expect(Object.keys(parent.commands)).toContain('child')
+    })
+
+    it('should allow subcommand configuration via callback', () => {
+      const parent = new Command('parent')
+      parent.addCommand('sub', (cmd) => {
+        cmd.addArgument('<file>')
+        return cmd
+      })
+      const sub = (parent.commands as Record<string, Command>)['sub']
+      expect(sub.arguments).toHaveLength(1)
+    })
+  })
+
+  describe('command alias generation fallback', () => {
+    it('should fall back to two-char initials when single-char alias is taken', () => {
+      const parent = new Command('parent')
+      // first command takes 'b' as alias
+      parent.command('build')
+      // second command 'bundle' would want 'b' but it is taken, should try 'bu'
+      parent.command('bundle')
+      const bundleCmd = (parent.commands as Record<string, Command>)['bundle']
+      expect(bundleCmd.aliases).toContain('bu')
+    })
+
+    it('should not add alias when both single and two-char initials are taken', () => {
+      const parent = new Command('parent')
+      // Take 'b' via build
+      parent.command('build')
+      // Take 'bu' via an alias on build
+      const buildCmd = (parent.commands as Record<string, Command>)['build']
+      buildCmd.addAliases('bu')
+      // Now 'bundle' can't use 'b' or 'bu'
+      parent.command('bundle')
+      const bundleCmd = (parent.commands as Record<string, Command>)['bundle']
+      expect(bundleCmd.aliases).not.toContain('b')
+      expect(bundleCmd.aliases).not.toContain('bu')
+    })
+  })
+
+  describe('env variable defaults for options', () => {
+    afterEach(() => {
+      delete process.env.TEST_BOOL
+      delete process.env.TEST_VAR
+      delete process.env.TEST_STR
+    })
+
+    it('should set boolean defaultValue from env when truthy', () => {
+      process.env.TEST_BOOL = 'true'
+      const cmd = new Command('test').addOption('-b, --bflag', { description: 'bool', env: 'TEST_BOOL' })
+      const opt = cmd.options.find((o) => o.name === 'bflag')!
+      expect(opt.defaultValue).toBe(true)
+    })
+
+    it('should set boolean defaultValue from env when falsy', () => {
+      process.env.TEST_BOOL = 'no'
+      const cmd = new Command('test').addOption('-b, --bflag', { description: 'bool', env: 'TEST_BOOL' })
+      const opt = cmd.options.find((o) => o.name === 'bflag')!
+      expect(opt.defaultValue).toBe(false)
+    })
+
+    it('should set variadic defaultValue from env', () => {
+      process.env.TEST_VAR = 'a, b, c'
+      const cmd = new Command('test').addOption('-t, --tags <vals...>', {
+        description: 'tags',
+        env: 'TEST_VAR',
+      })
+      const opt = cmd.options.find((o) => o.name === 'tags')!
+      expect(opt.defaultValue).toEqual(['a', 'b', 'c'])
+    })
+
+    it('should set string defaultValue from env', () => {
+      process.env.TEST_STR = '/tmp/output'
+      const cmd = new Command('test').addOption('-o, --output <path>', {
+        description: 'output',
+        env: 'TEST_STR',
+      })
+      const opt = cmd.options.find((o) => o.name === 'output')!
+      expect(opt.defaultValue).toBe('/tmp/output')
+    })
+
+    it('should not override existing defaultValue with env', () => {
+      process.env.TEST_STR = 'from-env'
+      const cmd = new Command('test').addOption('-o, --output [path]', {
+        description: 'output',
+        env: 'TEST_STR',
+        defaultValue: 'explicit',
+      })
+      const opt = cmd.options.find((o) => o.name === 'output')!
+      expect(opt.defaultValue).toBe('explicit')
+    })
+  })
+
+  describe('parseArgv validation', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('should report error for missing required argument', () => {
+      const cmd = new Command('test').addArgument('<input>')
+      const result = cmd.parseArgv([])
+      expect(result.errors).toBeDefined()
+      expect(result.errors!.some((e) => e.includes('Missing required argument'))).toBe(true)
+    })
+
+    it('should report error for missing required variadic argument', () => {
+      const cmd = new Command('test').addArgument('<files...>')
+      const result = cmd.parseArgv([])
+      expect(result.errors).toBeDefined()
+      expect(result.errors!.some((e) => e.includes('Missing required argument'))).toBe(true)
+    })
+
+    it('should report error for invalid argument choices', () => {
+      const cmd = new Command('test').addArgument('<mode>', {
+        description: 'mode',
+        choices: ['dev', 'prod'],
+      })
+      const result = cmd.parseArgv(['staging'])
+      expect(result.errors).toBeDefined()
+      expect(result.errors!.some((e) => e.includes('Invalid value for argument'))).toBe(true)
+    })
+
+    it('should report error for required option with missing value', () => {
+      const cmd = new Command('test').addOption('-f, --file <path>', { description: 'file' })
+      const result = cmd.parseArgv([])
+      expect(result.errors).toBeDefined()
+      expect(result.errors!.some((e) => e.includes('Required option value'))).toBe(true)
+    })
+
+    it('should report error for invalid option choices', () => {
+      const cmd = new Command('test').addOption('-f, --format <type>', {
+        description: 'format',
+        choices: ['json', 'xml'],
+      })
+      const result = cmd.parseArgv(['-f', 'csv'])
+      expect(result.errors).toBeDefined()
+      expect(result.errors!.some((e) => e.includes('Invalid value for option'))).toBe(true)
+    })
+
+    it('should not report errors when all validations pass', () => {
+      const cmd = new Command('test')
+        .addArgument('<mode>', { description: 'mode', choices: ['dev', 'prod'] })
+        .addOption('-f, --format <type>', { description: 'format', choices: ['json', 'xml'] })
+      const result = cmd.parseArgv(['dev', '-f', 'json'])
+      expect(result.errors).toBeUndefined()
+    })
+
+    it('should report error for invalid variadic option choices', () => {
+      const cmd = new Command('test').addOption('-t, --tags <vals...>', {
+        description: 'tags',
+        choices: ['a', 'b', 'c'],
+      })
+      const result = cmd.parseArgv(['-t', 'a', 'x'])
+      expect(result.errors).toBeDefined()
+      expect(result.errors!.some((e) => e.includes('Invalid value for option'))).toBe(true)
+    })
+
+    it('should report error for unknown option', () => {
+      const cmd = new Command('test')
+      const result = cmd.parseArgv(['--unknown-flag'])
+      expect(result.errors).toBeDefined()
+      expect(result.errors!.some((e) => e.includes('Unknown option'))).toBe(true)
+    })
+  })
+
+  describe('helpConfiguration edge cases', () => {
+    it('should handle helpConfiguration without callback', () => {
+      const cmd = new Command('test')
+      const result = cmd.helpConfiguration()
+      expect(result).toBe(cmd)
+    })
+  })
+
+  describe('addAliases conflict', () => {
+    it('should throw when alias conflicts with sibling command', () => {
+      const parent = new Command('parent')
+      parent.command('build')
+      const other = parent.command('other')
+      expect(() => {
+        other.addAliases('build')
+      }).toThrow(/already used by a sibling/)
+    })
+  })
+
+  describe('command name duplication', () => {
+    it('should throw when adding command with duplicate name', () => {
+      const parent = new Command('parent')
+      parent.command('child')
+      expect(() => {
+        parent.command('child')
+      }).toThrow(/already used/)
+    })
+  })
+
+  describe('command with callback', () => {
+    it('should invoke callback and return its result', () => {
+      const parent = new Command('parent')
+      const child = parent.command('sub', (cmd) => {
+        cmd.setDescription('from callback')
+        return cmd
+      })
+      expect(child.description).toBe('from callback')
+    })
+  })
+
+  describe('addArgument edge cases', () => {
+    it('should throw when adding required argument after optional with default', () => {
+      expect(() => {
+        const cmd = new Command('test').addArgument('[opt]', { defaultValue: 'x' })
+        ;(cmd as unknown as Command).addArgument('<req>' as never)
+      }).toThrow()
+    })
+
+    it('should throw when adding required argument after required with defaultValue', () => {
+      expect(() => {
+        // A required arg with defaultValue is unusual but possible via options spread
+        const cmd = new Command('test').addArgument('<first>', { defaultValue: 'x' } as never)
+        ;(cmd as unknown as Command).addArgument('<second>' as never)
+      }).toThrow(/after optional argument with default value/)
     })
   })
 })
