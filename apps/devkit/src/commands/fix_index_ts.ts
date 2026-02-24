@@ -66,8 +66,8 @@ export function fix_index_ts() {
                   return `import * as ${tempName(i)} from '${fp}'`
                 }),
                 '', //
-                `export default { `,
-                ...relative.map((_, i) => `  ...${tempName(i)},` + (i === 0 ? ' // ' : '')),
+                `export default {`,
+                ...relative.map((_, i) => `  ...${tempName(i)},` + (i === 0 ? ' //' : '')),
                 `}`,
                 '',
               )
