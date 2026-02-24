@@ -422,6 +422,32 @@ export class Command<
     return this as never
   }
 
+  /**
+   * Register an action to be invoked when an option is set to true or string value.
+   *
+   * Hooks execute in addition to or instead of the main action handler,
+   * allowing for option-driven behavior. For example, `--help` and `--version`
+   * are implemented as hooks.
+   */
+  addOptionHook(optionName: keyof O, action: HookActionHandler<Arguments, Options & O>): this {
+    const def = findOption(this, optionName as string)!
+    if (!def.group && /\.exit\(.*\);?\s*\}$/.test(action.toString())) {
+      def.group = 'Command Options'
+    }
+    this.hooks.push({
+      optionName,
+      predicate: setName('has' + strFirstCharToUpperCase(optionName as string), (({ opts }) => {
+        return (
+          opts[optionName] !== undefined &&
+          opts[optionName] !== false &&
+          !(Array.isArray(opts[optionName]) && opts[optionName].length === 0)
+        )
+      }) as HookPredicate<Arguments, Options & O>),
+      action: setName(optionName as string, action),
+    } as never)
+    return this
+  }
+
   /** Parses command-line arguments with subcommand support and type-safe validation. */
   parseArgv(argv: string[] = process.argv.slice(2)): ParseArgvResult<Arguments, Options & O> {
     const sub = findCommand(this, argv[0])
@@ -492,50 +518,28 @@ export class Command<
     return { ...data, hooks, execute } as unknown as ParseArgvResult<Arguments, Options & O>
   }
 
+  /**
+   * Sets the main action handler for this command, which is executed after any matching option hooks when the command is invoked.
+   * The handler receives parsed arguments and options with correct typings.
+   */
   setAction(fn: ActionHandler<A, O, Subs>): this {
     this.action = setName(this.name, fn as never)
     return this
   }
 
+  /**
+   * Sets a custom exit handler function that will be called when the command needs to exit, such as after displaying help or version information, or when validation fails.
+   * This allows for overriding the default behavior of calling `process.exit`, which can be useful in testing environments or when integrating with other systems that require a different exit strategy.
+   */
   setExitHandler(fn: (code: number) => never): void {
     this.exitHandler = fn
-  }
-
-  /**
-   * Register an action to be invoked when an option is set to true or string value.
-   *
-   * Hooks execute in addition to or instead of the main action handler,
-   * allowing for option-driven behavior. For example, `--help` and `--version`
-   * are implemented as hooks.
-   *
-   * @param optionName - The option name.
-   * @param action - Handler called when the option evaluates to true
-   * @returns This command instance for chaining
-   */
-  addOptionHook(optionName: keyof O, action: HookActionHandler<Arguments, Options & O>): this {
-    const def = findOption(this, optionName as string)!
-    if (!def.group && /\.exit\(.*\);?\s*\}$/.test(action.toString())) {
-      def.group = 'Command Options'
-    }
-    this.hooks.push({
-      optionName,
-      predicate: setName('has' + strFirstCharToUpperCase(optionName as string), (({ opts }) => {
-        return (
-          opts[optionName] !== undefined &&
-          opts[optionName] !== false &&
-          !(Array.isArray(opts[optionName]) && opts[optionName].length === 0)
-        )
-      }) as HookPredicate<Arguments, Options & O>),
-      action: setName(optionName as string, action),
-    } as never)
-    return this
   }
 
   /**
    * Exit the process with the given code. This is a separate method to allow overriding in tests or environments where process.exit is not desirable.
    */
   exit(code: number): never {
-    process.exit(code)
+    this.exitHandler(code)
   }
 
   /** Returns a new Command instance. Override this method in subclasses. */
