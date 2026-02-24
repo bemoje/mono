@@ -1,6 +1,7 @@
 import { lazyProp } from '@mono/decorators'
-import type { IHelp, IArgument, ICommand, IOption } from './types'
+import type { IHelp, Argument, ICommand, Option } from './types'
 import C from 'ansi-colors'
+import colors from 'ansi-colors'
 
 /**
  * This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the
@@ -27,7 +28,7 @@ export class Help implements IHelp {
    */
   @lazyProp
   visibleCommands(): ICommand[] {
-    const res = this.cmd.commands.filter((c) => !c.hidden)
+    const res = Object.values(this.cmd.commands).filter((c) => !c.hidden)
     if (this.sortSubcommands) {
       res.sort((a: ICommand, b: ICommand) => {
         return a.name.localeCompare(b.name)
@@ -39,8 +40,8 @@ export class Help implements IHelp {
   /**
    * Compare options for sort.
    */
-  compareOptions(a: IOption, b: IOption): number {
-    const getSortKey = (option: IOption): string => {
+  compareOptions(a: Option, b: Option): number {
+    const getSortKey = (option: Option): string => {
       // WYSIWYG for order displayed in help. Short used for comparison if present. No special handling for negated.
       return option.short ? option.short.replace(/^-/, '') : option.long!.replace(/^--/, '')
     }
@@ -51,8 +52,8 @@ export class Help implements IHelp {
    * Get an array of the visible options. Includes a placeholder for the implicit help option, if there is one.
    */
   @lazyProp
-  visibleOptions(): IOption[] {
-    const res = this.cmd.options.filter((option: IOption) => !option.hidden)
+  visibleOptions(): Option[] {
+    const res = this.cmd.options.filter((option: Option) => !option.hidden)
     if (this.sortOptions) res.sort(this.compareOptions)
     return res
   }
@@ -61,9 +62,9 @@ export class Help implements IHelp {
    * Get an array of the arguments if any have a description.
    */
   @lazyProp
-  visibleArguments(): IArgument[] {
+  visibleArguments(): Argument[] {
     // If there are any arguments with a description then return all the arguments.
-    if (this.cmd.arguments.find((argument: IArgument) => !!argument.description)) {
+    if (this.cmd.arguments.find((argument: Argument) => !!argument.description)) {
       return [...this.cmd.arguments]
     }
     return []
@@ -85,14 +86,14 @@ export class Help implements IHelp {
   /**
    * Get the option term to show in the list of options.
    */
-  optionTerm(option: IOption): string {
+  optionTerm(option: Option): string {
     return option.flags
   }
 
   /**
    * Get the argument term to show in the list of arguments.
    */
-  argumentTerm(argument: IArgument): string {
+  argumentTerm(argument: Argument): string {
     return argument.name
   }
 
@@ -144,14 +145,9 @@ export class Help implements IHelp {
       path = ancestor.name + ' ' + path
     }
 
-    let cmdName = this.cmd.name
-    if (this.cmd.aliases[0]) {
-      cmdName += '|' + this.cmd.aliases[0]
-    }
-
     return (
       path +
-      cmdName +
+      this.cmd.name +
       ' ' +
       [
         ...(this.cmd.commands.length ? [this.usageDisplaySubcommandAs] : []),
@@ -166,14 +162,20 @@ export class Help implements IHelp {
               : `[${arg.name}]`
         }),
       ].join(' ')
-    )
+    ).trim()
   }
 
   /**
    * Get the description for the command.
    */
   commandDescription(): string {
-    return this.cmd.description
+    let res = ''
+    if (this.cmd.aliases.length) {
+      res += `Aliases: ${this.cmd.aliases.join(', ')}`
+      res += '\n\n'
+    }
+    res += this.cmd.description
+    return res
   }
 
   /**
@@ -187,7 +189,7 @@ export class Help implements IHelp {
   /**
    * Get the option description to show in the list of options.
    */
-  optionDescription(option: IOption): string {
+  optionDescription(option: Option): string {
     const extraInfo: string[] = []
 
     if (option.choices) {
@@ -217,7 +219,7 @@ export class Help implements IHelp {
   /**
    * Get the argument description to show in the list of arguments.
    */
-  argumentDescription(argument: IArgument): string {
+  argumentDescription(argument: Argument): string {
     const extraInfo: string[] = []
     if (argument.choices) {
       extraInfo.push(
@@ -249,7 +251,7 @@ export class Help implements IHelp {
   /**
    * Group items by their help group heading.
    */
-  groupItems<T extends ICommand | IOption>(
+  groupItems<T extends ICommand | Option>(
     unsortedItems: T[],
     visibleItems: T[],
     getGroup: (item: T) => string,
@@ -295,11 +297,12 @@ export class Help implements IHelp {
     //    command subcommand [opts] [cmd] <foo> [bar]
     return str
       .split(' ')
-      .map((word: string) => {
+      .map((word: string, index, arr) => {
         if (word === this.usageDisplaySubcommandAs) return C.blue(word)
         if (word === this.usageDisplayOptionsAs) return C.blue(word)
         if (word[0] === '<') return C.red(word)
         if (word[0] === '[') return C.cyan(word)
+        if (arr[index + 1]?.startsWith('[')) return C.green(word)
         return this.styleCommandText(word) // Restrict to initial words?
       })
       .join(' ')
@@ -507,7 +510,7 @@ export class Help implements IHelp {
     }
 
     // Arguments
-    const argumentList = this.visibleArguments().map((argument: IArgument) => {
+    const argumentList = this.visibleArguments().map((argument: Argument) => {
       return this.formatItem(
         this.styleArgumentTerm(this.argumentTerm(argument)),
         this.padWidth(),
@@ -520,10 +523,10 @@ export class Help implements IHelp {
     const optionGroups = this.groupItems(
       this.cmd.options,
       this.visibleOptions(),
-      (option: IOption) => option.group ?? 'Options:',
+      (option: Option) => option.group ?? 'Options:',
     )
     optionGroups.forEach((options, group) => {
-      const optionList = options.map((option: IOption) => {
+      const optionList = options.map((option: Option) => {
         return this.formatItem(
           this.styleOptionTerm(this.optionTerm(option)),
           this.padWidth(),
@@ -535,7 +538,7 @@ export class Help implements IHelp {
 
     // Commands
     const commandGroups = this.groupItems(
-      this.cmd.commands,
+      Object.values(this.cmd.commands),
       this.visibleCommands(),
 
       (sub: ICommand) => sub.group || 'Commands:',

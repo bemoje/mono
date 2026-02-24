@@ -1,48 +1,55 @@
-import { arrLast } from '@mono/array'
+/* eslint-disable @typescript-eslint/ban-types */
+import { arrLast, arrRemoveDuplicates } from '@mono/array'
 import { setName } from '@mono/fn'
-import { objSortKeys } from '@mono/object'
+import { entriesOf, objSortKeys, valuesOf } from '@mono/object'
 import { strFirstCharToUpperCase } from '@mono/string'
 import colors from 'ansi-colors'
-import type { CamelCase, SetFieldType, Simplify } from 'type-fest'
-import { parseArgs } from 'node:util'
+import type { CamelCase, SetFieldType, Simplify, SetRequired } from 'type-fest'
+import { inspect, parseArgs } from 'node:util'
 import { Help } from './Help'
-import { findSubcommand } from './helpers/findSubcommand'
+import { findCommand } from './helpers/findCommand'
 import { getCommandAncestors } from './helpers/getCommandAncestors'
 import { lazyProp } from '@mono/decorators'
-import { Option } from './Option'
 import { findOption } from './helpers/findOption'
-import type { Arguments, IArgument, ICommand, Options } from './types'
+import type { Arguments, Argument, ICommand, Option, Options, SubCommands } from './types'
 import type {
   ActionHandler,
-  IBooleanOption,
-  InferAddArgumentUsage,
-  InferAddArgumentUsageSpecific,
-  InferArgumentOptions,
-  InferNewArgument,
-  InferNewOptions,
-  IOptionalArgument,
-  IOptionalArgumentWithDefault,
-  IOptionalOption,
-  IOptionalVariadicArgument,
-  IOptionalVariadicOption,
-  IRequiredArgument,
-  IRequiredOption,
-  IRequiredVariadicArgument,
-  IRequiredVariadicOption,
+  ArgumentOptions,
+  ArgumentUsage,
+  BooleanOptionOptions,
+  AllowedArgumentUsage,
+  InferAddedArgumentType,
+  InferAddOptionResult,
+  OptionalArgumentOptions,
+  OptionalArgumentOptionsWithDefaultValue,
+  OptionalOptionOptions,
+  OptionalVariadicArgumentOptions,
+  OptionalVariadicOptionOptions,
+  RequiredArgumentOptions,
+  RequiredOptionOptions,
+  RequiredVariadicArgumentOptions,
+  RequiredVariadicOptionOptions,
   OptionOptions,
   OptionUsage,
   ParseArgvResult,
-  TriggerDefinition,
-  TriggerPredicate,
+  HookDefinition,
+  HookPredicate,
 } from './types.internal'
-import type { WithRequired } from '@mono/types'
+import { parseOptionFlags } from './helpers/parseOptionFlags'
+import { kebabCase } from 'es-toolkit/string'
+import { getCommandAndAncestors } from './helpers/getCommandAndAncestors'
 
 /**
  * A type-safe CLI composer that can parse argv and generate help without execution coupling.
  */
-export class Command<A extends Arguments = [], O extends Options = { help?: boolean }> implements ICommand {
+export class Command<
+  A extends Arguments = [],
+  O extends Options = { help?: boolean; debug?: boolean },
+  Subs extends SubCommands = {},
+> implements ICommand
+{
   /** Parent command in the hierarchy, undefined for root command */
-  parent?: Command<Arguments, Options>
+  parent?: Command<Arguments, Options, SubCommands>
   /** The command name used to invoke it */
   name: string
   /** Semantic version string displayed by --version flag */
@@ -58,17 +65,15 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
   /** Category for organizing related commands in help output */
   group?: string
   /** Positional arguments this command accepts */
-  arguments: IArgument[]
+  arguments: Argument[]
   /** CLI options (flags) this command recognizes */
   options: Option[]
   /** Subcommands registered with this command */
-  commands: Command<Arguments, Options>[]
-
+  commands: Subs
   /** Main action handler executed when command is invoked */
-  protected action?: ActionHandler<A, O, Command<A, O>>
-
+  protected action: ActionHandler<A, O, Subs>
   /** Option-driven actions (e.g., --help, --version) executed when their conditions match */
-  protected triggers: TriggerDefinition<A, O, Command<A, O>>[] = []
+  protected hooks: HookDefinition<A, O, Subs>[]
 
   constructor(name: string, parent?: ICommand) {
     this.name = name
@@ -76,25 +81,38 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
     this.description = ''
     this.arguments = []
     this.options = []
-    this.commands = []
+    this.commands = {} as Subs
+    this.action = setName('help', ({ cmd }) => console.log(cmd.renderHelp()))
+    this.hooks = []
 
     // Make parent non-enumerable to avoid circular references for toJSON compatibility
     Object.defineProperty(this, 'parent', { value: parent, enumerable: false })
 
-    this.addHelpOption()
+    if (!parent) {
+      this.addOption('-D, --debug', { description: 'Display debug information' }) //
+        .addHook('debug', ({ cmd, ...data }) => {
+          console.debug(inspect(cmd, { depth: 1, colors: true }))
+          console.debug(inspect(data, { depth: 3, colors: true }))
+        })
+
+      this.addOption('-h, --help', { description: 'Display help information' }) //
+        .addHook('help', ({ cmd }) => {
+          console.log(cmd.renderHelp())
+          process.exit(0)
+        })
+    }
   }
 
   @lazyProp
-  get help(): Help {
-    this.addHelpOption()
+  protected get help(): Help {
     return new Help(this)
   }
 
   /** Configure how the help is rendered */
-  helpConfiguration(cb?: (help: Help) => void): InferNewOptions<A, O, { help?: boolean }> {
+  helpConfiguration(cb?: (help: Help) => void): this {
     const help = this.help
     cb?.(help)
-    return this.addHelpOption()
+    return this
   }
 
   /** Renders formatted help text using provided help definition */
@@ -110,20 +128,40 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
 
   /** Sets command aliases, flattening nested arrays */
   setAliases(...aliases: (string | string[])[]): this {
-    this.aliases = aliases.flat()
+    this.aliases = []
+    this.addAliases(...aliases)
     return this
   }
 
   /** Adds aliases to existing ones */
   addAliases(...aliases: (string | string[])[]): this {
-    this.aliases.push(...aliases.flat())
+    const taken = this.parent ? valuesOf(this.parent.commands).flatMap((c) => [c.name, ...c.aliases]) : []
+    arrRemoveDuplicates(aliases.flat())
+      .filter((a) => !this.aliases.includes(a) && a !== this.name)
+      .forEach((a) => {
+        if (taken.includes(a)) {
+          throw new Error(
+            `Alias "${a}" is already used by a sibling command: ${findCommand(this.parent!, a)?.name}`,
+          )
+        }
+        this.aliases.push(a)
+      })
+    this.aliases.sort((a, b) => a.length - b.length)
     return this
   }
 
   /** Sets the command version */
-  setVersion(version: string): InferNewOptions<A, O, { version?: boolean }> {
+  setVersion(version: string): InferAddOptionResult<A, O, { version?: boolean }, Subs> {
     this.version = version
-    return this.addVersionOption()
+    if (findOption(this, 'version')) return this
+    return this.addOption('-V, --version', { description: 'Display semver version' }) //
+      .addHook('version', ({ cmd }) => {
+        const version = getCommandAndAncestors(cmd).find((c) => c.version)?.version
+        if (version) {
+          console.log(version)
+          process.exit(0)
+        }
+      })
   }
 
   /** Sets the command summary */
@@ -151,65 +189,84 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
   }
 
   /** Add a subcommand and return the subcommand. All options are inherited by the subcommand. */
-  command(name: string): Command<[], O>
-  /** Add a subcommand and return the subcommand. Only selected options are inherited by the subcommand. */
-  command<K extends keyof O>(name: string, options: { inheritOptions: K[] }): Command<[], Pick<O, K>>
-  /** Add a subcommand and return the subcommand. All except selected options are inherited by the subcommand. */
-  command<K extends keyof O>(name: string, options: { inheritOptionsExcept: K[] }): Command<[], Omit<O, K>>
-
-  command(
-    name: string,
-    options: {
-      inheritOptions?: (keyof O)[]
-      inheritOptionsExcept?: (keyof O)[]
-    } = {},
-  ) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  command<Name extends string, Sub extends Command<any, any, any> = Command<[], O, {}>>(
+    name: Name,
+    cb?: (cmd: Command<[], O>, parent: this) => Sub,
+  ): Sub {
     const sub = this.createSubcommand(name)
-    const inherit = options.inheritOptions
-      ? this.options.filter((o) => options.inheritOptions!.includes(o.name as never))
-      : options.inheritOptionsExcept
-        ? this.options.filter((o) => !options.inheritOptionsExcept!.includes(o.name as never))
-        : this.options
+    const inherit = this.options
     sub.options.push(...inherit)
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    sub.triggers.push(...(this.triggers.filter((t) => inherit.some((i) => i.name === t.name)) as any[]))
-    this.commands.push(sub as never)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return sub as any
+    const inheritHooks = this.hooks.filter((t) => inherit.some((i) => i.name === t.name)) as any[]
+    sub.hooks.push(...inheritHooks)
+
+    const taken = valuesOf(this.commands).flatMap((c) => [c.name, ...c.aliases])
+    if (taken.includes(name)) {
+      throw new Error(
+        `Command name "${getCommandAndAncestors(sub).map((c) => c.name)}" is already used by this command or its aliases: ${taken.join(', ')}`,
+      )
+    }
+    const kebab = kebabCase(name)
+    const words = kebab.split('-')
+    const initials = words.map((s) => s[0]).join('')
+    if (!taken.includes(initials)) {
+      sub.addAliases(initials)
+    } else {
+      const initials = words.map((s) => s[0] + s[1]).join('')
+      if (!taken.includes(initials)) {
+        sub.addAliases(initials)
+      }
+    }
+
+    this.commands[name] = sub as never
+
+    return (cb ? cb(sub, this) : sub) as never
+  }
+
+  /** Add a subcommand and return the subcommand. All options are inherited by the subcommand. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  addCommand<Name extends string, Sub extends Command<any, any, any> = Command<[], O, {}>>(
+    name: Name,
+    cb: (cmd: Command<[], O, {}>, parent: this) => Sub,
+  ): Command<A, O, Subs & { [K in Name]: Sub }> {
+    this.command(name, cb)
+    return this as never
   }
 
   /** Add required variadic argument, eg.: `<name...>` */
-  addArgument<const Opts extends IRequiredVariadicArgument>(
-    usage: InferAddArgumentUsageSpecific<this, `<${string}...>`>,
+  addArgument<const Opts extends RequiredVariadicArgumentOptions>(
+    usage: AllowedArgumentUsage<this, `<${string}...>`>,
     options?: Opts,
-  ): Command<[...A, InferNewArgument<Opts>[]], O>
+  ): Command<[...A, InferAddedArgumentType<Opts>[]], O, Subs>
 
   /** Add required argument, eg.: `<name>` */
-  addArgument<const Opts extends IRequiredArgument>(
-    usage: InferAddArgumentUsageSpecific<this, `<${string}>`>,
+  addArgument<const Opts extends RequiredArgumentOptions>(
+    usage: AllowedArgumentUsage<this, `<${string}>`>,
     options?: Opts,
-  ): Command<[...A, InferNewArgument<Opts>], O>
+  ): Command<[...A, InferAddedArgumentType<Opts>], O, Subs>
 
   /** Add optional variadic argument with defaults, eg.: `[name...]` */
-  addArgument<const Opts extends IOptionalVariadicArgument>(
-    usage: InferAddArgumentUsageSpecific<this, `[${string}...]`>,
+  addArgument<const Opts extends OptionalVariadicArgumentOptions>(
+    usage: AllowedArgumentUsage<this, `[${string}...]`>,
     options?: Opts,
-  ): Command<[...A, InferNewArgument<Opts>[]], O>
+  ): Command<[...A, InferAddedArgumentType<Opts>[]], O, Subs>
 
   /** Add optional argument with default, eg.: `[name]` */
-  addArgument<const Opts extends IOptionalArgumentWithDefault>(
-    usage: InferAddArgumentUsageSpecific<this, `[${string}]`>,
+  addArgument<const Opts extends OptionalArgumentOptionsWithDefaultValue>(
+    usage: AllowedArgumentUsage<this, `[${string}]`>,
     options: Opts,
-  ): Command<[...A, InferNewArgument<Opts>], O>
+  ): Command<[...A, InferAddedArgumentType<Opts>], O, Subs>
 
   /** Add optional argument, eg.: `[name]` */
-  addArgument<const Opts extends IOptionalArgument>(
-    usage: InferAddArgumentUsageSpecific<this, `[${string}]`>,
+  addArgument<const Opts extends OptionalArgumentOptions>(
+    usage: AllowedArgumentUsage<this, `[${string}]`>,
     options?: Opts,
-  ): Command<[...A, InferNewArgument<Opts> | undefined], O>
+  ): Command<[...A, InferAddedArgumentType<Opts> | undefined], O, Subs>
 
   // Implementation
-  addArgument<Usage extends InferAddArgumentUsage<this>>(usage: Usage, options?: InferArgumentOptions<Usage>) {
+  addArgument(usage: ArgumentUsage, options: ArgumentOptions = {}) {
     if (!/^<(.*?)>$|^\[(.*?)\]$/.test(usage)) {
       throw new Error(`Invalid argument format: ${usage}`)
     }
@@ -234,7 +291,7 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
       )
     }
 
-    const arg: IArgument = {
+    const arg: Argument = {
       usage,
       name,
       required,
@@ -242,7 +299,7 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
       ...options,
     }
 
-    if (variadic && !required && !arg.defaultValue) {
+    if (variadic && !arg.defaultValue) {
       arg.defaultValue = [] as string[]
     }
 
@@ -263,68 +320,110 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
   /** Add optional string option, eg.: `-o, --output [path]` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} [${string}]`,
-    description?: string,
-    options?: SetFieldType<IOptionalOption, 'defaultValue', undefined | never>,
-  ): Command<A, Simplify<{ [K in CamelCase<Long>]?: string } & O>>
+    options?: SetFieldType<OptionalOptionOptions, 'defaultValue', undefined | never>,
+  ): Command<A, Simplify<{ [K in CamelCase<Long>]?: string } & O>, Subs>
   /** Add optional string option with default, eg.: `-o, --output [path]` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} [${string}]`,
-    description: string,
-    options: SetFieldType<WithRequired<IOptionalOption, 'defaultValue'>, 'defaultValue', string>,
-  ): Command<A, Simplify<{ [K in CamelCase<Long>]: string } & O>>
+    options: SetFieldType<SetRequired<OptionalOptionOptions, 'defaultValue'>, 'defaultValue', string>,
+  ): Command<A, Simplify<{ [K in CamelCase<Long>]: string } & O>, Subs>
   /** Add required variadic option, eg.: `-i, --include <patterns...>` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} <${string}...>`,
-    description?: string,
-    options?: IRequiredVariadicOption,
-  ): Command<A, Simplify<{ [K in CamelCase<Long>]: string[] } & O>>
+    options?: RequiredVariadicOptionOptions,
+  ): Command<A, Simplify<{ [K in CamelCase<Long>]: string[] } & O>, Subs>
   /** Add optional variadic option with defaults, eg.: `-e, --exclude [patterns...]` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} [${string}...]`,
-    description?: string,
-    options?: IOptionalVariadicOption,
-  ): Command<A, Simplify<{ [K in CamelCase<Long>]: string[] } & O>>
-  /** Add optional string option, eg.: `-o, --output [path]` */
-  addOption<Long extends string>(
-    flags: `-${string}, --${Long} [${string}]`,
-    description?: string,
-    options?: SetFieldType<IOptionalOption, 'defaultValue', undefined | never>,
-  ): Command<A, Simplify<{ [K in CamelCase<Long>]?: string } & O>>
+    options?: OptionalVariadicOptionOptions,
+  ): Command<A, Simplify<{ [K in CamelCase<Long>]: string[] } & O>, Subs>
   /** Add required string option, eg.: `-f, --file <path>` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} <${string}>`,
-    description?: string,
-    options?: IRequiredOption,
-  ): Command<A, Simplify<{ [K in CamelCase<Long>]: string } & O>>
+    options?: RequiredOptionOptions,
+  ): Command<A, Simplify<{ [K in CamelCase<Long>]: string } & O>, Subs>
   /** Add boolean flag option with default, eg.: `-v, --verbose` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long}`,
-    description: string,
-    options: SetFieldType<WithRequired<IBooleanOption, 'defaultValue'>, 'defaultValue', boolean>,
-  ): Command<A, Simplify<{ [K in CamelCase<Long>]: boolean } & O>>
+    options: SetFieldType<SetRequired<BooleanOptionOptions, 'defaultValue'>, 'defaultValue', boolean>,
+  ): Command<A, Simplify<{ [K in CamelCase<Long>]: boolean } & O>, Subs>
   /** Add boolean flag option, eg.: `-v, --verbose` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long}`,
-    description?: string,
-    options?: SetFieldType<IBooleanOption, 'defaultValue', undefined | never>,
-  ): Command<A, Simplify<{ [K in CamelCase<Long>]?: boolean } & O>>
+    options?: SetFieldType<BooleanOptionOptions, 'defaultValue', undefined | never>,
+  ): Command<A, Simplify<{ [K in CamelCase<Long>]?: boolean } & O>, Subs>
 
   /**
    * Adds command-line option with type inference. Parses format: `-s, --long [<value>|[value]|<value...>|[value...]]`
    */
-  addOption<Long extends string>(flags: OptionUsage<Long>, description?: string, opts?: Partial<OptionOptions>) {
-    const ins = new Option<Long>(this, flags, description, opts)
+  addOption<Long extends string>(flags: OptionUsage<Long>, opts: Partial<OptionOptions> = {}) {
+    const ins = {} as Option
+
+    const { short, long, name, argName } = parseOptionFlags<Long>(flags)
+
+    for (const opt of this.options) {
+      if (opt.long === long) {
+        throw new Error(`Option long name, --${long} already in use by: ${opt.flags}`)
+      }
+      if (opt.short === short) {
+        throw new Error(`Option short name, -${short} already in use by: ${opt.flags}`)
+      }
+    }
+
+    ins.flags = flags
+    ins.short = short
+    ins.long = long
+    ins.name = name
+    ins.description = ''
+    if (!argName) {
+      ins.type = 'boolean'
+    } else {
+      ins.type = 'string'
+      ins.argName = argName
+      if (flags.endsWith('>')) {
+        if (flags.endsWith('...>')) {
+          ins.required = true
+          ins.variadic = true
+        } else {
+          ins.required = true
+        }
+      } else if (flags.endsWith(']')) {
+        if (flags.endsWith('...]')) {
+          ins.variadic = true
+          ins.defaultValue = (opts.defaultValue ?? []) as string[]
+        }
+      }
+    }
+
+    // Assign options
+    for (const [key, value] of Object.entries(opts)) {
+      if (value !== undefined) Reflect.set(ins, key, value)
+    }
+
+    // If defined, set environment variable as defaultValue
+    if (ins.env && ins.defaultValue === undefined && typeof process.env[ins.env] === 'string') {
+      if (ins.type === 'boolean') {
+        ins.defaultValue = /^(t(rue)?|y(es)?|1)$/i.test(process.env[ins.env]!)
+      } else if (ins.variadic) {
+        ins.defaultValue = process.env[ins.env]!.replace(/\]|\[/, '')
+          .split(',')
+          .map((v) => v.trim())
+      } else {
+        ins.defaultValue = process.env[ins.env]!
+      }
+    }
+
     this.options.push(ins)
     return this as never
   }
 
   /** Parses command-line arguments with subcommand support and type-safe validation. */
-  parseArgv(argv: string[] = process.argv.slice(2)): ParseArgvResult<Arguments, Options & O, Command<A, O>> {
+  parseArgv(argv: string[] = process.argv.slice(2)): ParseArgvResult<Arguments, Options & O, SubCommands> {
     // navigate to subcommand if found
-    const sub = findSubcommand(this, argv[0])
+    const sub = findCommand(this, argv[0])
     if (sub) {
       // recurse into subcommand
-      return sub.parseArgv(argv.slice(1)) as unknown as ParseArgvResult<Arguments, Options & O, Command<A, O>>
+      return sub.parseArgv(argv.slice(1)) as unknown as ParseArgvResult<Arguments, Options & O, SubCommands>
     }
 
     // Map long option names to their camelCased names
@@ -427,75 +526,105 @@ export class Command<A extends Arguments = [], O extends Options = { help?: bool
       parsedArguments.pop()
     }
 
+    // validation
+    const errors = parsedArguments
+      .map((arg, index) => {
+        const argDef = this.arguments[index]
+        if (argDef.required) {
+          if (argDef.variadic ? Array.isArray(arg) && arg.length === 0 : arg === undefined) {
+            return `Missing required argument [${index}]: ${argDef.usage}`
+          }
+        }
+        const choices = argDef.choices
+        if (choices) {
+          const values = [arg].flat()
+          if (!values.every((v) => choices.includes(v as string))) {
+            return `Invalid value for argument [${index}] ${argDef.usage}: ${arg}. Allowed values are: ${choices.join(', ')}`
+          }
+        }
+        return ''
+      })
+      .concat(
+        entriesOf(parsed.values).map(([key, value]) => {
+          const optionDef = this.options.find((o) => o.name === key)!
+          if (!optionDef) {
+            return `Unknown option --${key}`
+          }
+          if (optionDef.argName && optionDef.required && value === undefined) {
+            return `Required option value ${optionDef.flags} is undefined`
+          }
+          if (value !== undefined && optionDef.choices) {
+            const values = (optionDef.variadic ? value : [value]) as string[]
+            if (!values.every((v) => optionDef.choices!.includes(v))) {
+              return `Invalid value for option ${optionDef.flags}: ${value}. Allowed values are: ${optionDef.choices.join(', ')}`
+            }
+          }
+          return ''
+        }),
+      )
+      .filter(Boolean)
+      .reduce(
+        (acc, curr) => {
+          return (acc ?? []).concat(curr)
+        },
+        undefined as string[] | undefined,
+      )
+
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const cmd = this
     const path = getCommandAncestors(cmd).map((c) => c.name)
     const args = parsedArguments as A
     const opts = parsed.values as unknown as O
-    const triggers = this.triggers.filter((t) => t.predicate({ args, opts, cmd }))
-    const action = triggers[0]?.action ?? this.action
-    const execute = action ? setName(action.name, () => action({ args, opts, triggers, cmd })) : undefined
+    const action = this.action
+    const hooks = this.hooks.filter((t) =>
+      t.predicate({ path, argv, args, opts, errors, action: action.name, cmd }),
+    )
+    const execute = setName(action.name, async () => {
+      for (const hook of hooks) {
+        await hook.action({ cmd, path, argv, args, opts, errors })
+      }
+      if (errors) {
+        errors.forEach((e) => console.error(colors.red(`Error: ${e}`)))
+        console.error(`Use --help for usage information.`)
+        process.exit(1)
+      }
+      return action({ path, argv, args, opts, cmd })
+    })
 
     return {
       get cmd() {
         return cmd
       },
-      ...{ path, argv, args, opts, triggers },
-      ...{ action: action?.name, execute },
-    } as unknown as ParseArgvResult<Arguments, Options & O, Command<A, Options & O>>
+      ...{ path, argv, args, opts, errors, hooks },
+      ...{ action: action.name, execute },
+    } as unknown as ParseArgvResult<Arguments, Options & O, Subs>
   }
 
-  setAction(fn: ActionHandler<A, O, Command<A, O>>): this {
-    this.action = setName('main', fn as never)
+  setAction(fn: ActionHandler<A, O, Subs>): this {
+    this.action = setName(fn.name || 'main', fn as never)
     return this
   }
 
   /**
    * Register an action to be invoked when a boolean option is set to true.
    *
-   * Triggers execute in addition to or instead of the main action handler,
+   * Hooks execute in addition to or instead of the main action handler,
    * allowing for option-driven behavior. For example, `--help` and `--version`
-   * are implemented as triggers.
+   * are implemented as hooks.
    *
    * @param name - The option name (must be a boolean option)
    * @param action - Handler called when the option evaluates to true
    * @returns This command instance for chaining
-   *
-   * @example
-   * ```
-   * cmd.addOption('-v, --verbose', 'Enable verbose output')
-   *    .addTrigger('verbose', ({ args, opts }) => {
-   *      console.log('Verbose mode enabled', { args, opts })
-   *    })
-   * ```
    */
-  addTrigger<C extends ICommand = Command<A, O>>(name: keyof O, action: ActionHandler<A, O, C>): this {
-    this.triggers.push({
+  addHook(name: keyof O, action: ActionHandler<A, O, Subs>): this {
+    this.hooks.push({
       name,
       predicate: setName('has' + strFirstCharToUpperCase(name as string), (({ opts }) => {
         return typeof opts[name] === 'boolean' && opts[name] === true
-      }) as TriggerPredicate<A, O, Command<A, O>>),
+      }) as HookPredicate<A, O, Subs>),
       action: setName(name as string, action),
     } as never)
     return this
-  }
-
-  /** Adds `-h, --help` option with a trigger that prints help text */
-  protected addHelpOption(): InferNewOptions<A, O, { help?: boolean }> {
-    if (findOption(this, 'help')) return this
-    return this.addOption('-h, --help', 'Display help information') //
-      .addTrigger('help', ({ cmd }) => {
-        console.log(cmd.renderHelp())
-      }) as InferNewOptions<A, O, { help?: boolean }>
-  }
-
-  /** Adds `-V, --version` option with a trigger that prints version */
-  protected addVersionOption(): InferNewOptions<A, O, { version?: boolean }> {
-    if (findOption(this, 'version')) return this
-    return this.addOption('-V, --version', 'Display semver version') //
-      .addTrigger('version', ({ cmd }) => {
-        console.log(cmd.version)
-      }) as InferNewOptions<A, O, { version?: boolean }>
   }
 
   /** Returns a new Command instance. Override this method in subclasses. */

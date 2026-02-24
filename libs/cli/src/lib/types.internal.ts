@@ -1,7 +1,60 @@
-import type { WithRequired } from '@mono/types'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Command } from './Command'
-import type { Arguments, IArgument, ICommand, IOption, Options } from './types'
+import type { Arguments, Argument, Option, Options, SubCommands } from './types'
 import type { Simplify, AllUnionFields, SetFieldType, SetRequired } from 'type-fest'
+
+export type HookPredicate<A extends Arguments, O extends Options, Subs extends SubCommands> = (data: {
+  path: string[]
+  argv: string[]
+  args: A
+  opts: O
+  errors?: string[]
+  action: string
+  cmd: Command<A, O, Subs>
+}) => boolean
+
+export type ActionHandler<A extends Arguments, O extends Options, Subs extends SubCommands> = (data: {
+  path: string[]
+  argv: string[]
+  args: A
+  opts: O
+  errors?: string[]
+  cmd: Command<A, O, Subs>
+}) => Promise<void> | void
+
+/**
+ * @see Command.prototype.parseArgv
+ */
+export type ParseArgvResult<A extends Arguments, O extends Options, Subs extends SubCommands> = {
+  /** The command or subcommand instance */
+  get cmd(): Command<A, O, Subs>
+  /** The part of argv that makes out a subcommand path, or empty array when root command */
+  path: string[]
+  /** Original argv array passed in or from process.argv, excluding subcommand path */
+  argv: string[]
+  /** Parsed arguments */
+  args: A
+  /** Parsed options */
+  opts: O
+  /** Error messages if parsing failed, otherwise undefined */
+  errors?: string[]
+  /** Names of all triggered hooks whose predicate returned true */
+  hooks: HookDefinition<A, O, Subs>[]
+  /** name of the trigger or 'main' for action handler */
+  action: string
+  /** Calls the action handler with its expected args */
+  execute: () => Promise<void>
+}
+
+export type HookDefinition<A extends Arguments, O extends Options, Subs extends SubCommands> = {
+  name: keyof O
+  predicate: HookPredicate<A, O, Subs>
+  action: ActionHandler<A, O, Subs>
+}
+
+//
+// argument usage
+//
 
 /** required variadic argument */
 export type RequiredVariadicArgumentUsage = `<${string}...>`
@@ -22,106 +75,8 @@ export type ArgumentUsage =
   | RequiredArgumentUsage
   | OptionalArgumentUsage
 
-export type InferArgumentName<T extends ArgumentUsage> = T extends `<${infer Name}...>`
-  ? Name
-  : T extends `<${infer Name}>`
-    ? Name
-    : T extends `[${infer Name}...]`
-      ? Name
-      : T extends `[${infer Name}]`
-        ? Name
-        : never
-
-export type InferArgumentRequired<T extends ArgumentUsage> = T extends RequiredArgumentUsage
-  ? true
-  : T extends OptionalArgumentUsage
-    ? false
-    : never
-
-export type InferArgumentVariadic<T extends ArgumentUsage> = T extends RequiredVariadicArgumentUsage
-  ? true
-  : T extends OptionalVariadicArgumentUsage
-    ? true
-    : T extends RequiredArgumentUsage
-      ? false
-      : T extends OptionalArgumentUsage
-        ? false
-        : never
-
-export type InferArgumentDefaultValue<T extends ArgumentUsage> = T extends OptionalVariadicArgumentUsage
-  ? string[]
-  : T extends OptionalArgumentUsage
-    ? string
-    : never
-
-export type InferArgument<T extends ArgumentUsage> = Simplify<
-  {
-    usage: T
-    name: InferArgumentName<T>
-    description: string
-    choices?: string[]
-  } & (T extends RequiredVariadicArgumentUsage
-    ? {
-        required: true
-        variadic: true
-        defaultValue?: undefined | never
-        defaultValueDescription?: undefined | never
-      }
-    : T extends OptionalVariadicArgumentUsage
-      ? { required: false; variadic: true; defaultValue: string[]; defaultValueDescription?: string }
-      : T extends RequiredArgumentUsage
-        ? {
-            required: true
-            variadic: false
-            defaultValue?: undefined | never
-            defaultValueDescription?: undefined | never
-          }
-        : T extends OptionalArgumentUsage
-          ? { required: false; variadic: false; defaultValue?: string; defaultValueDescription?: string }
-          : never)
->
-
-export type InferArgumentOptions<T extends ArgumentUsage> = Omit<
-  InferArgument<T>,
-  'usage' | 'name' | 'required' | 'variadic'
->
-
-/** Required positional argument descriptor. Usage: `<name>` */
-export type IRequiredArgument = ArgOpts
-
-/** Optional positional argument with string default. Usage: `[name]` */
-export type IOptionalArgument = ArgOpts<{
-  defaultValue?: string
-  defaultValueDescription?: string
-}>
-
-export type IOptionalArgumentWithDefault = SetFieldType<
-  SetRequired<IOptionalArgument, 'defaultValue'>,
-  'defaultValue',
-  string
->
-
-/** Required variadic argument accepting variadic values. Usage: `<name...>` */
-export type IRequiredVariadicArgument = ArgOpts
-
-/** Optional variadic argument with array default. Usage: `[name...]` */
-export type IOptionalVariadicArgument = ArgOpts<{
-  defaultValue?: string[]
-  defaultValueDescription?: string
-}>
-
-/** Helper type for extracting argument configuration options */
-export type ArgOpts<T extends object = object> = Simplify<
-  Omit<IArgument, 'name' | 'required' | 'variadic' | 'usage' | 'defaultValue' | 'defaultValueDescription'> & T
->
-
-export type ArgumentOptions = AllUnionFields<
-  IRequiredArgument | IOptionalArgument | IRequiredVariadicArgument | IOptionalVariadicArgument
->
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type InferAddArgumentUsage<T extends Command<any, any>> =
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+/** Helper type to infer allowed argument usage patterns based on the command's existing argument types */
+type InferArgumentUsage<T extends Command<any, any, any>> =
   T extends Command<infer A, any>
     ? A extends string[]
       ? ArgumentUsage
@@ -130,10 +85,67 @@ export type InferAddArgumentUsage<T extends Command<any, any>> =
         : never
     : never
 
-export type InferAddArgumentUsageSpecific<T extends Command<any, any>, Usage extends ArgumentUsage> =
-  Usage extends InferAddArgumentUsage<T> ? Usage : never
+/** Helper type to infer allowed argument usage patterns based on the command's existing argument types */
+export type AllowedArgumentUsage<T extends Command<any, any, any>, Usage extends ArgumentUsage> =
+  Usage extends InferArgumentUsage<T> ? Usage : never
 
-export type InferNewArgument<Opts> = Opts extends { choices: infer C extends string[] } ? C[number] : string
+//
+// argument options
+//
+
+/** Base type for addArgument options, extended by specific required/optional and variadic/non-variadic argument option types */
+type ArgumentOptionsBase = Omit<
+  Argument,
+  'name' | 'required' | 'variadic' | 'usage' | 'defaultValue' | 'defaultValueDescription'
+>
+
+/** Base type for addArgument options, extended by specific required/optional and variadic/non-variadic argument option types */
+type ExtendArgumentOptionsBase<T extends object = object> = Simplify<ArgumentOptionsBase & T>
+
+/** Required positional argument descriptor. Usage: `<name>` */
+export type RequiredArgumentOptions = ExtendArgumentOptionsBase
+
+/** Optional positional argument with string default. Usage: `[name]` */
+export type OptionalArgumentOptions = ExtendArgumentOptionsBase<{
+  defaultValue?: string
+  defaultValueDescription?: string
+}>
+
+/** Optional positional argument with required string default. Usage: `[name]` */
+export type OptionalArgumentOptionsWithDefaultValue = SetFieldType<
+  SetRequired<OptionalArgumentOptions, 'defaultValue'>,
+  'defaultValue',
+  string
+>
+
+/** Required variadic argument accepting variadic values. Usage: `<name...>` */
+export type RequiredVariadicArgumentOptions = ExtendArgumentOptionsBase
+
+/** Optional variadic argument with array default. Usage: `[name...]` */
+export type OptionalVariadicArgumentOptions = ExtendArgumentOptionsBase<{
+  defaultValue?: string[]
+  defaultValueDescription?: string
+}>
+
+/** Union of all addArgument options types */
+export type ArgumentOptions = AllUnionFields<
+  | RequiredArgumentOptions
+  | OptionalArgumentOptions
+  | OptionalArgumentOptionsWithDefaultValue
+  | RequiredVariadicArgumentOptions
+  | OptionalVariadicArgumentOptions
+>
+
+//
+// argument type
+//
+
+/** Helper type for extracting argument name from usage pattern */
+export type InferAddedArgumentType<Opts> = Opts extends { choices: infer C extends string[] } ? C[number] : string
+
+//
+// option usage
+//
 
 /** Union of all option usage pattern types */
 export type OptionUsage<Long extends string> =
@@ -148,89 +160,64 @@ export type OptionUsage<Long extends string> =
   // optional variadic option
   | `-${string}, --${Long} [${string}...]`
 
+//
+// option options
+//
+
+/** Base type for addOption options, extended by specific boolean/string and required/optional and variadic/non-variadic option types */
+type OptionOptionsBase = Omit<
+  Option,
+  'name' | 'required' | 'variadic' | 'type' | 'argName' | 'short' | 'long' | 'flags'
+>
+
+/** Helper type to extend base addOption options with specific fields for different option types */
+type ExtendAddOptionOptionsBase<T extends object = object> = Simplify<OptionOptionsBase & T>
+
 /** Boolean flag option. Usage: `-v, --verbose` */
-export type IBooleanOption = OptOpts<{
+export type BooleanOptionOptions = ExtendAddOptionOptionsBase<{
   defaultValue?: boolean
   defaultValueDescription?: string
 }>
 
 /** Required string option. Usage: `-f, --file <path>` */
-export type IRequiredOption = OptOpts<{
+export type RequiredOptionOptions = ExtendAddOptionOptionsBase<{
   env?: undefined
 }>
 
 /** Optional string option with default. Usage: `-o, --output [path]` */
-export type IOptionalOption = OptOpts<{
+export type OptionalOptionOptions = ExtendAddOptionOptionsBase<{
   defaultValue?: string
   defaultValueDescription?: string
 }>
 
 /** Required option accepting variadic values. Usage: `-i, --include <patterns...>` */
-export type IRequiredVariadicOption = OptOpts<{
+export type RequiredVariadicOptionOptions = ExtendAddOptionOptionsBase<{
   env?: undefined
 }>
 
 /** Optional option accepting variadic values with defaults. Usage: `-e, --exclude [patterns...]` */
-export type IOptionalVariadicOption = OptOpts<{
+export type OptionalVariadicOptionOptions = ExtendAddOptionOptionsBase<{
   defaultValue?: string[]
   defaultValueDescription?: string
 }>
 
+/** Union of all addOption options types */
 export type OptionOptions = AllUnionFields<
-  IBooleanOption | IRequiredOption | IOptionalOption | IRequiredVariadicOption | IOptionalVariadicOption
+  | BooleanOptionOptions
+  | RequiredOptionOptions
+  | OptionalOptionOptions
+  | RequiredVariadicOptionOptions
+  | OptionalVariadicOptionOptions
 >
 
-/** Helper type for extracting option configuration options */
-export type OptOpts<T extends object = object> = Simplify<
-  Omit<
-    IOption,
-    'name' | 'description' | 'required' | 'variadic' | 'type' | 'argName' | 'short' | 'long' | 'flags'
-  > &
-    T
->
+//
+// addOption return type
+//
 
-export type TriggerPredicate<A extends Arguments, O extends Options, C extends ICommand> = (data: {
-  args: A
-  opts: O
-  cmd: C
-}) => boolean
-
-export type ActionHandler<A extends Arguments, O extends Options, C extends ICommand> = (data: {
-  args: A
-  opts: O
-  triggers: TriggerDefinition<A, O, C>[]
-  cmd: C
-}) => Promise<void> | void
-
-/**
- * @see Command.prototype.parseArgv
- */
-export type ParseArgvResult<A extends Arguments, O extends Options, C extends ICommand> = {
-  /** The command or subcommand instance */
-  get cmd(): C
-  /** The part of argv that makes out a subcommand path, or empty array when root command */
-  path: string[]
-  /** Original argv array passed in or from process.argv, excluding subcommand path */
-  argv: string[]
-  /** Parsed arguments */
-  args: A
-  /** Parsed options */
-  opts: O
-  /** Names of all triggered triggers whose predicate returned true */
-  triggers: TriggerDefinition<A, O, C>[]
-  /** name of the trigger or 'main' for action handler */
-  action?: string
-  /** Calls the action handler with its expected args */
-  execute?: () => Promise<void> | void
-}
-
-export type TriggerDefinition<A extends Arguments, O extends Options, C extends ICommand> = {
-  name: keyof O
-  predicate: TriggerPredicate<A, O, C>
-  action: ActionHandler<A, O, C>
-}
-
-export type InferNewOptions<A extends Arguments, O extends Options, NewOptions extends Options> = Command<
-  A,
-  NewOptions & O
->
+/** Helper type to infer the resulting Command type after adding an option with specific options */
+export type InferAddOptionResult<
+  A extends Arguments,
+  O extends Options,
+  NewOptions extends Options,
+  Subs extends SubCommands,
+> = Command<A, Simplify<O & NewOptions>, Subs>

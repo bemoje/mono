@@ -1,11 +1,17 @@
+import type { Command } from './Command'
+
 /** Parsed command-line arguments */
 export type Arguments = (undefined | string | string[])[]
 
 /** Parsed command-line options */
 export type Options = Record<string, undefined | boolean | string | string[]>
 
+/** Result of parsing command-line input, including arguments, options, triggered actions, and execution method */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type SubCommands = { [name: string]: Command<Arguments, Options, any> }
+
 /** Base descriptor for command-line arguments with shared properties */
-export interface IArgument {
+export interface Argument {
   usage: string
   name: string
   description?: string
@@ -17,14 +23,14 @@ export interface IArgument {
 }
 
 /** Base descriptor for command-line options with shared properties */
-export interface IOption {
+export interface Option {
   type: 'boolean' | 'string'
   flags: string
   short: string
   long: string
   name: string
   argName?: string
-  description: string
+  description?: string
   required?: boolean
   variadic?: boolean
   negate?: boolean
@@ -41,7 +47,7 @@ export interface ICommand {
   /** Parent command if this is a subcommand */
   readonly parent?: ICommand
   /** Help configuration and rendering */
-  readonly help: IHelp
+  // readonly help: IHelp
   /** Command name used for invocation */
   name: string
   /** Alternative names for this command */
@@ -57,11 +63,11 @@ export interface ICommand {
   /** Group name for organizing commands in help */
   group?: string
   /** Positional arguments */
-  arguments: IArgument[]
+  arguments: Argument[]
   /** Named options/flags */
-  options: IOption[]
+  options: Option[]
   /** Child subcommands */
-  commands: ICommand[]
+  commands: { [name: string]: ICommand }
 }
 
 export interface IHelp {
@@ -79,15 +85,15 @@ export interface IHelp {
   /**
    * Compare options for sort.
    */
-  compareOptions(a: IOption, b: IOption): number
+  compareOptions(a: Option, b: Option): number
   /**
    * Get an array of the visible options. Includes a placeholder for the implicit help option, if there is one.
    */
-  visibleOptions(): IOption[]
+  visibleOptions(): Option[]
   /**
    * Get an array of the arguments if any have a description.
    */
-  visibleArguments(): IArgument[]
+  visibleArguments(): Argument[]
   /**
    * Get the command term to show in the list of subcommands.
    */
@@ -95,11 +101,11 @@ export interface IHelp {
   /**
    * Get the option term to show in the list of options.
    */
-  optionTerm(option: IOption): string
+  optionTerm(option: Option): string
   /**
    * Get the argument term to show in the list of arguments.
    */
-  argumentTerm(argument: IArgument): string
+  argumentTerm(argument: Argument): string
   /**
    * Get the longest subcommand primary alias length.
    */
@@ -132,11 +138,11 @@ export interface IHelp {
   /**
    * Get the option description to show in the list of options.
    */
-  optionDescription(option: IOption): string
+  optionDescription(option: Option): string
   /**
    * Get the argument description to show in the list of arguments.
    */
-  argumentDescription(argument: IArgument): string
+  argumentDescription(argument: Argument): string
   /**
    * Format a list of items, given a heading and an array of formatted items.
    */
@@ -144,7 +150,7 @@ export interface IHelp {
   /**
    * Group items by their help group heading.
    */
-  groupItems<T extends ICommand | IOption>(
+  groupItems<T extends ICommand | Option>(
     unsortedItems: T[],
     visibleItems: T[],
     getGroup: (item: T) => string,

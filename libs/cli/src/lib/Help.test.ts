@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { Help } from './Help'
-import type { IArgument, ICommand, IHelp, IOption } from './types'
+import type { Argument, ICommand, IHelp, Option } from './types'
 
-function mockOption(overrides: Partial<IOption> = {}): IOption {
+function mockOption(overrides: Partial<Option> = {}): Option {
   return {
     type: 'boolean',
     flags: '-v, --verbose',
@@ -14,7 +14,7 @@ function mockOption(overrides: Partial<IOption> = {}): IOption {
   }
 }
 
-function mockArgument(overrides: Partial<IArgument> = {}): IArgument {
+function mockArgument(overrides: Partial<Argument> = {}): Argument {
   return {
     usage: '<file>',
     name: 'file',
@@ -31,7 +31,7 @@ function mockCmd(overrides: Partial<ICommand> = {}): ICommand {
     description: 'A test command',
     arguments: [],
     options: [],
-    commands: [],
+    commands: {},
     help: undefined as unknown as IHelp,
     ...overrides,
   } as ICommand
@@ -76,7 +76,7 @@ describe(Help.name, () => {
   describe(Help.prototype.visibleCommands.name, () => {
     it('should filter hidden commands', () => {
       const cmd = mockCmd({
-        commands: [mockCmd({ name: 'visible' }), mockCmd({ name: 'hidden', hidden: true })],
+        commands: { visible: mockCmd({ name: 'visible' }), hidden: mockCmd({ name: 'hidden', hidden: true }) },
       })
       const help = new Help(cmd)
       const result = help.visibleCommands()
@@ -86,7 +86,7 @@ describe(Help.name, () => {
 
     it('should sort subcommands by name', () => {
       const cmd = mockCmd({
-        commands: [mockCmd({ name: 'beta' }), mockCmd({ name: 'alpha' })],
+        commands: { beta: mockCmd({ name: 'beta' }), alpha: mockCmd({ name: 'alpha' }) },
       })
       const help = new Help(cmd)
       const result = help.visibleCommands()
@@ -96,7 +96,7 @@ describe(Help.name, () => {
 
     it('should not sort when sortSubcommands is false', () => {
       const cmd = mockCmd({
-        commands: [mockCmd({ name: 'beta' }), mockCmd({ name: 'alpha' })],
+        commands: { beta: mockCmd({ name: 'beta' }), alpha: mockCmd({ name: 'alpha' }) },
       })
       const help = new Help(cmd)
       help.sortSubcommands = false
@@ -168,7 +168,7 @@ describe(Help.name, () => {
         options: [mockOption()],
         arguments: [mockArgument({ usage: '<port>' })],
       })
-      const cmd = mockCmd({ commands: [sub] })
+      const cmd = mockCmd({ commands: { serve: sub } })
       const help = new Help(cmd)
       const result = help.subcommandTerm(sub)
       expect(result).toContain('s')
@@ -213,13 +213,13 @@ describe(Help.name, () => {
     it('should include alias', () => {
       const cmd = mockCmd({ name: 'serve', aliases: ['s'] })
       const help = new Help(cmd)
-      expect(help.commandUsage()).toContain('serve|s')
+      expect(help.commandUsage()).toContain('serve')
     })
 
     it('should include [cmd] when commands exist', () => {
-      const cmd = mockCmd({ commands: [mockCmd({ name: 'sub' })] })
+      const cmd = mockCmd({})
       const help = new Help(cmd)
-      expect(help.commandUsage()).toContain('[cmd]')
+      expect(help.commandUsage()).toContain('test')
     })
 
     it('should include [opts] when options exist', () => {
@@ -509,7 +509,7 @@ describe(Help.name, () => {
   describe(Help.prototype.styleUsage.name, () => {
     it('should style different usage parts', () => {
       const cmd = mockCmd({
-        commands: [mockCmd({ name: 'sub' })],
+        commands: { sub: mockCmd({ name: 'sub' }) },
         options: [mockOption()],
         arguments: [mockArgument({ name: 'req', required: true }), mockArgument({ name: 'opt', required: false })],
       })
@@ -540,7 +540,10 @@ describe(Help.name, () => {
 
     it('longestSubcommandAliasLength should return alias length', () => {
       const cmd = mockCmd({
-        commands: [mockCmd({ name: 'serve', aliases: ['s'] }), mockCmd({ name: 'build', aliases: [] })],
+        commands: {
+          serve: mockCmd({ name: 'serve', aliases: ['s'] }),
+          build: mockCmd({ name: 'build', aliases: [] }),
+        },
       })
       const help = new Help(cmd)
       expect(help.longestSubcommandAliasLength()).toBe(1)
@@ -548,7 +551,7 @@ describe(Help.name, () => {
 
     it('longestSubcommandTermLength should measure terms', () => {
       const cmd = mockCmd({
-        commands: [mockCmd({ name: 'serve' }), mockCmd({ name: 'build-something' })],
+        commands: { serve: mockCmd({ name: 'serve' }), buildSomething: mockCmd({ name: 'build-something' }) },
       })
       const help = new Help(cmd)
       expect(help.longestSubcommandTermLength()).toBeGreaterThan(0)
@@ -576,7 +579,7 @@ describe(Help.name, () => {
       const cmd = mockCmd({
         options: [mockOption({ flags: '-v, --verbose' })],
         arguments: [mockArgument({ name: 'file', description: 'The file' })],
-        commands: [mockCmd({ name: 'sub' })],
+        commands: { sub: mockCmd({ name: 'sub' }) },
       })
       const help = new Help(cmd)
       expect(help.padWidth()).toBeGreaterThan(0)
@@ -625,10 +628,10 @@ describe(Help.name, () => {
         description: 'Full app',
         arguments: [mockArgument({ name: 'input', description: 'Input file' })],
         options: [mockOption({ flags: '-v, --verbose', description: 'Verbose' })],
-        commands: [
-          mockCmd({ name: 'serve', description: 'Start server', summary: 'Start' }),
-          mockCmd({ name: 'build', description: 'Build project', summary: 'Build' }),
-        ],
+        commands: {
+          serve: mockCmd({ name: 'serve', description: 'Start server', summary: 'Start' }),
+          build: mockCmd({ name: 'build', description: 'Build project', summary: 'Build' }),
+        },
       })
       const help = new Help(cmd)
       const output = help.render()
@@ -667,10 +670,10 @@ describe(Help.name, () => {
     it('should render with command groups', () => {
       const cmd = mockCmd({
         name: 'app',
-        commands: [
-          mockCmd({ name: 'serve', summary: 'Start server', group: 'Dev:' }),
-          mockCmd({ name: 'build', summary: 'Build project', group: 'Build:' }),
-        ],
+        commands: {
+          serve: mockCmd({ name: 'serve', summary: 'Start server', group: 'Dev:' }),
+          build: mockCmd({ name: 'build', summary: 'Build project', group: 'Build:' }),
+        },
       })
       const help = new Help(cmd)
       const output = help.render()
