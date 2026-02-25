@@ -101,4 +101,11 @@ export default [
       'max-lines-per-function': 'off',
     },
   },
+
+  {
+    files: ['**/index.ts'],
+    rules: {
+      'split-and-sort-imports/sort-imports': 'off',
+    },
+  },
 ]

@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7605  | 7605    | 100%       |
-| Functions | 777   | 777     | 100%       |
-| Branches  | 2471  | 2471    | 100%       |
+| Lines     | 8494  | 8449    | 99.47%     |
+| Functions | 780   | 775     | 99.35%     |
+| Branches  | 2467  | 2466    | 99.95%     |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 597   | 13289         |
-| test      | 437   | 27346         |
-| examples  | 1     | 44            |
-| total     | 1035  | 40679         |
+| source    | 602   | 14707         |
+| test      | 438   | 30197         |
+| examples  | 1     | 48            |
+| total     | 1041  | 44952         |
 
 ## Table of Contents
 
@@ -305,11 +305,10 @@ describe(ClassToTest.name, () => {
 - `arrTableToCsv`: Converts a 2D array to a CSV string.
 - `arrTableToObjects`: Converts a 2D array representing a table into an array of objects.
 - `arrayToString`: Short and condensed string representation of an array, easy to read for error outputs or similar.
-- `countUniques`: Count unique occurrences of values in an iterable, returning a sorted map by count descending.
 
 **cli**
 
-- `Command`: A type-safe CLI composer that can parse argv and generate help without execution coupling.
+- `Command`: a type-safe CLI composer that can parse argv and generate help without execution coupling.
 - `Help`: This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the expected interface of the Command instance to parse, are both similar, but different and not compatible without custom adaptations,
 - `findCommand`: Finds subcommand by name or alias
 - `findOption`: Finds option by name, short name or long name
@@ -446,6 +445,7 @@ describe(ClassToTest.name, () => {
 
 **iter**
 
+- `countUniques`: Count unique occurrences of values in an iterable, returning a sorted map by count descending.
 - `filterIterable`: Filter map entries based on a predicate function.
 - `forEachIterable`: Execute a callback function for each entry in a map-like iterable.
 - `mapIterable`: Transform both keys and values of map entries.
@@ -488,7 +488,14 @@ describe(ClassToTest.name, () => {
 - `TsCode`: Represents TypeScript code with import parsing and manipulation capabilities.
 - `TsFile`: Represents a TypeScript file in the monorepo with code analysis and dependency tracking capabilities.
 - `Workspace`: Represents a workspace within a monorepo, providing functionality to analyze and manage workspace dependencies. A workspace is a directory containing a package.json file and typically source code files. This class provides methods and properties for analyzing: - Source and test files in the workspace - Dependencies declared in package.json - Dependencies imported in source and test files - Missing, unused, and incorrectly imported dependencies
+- `findWorkspacePackageName`: Finds the full package name for a workspace given a partial name.
 - `getAllImports`: Retrieves all import statements from TypeScript source files across all workspaces in the monorepo.
+- `getAllWorkspacePackageJsonPaths`: Gets all workspace package.json file paths.
+- `getAllWorkspacePackageJsons`: Gets all workspace package.json contents.
+- `getAllWorkspacePackageNames`: Gets all workspace package names.
+- `getAllWorkspacePaths`: Returns an array of all workspace directory paths.
+- `getRepoPackageJson`: Reads the repository's root package.json file.
+- `getRepoPackageJsonPath`: Gets the absolute path to the repository's package.json file.
 - `getRepoRootDirpath`: Get the root directory path of the monorepo by finding the package.json with workspaces configuration.
 - `getWorkspaceDirpaths`: Get all workspace directory paths by reading the workspace patterns from the root package.json.
 - `hasExtnamePrefix`: Checks if a file path has any of the specified semantic extension prefixes (e.g., .test.ts).
