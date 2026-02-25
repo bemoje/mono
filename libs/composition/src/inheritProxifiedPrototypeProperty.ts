@@ -10,7 +10,9 @@ export function inheritProxifiedPrototypeProperty<Viewer extends IView<Target>, 
   key: keyof Target,
 ) {
   const des = Reflect.getOwnPropertyDescriptor(TargetClass.prototype, key)
-  if (!des) return
+  if (!des) {
+    return
+  }
 
   if (des.value && typeof des.value === 'function') {
     return Object.defineProperty(ViewerClass.prototype, key, {

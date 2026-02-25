@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { SetFieldType } from "type-fest";
-import type { Simplify } from "type-fest";
-import type { RequiredKeysOf } from "type-fest";
-import type { OptionalKeysOf } from "type-fest";
-import { KindGuard } from "@sinclair/typebox";
-import { ReturnType } from "@sinclair/typebox";
-import { Static } from "@sinclair/typebox";
-import { TObject } from "@sinclair/typebox";
-import { TSchema } from "@sinclair/typebox";
-import { Type } from "@sinclair/typebox";
+import { KindGuard } from '@sinclair/typebox'
+import type { OptionalKeysOf } from 'type-fest'
+import type { RequiredKeysOf } from 'type-fest'
+import { ReturnType } from '@sinclair/typebox'
+import type { SetFieldType } from 'type-fest'
+import type { Simplify } from 'type-fest'
+import { Static } from '@sinclair/typebox'
+import { TObject } from '@sinclair/typebox'
+import { TSchema } from '@sinclair/typebox'
+import { Type } from '@sinclair/typebox'
 import { entriesOf } from './entriesOf'
 import { keysOf } from './keysOf'
 
@@ -67,7 +67,11 @@ export function OptionsConfigurator<P extends Record<string, TSchema>>(schemaOrP
         Reflect.set(
           acc,
           key,
-          (typeof prop.default === 'function' ? prop.default : () => prop.default) as () => Options[keyof Options],
+          (typeof prop.default === 'function'
+            ? prop.default
+            : () => {
+                return prop.default
+              }) as () => Options[keyof Options],
         )
       }
       return acc
@@ -76,9 +80,9 @@ export function OptionsConfigurator<P extends Record<string, TSchema>>(schemaOrP
   )
 
   const requiredKeys = schema.required as RequiredKeysOf<Options>[]
-  const optionalKeys = Object.keys(props).filter(
-    (k) => !requiredKeys.includes(k as never),
-  ) as OptionalKeysOf<Options>[]
+  const optionalKeys = Object.keys(props).filter((k) => {
+    return !requiredKeys.includes(k as never)
+  }) as OptionalKeysOf<Options>[]
 
   const create = createConfigurator<Options>({ defaults, requiredKeys, optionalKeys })
 
@@ -88,12 +92,24 @@ export function OptionsConfigurator<P extends Record<string, TSchema>>(schemaOrP
     return options
   }
 
-  build.getSchemaProps = () => props
-  build.getSchema = () => schema
-  build.getDefaults = () => defaults
-  build.cast = (v?: unknown) => v as Options
-  build.getCreate = () => create
-  build.getBuild = () => build
+  build.getSchemaProps = () => {
+    return props
+  }
+  build.getSchema = () => {
+    return schema
+  }
+  build.getDefaults = () => {
+    return defaults
+  }
+  build.cast = (v?: unknown) => {
+    return v as Options
+  }
+  build.getCreate = () => {
+    return create
+  }
+  build.getBuild = () => {
+    return build
+  }
 
   return build
 }

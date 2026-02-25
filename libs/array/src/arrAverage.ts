@@ -12,6 +12,8 @@ import { arrSum } from './arrSum'
  * ```
  */
 export function arrAverage(array: number[]): number {
-  if (!array.length) throw new Error('Cannot take an average of zero values.')
+  if (!array.length) {
+    throw new Error('Cannot take an average of zero values.')
+  }
   return arrSum(array) / array.length
 }

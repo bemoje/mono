@@ -1,8 +1,8 @@
-import { fs } from "fs-extra";
-import { Stats } from "fs-extra";
+import { Stats } from 'fs-extra'
+import { WalkOptions } from 'walkdir'
+import fs from 'fs-extra'
 import upath from 'upath'
 import walkdir from 'walkdir'
-import { WalkOptions } from 'walkdir'
 
 /**
  * Walk a directory recursively and return an array of paths.
@@ -28,23 +28,33 @@ export function walkDirectory(dirpath: string, options: WalkDirectoryOptions) {
         ...convertToWalkdirOptions(options), //
         return_object: false,
       })
-      .map((fspath) => upath.normalizeSafe(fspath))
+      .map((fspath) => {
+        return upath.normalizeSafe(fspath)
+      })
   }
 
   let entries = Object.entries(walkdir.sync(dirpath, convertToWalkdirOptions(options)))
 
   if (options.only === 'files') {
-    entries = entries.filter(([_, stats]) => stats.isFile())
+    entries = entries.filter(([_, stats]) => {
+      return stats.isFile()
+    })
   } else if (options.only === 'directories') {
-    entries = entries.filter(([_, stats]) => stats.isDirectory())
+    entries = entries.filter(([_, stats]) => {
+      return stats.isDirectory()
+    })
   }
 
-  entries = entries.map(([fspath, stats]) => [upath.normalizeSafe(fspath), stats])
+  entries = entries.map(([fspath, stats]) => {
+    return [upath.normalizeSafe(fspath), stats]
+  })
 
   if (options.stats) {
     return entries
   } else {
-    return entries.map(([fspath]) => fspath)
+    return entries.map(([fspath]) => {
+      return fspath
+    })
   }
 }
 
@@ -90,9 +100,15 @@ function convertToWalkdirOptions(options: WalkDirectoryOptions): WalkOptions {
     sync: true,
     return_object: true,
   }
-  if (options.maxDepth !== undefined) result.max_depth = options.maxDepth
-  if (options.followSymlinks !== undefined) result.follow_symlinks = options.followSymlinks
-  if (options.ignoreInodes !== undefined) result.track_inodes = !options.ignoreInodes
+  if (options.maxDepth !== undefined) {
+    result.max_depth = options.maxDepth
+  }
+  if (options.followSymlinks !== undefined) {
+    result.follow_symlinks = options.followSymlinks
+  }
+  if (options.ignoreInodes !== undefined) {
+    result.track_inodes = !options.ignoreInodes
+  }
   if (options.filter) {
     const filter = options.filter!
     result.filter = (dirpath: string, files: string[]) => {

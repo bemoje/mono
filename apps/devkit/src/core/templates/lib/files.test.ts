@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { files } from './files'
+import { it } from 'vitest'
 
 describe('template files', () => {
   it('should export eslintConfigJs template', () => {

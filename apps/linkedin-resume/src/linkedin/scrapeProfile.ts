@@ -1,15 +1,16 @@
+/* eslint-disable max-lines-per-function */
 import type { Browser } from 'puppeteer'
-import { autoScroll } from './utils/autoScroll'
-import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
-import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { CliOptions } from '../types/CliOptions'
-import { ResumeLanguage } from "../types/Resume";
-import { ResumeProfile } from "../types/Resume";
+import { Logger } from '@mono/node'
+import { ResumeLanguage } from '../types/Resume'
+import { ResumeProfile } from '../types/Resume'
+import { autoScroll } from './utils/autoScroll'
+import { getPageUrl } from './utils/getPageUrl'
+import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { onScrapeError } from './utils/onScrapeError'
+import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { scrapeOutputJson } from './utils/scrapeOutputJson'
 import { userConfigFile } from '../userConfigFile'
-import { getPageUrl } from './utils/getPageUrl'
-import { Logger } from '@mono/node'
 
 export async function scrapeProfile(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const config = userConfigFile.load()
@@ -48,7 +49,9 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
         }
       }
     })
-    await new Promise((r) => setTimeout(r, 250))
+    await new Promise((r) => {
+      return setTimeout(r, 250)
+    })
 
     await autoScroll(page)
     await patchEsbuildHelpers(page)
@@ -72,7 +75,9 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
         document.querySelector('.text-body-small[class*="break-words"]')
 
       // Parse location string: "Herning, Midtjylland, Denmark" → { city, region, countryCode }
-      const locParts = (locationEl?.textContent?.trim() ?? '').split(/\s*,\s*/).map((s) => s.trim())
+      const locParts = (locationEl?.textContent?.trim() ?? '').split(/\s*,\s*/).map((s) => {
+        return s.trim()
+      })
       const location = {
         city: locParts[0] ?? '',
         region: locParts[1] ?? '',
@@ -98,7 +103,11 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
         const container = aboutAnchor.closest('section')
         if (container) {
           const spans = Array.from(container.querySelectorAll('span[aria-hidden="true"]'))
-          summary = spans.map((s) => getTextWithBreaks(s).trim()).join('\n\n')
+          summary = spans
+            .map((s) => {
+              return getTextWithBreaks(s).trim()
+            })
+            .join('\n\n')
         }
       }
       if (!summary) {
@@ -107,7 +116,11 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
           const heading = section.querySelector('h2, [class*="title"]')
           if (heading && /^about$/i.test(heading.textContent!.trim())) {
             const spans = Array.from(section.querySelectorAll('span[aria-hidden="true"]'))
-            summary = spans.map((s) => getTextWithBreaks(s).trim()).join('\n\n')
+            summary = spans
+              .map((s) => {
+                return getTextWithBreaks(s).trim()
+              })
+              .join('\n\n')
           }
         }
       }
@@ -120,7 +133,9 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
         split[1]
           ?.trim()
           .split('•')
-          .map((s) => s.trim())
+          .map((s) => {
+            return s.trim()
+          })
           .filter(Boolean) ?? []
 
       // --- Scrape languages section ---
@@ -146,7 +161,9 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
         const items = container.querySelectorAll('li')
         for (const li of items) {
           const spans = Array.from(li.querySelectorAll('span[aria-hidden="true"]'))
-            .map((s) => s.textContent!.trim())
+            .map((s) => {
+              return s.textContent!.trim()
+            })
             .filter(Boolean)
           if (spans.length >= 1) {
             languages.push({
@@ -177,17 +194,27 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
       }
       // Fallback: look for "Contact info" text link
       Array.from(document.querySelectorAll('a'))
-        .filter((a) => /contact\s*info/i.test(a.textContent!))
-        .forEach((el) => el.click?.())
+        .filter((a) => {
+          return /contact\s*info/i.test(a.textContent!)
+        })
+        .forEach((el) => {
+          return el.click?.()
+        })
     })
 
     // Wait for the modal to appear
     await page
       .waitForSelector('[class*="contact-info"]', { timeout: 5000 })
-      .catch(() => page.waitForSelector('.artdeco-modal', { timeout: 3000 }))
-      .catch(() => page.waitForSelector('.pv-contact-info', { timeout: 3000 }))
+      .catch(() => {
+        return page.waitForSelector('.artdeco-modal', { timeout: 3000 })
+      })
+      .catch(() => {
+        return page.waitForSelector('.pv-contact-info', { timeout: 3000 })
+      })
 
-    await new Promise((r) => setTimeout(r, 1500))
+    await new Promise((r) => {
+      return setTimeout(r, 1500)
+    })
 
     const contactInfo = await page.evaluate(() => {
       const data = {
@@ -205,7 +232,9 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
         const text = section.textContent!.trim()
 
         const links = Array.from(section.querySelectorAll('a'))
-        const mailLink = links.find((a) => a.href?.startsWith('mailto:'))
+        const mailLink = links.find((a) => {
+          return a.href?.startsWith('mailto:')
+        })
         if (mailLink) {
           data.email = mailLink.href.replace('mailto:', '')
           continue
@@ -243,11 +272,15 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
           const modalText = modal.textContent!
           if (!data.email) {
             const m = modalText.match(/[\w.+-]+@[\w.-]+\.\w{2,}/)
-            if (m) data.email = m[0]
+            if (m) {
+              data.email = m[0]
+            }
           }
           if (!data.phone) {
             const m = modalText.match(/(\+?\d[\d\s()-]{6,}\d)/)
-            if (m) data.phone = m[1].trim()
+            if (m) {
+              data.phone = m[1].trim()
+            }
           }
         }
       }

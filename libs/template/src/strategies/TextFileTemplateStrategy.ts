@@ -1,8 +1,8 @@
-import { Static } from "@sinclair/typebox";
-import { TArray } from "@sinclair/typebox";
-import { TString } from "@sinclair/typebox";
-import { Type } from "@sinclair/typebox";
+import { Static } from '@sinclair/typebox'
+import { TArray } from '@sinclair/typebox'
+import { TString } from '@sinclair/typebox'
 import { TemplateStrategy } from '../interfaces/TemplateStrategy'
+import { Type } from '@sinclair/typebox'
 
 /**
  * Template strategy for handling multi-line text file templates.

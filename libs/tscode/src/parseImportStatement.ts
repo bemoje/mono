@@ -1,6 +1,6 @@
-import { rexec } from '@mono/regex'
 import { importStatementToFormattedOneLiner } from './importStatementToFormattedOneLiner'
 import { isBuiltin } from 'node:module'
+import { rexec } from '@mono/regex'
 import upath from 'upath'
 
 /**
@@ -49,29 +49,39 @@ export function parseImportStatement(
         ...specifiers
           .replace(/\{[^}]+\}/, '')
           .split(',')
-          .map((s) => s.trim())
-          .filter((s) => !!s)
-          .map((code) => ({
-            code: code.trim(),
-            type: code.trim().startsWith('* as ') ? ('namespace' as const) : ('default' as const),
-            name: code.replace('* as ', '').trim(),
-            isType: keywords.hasTypeKeyword || /\btype /.test(code),
-          })),
+          .map((s) => {
+            return s.trim()
+          })
+          .filter((s) => {
+            return !!s
+          })
+          .map((code) => {
+            return {
+              code: code.trim(),
+              type: code.trim().startsWith('* as ') ? ('namespace' as const) : ('default' as const),
+              name: code.replace('* as ', '').trim(),
+              isType: keywords.hasTypeKeyword || /\btype /.test(code),
+            }
+          }),
       )
 
       children.push(
         ...(specifiers.match(/\{([^}]+)\}/)?.[1] || '')
           .split(',')
-          .filter((s) => !!s.trim())
-          .map((code) => ({
-            code: code.trim(),
-            type: 'named' as const,
-            name: code.replace(/ as \w+\b/, '').trim(),
-            isType: keywords.hasTypeKeyword || /\btype /.test(code),
-          }))
+          .filter((s) => {
+            return !!s.trim()
+          })
+          .map((code) => {
+            return {
+              code: code.trim(),
+              type: 'named' as const,
+              name: code.replace(/ as \w+\b/, '').trim(),
+              isType: keywords.hasTypeKeyword || /\btype /.test(code),
+            }
+          })
           .map((o) => {
             if (o.isType && !o.name.startsWith('type ')) {
-              o.name = 'type ' + o.name
+              o.name = `type ${o.name}`
             }
             return o
           }),
@@ -107,7 +117,9 @@ export function parseImportStatement(
         : specifiers.children.length === 1 && specifiers.children[0].type === 'namespace'
           ? 'namespace'
           : specifiers.children.length > 0 &&
-              specifiers.children.filter((s) => s.type === 'named').length === specifiers.children.length
+              specifiers.children.filter((s) => {
+                return s.type === 'named'
+              }).length === specifiers.children.length
             ? 'named'
             : 'mixed'
 
@@ -133,11 +145,11 @@ class ImportStatementParser implements ImportStatement {
   getNames(options?: { unaliasNamedImports?: boolean }) {
     return this.splitBySpecifier(options).flatMap((ins) => {
       return ins.specifiers.children
-        .map((s) =>
-          s.type === 'named' && options?.unaliasNamedImports
+        .map((s) => {
+          return s.type === 'named' && options?.unaliasNamedImports
             ? s.code.replace(/ as \w+/g, '')
-            : s.code.replace(/[\w*]+ as /g, ''),
-        )
+            : s.code.replace(/[\w*]+ as /g, '')
+        })
         .filter(Boolean)
     })
   }
@@ -153,7 +165,7 @@ class ImportStatementParser implements ImportStatement {
           return parseImportStatement(
             importStatementToFormattedOneLiner(
               this.oneliner
-                .replace(this.specifiers.code, s.type === 'named' ? '{ ' + code + ' } ' : code + ' ')
+                .replace(this.specifiers.code, s.type === 'named' ? `{ ${code} } ` : `${code} `)
                 .replace(/\{ *type /, this.keywords.hasTypeKeyword ? '{ ' : 'type { '),
             ).replace('type { ', '{ type '),
           )

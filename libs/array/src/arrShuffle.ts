@@ -13,7 +13,9 @@ import { arrSwap } from './arrSwap'
  * ```
  */
 export function arrShuffle<T>(input: Array<T>): Array<T> {
-  if (input.length <= 1) return input
+  if (input.length <= 1) {
+    return input
+  }
   const original = input.slice()
   let equal = true
   while (equal) {

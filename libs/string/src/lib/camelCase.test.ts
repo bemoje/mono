@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { camelCase } from './camelCase'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(camelCase.name, () => {
   it('should convert a string to camel case', () => {

@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
 import { defineGetter } from './defineGetter'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(defineGetter.name, () => {
   it('examples', () => {
@@ -10,17 +10,35 @@ describe(defineGetter.name, () => {
       const obj: any = {}
 
       // Basic getter definition
-      defineGetter(obj, 'value', () => 42)
+      defineGetter(obj, 'value', () => {
+        return 42
+      })
       assert.strictEqual(obj.value, 42)
 
       // Getter with custom descriptor options
-      defineGetter(obj, 'computed', () => 'hello', { enumerable: true })
+      defineGetter(
+        obj,
+        'computed',
+        () => {
+          return 'hello'
+        },
+        { enumerable: true },
+      )
       assert.strictEqual(obj.computed, 'hello')
       assert.strictEqual(Object.propertyIsEnumerable.call(obj, 'computed'), true)
 
       // Getter that can be reconfigured
-      defineGetter(obj, 'dynamic', () => 'initial', { configurable: true })
-      defineGetter(obj, 'dynamic', () => 'updated')
+      defineGetter(
+        obj,
+        'dynamic',
+        () => {
+          return 'initial'
+        },
+        { configurable: true },
+      )
+      defineGetter(obj, 'dynamic', () => {
+        return 'updated'
+      })
       assert.strictEqual(obj.dynamic, 'updated')
     }).not.toThrow()
   })
@@ -41,7 +59,9 @@ describe(defineGetter.name, () => {
 
     it('should return the modified object', () => {
       const obj: any = {}
-      const result = defineGetter(obj, 'prop', () => 'value')
+      const result = defineGetter(obj, 'prop', () => {
+        return 'value'
+      })
 
       expect(result).toBe(obj)
     })
@@ -50,7 +70,9 @@ describe(defineGetter.name, () => {
       const obj: any = {}
       const sym = Symbol('test')
 
-      defineGetter(obj, sym, () => 'symbol-value')
+      defineGetter(obj, sym, () => {
+        return 'symbol-value'
+      })
 
       expect(obj[sym]).toBe('symbol-value')
     })
@@ -58,7 +80,9 @@ describe(defineGetter.name, () => {
     it('should work with number keys', () => {
       const obj: any = {}
 
-      defineGetter(obj, 42, () => 'number-key')
+      defineGetter(obj, 42, () => {
+        return 'number-key'
+      })
 
       expect(obj[42]).toBe('number-key')
     })
@@ -67,7 +91,9 @@ describe(defineGetter.name, () => {
   describe('descriptor handling', () => {
     it('should use default descriptor options', () => {
       const obj: any = {}
-      defineGetter(obj, 'prop', () => 'value')
+      defineGetter(obj, 'prop', () => {
+        return 'value'
+      })
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
 
@@ -82,10 +108,17 @@ describe(defineGetter.name, () => {
     it('should allow overriding descriptor options', () => {
       const obj: any = {}
 
-      defineGetter(obj, 'prop', () => 'value', {
-        enumerable: true,
-        configurable: false,
-      })
+      defineGetter(
+        obj,
+        'prop',
+        () => {
+          return 'value'
+        },
+        {
+          enumerable: true,
+          configurable: false,
+        },
+      )
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
 
@@ -103,7 +136,9 @@ describe(defineGetter.name, () => {
       const obj: any = {}
       let callCount = 0
 
-      defineGetter(obj, 'counter', () => ++callCount)
+      defineGetter(obj, 'counter', () => {
+        return ++callCount
+      })
 
       expect(obj.counter).toBe(1)
       expect(obj.counter).toBe(2)
@@ -125,7 +160,9 @@ describe(defineGetter.name, () => {
     it('should work with existing objects that have properties', () => {
       const obj: any = { existing: 'prop' }
 
-      defineGetter(obj, 'getter', () => 'new-prop')
+      defineGetter(obj, 'getter', () => {
+        return 'new-prop'
+      })
 
       expect(obj.existing).toBe('prop')
       expect(obj.getter).toBe('new-prop')
@@ -137,7 +174,9 @@ describe(defineGetter.name, () => {
       }
 
       const instance: any = new TestClass('instance-value')
-      defineGetter(instance, 'computed', () => `computed-${instance.value}`)
+      defineGetter(instance, 'computed', () => {
+        return `computed-${instance.value}`
+      })
 
       expect(instance.computed).toBe('computed-instance-value')
     })
@@ -149,7 +188,9 @@ describe(defineGetter.name, () => {
         throw new Error('getter error')
       })
 
-      expect(() => obj.throwing).toThrow('getter error')
+      expect(() => {
+        return obj.throwing
+      }).toThrow('getter error')
     })
   })
 })

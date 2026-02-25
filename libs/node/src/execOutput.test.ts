@@ -1,16 +1,18 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import { afterAll } from "vitest";
+import { ExecException } from 'node:child_process'
+import { afterAll } from 'vitest'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { exec } from 'node:child_process'
 import { execOutput } from './execOutput'
-import { exec } from "node:child_process";
-import { ExecException } from "node:child_process";
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
-vi.mock('node:child_process', () => ({
-  exec: vi.fn(),
-}))
+vi.mock('node:child_process', () => {
+  return {
+    exec: vi.fn(),
+  }
+})
 
 describe('execOutput', () => {
   afterAll(() => {
@@ -26,7 +28,9 @@ describe('execOutput', () => {
   it('should resolve with stdout and stderr when command executes successfully', async () => {
     const mock = vi.mocked(exec).mockImplementation(
       vi.fn((_: string, cb?: execCallback) => {
-        if (cb) cb(null, 'out', '')
+        if (cb) {
+          cb(null, 'out', '')
+        }
       }) as never,
     )
     const { stdout, stderr } = await execOutput('some command')
@@ -38,7 +42,9 @@ describe('execOutput', () => {
   it('should resolve, not reject on error', async () => {
     const mock = vi.mocked(exec).mockImplementation(
       vi.fn((_: string, cb?: execCallback) => {
-        if (cb) cb(new Error('oops'), '', 'error happened')
+        if (cb) {
+          cb(new Error('oops'), '', 'error happened')
+        }
       }) as never,
     )
     const { stdout, stderr } = await execOutput('some command')
@@ -50,7 +56,9 @@ describe('execOutput', () => {
   it('should use error.message instead of stderr when stderr is empty', async () => {
     const mock = vi.mocked(exec).mockImplementation(
       vi.fn((_: string, cb?: execCallback) => {
-        if (cb) cb(new Error('oops'), '', '')
+        if (cb) {
+          cb(new Error('oops'), '', '')
+        }
       }) as never,
     )
     const { stdout, stderr } = await execOutput('some command')

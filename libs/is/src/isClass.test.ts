@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isClass } from './isClass'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { it } from 'vitest'
 
 describe(isClass.name, () => {
   describe('true', () => {
@@ -30,7 +30,11 @@ describe(isClass.name, () => {
         'class{}',
       ]
       for (const code of valid) {
-        const mock = Object.defineProperty(new Function(), 'toString', { value: () => code })
+        const mock = Object.defineProperty(new Function(), 'toString', {
+          value: () => {
+            return code
+          },
+        })
         expect(isClass(mock)).toBe(true)
       }
     })
@@ -87,7 +91,11 @@ describe(isClass.name, () => {
         'classA {}',
       ]
       for (const code of invalid) {
-        const mock = Object.defineProperty(new Function(), 'toString', { value: () => code })
+        const mock = Object.defineProperty(new Function(), 'toString', {
+          value: () => {
+            return code
+          },
+        })
         expect(isClass(mock)).toBe(false)
       }
     })

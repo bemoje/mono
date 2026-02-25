@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { arrIndicesOf } from './arrIndicesOf'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('arrIndicesOf', () => {
   it('example', () => {

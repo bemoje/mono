@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { maxConcurrency } from './maxConcurrency'
+import { vi } from 'vitest'
 
 describe(maxConcurrency.name, () => {
   it('examples', async () => {
@@ -15,7 +15,9 @@ describe(maxConcurrency.name, () => {
       currentlyRunning++
       maxConcurrentSeen = Math.max(maxConcurrentSeen, currentlyRunning)
 
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      await new Promise((resolve) => {
+        return setTimeout(resolve, 50)
+      })
 
       currentlyRunning--
       return `task-${id}`
@@ -24,7 +26,9 @@ describe(maxConcurrency.name, () => {
     const limitedTask = maxConcurrency(slowTask, 2)
 
     // Start 5 tasks simultaneously
-    const promises = Array.from({ length: 5 }, (_, i) => limitedTask(i))
+    const promises = Array.from({ length: 5 }, (_, i) => {
+      return limitedTask(i)
+    })
     const results = await Promise.all(promises)
 
     assert.deepStrictEqual(maxConcurrentSeen, 2, 'max concurrency respected')
@@ -40,7 +44,9 @@ describe(maxConcurrency.name, () => {
         runningCount++
         maxConcurrent = Math.max(maxConcurrent, runningCount)
 
-        await new Promise((resolve) => setTimeout(resolve, delay))
+        await new Promise((resolve) => {
+          return setTimeout(resolve, delay)
+        })
 
         runningCount--
         return delay
@@ -71,14 +77,18 @@ describe(maxConcurrency.name, () => {
       const task = async () => {
         runningCount++
         maxConcurrent = Math.max(maxConcurrent, runningCount)
-        await new Promise((resolve) => setTimeout(resolve, 30))
+        await new Promise((resolve) => {
+          return setTimeout(resolve, 30)
+        })
         runningCount--
         return 'done'
       }
 
       const limitedTask = maxConcurrency(task, { concurrency: 2 })
 
-      const promises = Array.from({ length: 4 }, () => limitedTask())
+      const promises = Array.from({ length: 4 }, () => {
+        return limitedTask()
+      })
       await Promise.all(promises)
 
       expect(maxConcurrent).toBe(2)
@@ -100,7 +110,9 @@ describe(maxConcurrency.name, () => {
     })
 
     it('should handle tasks with no arguments', async () => {
-      const task = vi.fn(async () => 'no-args')
+      const task = vi.fn(async () => {
+        return 'no-args'
+      })
       const limitedTask = maxConcurrency(task, 1)
 
       const result = await limitedTask()
@@ -113,7 +125,9 @@ describe(maxConcurrency.name, () => {
       const task = vi.fn(async (obj: object, arr: number[], fn: () => string) => {
         return {
           objKeys: Object.keys(obj),
-          arrSum: arr.reduce((a, b) => a + b, 0),
+          arrSum: arr.reduce((a, b) => {
+            return a + b
+          }, 0),
           fnResult: fn(),
         }
       })
@@ -122,7 +136,9 @@ describe(maxConcurrency.name, () => {
 
       const testObj = { a: 1, b: 2 }
       const testArr = [1, 2, 3]
-      const testFn = () => 'test'
+      const testFn = () => {
+        return 'test'
+      }
 
       const result = await limitedTask(testObj, testArr, testFn)
 
@@ -167,10 +183,18 @@ describe(maxConcurrency.name, () => {
 
   describe('return values', () => {
     it('should preserve return values of different types', async () => {
-      const stringTask = maxConcurrency(async () => 'string', 1)
-      const numberTask = maxConcurrency(async () => 42, 1)
-      const objectTask = maxConcurrency(async () => ({ key: 'value' }), 1)
-      const arrayTask = maxConcurrency(async () => [1, 2, 3], 1)
+      const stringTask = maxConcurrency(async () => {
+        return 'string'
+      }, 1)
+      const numberTask = maxConcurrency(async () => {
+        return 42
+      }, 1)
+      const objectTask = maxConcurrency(async () => {
+        return { key: 'value' }
+      }, 1)
+      const arrayTask = maxConcurrency(async () => {
+        return [1, 2, 3]
+      }, 1)
 
       expect(await stringTask()).toBe('string')
       expect(await numberTask()).toBe(42)
@@ -179,8 +203,12 @@ describe(maxConcurrency.name, () => {
     })
 
     it('should handle undefined and null returns', async () => {
-      const undefinedTask = maxConcurrency(async () => undefined, 1)
-      const nullTask = maxConcurrency(async () => null, 1)
+      const undefinedTask = maxConcurrency(async () => {
+        return undefined
+      }, 1)
+      const nullTask = maxConcurrency(async () => {
+        return null
+      }, 1)
 
       expect(await undefinedTask()).toBeUndefined()
       expect(await nullTask()).toBeNull()

@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { memoizeSync } from './memoizeSync'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe(memoizeSync.name, () => {
   it('should memoized the function on the target object', () => {

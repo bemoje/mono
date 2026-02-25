@@ -25,9 +25,13 @@ export function arrTableToObjects<T>(
   ignoreKeys?: Set<string>,
 ): Record<string, T>[] {
   if (headers) {
-    if (!rows.length) return []
+    if (!rows.length) {
+      return []
+    }
   } else {
-    if (rows.length <= 1) return []
+    if (rows.length <= 1) {
+      return []
+    }
     headers = rows[0].map((header) => {
       return header === null || header === undefined ? '' : String(header)
     })
@@ -38,7 +42,9 @@ export function arrTableToObjects<T>(
     const o: Record<string, T> = {}
     for (let i = 0; i < _headers.length; i++) {
       const header = _headers[i]
-      if (ignoreKeys && ignoreKeys.has(header)) continue
+      if (ignoreKeys && ignoreKeys.has(header)) {
+        continue
+      }
       o[header] = row[i]
     }
     return o

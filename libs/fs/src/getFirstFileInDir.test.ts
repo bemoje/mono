@@ -1,18 +1,33 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
-import { vi } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import fs from 'fs-extra'
 import { getFirstFileInDir } from './getFirstFileInDir'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 vi.mock('fs-extra')
 
 describe(getFirstFileInDir.name, () => {
   it('should return the first file in a directory', async () => {
     const mockDirents = [
-      { name: 'file1.txt', isFile: () => true },
-      { name: 'file2.txt', isFile: () => true },
-      { name: 'subdir', isFile: () => false },
+      {
+        name: 'file1.txt',
+        isFile: () => {
+          return true
+        },
+      },
+      {
+        name: 'file2.txt',
+        isFile: () => {
+          return true
+        },
+      },
+      {
+        name: 'subdir',
+        isFile: () => {
+          return false
+        },
+      },
     ]
     vi.mocked(fs.readdir).mockResolvedValue(mockDirents as never)
 
@@ -21,7 +36,14 @@ describe(getFirstFileInDir.name, () => {
   })
 
   it('should return undefined if there are no files in the directory', async () => {
-    const mockDirents = [{ name: 'subdir', isFile: () => false }]
+    const mockDirents = [
+      {
+        name: 'subdir',
+        isFile: () => {
+          return false
+        },
+      },
+    ]
     vi.mocked(fs.readdir).mockResolvedValue(mockDirents as never)
 
     const result = await getFirstFileInDir('/test-path')

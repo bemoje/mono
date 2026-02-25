@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strIsLowerCase } from './strIsLowerCase'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('strIsLowerCase', () => {
   it('example', () => {

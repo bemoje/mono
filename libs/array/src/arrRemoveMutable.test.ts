@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { arrRemoveMutable } from './arrRemoveMutable'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('arrRemoveMutable', () => {
   it('removes an element when it is present in the array', () => {

@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { mapObjectEntries } from './mapObjectEntries'
 
 describe(mapObjectEntries.name, () => {
@@ -10,7 +10,9 @@ describe(mapObjectEntries.name, () => {
       const obj = { name: 'John', age: 30, city: 'NYC' }
 
       // Transform keys to uppercase and values to strings
-      const result = mapObjectEntries(obj, (key, value) => [key.toUpperCase(), String(value)])
+      const result = mapObjectEntries(obj, (key, value) => {
+        return [key.toUpperCase(), String(value)]
+      })
 
       assert.deepStrictEqual(result, {
         NAME: 'John',
@@ -23,7 +25,9 @@ describe(mapObjectEntries.name, () => {
   describe('basic functionality', () => {
     it('should transform both keys and values', () => {
       const obj = { a: 1, b: 2, c: 3 }
-      const result = mapObjectEntries(obj, (key, value) => [`new_${key}`, value * 2])
+      const result = mapObjectEntries(obj, (key, value) => {
+        return [`new_${key}`, value * 2]
+      })
 
       expect(result).toEqual({
         new_a: 2,
@@ -34,7 +38,9 @@ describe(mapObjectEntries.name, () => {
 
     it('should handle string transformations', () => {
       const obj = { first: 'hello', second: 'world' }
-      const result = mapObjectEntries(obj, (key, value) => [key.toUpperCase(), value.toUpperCase()])
+      const result = mapObjectEntries(obj, (key, value) => {
+        return [key.toUpperCase(), value.toUpperCase()]
+      })
 
       expect(result).toEqual({
         FIRST: 'HELLO',
@@ -44,7 +50,9 @@ describe(mapObjectEntries.name, () => {
 
     it('should preserve type relationships', () => {
       const obj = { x: 10, y: 20 }
-      const result = mapObjectEntries(obj, (key, value) => [`coord_${key}`, value + 100])
+      const result = mapObjectEntries(obj, (key, value) => {
+        return [`coord_${key}`, value + 100]
+      })
 
       expect(result).toEqual({
         coord_x: 110,
@@ -56,14 +64,18 @@ describe(mapObjectEntries.name, () => {
   describe('edge cases', () => {
     it('should handle empty objects', () => {
       const obj = {}
-      const result = mapObjectEntries(obj, (key, value) => [key, value])
+      const result = mapObjectEntries(obj, (key, value) => {
+        return [key, value]
+      })
 
       expect(result).toEqual({})
     })
 
     it('should handle mixed value types', () => {
       const obj = { str: 'text', num: 42, bool: true, arr: [1, 2], obj: { nested: true } }
-      const result = mapObjectEntries(obj, (key, value) => [`type_${key}`, typeof value])
+      const result = mapObjectEntries(obj, (key, value) => {
+        return [`type_${key}`, typeof value]
+      })
 
       expect(result).toEqual({
         type_str: 'string',
@@ -78,7 +90,9 @@ describe(mapObjectEntries.name, () => {
   describe('complex transformations', () => {
     it('should handle key-value swapping', () => {
       const obj = { a: 'x', b: 'y', c: 'z' }
-      const result = mapObjectEntries(obj, (key, value) => [value, key])
+      const result = mapObjectEntries(obj, (key, value) => {
+        return [value, key]
+      })
 
       expect(result).toEqual({
         x: 'a',
@@ -89,7 +103,9 @@ describe(mapObjectEntries.name, () => {
 
     it('should handle conditional transformations', () => {
       const obj = { small: 5, medium: 15, large: 25 }
-      const result = mapObjectEntries(obj, (key, value) => [key, value > 10 ? 'big' : 'small'])
+      const result = mapObjectEntries(obj, (key, value) => {
+        return [key, value > 10 ? 'big' : 'small']
+      })
 
       expect(result).toEqual({
         small: 'small',

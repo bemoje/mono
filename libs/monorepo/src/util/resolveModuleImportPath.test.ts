@@ -1,37 +1,59 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import upath from 'upath'
+import { createCompilerHost } from 'typescript'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import fs from 'fs-extra/esm'
-import { resolveModuleName } from "typescript";
-import { createCompilerHost } from "typescript";
+import { it } from 'vitest'
+import { resolveModuleName } from 'typescript'
+import upath from 'upath'
+import { vi } from 'vitest'
 
-vi.mock('upath', () => ({
-  default: {
-    joinSafe: vi.fn((...args: string[]) => args.join('/')),
-    normalizeSafe: vi.fn((p: string) => p),
-    relative: vi.fn((from: string, to: string) => to.replace(from + '/', '')),
-  },
-}))
-vi.mock('fs-extra', () => ({
-  default: {
-    existsSync: vi.fn(() => true),
-    readJsonSync: vi.fn(() => ({ workspaces: ['libs/*'] })),
-  },
-}))
-vi.mock('fs-extra/esm', () => ({
-  default: {
-    readJsonSync: vi.fn(),
-  },
-}))
-vi.mock('onetime', () => ({
-  default: (fn: () => unknown) => fn,
-}))
-vi.mock('typescript', () => ({
-  resolveModuleName: vi.fn(),
-  createCompilerHost: vi.fn(),
-}))
+vi.mock('upath', () => {
+  return {
+    default: {
+      joinSafe: vi.fn((...args: string[]) => {
+        return args.join('/')
+      }),
+      normalizeSafe: vi.fn((p: string) => {
+        return p
+      }),
+      relative: vi.fn((from: string, to: string) => {
+        return to.replace(`${from}/`, '')
+      }),
+    },
+  }
+})
+vi.mock('fs-extra', () => {
+  return {
+    default: {
+      existsSync: vi.fn(() => {
+        return true
+      }),
+      readJsonSync: vi.fn(() => {
+        return { workspaces: ['libs/*'] }
+      }),
+    },
+  }
+})
+vi.mock('fs-extra/esm', () => {
+  return {
+    default: {
+      readJsonSync: vi.fn(),
+    },
+  }
+})
+vi.mock('onetime', () => {
+  return {
+    default: (fn: () => unknown) => {
+      return fn
+    },
+  }
+})
+vi.mock('typescript', () => {
+  return {
+    resolveModuleName: vi.fn(),
+    createCompilerHost: vi.fn(),
+  }
+})
 
 const mockFs = vi.mocked(fs)
 const mockResolveModuleName = vi.mocked(resolveModuleName)

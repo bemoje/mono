@@ -13,6 +13,8 @@
  * ```
  */
 export function strReplaceAll(input: string, replace: string, replaceWith: string, flags = 'g'): string {
-  if (!input || !replace) return input
+  if (!input || !replace) {
+    return input
+  }
   return input.replace(new RegExp(replace.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags), replaceWith)
 }

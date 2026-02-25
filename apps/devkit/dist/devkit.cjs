@@ -2382,420 +2382,6 @@ var require_source_map_support = __commonJS({
   }
 });
 
-// ../../node_modules/ansi-colors/symbols.js
-var require_symbols = __commonJS({
-  "../../node_modules/ansi-colors/symbols.js"(exports2, module2) {
-    "use strict";
-    var isHyper = typeof process !== "undefined" && process.env.TERM_PROGRAM === "Hyper";
-    var isWindows = typeof process !== "undefined" && process.platform === "win32";
-    var isLinux = typeof process !== "undefined" && process.platform === "linux";
-    var common = {
-      ballotDisabled: "\u2612",
-      ballotOff: "\u2610",
-      ballotOn: "\u2611",
-      bullet: "\u2022",
-      bulletWhite: "\u25E6",
-      fullBlock: "\u2588",
-      heart: "\u2764",
-      identicalTo: "\u2261",
-      line: "\u2500",
-      mark: "\u203B",
-      middot: "\xB7",
-      minus: "\uFF0D",
-      multiplication: "\xD7",
-      obelus: "\xF7",
-      pencilDownRight: "\u270E",
-      pencilRight: "\u270F",
-      pencilUpRight: "\u2710",
-      percent: "%",
-      pilcrow2: "\u2761",
-      pilcrow: "\xB6",
-      plusMinus: "\xB1",
-      question: "?",
-      section: "\xA7",
-      starsOff: "\u2606",
-      starsOn: "\u2605",
-      upDownArrow: "\u2195"
-    };
-    var windows = Object.assign({}, common, {
-      check: "\u221A",
-      cross: "\xD7",
-      ellipsisLarge: "...",
-      ellipsis: "...",
-      info: "i",
-      questionSmall: "?",
-      pointer: ">",
-      pointerSmall: "\xBB",
-      radioOff: "( )",
-      radioOn: "(*)",
-      warning: "\u203C"
-    });
-    var other = Object.assign({}, common, {
-      ballotCross: "\u2718",
-      check: "\u2714",
-      cross: "\u2716",
-      ellipsisLarge: "\u22EF",
-      ellipsis: "\u2026",
-      info: "\u2139",
-      questionFull: "\uFF1F",
-      questionSmall: "\uFE56",
-      pointer: isLinux ? "\u25B8" : "\u276F",
-      pointerSmall: isLinux ? "\u2023" : "\u203A",
-      radioOff: "\u25EF",
-      radioOn: "\u25C9",
-      warning: "\u26A0"
-    });
-    module2.exports = isWindows && !isHyper ? windows : other;
-    Reflect.defineProperty(module2.exports, "common", { enumerable: false, value: common });
-    Reflect.defineProperty(module2.exports, "windows", { enumerable: false, value: windows });
-    Reflect.defineProperty(module2.exports, "other", { enumerable: false, value: other });
-  }
-});
-
-// ../../node_modules/ansi-colors/index.js
-var require_ansi_colors = __commonJS({
-  "../../node_modules/ansi-colors/index.js"(exports2, module2) {
-    "use strict";
-    var isObject = /* @__PURE__ */ __name((val) => val !== null && typeof val === "object" && !Array.isArray(val), "isObject");
-    var ANSI_REGEX = /[\u001b\u009b][[\]#;?()]*(?:(?:(?:[^\W_]*;?[^\W_]*)\u0007)|(?:(?:[0-9]{1,4}(;[0-9]{0,4})*)?[~0-9=<>cf-nqrtyA-PRZ]))/g;
-    var hasColor = /* @__PURE__ */ __name(() => {
-      if (typeof process !== "undefined") {
-        return process.env.FORCE_COLOR !== "0";
-      }
-      return false;
-    }, "hasColor");
-    var create = /* @__PURE__ */ __name(() => {
-      const colors9 = {
-        enabled: hasColor(),
-        visible: true,
-        styles: {},
-        keys: {}
-      };
-      const ansi = /* @__PURE__ */ __name((style2) => {
-        let open = style2.open = `\x1B[${style2.codes[0]}m`;
-        let close = style2.close = `\x1B[${style2.codes[1]}m`;
-        let regex = style2.regex = new RegExp(`\\u001b\\[${style2.codes[1]}m`, "g");
-        style2.wrap = (input, newline) => {
-          if (input.includes(close)) input = input.replace(regex, close + open);
-          let output = open + input + close;
-          return newline ? output.replace(/\r*\n/g, `${close}$&${open}`) : output;
-        };
-        return style2;
-      }, "ansi");
-      const wrap = /* @__PURE__ */ __name((style2, input, newline) => {
-        return typeof style2 === "function" ? style2(input) : style2.wrap(input, newline);
-      }, "wrap");
-      const style = /* @__PURE__ */ __name((input, stack) => {
-        if (input === "" || input == null) return "";
-        if (colors9.enabled === false) return input;
-        if (colors9.visible === false) return "";
-        let str = "" + input;
-        let nl = str.includes("\n");
-        let n = stack.length;
-        if (n > 0 && stack.includes("unstyle")) {
-          stack = [.../* @__PURE__ */ new Set(["unstyle", ...stack])].reverse();
-        }
-        while (n-- > 0) str = wrap(colors9.styles[stack[n]], str, nl);
-        return str;
-      }, "style");
-      const define2 = /* @__PURE__ */ __name((name, codes, type) => {
-        colors9.styles[name] = ansi({ name, codes });
-        let keys = colors9.keys[type] || (colors9.keys[type] = []);
-        keys.push(name);
-        Reflect.defineProperty(colors9, name, {
-          configurable: true,
-          enumerable: true,
-          set(value) {
-            colors9.alias(name, value);
-          },
-          get() {
-            let color = /* @__PURE__ */ __name((input) => style(input, color.stack), "color");
-            Reflect.setPrototypeOf(color, colors9);
-            color.stack = this.stack ? this.stack.concat(name) : [name];
-            return color;
-          }
-        });
-      }, "define");
-      define2("reset", [0, 0], "modifier");
-      define2("bold", [1, 22], "modifier");
-      define2("dim", [2, 22], "modifier");
-      define2("italic", [3, 23], "modifier");
-      define2("underline", [4, 24], "modifier");
-      define2("inverse", [7, 27], "modifier");
-      define2("hidden", [8, 28], "modifier");
-      define2("strikethrough", [9, 29], "modifier");
-      define2("black", [30, 39], "color");
-      define2("red", [31, 39], "color");
-      define2("green", [32, 39], "color");
-      define2("yellow", [33, 39], "color");
-      define2("blue", [34, 39], "color");
-      define2("magenta", [35, 39], "color");
-      define2("cyan", [36, 39], "color");
-      define2("white", [37, 39], "color");
-      define2("gray", [90, 39], "color");
-      define2("grey", [90, 39], "color");
-      define2("bgBlack", [40, 49], "bg");
-      define2("bgRed", [41, 49], "bg");
-      define2("bgGreen", [42, 49], "bg");
-      define2("bgYellow", [43, 49], "bg");
-      define2("bgBlue", [44, 49], "bg");
-      define2("bgMagenta", [45, 49], "bg");
-      define2("bgCyan", [46, 49], "bg");
-      define2("bgWhite", [47, 49], "bg");
-      define2("blackBright", [90, 39], "bright");
-      define2("redBright", [91, 39], "bright");
-      define2("greenBright", [92, 39], "bright");
-      define2("yellowBright", [93, 39], "bright");
-      define2("blueBright", [94, 39], "bright");
-      define2("magentaBright", [95, 39], "bright");
-      define2("cyanBright", [96, 39], "bright");
-      define2("whiteBright", [97, 39], "bright");
-      define2("bgBlackBright", [100, 49], "bgBright");
-      define2("bgRedBright", [101, 49], "bgBright");
-      define2("bgGreenBright", [102, 49], "bgBright");
-      define2("bgYellowBright", [103, 49], "bgBright");
-      define2("bgBlueBright", [104, 49], "bgBright");
-      define2("bgMagentaBright", [105, 49], "bgBright");
-      define2("bgCyanBright", [106, 49], "bgBright");
-      define2("bgWhiteBright", [107, 49], "bgBright");
-      colors9.ansiRegex = ANSI_REGEX;
-      colors9.hasColor = colors9.hasAnsi = (str) => {
-        colors9.ansiRegex.lastIndex = 0;
-        return typeof str === "string" && str !== "" && colors9.ansiRegex.test(str);
-      };
-      colors9.alias = (name, color) => {
-        let fn = typeof color === "string" ? colors9[color] : color;
-        if (typeof fn !== "function") {
-          throw new TypeError("Expected alias to be the name of an existing color (string) or a function");
-        }
-        if (!fn.stack) {
-          Reflect.defineProperty(fn, "name", { value: name });
-          colors9.styles[name] = fn;
-          fn.stack = [name];
-        }
-        Reflect.defineProperty(colors9, name, {
-          configurable: true,
-          enumerable: true,
-          set(value) {
-            colors9.alias(name, value);
-          },
-          get() {
-            let color2 = /* @__PURE__ */ __name((input) => style(input, color2.stack), "color");
-            Reflect.setPrototypeOf(color2, colors9);
-            color2.stack = this.stack ? this.stack.concat(fn.stack) : fn.stack;
-            return color2;
-          }
-        });
-      };
-      colors9.theme = (custom) => {
-        if (!isObject(custom)) throw new TypeError("Expected theme to be an object");
-        for (let name of Object.keys(custom)) {
-          colors9.alias(name, custom[name]);
-        }
-        return colors9;
-      };
-      colors9.alias("unstyle", (str) => {
-        if (typeof str === "string" && str !== "") {
-          colors9.ansiRegex.lastIndex = 0;
-          return str.replace(colors9.ansiRegex, "");
-        }
-        return "";
-      });
-      colors9.alias("noop", (str) => str);
-      colors9.none = colors9.clear = colors9.noop;
-      colors9.stripColor = colors9.unstyle;
-      colors9.symbols = require_symbols();
-      colors9.define = define2;
-      return colors9;
-    }, "create");
-    module2.exports = create();
-    module2.exports.create = create;
-  }
-});
-
-// ../../node_modules/upath/build/code/upath.js
-var require_upath = __commonJS({
-  "../../node_modules/upath/build/code/upath.js"(exports2) {
-    "use strict";
-    var VERSION = "2.0.1";
-    var extraFn;
-    var extraFunctions;
-    var isFunction2;
-    var isString2;
-    var isValidExt;
-    var name;
-    var path6;
-    var propName;
-    var propValue;
-    var toUnix;
-    var upath34;
-    var slice = [].slice;
-    var indexOf = [].indexOf || function(item) {
-      for (var i = 0, l = this.length; i < l; i++) {
-        if (i in this && this[i] === item)
-          return i;
-      }
-      return -1;
-    };
-    var hasProp = {}.hasOwnProperty;
-    path6 = require("path");
-    isFunction2 = /* @__PURE__ */ __name(function(val) {
-      return typeof val === "function";
-    }, "isFunction");
-    isString2 = /* @__PURE__ */ __name(function(val) {
-      return typeof val === "string" || !!val && typeof val === "object" && Object.prototype.toString.call(val) === "[object String]";
-    }, "isString");
-    upath34 = exports2;
-    upath34.VERSION = typeof VERSION !== "undefined" && VERSION !== null ? VERSION : "NO-VERSION";
-    toUnix = /* @__PURE__ */ __name(function(p) {
-      p = p.replace(/\\/g, "/");
-      p = p.replace(/(?<!^)\/+/g, "/");
-      return p;
-    }, "toUnix");
-    for (propName in path6) {
-      propValue = path6[propName];
-      if (isFunction2(propValue)) {
-        upath34[propName] = /* @__PURE__ */ function(propName2) {
-          return function() {
-            var args, result;
-            args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-            args = args.map(function(p) {
-              if (isString2(p)) {
-                return toUnix(p);
-              } else {
-                return p;
-              }
-            });
-            result = path6[propName2].apply(path6, args);
-            if (isString2(result)) {
-              return toUnix(result);
-            } else {
-              return result;
-            }
-          };
-        }(propName);
-      } else {
-        upath34[propName] = propValue;
-      }
-    }
-    upath34.sep = "/";
-    extraFunctions = {
-      toUnix,
-      normalizeSafe: /* @__PURE__ */ __name(function(p) {
-        var result;
-        p = toUnix(p);
-        result = upath34.normalize(p);
-        if (p.startsWith("./") && !result.startsWith("./") && !result.startsWith("..")) {
-          result = "./" + result;
-        } else if (p.startsWith("//") && !result.startsWith("//")) {
-          if (p.startsWith("//./")) {
-            result = "//." + result;
-          } else {
-            result = "/" + result;
-          }
-        }
-        return result;
-      }, "normalizeSafe"),
-      normalizeTrim: /* @__PURE__ */ __name(function(p) {
-        p = upath34.normalizeSafe(p);
-        if (p.endsWith("/")) {
-          return p.slice(0, +(p.length - 2) + 1 || 9e9);
-        } else {
-          return p;
-        }
-      }, "normalizeTrim"),
-      joinSafe: /* @__PURE__ */ __name(function() {
-        var p, p0, result;
-        p = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-        result = upath34.join.apply(null, p);
-        if (p.length > 0) {
-          p0 = toUnix(p[0]);
-          if (p0.startsWith("./") && !result.startsWith("./") && !result.startsWith("..")) {
-            result = "./" + result;
-          } else if (p0.startsWith("//") && !result.startsWith("//")) {
-            if (p0.startsWith("//./")) {
-              result = "//." + result;
-            } else {
-              result = "/" + result;
-            }
-          }
-        }
-        return result;
-      }, "joinSafe"),
-      addExt: /* @__PURE__ */ __name(function(file, ext2) {
-        if (!ext2) {
-          return file;
-        } else {
-          if (ext2[0] !== ".") {
-            ext2 = "." + ext2;
-          }
-          return file + (file.endsWith(ext2) ? "" : ext2);
-        }
-      }, "addExt"),
-      trimExt: /* @__PURE__ */ __name(function(filename, ignoreExts, maxSize) {
-        var oldExt;
-        if (maxSize == null) {
-          maxSize = 7;
-        }
-        oldExt = upath34.extname(filename);
-        if (isValidExt(oldExt, ignoreExts, maxSize)) {
-          return filename.slice(0, +(filename.length - oldExt.length - 1) + 1 || 9e9);
-        } else {
-          return filename;
-        }
-      }, "trimExt"),
-      removeExt: /* @__PURE__ */ __name(function(filename, ext2) {
-        if (!ext2) {
-          return filename;
-        } else {
-          ext2 = ext2[0] === "." ? ext2 : "." + ext2;
-          if (upath34.extname(filename) === ext2) {
-            return upath34.trimExt(filename, [], ext2.length);
-          } else {
-            return filename;
-          }
-        }
-      }, "removeExt"),
-      changeExt: /* @__PURE__ */ __name(function(filename, ext2, ignoreExts, maxSize) {
-        if (maxSize == null) {
-          maxSize = 7;
-        }
-        return upath34.trimExt(filename, ignoreExts, maxSize) + (!ext2 ? "" : ext2[0] === "." ? ext2 : "." + ext2);
-      }, "changeExt"),
-      defaultExt: /* @__PURE__ */ __name(function(filename, ext2, ignoreExts, maxSize) {
-        var oldExt;
-        if (maxSize == null) {
-          maxSize = 7;
-        }
-        oldExt = upath34.extname(filename);
-        if (isValidExt(oldExt, ignoreExts, maxSize)) {
-          return filename;
-        } else {
-          return upath34.addExt(filename, ext2);
-        }
-      }, "defaultExt")
-    };
-    isValidExt = /* @__PURE__ */ __name(function(ext2, ignoreExts, maxSize) {
-      if (ignoreExts == null) {
-        ignoreExts = [];
-      }
-      return ext2 && ext2.length <= maxSize && indexOf.call(ignoreExts.map(function(e) {
-        return (e && e[0] !== "." ? "." : "") + e;
-      }), ext2) < 0;
-    }, "isValidExt");
-    for (name in extraFunctions) {
-      if (!hasProp.call(extraFunctions, name))
-        continue;
-      extraFn = extraFunctions[name];
-      if (upath34[name] !== void 0) {
-        throw new Error("path." + name + " already exists.");
-      } else {
-        upath34[name] = extraFn;
-      }
-    }
-  }
-});
-
 // ../../node_modules/dotenv/package.json
 var require_package = __commonJS({
   "../../node_modules/dotenv/package.json"(exports2, module2) {
@@ -3257,1338 +2843,234 @@ var require_cli_options = __commonJS({
   }
 });
 
-// ../../node_modules/@babel/runtime/helpers/OverloadYield.js
-var require_OverloadYield = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/OverloadYield.js"(exports2, module2) {
+// ../../node_modules/ansi-colors/symbols.js
+var require_symbols = __commonJS({
+  "../../node_modules/ansi-colors/symbols.js"(exports2, module2) {
     "use strict";
-    function _OverloadYield(e, d) {
-      this.v = e, this.k = d;
-    }
-    __name(_OverloadYield, "_OverloadYield");
-    module2.exports = _OverloadYield, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/regeneratorDefine.js
-var require_regeneratorDefine = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/regeneratorDefine.js"(exports2, module2) {
-    "use strict";
-    function _regeneratorDefine(e, r, n, t) {
-      var i = Object.defineProperty;
-      try {
-        i({}, "", {});
-      } catch (e2) {
-        i = 0;
-      }
-      module2.exports = _regeneratorDefine = /* @__PURE__ */ __name(function regeneratorDefine(e2, r2, n2, t2) {
-        function o(r3, n3) {
-          _regeneratorDefine(e2, r3, function(e3) {
-            return this._invoke(r3, n3, e3);
-          });
-        }
-        __name(o, "o");
-        r2 ? i ? i(e2, r2, {
-          value: n2,
-          enumerable: !t2,
-          configurable: !t2,
-          writable: !t2
-        }) : e2[r2] = n2 : (o("next", 0), o("throw", 1), o("return", 2));
-      }, "regeneratorDefine"), module2.exports.__esModule = true, module2.exports["default"] = module2.exports, _regeneratorDefine(e, r, n, t);
-    }
-    __name(_regeneratorDefine, "_regeneratorDefine");
-    module2.exports = _regeneratorDefine, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/regenerator.js
-var require_regenerator = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/regenerator.js"(exports2, module2) {
-    "use strict";
-    var regeneratorDefine = require_regeneratorDefine();
-    function _regenerator() {
-      var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag";
-      function i(r2, n2, o2, i2) {
-        var c2 = n2 && n2.prototype instanceof Generator ? n2 : Generator, u2 = Object.create(c2.prototype);
-        return regeneratorDefine(u2, "_invoke", function(r3, n3, o3) {
-          var i3, c3, u3, f2 = 0, p = o3 || [], y = false, G = {
-            p: 0,
-            n: 0,
-            v: e,
-            a: d,
-            f: d.bind(e, 4),
-            d: /* @__PURE__ */ __name(function d2(t2, r4) {
-              return i3 = t2, c3 = 0, u3 = e, G.n = r4, a;
-            }, "d")
-          };
-          function d(r4, n4) {
-            for (c3 = r4, u3 = n4, t = 0; !y && f2 && !o4 && t < p.length; t++) {
-              var o4, i4 = p[t], d2 = G.p, l = i4[2];
-              r4 > 3 ? (o4 = l === n4) && (u3 = i4[(c3 = i4[4]) ? 5 : (c3 = 3, 3)], i4[4] = i4[5] = e) : i4[0] <= d2 && ((o4 = r4 < 2 && d2 < i4[1]) ? (c3 = 0, G.v = n4, G.n = i4[1]) : d2 < l && (o4 = r4 < 3 || i4[0] > n4 || n4 > l) && (i4[4] = r4, i4[5] = n4, G.n = l, c3 = 0));
-            }
-            if (o4 || r4 > 1) return a;
-            throw y = true, n4;
-          }
-          __name(d, "d");
-          return function(o4, p2, l) {
-            if (f2 > 1) throw TypeError("Generator is already running");
-            for (y && 1 === p2 && d(p2, l), c3 = p2, u3 = l; (t = c3 < 2 ? e : u3) || !y; ) {
-              i3 || (c3 ? c3 < 3 ? (c3 > 1 && (G.n = -1), d(c3, u3)) : G.n = u3 : G.v = u3);
-              try {
-                if (f2 = 2, i3) {
-                  if (c3 || (o4 = "next"), t = i3[o4]) {
-                    if (!(t = t.call(i3, u3))) throw TypeError("iterator result is not an object");
-                    if (!t.done) return t;
-                    u3 = t.value, c3 < 2 && (c3 = 0);
-                  } else 1 === c3 && (t = i3["return"]) && t.call(i3), c3 < 2 && (u3 = TypeError("The iterator does not provide a '" + o4 + "' method"), c3 = 1);
-                  i3 = e;
-                } else if ((t = (y = G.n < 0) ? u3 : r3.call(n3, G)) !== a) break;
-              } catch (t2) {
-                i3 = e, c3 = 1, u3 = t2;
-              } finally {
-                f2 = 1;
-              }
-            }
-            return {
-              value: t,
-              done: y
-            };
-          };
-        }(r2, o2, i2), true), u2;
-      }
-      __name(i, "i");
-      var a = {};
-      function Generator() {
-      }
-      __name(Generator, "Generator");
-      function GeneratorFunction() {
-      }
-      __name(GeneratorFunction, "GeneratorFunction");
-      function GeneratorFunctionPrototype() {
-      }
-      __name(GeneratorFunctionPrototype, "GeneratorFunctionPrototype");
-      t = Object.getPrototypeOf;
-      var c = [][n] ? t(t([][n]())) : (regeneratorDefine(t = {}, n, function() {
-        return this;
-      }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c);
-      function f(e2) {
-        return Object.setPrototypeOf ? Object.setPrototypeOf(e2, GeneratorFunctionPrototype) : (e2.__proto__ = GeneratorFunctionPrototype, regeneratorDefine(e2, o, "GeneratorFunction")), e2.prototype = Object.create(u), e2;
-      }
-      __name(f, "f");
-      return GeneratorFunction.prototype = GeneratorFunctionPrototype, regeneratorDefine(u, "constructor", GeneratorFunctionPrototype), regeneratorDefine(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", regeneratorDefine(GeneratorFunctionPrototype, o, "GeneratorFunction"), regeneratorDefine(u), regeneratorDefine(u, o, "Generator"), regeneratorDefine(u, n, function() {
-        return this;
-      }), regeneratorDefine(u, "toString", function() {
-        return "[object Generator]";
-      }), (module2.exports = _regenerator = /* @__PURE__ */ __name(function _regenerator2() {
-        return {
-          w: i,
-          m: f
-        };
-      }, "_regenerator"), module2.exports.__esModule = true, module2.exports["default"] = module2.exports)();
-    }
-    __name(_regenerator, "_regenerator");
-    module2.exports = _regenerator, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/regeneratorAsyncIterator.js
-var require_regeneratorAsyncIterator = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/regeneratorAsyncIterator.js"(exports2, module2) {
-    "use strict";
-    var OverloadYield = require_OverloadYield();
-    var regeneratorDefine = require_regeneratorDefine();
-    function AsyncIterator2(t, e) {
-      function n(r2, o, i, f) {
-        try {
-          var c = t[r2](o), u = c.value;
-          return u instanceof OverloadYield ? e.resolve(u.v).then(function(t2) {
-            n("next", t2, i, f);
-          }, function(t2) {
-            n("throw", t2, i, f);
-          }) : e.resolve(u).then(function(t2) {
-            c.value = t2, i(c);
-          }, function(t2) {
-            return n("throw", t2, i, f);
-          });
-        } catch (t2) {
-          f(t2);
-        }
-      }
-      __name(n, "n");
-      var r;
-      this.next || (regeneratorDefine(AsyncIterator2.prototype), regeneratorDefine(AsyncIterator2.prototype, "function" == typeof Symbol && Symbol.asyncIterator || "@asyncIterator", function() {
-        return this;
-      })), regeneratorDefine(this, "_invoke", function(t2, o, i) {
-        function f() {
-          return new e(function(e2, r2) {
-            n(t2, i, e2, r2);
-          });
-        }
-        __name(f, "f");
-        return r = r ? r.then(f, f) : f();
-      }, true);
-    }
-    __name(AsyncIterator2, "AsyncIterator");
-    module2.exports = AsyncIterator2, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/regeneratorAsyncGen.js
-var require_regeneratorAsyncGen = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/regeneratorAsyncGen.js"(exports2, module2) {
-    "use strict";
-    var regenerator = require_regenerator();
-    var regeneratorAsyncIterator = require_regeneratorAsyncIterator();
-    function _regeneratorAsyncGen(r, e, t, o, n) {
-      return new regeneratorAsyncIterator(regenerator().w(r, e, t, o), n || Promise);
-    }
-    __name(_regeneratorAsyncGen, "_regeneratorAsyncGen");
-    module2.exports = _regeneratorAsyncGen, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/regeneratorAsync.js
-var require_regeneratorAsync = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/regeneratorAsync.js"(exports2, module2) {
-    "use strict";
-    var regeneratorAsyncGen = require_regeneratorAsyncGen();
-    function _regeneratorAsync(n, e, r, t, o) {
-      var a = regeneratorAsyncGen(n, e, r, t, o);
-      return a.next().then(function(n2) {
-        return n2.done ? n2.value : a.next();
-      });
-    }
-    __name(_regeneratorAsync, "_regeneratorAsync");
-    module2.exports = _regeneratorAsync, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/regeneratorKeys.js
-var require_regeneratorKeys = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/regeneratorKeys.js"(exports2, module2) {
-    "use strict";
-    function _regeneratorKeys(e) {
-      var n = Object(e), r = [];
-      for (var t in n) r.unshift(t);
-      return /* @__PURE__ */ __name(function e2() {
-        for (; r.length; ) if ((t = r.pop()) in n) return e2.value = t, e2.done = false, e2;
-        return e2.done = true, e2;
-      }, "e");
-    }
-    __name(_regeneratorKeys, "_regeneratorKeys");
-    module2.exports = _regeneratorKeys, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/typeof.js
-var require_typeof = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/typeof.js"(exports2, module2) {
-    "use strict";
-    function _typeof(o) {
-      "@babel/helpers - typeof";
-      return module2.exports = _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-        return typeof o2;
-      } : function(o2) {
-        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-      }, module2.exports.__esModule = true, module2.exports["default"] = module2.exports, _typeof(o);
-    }
-    __name(_typeof, "_typeof");
-    module2.exports = _typeof, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/regeneratorValues.js
-var require_regeneratorValues = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/regeneratorValues.js"(exports2, module2) {
-    "use strict";
-    var _typeof = require_typeof()["default"];
-    function _regeneratorValues(e) {
-      if (null != e) {
-        var t = e["function" == typeof Symbol && Symbol.iterator || "@@iterator"], r = 0;
-        if (t) return t.call(e);
-        if ("function" == typeof e.next) return e;
-        if (!isNaN(e.length)) return {
-          next: /* @__PURE__ */ __name(function next() {
-            return e && r >= e.length && (e = void 0), {
-              value: e && e[r++],
-              done: !e
-            };
-          }, "next")
-        };
-      }
-      throw new TypeError(_typeof(e) + " is not iterable");
-    }
-    __name(_regeneratorValues, "_regeneratorValues");
-    module2.exports = _regeneratorValues, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/regeneratorRuntime.js
-var require_regeneratorRuntime = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/regeneratorRuntime.js"(exports2, module2) {
-    "use strict";
-    var OverloadYield = require_OverloadYield();
-    var regenerator = require_regenerator();
-    var regeneratorAsync = require_regeneratorAsync();
-    var regeneratorAsyncGen = require_regeneratorAsyncGen();
-    var regeneratorAsyncIterator = require_regeneratorAsyncIterator();
-    var regeneratorKeys = require_regeneratorKeys();
-    var regeneratorValues = require_regeneratorValues();
-    function _regeneratorRuntime() {
-      "use strict";
-      var r = regenerator(), e = r.m(_regeneratorRuntime), t = (Object.getPrototypeOf ? Object.getPrototypeOf(e) : e.__proto__).constructor;
-      function n(r2) {
-        var e2 = "function" == typeof r2 && r2.constructor;
-        return !!e2 && (e2 === t || "GeneratorFunction" === (e2.displayName || e2.name));
-      }
-      __name(n, "n");
-      var o = {
-        "throw": 1,
-        "return": 2,
-        "break": 3,
-        "continue": 3
-      };
-      function a(r2) {
-        var e2, t2;
-        return function(n2) {
-          e2 || (e2 = {
-            stop: /* @__PURE__ */ __name(function stop() {
-              return t2(n2.a, 2);
-            }, "stop"),
-            "catch": /* @__PURE__ */ __name(function _catch() {
-              return n2.v;
-            }, "_catch"),
-            abrupt: /* @__PURE__ */ __name(function abrupt(r3, e3) {
-              return t2(n2.a, o[r3], e3);
-            }, "abrupt"),
-            delegateYield: /* @__PURE__ */ __name(function delegateYield(r3, o2, a2) {
-              return e2.resultName = o2, t2(n2.d, regeneratorValues(r3), a2);
-            }, "delegateYield"),
-            finish: /* @__PURE__ */ __name(function finish(r3) {
-              return t2(n2.f, r3);
-            }, "finish")
-          }, t2 = /* @__PURE__ */ __name(function t3(r3, _t, o2) {
-            n2.p = e2.prev, n2.n = e2.next;
-            try {
-              return r3(_t, o2);
-            } finally {
-              e2.next = n2.n;
-            }
-          }, "t")), e2.resultName && (e2[e2.resultName] = n2.v, e2.resultName = void 0), e2.sent = n2.v, e2.next = n2.n;
-          try {
-            return r2.call(this, e2);
-          } finally {
-            n2.p = e2.prev, n2.n = e2.next;
-          }
-        };
-      }
-      __name(a, "a");
-      return (module2.exports = _regeneratorRuntime = /* @__PURE__ */ __name(function _regeneratorRuntime2() {
-        return {
-          wrap: /* @__PURE__ */ __name(function wrap(e2, t2, n2, o2) {
-            return r.w(a(e2), t2, n2, o2 && o2.reverse());
-          }, "wrap"),
-          isGeneratorFunction: n,
-          mark: r.m,
-          awrap: /* @__PURE__ */ __name(function awrap(r2, e2) {
-            return new OverloadYield(r2, e2);
-          }, "awrap"),
-          AsyncIterator: regeneratorAsyncIterator,
-          async: /* @__PURE__ */ __name(function async(r2, e2, t2, o2, u) {
-            return (n(e2) ? regeneratorAsyncGen : regeneratorAsync)(a(r2), e2, t2, o2, u);
-          }, "async"),
-          keys: regeneratorKeys,
-          values: regeneratorValues
-        };
-      }, "_regeneratorRuntime"), module2.exports.__esModule = true, module2.exports["default"] = module2.exports)();
-    }
-    __name(_regeneratorRuntime, "_regeneratorRuntime");
-    module2.exports = _regeneratorRuntime, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/regenerator/index.js
-var require_regenerator2 = __commonJS({
-  "../../node_modules/@babel/runtime/regenerator/index.js"(exports2, module2) {
-    "use strict";
-    var runtime = require_regeneratorRuntime()();
-    module2.exports = runtime;
-    try {
-      regeneratorRuntime = runtime;
-    } catch (accidentalStrictMode) {
-      if (typeof globalThis === "object") {
-        globalThis.regeneratorRuntime = runtime;
-      } else {
-        Function("r", "regeneratorRuntime = r")(runtime);
-      }
-    }
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/toPrimitive.js
-var require_toPrimitive = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/toPrimitive.js"(exports2, module2) {
-    "use strict";
-    var _typeof = require_typeof()["default"];
-    function toPrimitive(t, r) {
-      if ("object" != _typeof(t) || !t) return t;
-      var e = t[Symbol.toPrimitive];
-      if (void 0 !== e) {
-        var i = e.call(t, r || "default");
-        if ("object" != _typeof(i)) return i;
-        throw new TypeError("@@toPrimitive must return a primitive value.");
-      }
-      return ("string" === r ? String : Number)(t);
-    }
-    __name(toPrimitive, "toPrimitive");
-    module2.exports = toPrimitive, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/toPropertyKey.js
-var require_toPropertyKey = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/toPropertyKey.js"(exports2, module2) {
-    "use strict";
-    var _typeof = require_typeof()["default"];
-    var toPrimitive = require_toPrimitive();
-    function toPropertyKey(t) {
-      var i = toPrimitive(t, "string");
-      return "symbol" == _typeof(i) ? i : i + "";
-    }
-    __name(toPropertyKey, "toPropertyKey");
-    module2.exports = toPropertyKey, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/defineProperty.js
-var require_defineProperty = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/defineProperty.js"(exports2, module2) {
-    "use strict";
-    var toPropertyKey = require_toPropertyKey();
-    function _defineProperty(e, r, t) {
-      return (r = toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
-        value: t,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      }) : e[r] = t, e;
-    }
-    __name(_defineProperty, "_defineProperty");
-    module2.exports = _defineProperty, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/arrayLikeToArray.js
-var require_arrayLikeToArray = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/arrayLikeToArray.js"(exports2, module2) {
-    "use strict";
-    function _arrayLikeToArray(r, a) {
-      (null == a || a > r.length) && (a = r.length);
-      for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
-      return n;
-    }
-    __name(_arrayLikeToArray, "_arrayLikeToArray");
-    module2.exports = _arrayLikeToArray, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/arrayWithoutHoles.js
-var require_arrayWithoutHoles = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/arrayWithoutHoles.js"(exports2, module2) {
-    "use strict";
-    var arrayLikeToArray = require_arrayLikeToArray();
-    function _arrayWithoutHoles(r) {
-      if (Array.isArray(r)) return arrayLikeToArray(r);
-    }
-    __name(_arrayWithoutHoles, "_arrayWithoutHoles");
-    module2.exports = _arrayWithoutHoles, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/iterableToArray.js
-var require_iterableToArray = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/iterableToArray.js"(exports2, module2) {
-    "use strict";
-    function _iterableToArray(r) {
-      if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r);
-    }
-    __name(_iterableToArray, "_iterableToArray");
-    module2.exports = _iterableToArray, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js
-var require_unsupportedIterableToArray = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js"(exports2, module2) {
-    "use strict";
-    var arrayLikeToArray = require_arrayLikeToArray();
-    function _unsupportedIterableToArray(r, a) {
-      if (r) {
-        if ("string" == typeof r) return arrayLikeToArray(r, a);
-        var t = {}.toString.call(r).slice(8, -1);
-        return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? arrayLikeToArray(r, a) : void 0;
-      }
-    }
-    __name(_unsupportedIterableToArray, "_unsupportedIterableToArray");
-    module2.exports = _unsupportedIterableToArray, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/nonIterableSpread.js
-var require_nonIterableSpread = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/nonIterableSpread.js"(exports2, module2) {
-    "use strict";
-    function _nonIterableSpread() {
-      throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-    }
-    __name(_nonIterableSpread, "_nonIterableSpread");
-    module2.exports = _nonIterableSpread, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/toConsumableArray.js
-var require_toConsumableArray = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/toConsumableArray.js"(exports2, module2) {
-    "use strict";
-    var arrayWithoutHoles = require_arrayWithoutHoles();
-    var iterableToArray = require_iterableToArray();
-    var unsupportedIterableToArray = require_unsupportedIterableToArray();
-    var nonIterableSpread = require_nonIterableSpread();
-    function _toConsumableArray(r) {
-      return arrayWithoutHoles(r) || iterableToArray(r) || unsupportedIterableToArray(r) || nonIterableSpread();
-    }
-    __name(_toConsumableArray, "_toConsumableArray");
-    module2.exports = _toConsumableArray, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/iter-tools/impls/not-undefined/not-undefined.js
-var require_not_undefined = __commonJS({
-  "../../node_modules/iter-tools/impls/not-undefined/not-undefined.js"(exports2) {
-    "use strict";
-    function notUndefined(value) {
-      return typeof value !== "undefined";
-    }
-    __name(notUndefined, "notUndefined");
-    exports2.notUndefined = notUndefined;
-  }
-});
-
-// ../../node_modules/iter-tools/impls/is-iterable/is-iterable.js
-var require_is_iterable = __commonJS({
-  "../../node_modules/iter-tools/impls/is-iterable/is-iterable.js"(exports2) {
-    "use strict";
-    var _require = require_not_undefined();
-    var notUndefined = _require.notUndefined;
-    function isIterable(value) {
-      return value != null && notUndefined(value[Symbol.iterator]);
-    }
-    __name(isIterable, "isIterable");
-    exports2.isIterable = isIterable;
-  }
-});
-
-// ../../node_modules/iter-tools/impls/is-loopable/is-loopable.js
-var require_is_loopable = __commonJS({
-  "../../node_modules/iter-tools/impls/is-loopable/is-loopable.js"(exports2) {
-    "use strict";
-    exports2.isLoopable = require_is_iterable().isIterable;
-  }
-});
-
-// ../../node_modules/iter-tools/impls/is-wrappable/is-wrappable.js
-var require_is_wrappable = __commonJS({
-  "../../node_modules/iter-tools/impls/is-wrappable/is-wrappable.js"(exports2) {
-    "use strict";
-    var _require = require_not_undefined();
-    var notUndefined = _require.notUndefined;
-    function isWrappable(value) {
-      return value == null || notUndefined(value[Symbol.iterator]);
-    }
-    __name(isWrappable, "isWrappable");
-    exports2.isWrappable = isWrappable;
-  }
-});
-
-// ../../node_modules/iter-tools/internal/wrap.js
-var require_wrap = __commonJS({
-  "../../node_modules/iter-tools/internal/wrap.js"(exports2) {
-    "use strict";
-    var _regeneratorRuntime = require_regenerator2();
-    var _marked = /* @__PURE__ */ _regeneratorRuntime.mark(wrap);
-    var _marked2 = /* @__PURE__ */ _regeneratorRuntime.mark(nullableWrap);
-    function wrap(source) {
-      return _regeneratorRuntime.wrap(/* @__PURE__ */ __name(function wrap$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              return _context.delegateYield(source, "t0", 1);
-            case 1:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, "wrap$"), _marked);
-    }
-    __name(wrap, "wrap");
-    exports2.wrap = wrap;
-    function nullableWrap(source) {
-      return _regeneratorRuntime.wrap(/* @__PURE__ */ __name(function nullableWrap$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              if (!(source != null)) {
-                _context2.next = 2;
-                break;
-              }
-              return _context2.delegateYield(source, "t0", 2);
-            case 2:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, "nullableWrap$"), _marked2);
-    }
-    __name(nullableWrap, "nullableWrap");
-    exports2.nullableWrap = nullableWrap;
-  }
-});
-
-// ../../node_modules/iter-tools/internal/curry.js
-var require_curry = __commonJS({
-  "../../node_modules/iter-tools/internal/curry.js"(exports2) {
-    "use strict";
-    var _toConsumableArray = require_toConsumableArray();
-    function curry(fn) {
-      var expectedArgsLength = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : fn.length;
-      var appliedArgs = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : [];
-      return function() {
-        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-        if (expectedArgsLength <= args.length) {
-          return fn.apply(void 0, _toConsumableArray(appliedArgs).concat(args));
-        }
-        return curry(fn, expectedArgsLength - args.length, [].concat(_toConsumableArray(appliedArgs), args));
-      };
-    }
-    __name(curry, "curry");
-    exports2.curry = curry;
-    function variadicCurryWithValidationInner(config, args) {
-      var fn = config.fn, validateArgs = config.validateArgs, variadic = config.variadic, reduces = config.reduces, growRight = config.growRight, minArgs = config.minArgs, maxArgs = config.maxArgs, isIterable = config.isIterable, iterableType = config.iterableType, applyOnIterableArgs = config.applyOnIterableArgs, IterableClass = config.IterableClass;
-      if (args.length > minArgs) {
-        var argsIterable = true;
-        var iterableArgsStart = variadic ? args.findIndex(function(arg, i2) {
-          return isIterable(arg) && i2 >= minArgs;
-        }) : Math.min(maxArgs, args.length - 1);
-        var iterableArgsEnd = variadic ? args.length : iterableArgsStart + 1;
-        if (variadic) {
-          for (var i = iterableArgsStart; i < args.length; i++) {
-            argsIterable = argsIterable && isIterable(args[i]);
-          }
-        } else {
-          argsIterable = isIterable(args[iterableArgsStart]);
-        }
-        if (args.length > maxArgs && (iterableArgsStart === -1 || !argsIterable)) {
-          var iterableTypeOrNames = variadic ? "...".concat(iterableType, "s") : iterableType;
-          var baseMessage = "".concat(fn.name, " takes up to ").concat(maxArgs, " arguments, followed by ").concat(iterableTypeOrNames, ". ") + "You already passed ".concat(args.length, " arguments");
-          if (variadic) {
-            throw new Error("".concat(baseMessage, " and the following arguments were not all ").concat(iterableType, "s"));
-          } else {
-            throw new Error("".concat(baseMessage, " and the last argument was not ").concat(iterableType));
-          }
-        }
-        if (iterableArgsStart >= 0 && argsIterable) {
-          for (var _i = iterableArgsStart; _i < iterableArgsEnd; _i++) {
-            args[_i] = applyOnIterableArgs(args[_i]);
-          }
-          var iterablesArg = variadic ? args.slice(iterableArgsStart) : args[iterableArgsStart];
-          args.splice(iterableArgsStart);
-          if (!growRight) {
-            args.reverse();
-          }
-          args.unshift(iterablesArg);
-          validateArgs(args);
-          return reduces ? fn.apply(void 0, _toConsumableArray(args)) : new IterableClass(fn, args);
-        } else {
-        }
-      }
-      return variadicCurryWithValidation(config, args);
-    }
-    __name(variadicCurryWithValidationInner, "variadicCurryWithValidationInner");
-    function variadicCurryWithValidation(config) {
-      var previousArgs = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : [];
-      return function() {
-        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          args[_key2] = arguments[_key2];
-        }
-        if (args.length === 0) {
-          throw new Error("Cannot make a partial application with no arguments");
-        }
-        args.unshift.apply(args, _toConsumableArray(previousArgs));
-        return variadicCurryWithValidationInner(config, args);
-      };
-    }
-    __name(variadicCurryWithValidation, "variadicCurryWithValidation");
-    exports2.variadicCurryWithValidation = variadicCurryWithValidation;
-  }
-});
-
-// ../../node_modules/iter-tools/internal/symbols.js
-var require_symbols2 = __commonJS({
-  "../../node_modules/iter-tools/internal/symbols.js"(exports2) {
-    "use strict";
-    var _ = Symbol["for"]("_");
-    exports2._ = _;
-    var __iterate = Symbol("__iterate");
-    exports2.__iterate = __iterate;
-    var split = Symbol("split");
-    exports2.split = split;
-  }
-});
-
-// ../../node_modules/iter-tools/internal/iterable.js
-var require_iterable = __commonJS({
-  "../../node_modules/iter-tools/internal/iterable.js"(exports2) {
-    "use strict";
-    var _defineProperty = require_defineProperty();
-    var _toConsumableArray = require_toConsumableArray();
-    var _Object$assign;
-    var _require = require_is_iterable();
-    var isIterable = _require.isIterable;
-    var _require2 = require_is_loopable();
-    var isLoopable = _require2.isLoopable;
-    var _require3 = require_is_wrappable();
-    var isWrappable = _require3.isWrappable;
-    var _require4 = require_wrap();
-    var wrap = _require4.nullableWrap;
-    var _require5 = require_curry();
-    var variadicCurryWithValidation = _require5.variadicCurryWithValidation;
-    var _require6 = require_symbols2();
-    var _ = _require6._;
-    var __iterate = _require6.__iterate;
-    exports2.wrap = wrap;
-    exports2.isIterable = isIterable;
-    exports2.isLoopable = isLoopable;
-    exports2.isWrappable = isWrappable;
-    function ensureIterable(value) {
-      if (!isWrappable(value)) {
-        if (typeof value.next === "function") {
-          throw new TypeError("iter-tools received a value that looked like an iterator but was not iterable. Get help fixing this: https://github.com/iter-tools/iter-tools/wiki/Making-iterators-iterable");
-        } else throw new TypeError("Expected an iterable, null, or undefined");
-      } else if (isIterable(value)) {
-        return value;
-      } else {
-        return wrap(value);
-      }
-    }
-    __name(ensureIterable, "ensureIterable");
-    exports2.ensureIterable = ensureIterable;
-    function callReturn(iterator) {
-      if ("return" in iterator) iterator["return"]();
-    }
-    __name(callReturn, "callReturn");
-    exports2.callReturn = callReturn;
-    function BaseIterableIterator(fn, args) {
-      this[_] = {
-        fn,
-        args,
-        staticIterator: null
-      };
-    }
-    __name(BaseIterableIterator, "BaseIterableIterator");
-    exports2.BaseIterableIterator = BaseIterableIterator;
-    Object.assign(BaseIterableIterator.prototype, (_Object$assign = {
-      constructor: BaseIterableIterator
-    }, _defineProperty(_Object$assign, __iterate, function() {
-      var _this$_ = this[_], fn = _this$_.fn, args = _this$_.args;
-      return fn.apply(void 0, _toConsumableArray(args));
-    }), _defineProperty(_Object$assign, "next", /* @__PURE__ */ __name(function next() {
-      var this_ = this[_];
-      this_.staticIterator = this_.staticIterator || this[__iterate]();
-      return this_.staticIterator.next();
-    }, "next")), _defineProperty(_Object$assign, "return", /* @__PURE__ */ __name(function _return(value) {
-      var this_ = this[_];
-      this_.staticIterator = this_.staticIterator || this[__iterate]();
-      return this_.staticIterator["return"](value);
-    }, "_return")), _defineProperty(_Object$assign, "throw", /* @__PURE__ */ __name(function _throw(error) {
-      var this_ = this[_];
-      this_.staticIterator = this_.staticIterator || this[__iterate]();
-      return this_.staticIterator["throw"](error);
-    }, "_throw")), _Object$assign));
-    function IterableIterator() {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-      BaseIterableIterator.apply(this, args);
-    }
-    __name(IterableIterator, "IterableIterator");
-    exports2.IterableIterator = IterableIterator;
-    IterableIterator.prototype = Object.assign(Object.create(BaseIterableIterator.prototype), _defineProperty({
-      constructor: IterableIterator
-    }, Symbol.iterator, function() {
-      return this[__iterate]();
-    }));
-    function makeFunctionConfig(fn) {
-      var fnConfig = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-      var _fnConfig$validateArg = fnConfig.validateArgs, validateArgs = _fnConfig$validateArg === void 0 ? function(_2) {
-      } : _fnConfig$validateArg, _fnConfig$variadic = fnConfig.variadic, variadic = _fnConfig$variadic === void 0 ? false : _fnConfig$variadic, _fnConfig$reduces = fnConfig.reduces, reduces = _fnConfig$reduces === void 0 ? false : _fnConfig$reduces, _fnConfig$growRight = fnConfig.growRight, growRight = _fnConfig$growRight === void 0 ? false : _fnConfig$growRight, _fnConfig$minArgs = fnConfig.minArgs, minArgs = _fnConfig$minArgs === void 0 ? fn.length - 1 : _fnConfig$minArgs, _fnConfig$maxArgs = fnConfig.maxArgs, maxArgs = _fnConfig$maxArgs === void 0 ? fn.length - 1 : _fnConfig$maxArgs, _fnConfig$applyOnIter = fnConfig.applyOnIterableArgs, applyOnIterableArgs = _fnConfig$applyOnIter === void 0 ? ensureIterable : _fnConfig$applyOnIter;
-      return {
-        fn,
-        validateArgs,
-        variadic,
-        reduces,
-        growRight,
-        minArgs,
-        maxArgs,
-        isIterable: isWrappable,
-        iterableType: "iterable",
-        applyOnIterableArgs,
-        IterableClass: IterableIterator
-      };
-    }
-    __name(makeFunctionConfig, "makeFunctionConfig");
-    function cache(it) {
-      return _toConsumableArray(it);
-    }
-    __name(cache, "cache");
-    exports2.cache = cache;
-    function wrapWithIterableIterator(fn) {
-      var _ref = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, _ref$validateArgs = _ref.validateArgs, validateArgs = _ref$validateArgs === void 0 ? function(_2) {
-        return _2;
-      } : _ref$validateArgs;
-      return function() {
-        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          args[_key2] = arguments[_key2];
-        }
-        validateArgs(args);
-        return new IterableIterator(fn, args);
-      };
-    }
-    __name(wrapWithIterableIterator, "wrapWithIterableIterator");
-    exports2.wrapWithIterableIterator = wrapWithIterableIterator;
-    var iterableCurry = /* @__PURE__ */ __name(function iterableCurry2(fn, config) {
-      return variadicCurryWithValidation(makeFunctionConfig(fn, config));
-    }, "iterableCurry");
-    exports2.iterableCurry = iterableCurry;
-  }
-});
-
-// ../../node_modules/iter-tools/impls/$filter/filter.js
-var require_filter = __commonJS({
-  "../../node_modules/iter-tools/impls/$filter/filter.js"(exports2) {
-    "use strict";
-    var _regeneratorRuntime = require_regenerator2();
-    var _marked = /* @__PURE__ */ _regeneratorRuntime.mark(__filter);
-    function _createForOfIteratorHelper(o, allowArrayLike) {
-      var it;
-      if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-        if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-          if (it) o = it;
-          var i = 0;
-          var F = /* @__PURE__ */ __name(function F2() {
-          }, "F");
-          return { s: F, n: /* @__PURE__ */ __name(function n() {
-            if (i >= o.length) return { done: true };
-            return { done: false, value: o[i++] };
-          }, "n"), e: /* @__PURE__ */ __name(function e(_e) {
-            throw _e;
-          }, "e"), f: F };
-        }
-        throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-      }
-      var normalCompletion = true, didErr = false, err;
-      return { s: /* @__PURE__ */ __name(function s() {
-        it = o[Symbol.iterator]();
-      }, "s"), n: /* @__PURE__ */ __name(function n() {
-        var step = it.next();
-        normalCompletion = step.done;
-        return step;
-      }, "n"), e: /* @__PURE__ */ __name(function e(_e2) {
-        didErr = true;
-        err = _e2;
-      }, "e"), f: /* @__PURE__ */ __name(function f() {
-        try {
-          if (!normalCompletion && it["return"] != null) it["return"]();
-        } finally {
-          if (didErr) throw err;
-        }
-      }, "f") };
-    }
-    __name(_createForOfIteratorHelper, "_createForOfIteratorHelper");
-    function _unsupportedIterableToArray(o, minLen) {
-      if (!o) return;
-      if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-      var n = Object.prototype.toString.call(o).slice(8, -1);
-      if (n === "Object" && o.constructor) n = o.constructor.name;
-      if (n === "Map" || n === "Set") return Array.from(o);
-      if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-    }
-    __name(_unsupportedIterableToArray, "_unsupportedIterableToArray");
-    function _arrayLikeToArray(arr, len) {
-      if (len == null || len > arr.length) len = arr.length;
-      for (var i = 0, arr2 = new Array(len); i < len; i++) {
-        arr2[i] = arr[i];
-      }
-      return arr2;
-    }
-    __name(_arrayLikeToArray, "_arrayLikeToArray");
-    var _require = require_iterable();
-    var iterableCurry = _require.iterableCurry;
-    function __filter(source, predicate) {
-      var c, _iterator, _step, value;
-      return _regeneratorRuntime.wrap(/* @__PURE__ */ __name(function __filter$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              c = 0;
-              _iterator = _createForOfIteratorHelper(source);
-              _context.prev = 2;
-              _iterator.s();
-            case 4:
-              if ((_step = _iterator.n()).done) {
-                _context.next = 11;
-                break;
-              }
-              value = _step.value;
-              if (!predicate(value, c++)) {
-                _context.next = 9;
-                break;
-              }
-              _context.next = 9;
-              return value;
-            case 9:
-              _context.next = 4;
-              break;
-            case 11:
-              _context.next = 16;
-              break;
-            case 13:
-              _context.prev = 13;
-              _context.t0 = _context["catch"](2);
-              _iterator.e(_context.t0);
-            case 16:
-              _context.prev = 16;
-              _iterator.f();
-              return _context.finish(16);
-            case 19:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, "__filter$"), _marked, null, [[2, 13, 16, 19]]);
-    }
-    __name(__filter, "__filter");
-    exports2.__filter = __filter;
-    var filter2 = /* @__PURE__ */ iterableCurry(__filter);
-    exports2.filter = filter2;
-  }
-});
-
-// ../../node_modules/iter-tools/methods/filter.js
-var require_filter2 = __commonJS({
-  "../../node_modules/iter-tools/methods/filter.js"(exports2, module2) {
-    "use strict";
-    module2.exports = require_filter().filter;
-  }
-});
-
-// ../../node_modules/iter-tools/methods/is-iterable.js
-var require_is_iterable2 = __commonJS({
-  "../../node_modules/iter-tools/methods/is-iterable.js"(exports2, module2) {
-    "use strict";
-    module2.exports = require_is_iterable().isIterable;
-  }
-});
-
-// ../../node_modules/iter-tools/impls/$map/map.js
-var require_map = __commonJS({
-  "../../node_modules/iter-tools/impls/$map/map.js"(exports2) {
-    "use strict";
-    var _regeneratorRuntime = require_regenerator2();
-    var _marked = /* @__PURE__ */ _regeneratorRuntime.mark(__map);
-    function _createForOfIteratorHelper(o, allowArrayLike) {
-      var it;
-      if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-        if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-          if (it) o = it;
-          var i = 0;
-          var F = /* @__PURE__ */ __name(function F2() {
-          }, "F");
-          return { s: F, n: /* @__PURE__ */ __name(function n() {
-            if (i >= o.length) return { done: true };
-            return { done: false, value: o[i++] };
-          }, "n"), e: /* @__PURE__ */ __name(function e(_e) {
-            throw _e;
-          }, "e"), f: F };
-        }
-        throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-      }
-      var normalCompletion = true, didErr = false, err;
-      return { s: /* @__PURE__ */ __name(function s() {
-        it = o[Symbol.iterator]();
-      }, "s"), n: /* @__PURE__ */ __name(function n() {
-        var step = it.next();
-        normalCompletion = step.done;
-        return step;
-      }, "n"), e: /* @__PURE__ */ __name(function e(_e2) {
-        didErr = true;
-        err = _e2;
-      }, "e"), f: /* @__PURE__ */ __name(function f() {
-        try {
-          if (!normalCompletion && it["return"] != null) it["return"]();
-        } finally {
-          if (didErr) throw err;
-        }
-      }, "f") };
-    }
-    __name(_createForOfIteratorHelper, "_createForOfIteratorHelper");
-    function _unsupportedIterableToArray(o, minLen) {
-      if (!o) return;
-      if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-      var n = Object.prototype.toString.call(o).slice(8, -1);
-      if (n === "Object" && o.constructor) n = o.constructor.name;
-      if (n === "Map" || n === "Set") return Array.from(o);
-      if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-    }
-    __name(_unsupportedIterableToArray, "_unsupportedIterableToArray");
-    function _arrayLikeToArray(arr, len) {
-      if (len == null || len > arr.length) len = arr.length;
-      for (var i = 0, arr2 = new Array(len); i < len; i++) {
-        arr2[i] = arr[i];
-      }
-      return arr2;
-    }
-    __name(_arrayLikeToArray, "_arrayLikeToArray");
-    var _require = require_iterable();
-    var iterableCurry = _require.iterableCurry;
-    function __map(source, func) {
-      var c, _iterator, _step, value;
-      return _regeneratorRuntime.wrap(/* @__PURE__ */ __name(function __map$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              c = 0;
-              _iterator = _createForOfIteratorHelper(source);
-              _context.prev = 2;
-              _iterator.s();
-            case 4:
-              if ((_step = _iterator.n()).done) {
-                _context.next = 10;
-                break;
-              }
-              value = _step.value;
-              _context.next = 8;
-              return func(value, c++);
-            case 8:
-              _context.next = 4;
-              break;
-            case 10:
-              _context.next = 15;
-              break;
-            case 12:
-              _context.prev = 12;
-              _context.t0 = _context["catch"](2);
-              _iterator.e(_context.t0);
-            case 15:
-              _context.prev = 15;
-              _iterator.f();
-              return _context.finish(15);
-            case 18:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, "__map$"), _marked, null, [[2, 12, 15, 18]]);
-    }
-    __name(__map, "__map");
-    exports2.__map = __map;
-    var map3 = /* @__PURE__ */ iterableCurry(__map);
-    exports2.map = map3;
-  }
-});
-
-// ../../node_modules/iter-tools/methods/map.js
-var require_map2 = __commonJS({
-  "../../node_modules/iter-tools/methods/map.js"(exports2, module2) {
-    "use strict";
-    module2.exports = require_map().map;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/isNativeReflectConstruct.js
-var require_isNativeReflectConstruct = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/isNativeReflectConstruct.js"(exports2, module2) {
-    "use strict";
-    function _isNativeReflectConstruct() {
-      try {
-        var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
-        }));
-      } catch (t2) {
-      }
-      return (module2.exports = _isNativeReflectConstruct = /* @__PURE__ */ __name(function _isNativeReflectConstruct2() {
-        return !!t;
-      }, "_isNativeReflectConstruct"), module2.exports.__esModule = true, module2.exports["default"] = module2.exports)();
-    }
-    __name(_isNativeReflectConstruct, "_isNativeReflectConstruct");
-    module2.exports = _isNativeReflectConstruct, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/setPrototypeOf.js
-var require_setPrototypeOf = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/setPrototypeOf.js"(exports2, module2) {
-    "use strict";
-    function _setPrototypeOf(t, e) {
-      return module2.exports = _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function(t2, e2) {
-        return t2.__proto__ = e2, t2;
-      }, module2.exports.__esModule = true, module2.exports["default"] = module2.exports, _setPrototypeOf(t, e);
-    }
-    __name(_setPrototypeOf, "_setPrototypeOf");
-    module2.exports = _setPrototypeOf, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/construct.js
-var require_construct = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/construct.js"(exports2, module2) {
-    "use strict";
-    var isNativeReflectConstruct = require_isNativeReflectConstruct();
-    var setPrototypeOf = require_setPrototypeOf();
-    function _construct(t, e, r) {
-      if (isNativeReflectConstruct()) return Reflect.construct.apply(null, arguments);
-      var o = [null];
-      o.push.apply(o, e);
-      var p = new (t.bind.apply(t, o))();
-      return r && setPrototypeOf(p, r.prototype), p;
-    }
-    __name(_construct, "_construct");
-    module2.exports = _construct, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/classCallCheck.js
-var require_classCallCheck = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/classCallCheck.js"(exports2, module2) {
-    "use strict";
-    function _classCallCheck(a, n) {
-      if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function");
-    }
-    __name(_classCallCheck, "_classCallCheck");
-    module2.exports = _classCallCheck, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/@babel/runtime/helpers/createClass.js
-var require_createClass = __commonJS({
-  "../../node_modules/@babel/runtime/helpers/createClass.js"(exports2, module2) {
-    "use strict";
-    var toPropertyKey = require_toPropertyKey();
-    function _defineProperties(e, r) {
-      for (var t = 0; t < r.length; t++) {
-        var o = r[t];
-        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, toPropertyKey(o.key), o);
-      }
-    }
-    __name(_defineProperties, "_defineProperties");
-    function _createClass(e, r, t) {
-      return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", {
-        writable: false
-      }), e;
-    }
-    __name(_createClass, "_createClass");
-    module2.exports = _createClass, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
-  }
-});
-
-// ../../node_modules/iter-tools/internal/peekerator.js
-var require_peekerator = __commonJS({
-  "../../node_modules/iter-tools/internal/peekerator.js"(exports2) {
-    "use strict";
-    var _construct = require_construct();
-    var _classCallCheck = require_classCallCheck();
-    var _createClass = require_createClass();
-    var _require = require_iterable();
-    var ensureIterable = _require.ensureIterable;
-    var callReturn = _require.callReturn;
-    var _ = Symbol["for"]("_");
-    var PeekeratorIterator = /* @__PURE__ */ function() {
-      function PeekeratorIterator2(peekr) {
-        _classCallCheck(this, PeekeratorIterator2);
-        this.peekr = peekr;
-      }
-      __name(PeekeratorIterator2, "PeekeratorIterator");
-      _createClass(PeekeratorIterator2, [{
-        key: "next",
-        value: /* @__PURE__ */ __name(function next() {
-          var peekr = this.peekr;
-          var current = peekr.current;
-          peekr.advance();
-          return current;
-        }, "next")
-      }, {
-        key: "return",
-        value: /* @__PURE__ */ __name(function _return() {
-          this.peekr["return"]();
-          return {
-            value: void 0,
-            done: true
-          };
-        }, "_return")
-      }, {
-        key: Symbol.iterator,
-        value: /* @__PURE__ */ __name(function value() {
-          return this;
-        }, "value")
-      }]);
-      return PeekeratorIterator2;
-    }();
-    var Peekerator = /* @__PURE__ */ function() {
-      _createClass(Peekerator2, null, [{
-        key: "from",
-        value: /* @__PURE__ */ __name(function from(iterable) {
-          var iterator = ensureIterable(iterable)[Symbol.iterator]();
-          var first = iterator.next();
-          for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-            args[_key - 1] = arguments[_key];
-          }
-          return _construct(this, [iterator, first].concat(args));
-        }, "from")
-      }]);
-      function Peekerator2(iterator, first) {
-        _classCallCheck(this, Peekerator2);
-        this[_] = {
-          iterator,
-          current: first,
-          index: 0
-        };
-      }
-      __name(Peekerator2, "Peekerator");
-      _createClass(Peekerator2, [{
-        key: "advance",
-        value: /* @__PURE__ */ __name(function advance() {
-          var this_ = this[_];
-          if (!this_.current.done) {
-            this_.index++;
-            this_.current = this_.iterator.next();
-          }
-          return this;
-        }, "advance")
-      }, {
-        key: "return",
-        value: /* @__PURE__ */ __name(function _return() {
-          var this_ = this[_];
-          if (!this.done) {
-            callReturn(this_.iterator);
-          }
-          this_.current = {
-            value: void 0,
-            done: true
-          };
-          return this;
-        }, "_return")
-      }, {
-        key: "asIterator",
-        value: /* @__PURE__ */ __name(function asIterator() {
-          return new PeekeratorIterator(this);
-        }, "asIterator")
-      }, {
-        key: "current",
-        get: /* @__PURE__ */ __name(function get2() {
-          return this[_].current;
-        }, "get")
-      }, {
-        key: "value",
-        get: /* @__PURE__ */ __name(function get2() {
-          return this[_].current.value;
-        }, "get")
-      }, {
-        key: "done",
-        get: /* @__PURE__ */ __name(function get2() {
-          return this[_].current.done;
-        }, "get")
-      }, {
-        key: "index",
-        get: /* @__PURE__ */ __name(function get2() {
-          return this[_].index;
-        }, "get")
-      }]);
-      return Peekerator2;
-    }();
-    exports2.Peekerator = Peekerator;
-  }
-});
-
-// ../../node_modules/iter-tools/impls/$peekerate/peekerate.js
-var require_peekerate = __commonJS({
-  "../../node_modules/iter-tools/impls/$peekerate/peekerate.js"(exports2) {
-    "use strict";
-    var _require = require_iterable();
-    var ensureIterable = _require.ensureIterable;
-    var _require2 = require_peekerator();
-    var Peekerator = _require2.Peekerator;
-    function __peekerate(source) {
-      return Peekerator.from(source);
-    }
-    __name(__peekerate, "__peekerate");
-    exports2.__peekerate = __peekerate;
-    function wrapWithEnsureIterable(fn) {
-      return function(source) {
-        return fn(ensureIterable(source));
-      };
-    }
-    __name(wrapWithEnsureIterable, "wrapWithEnsureIterable");
-    var peekerate = wrapWithEnsureIterable(__peekerate);
-    exports2.peekerate = peekerate;
-  }
-});
-
-// ../../node_modules/iter-tools/impls/$reduce/reduce.js
-var require_reduce = __commonJS({
-  "../../node_modules/iter-tools/impls/$reduce/reduce.js"(exports2) {
-    "use strict";
-    var _require = require_iterable();
-    var iterableCurry = _require.iterableCurry;
-    var _require2 = require_peekerate();
-    var __peekerate = _require2.__peekerate;
-    function __reduce(iterable, reducer) {
-      var initial = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : void 0;
-      var c = 0;
-      var result = initial;
-      var peekr = __peekerate(iterable);
-      try {
-        if (initial === void 0) {
-          if (peekr.done) {
-            throw new Error("Cannot reduce: no initial value specified and iterable was empty");
-          }
-          result = peekr.value;
-          peekr.advance();
-          c = 1;
-        }
-        while (!peekr.done) {
-          result = reducer(result, peekr.value, c++);
-          peekr.advance();
-        }
-        return result;
-      } finally {
-        peekr["return"]();
-      }
-    }
-    __name(__reduce, "__reduce");
-    exports2.__reduce = __reduce;
-    var reduce = /* @__PURE__ */ iterableCurry(__reduce, {
-      reduces: true,
-      minArgs: 1,
-      maxArgs: 2
+    var isHyper = typeof process !== "undefined" && process.env.TERM_PROGRAM === "Hyper";
+    var isWindows = typeof process !== "undefined" && process.platform === "win32";
+    var isLinux = typeof process !== "undefined" && process.platform === "linux";
+    var common = {
+      ballotDisabled: "\u2612",
+      ballotOff: "\u2610",
+      ballotOn: "\u2611",
+      bullet: "\u2022",
+      bulletWhite: "\u25E6",
+      fullBlock: "\u2588",
+      heart: "\u2764",
+      identicalTo: "\u2261",
+      line: "\u2500",
+      mark: "\u203B",
+      middot: "\xB7",
+      minus: "\uFF0D",
+      multiplication: "\xD7",
+      obelus: "\xF7",
+      pencilDownRight: "\u270E",
+      pencilRight: "\u270F",
+      pencilUpRight: "\u2710",
+      percent: "%",
+      pilcrow2: "\u2761",
+      pilcrow: "\xB6",
+      plusMinus: "\xB1",
+      question: "?",
+      section: "\xA7",
+      starsOff: "\u2606",
+      starsOn: "\u2605",
+      upDownArrow: "\u2195"
+    };
+    var windows = Object.assign({}, common, {
+      check: "\u221A",
+      cross: "\xD7",
+      ellipsisLarge: "...",
+      ellipsis: "...",
+      info: "i",
+      questionSmall: "?",
+      pointer: ">",
+      pointerSmall: "\xBB",
+      radioOff: "( )",
+      radioOn: "(*)",
+      warning: "\u203C"
     });
-    exports2.reduce = reduce;
+    var other = Object.assign({}, common, {
+      ballotCross: "\u2718",
+      check: "\u2714",
+      cross: "\u2716",
+      ellipsisLarge: "\u22EF",
+      ellipsis: "\u2026",
+      info: "\u2139",
+      questionFull: "\uFF1F",
+      questionSmall: "\uFE56",
+      pointer: isLinux ? "\u25B8" : "\u276F",
+      pointerSmall: isLinux ? "\u2023" : "\u203A",
+      radioOff: "\u25EF",
+      radioOn: "\u25C9",
+      warning: "\u26A0"
+    });
+    module2.exports = isWindows && !isHyper ? windows : other;
+    Reflect.defineProperty(module2.exports, "common", { enumerable: false, value: common });
+    Reflect.defineProperty(module2.exports, "windows", { enumerable: false, value: windows });
+    Reflect.defineProperty(module2.exports, "other", { enumerable: false, value: other });
   }
 });
 
-// ../../node_modules/iter-tools/methods/reduce.js
-var require_reduce2 = __commonJS({
-  "../../node_modules/iter-tools/methods/reduce.js"(exports2, module2) {
+// ../../node_modules/ansi-colors/index.js
+var require_ansi_colors = __commonJS({
+  "../../node_modules/ansi-colors/index.js"(exports2, module2) {
     "use strict";
-    module2.exports = require_reduce().reduce;
+    var isObject = /* @__PURE__ */ __name((val) => val !== null && typeof val === "object" && !Array.isArray(val), "isObject");
+    var ANSI_REGEX = /[\u001b\u009b][[\]#;?()]*(?:(?:(?:[^\W_]*;?[^\W_]*)\u0007)|(?:(?:[0-9]{1,4}(;[0-9]{0,4})*)?[~0-9=<>cf-nqrtyA-PRZ]))/g;
+    var hasColor = /* @__PURE__ */ __name(() => {
+      if (typeof process !== "undefined") {
+        return process.env.FORCE_COLOR !== "0";
+      }
+      return false;
+    }, "hasColor");
+    var create = /* @__PURE__ */ __name(() => {
+      const colors9 = {
+        enabled: hasColor(),
+        visible: true,
+        styles: {},
+        keys: {}
+      };
+      const ansi = /* @__PURE__ */ __name((style2) => {
+        let open = style2.open = `\x1B[${style2.codes[0]}m`;
+        let close = style2.close = `\x1B[${style2.codes[1]}m`;
+        let regex = style2.regex = new RegExp(`\\u001b\\[${style2.codes[1]}m`, "g");
+        style2.wrap = (input, newline) => {
+          if (input.includes(close)) input = input.replace(regex, close + open);
+          let output = open + input + close;
+          return newline ? output.replace(/\r*\n/g, `${close}$&${open}`) : output;
+        };
+        return style2;
+      }, "ansi");
+      const wrap = /* @__PURE__ */ __name((style2, input, newline) => {
+        return typeof style2 === "function" ? style2(input) : style2.wrap(input, newline);
+      }, "wrap");
+      const style = /* @__PURE__ */ __name((input, stack) => {
+        if (input === "" || input == null) return "";
+        if (colors9.enabled === false) return input;
+        if (colors9.visible === false) return "";
+        let str = "" + input;
+        let nl = str.includes("\n");
+        let n = stack.length;
+        if (n > 0 && stack.includes("unstyle")) {
+          stack = [.../* @__PURE__ */ new Set(["unstyle", ...stack])].reverse();
+        }
+        while (n-- > 0) str = wrap(colors9.styles[stack[n]], str, nl);
+        return str;
+      }, "style");
+      const define2 = /* @__PURE__ */ __name((name, codes, type) => {
+        colors9.styles[name] = ansi({ name, codes });
+        let keys = colors9.keys[type] || (colors9.keys[type] = []);
+        keys.push(name);
+        Reflect.defineProperty(colors9, name, {
+          configurable: true,
+          enumerable: true,
+          set(value) {
+            colors9.alias(name, value);
+          },
+          get() {
+            let color = /* @__PURE__ */ __name((input) => style(input, color.stack), "color");
+            Reflect.setPrototypeOf(color, colors9);
+            color.stack = this.stack ? this.stack.concat(name) : [name];
+            return color;
+          }
+        });
+      }, "define");
+      define2("reset", [0, 0], "modifier");
+      define2("bold", [1, 22], "modifier");
+      define2("dim", [2, 22], "modifier");
+      define2("italic", [3, 23], "modifier");
+      define2("underline", [4, 24], "modifier");
+      define2("inverse", [7, 27], "modifier");
+      define2("hidden", [8, 28], "modifier");
+      define2("strikethrough", [9, 29], "modifier");
+      define2("black", [30, 39], "color");
+      define2("red", [31, 39], "color");
+      define2("green", [32, 39], "color");
+      define2("yellow", [33, 39], "color");
+      define2("blue", [34, 39], "color");
+      define2("magenta", [35, 39], "color");
+      define2("cyan", [36, 39], "color");
+      define2("white", [37, 39], "color");
+      define2("gray", [90, 39], "color");
+      define2("grey", [90, 39], "color");
+      define2("bgBlack", [40, 49], "bg");
+      define2("bgRed", [41, 49], "bg");
+      define2("bgGreen", [42, 49], "bg");
+      define2("bgYellow", [43, 49], "bg");
+      define2("bgBlue", [44, 49], "bg");
+      define2("bgMagenta", [45, 49], "bg");
+      define2("bgCyan", [46, 49], "bg");
+      define2("bgWhite", [47, 49], "bg");
+      define2("blackBright", [90, 39], "bright");
+      define2("redBright", [91, 39], "bright");
+      define2("greenBright", [92, 39], "bright");
+      define2("yellowBright", [93, 39], "bright");
+      define2("blueBright", [94, 39], "bright");
+      define2("magentaBright", [95, 39], "bright");
+      define2("cyanBright", [96, 39], "bright");
+      define2("whiteBright", [97, 39], "bright");
+      define2("bgBlackBright", [100, 49], "bgBright");
+      define2("bgRedBright", [101, 49], "bgBright");
+      define2("bgGreenBright", [102, 49], "bgBright");
+      define2("bgYellowBright", [103, 49], "bgBright");
+      define2("bgBlueBright", [104, 49], "bgBright");
+      define2("bgMagentaBright", [105, 49], "bgBright");
+      define2("bgCyanBright", [106, 49], "bgBright");
+      define2("bgWhiteBright", [107, 49], "bgBright");
+      colors9.ansiRegex = ANSI_REGEX;
+      colors9.hasColor = colors9.hasAnsi = (str) => {
+        colors9.ansiRegex.lastIndex = 0;
+        return typeof str === "string" && str !== "" && colors9.ansiRegex.test(str);
+      };
+      colors9.alias = (name, color) => {
+        let fn = typeof color === "string" ? colors9[color] : color;
+        if (typeof fn !== "function") {
+          throw new TypeError("Expected alias to be the name of an existing color (string) or a function");
+        }
+        if (!fn.stack) {
+          Reflect.defineProperty(fn, "name", { value: name });
+          colors9.styles[name] = fn;
+          fn.stack = [name];
+        }
+        Reflect.defineProperty(colors9, name, {
+          configurable: true,
+          enumerable: true,
+          set(value) {
+            colors9.alias(name, value);
+          },
+          get() {
+            let color2 = /* @__PURE__ */ __name((input) => style(input, color2.stack), "color");
+            Reflect.setPrototypeOf(color2, colors9);
+            color2.stack = this.stack ? this.stack.concat(fn.stack) : fn.stack;
+            return color2;
+          }
+        });
+      };
+      colors9.theme = (custom) => {
+        if (!isObject(custom)) throw new TypeError("Expected theme to be an object");
+        for (let name of Object.keys(custom)) {
+          colors9.alias(name, custom[name]);
+        }
+        return colors9;
+      };
+      colors9.alias("unstyle", (str) => {
+        if (typeof str === "string" && str !== "") {
+          colors9.ansiRegex.lastIndex = 0;
+          return str.replace(colors9.ansiRegex, "");
+        }
+        return "";
+      });
+      colors9.alias("noop", (str) => str);
+      colors9.none = colors9.clear = colors9.noop;
+      colors9.stripColor = colors9.unstyle;
+      colors9.symbols = require_symbols();
+      colors9.define = define2;
+      return colors9;
+    }, "create");
+    module2.exports = create();
+    module2.exports.create = create;
   }
 });
 
@@ -6114,6 +4596,1341 @@ var require_multi_set = __commonJS({
       return MultiSet.isSubset(B, A);
     };
     module2.exports = MultiSet;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/OverloadYield.js
+var require_OverloadYield = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/OverloadYield.js"(exports2, module2) {
+    "use strict";
+    function _OverloadYield(e, d) {
+      this.v = e, this.k = d;
+    }
+    __name(_OverloadYield, "_OverloadYield");
+    module2.exports = _OverloadYield, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/regeneratorDefine.js
+var require_regeneratorDefine = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/regeneratorDefine.js"(exports2, module2) {
+    "use strict";
+    function _regeneratorDefine(e, r, n, t) {
+      var i = Object.defineProperty;
+      try {
+        i({}, "", {});
+      } catch (e2) {
+        i = 0;
+      }
+      module2.exports = _regeneratorDefine = /* @__PURE__ */ __name(function regeneratorDefine(e2, r2, n2, t2) {
+        function o(r3, n3) {
+          _regeneratorDefine(e2, r3, function(e3) {
+            return this._invoke(r3, n3, e3);
+          });
+        }
+        __name(o, "o");
+        r2 ? i ? i(e2, r2, {
+          value: n2,
+          enumerable: !t2,
+          configurable: !t2,
+          writable: !t2
+        }) : e2[r2] = n2 : (o("next", 0), o("throw", 1), o("return", 2));
+      }, "regeneratorDefine"), module2.exports.__esModule = true, module2.exports["default"] = module2.exports, _regeneratorDefine(e, r, n, t);
+    }
+    __name(_regeneratorDefine, "_regeneratorDefine");
+    module2.exports = _regeneratorDefine, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/regenerator.js
+var require_regenerator = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/regenerator.js"(exports2, module2) {
+    "use strict";
+    var regeneratorDefine = require_regeneratorDefine();
+    function _regenerator() {
+      var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag";
+      function i(r2, n2, o2, i2) {
+        var c2 = n2 && n2.prototype instanceof Generator ? n2 : Generator, u2 = Object.create(c2.prototype);
+        return regeneratorDefine(u2, "_invoke", function(r3, n3, o3) {
+          var i3, c3, u3, f2 = 0, p = o3 || [], y = false, G = {
+            p: 0,
+            n: 0,
+            v: e,
+            a: d,
+            f: d.bind(e, 4),
+            d: /* @__PURE__ */ __name(function d2(t2, r4) {
+              return i3 = t2, c3 = 0, u3 = e, G.n = r4, a;
+            }, "d")
+          };
+          function d(r4, n4) {
+            for (c3 = r4, u3 = n4, t = 0; !y && f2 && !o4 && t < p.length; t++) {
+              var o4, i4 = p[t], d2 = G.p, l = i4[2];
+              r4 > 3 ? (o4 = l === n4) && (u3 = i4[(c3 = i4[4]) ? 5 : (c3 = 3, 3)], i4[4] = i4[5] = e) : i4[0] <= d2 && ((o4 = r4 < 2 && d2 < i4[1]) ? (c3 = 0, G.v = n4, G.n = i4[1]) : d2 < l && (o4 = r4 < 3 || i4[0] > n4 || n4 > l) && (i4[4] = r4, i4[5] = n4, G.n = l, c3 = 0));
+            }
+            if (o4 || r4 > 1) return a;
+            throw y = true, n4;
+          }
+          __name(d, "d");
+          return function(o4, p2, l) {
+            if (f2 > 1) throw TypeError("Generator is already running");
+            for (y && 1 === p2 && d(p2, l), c3 = p2, u3 = l; (t = c3 < 2 ? e : u3) || !y; ) {
+              i3 || (c3 ? c3 < 3 ? (c3 > 1 && (G.n = -1), d(c3, u3)) : G.n = u3 : G.v = u3);
+              try {
+                if (f2 = 2, i3) {
+                  if (c3 || (o4 = "next"), t = i3[o4]) {
+                    if (!(t = t.call(i3, u3))) throw TypeError("iterator result is not an object");
+                    if (!t.done) return t;
+                    u3 = t.value, c3 < 2 && (c3 = 0);
+                  } else 1 === c3 && (t = i3["return"]) && t.call(i3), c3 < 2 && (u3 = TypeError("The iterator does not provide a '" + o4 + "' method"), c3 = 1);
+                  i3 = e;
+                } else if ((t = (y = G.n < 0) ? u3 : r3.call(n3, G)) !== a) break;
+              } catch (t2) {
+                i3 = e, c3 = 1, u3 = t2;
+              } finally {
+                f2 = 1;
+              }
+            }
+            return {
+              value: t,
+              done: y
+            };
+          };
+        }(r2, o2, i2), true), u2;
+      }
+      __name(i, "i");
+      var a = {};
+      function Generator() {
+      }
+      __name(Generator, "Generator");
+      function GeneratorFunction() {
+      }
+      __name(GeneratorFunction, "GeneratorFunction");
+      function GeneratorFunctionPrototype() {
+      }
+      __name(GeneratorFunctionPrototype, "GeneratorFunctionPrototype");
+      t = Object.getPrototypeOf;
+      var c = [][n] ? t(t([][n]())) : (regeneratorDefine(t = {}, n, function() {
+        return this;
+      }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c);
+      function f(e2) {
+        return Object.setPrototypeOf ? Object.setPrototypeOf(e2, GeneratorFunctionPrototype) : (e2.__proto__ = GeneratorFunctionPrototype, regeneratorDefine(e2, o, "GeneratorFunction")), e2.prototype = Object.create(u), e2;
+      }
+      __name(f, "f");
+      return GeneratorFunction.prototype = GeneratorFunctionPrototype, regeneratorDefine(u, "constructor", GeneratorFunctionPrototype), regeneratorDefine(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", regeneratorDefine(GeneratorFunctionPrototype, o, "GeneratorFunction"), regeneratorDefine(u), regeneratorDefine(u, o, "Generator"), regeneratorDefine(u, n, function() {
+        return this;
+      }), regeneratorDefine(u, "toString", function() {
+        return "[object Generator]";
+      }), (module2.exports = _regenerator = /* @__PURE__ */ __name(function _regenerator2() {
+        return {
+          w: i,
+          m: f
+        };
+      }, "_regenerator"), module2.exports.__esModule = true, module2.exports["default"] = module2.exports)();
+    }
+    __name(_regenerator, "_regenerator");
+    module2.exports = _regenerator, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/regeneratorAsyncIterator.js
+var require_regeneratorAsyncIterator = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/regeneratorAsyncIterator.js"(exports2, module2) {
+    "use strict";
+    var OverloadYield = require_OverloadYield();
+    var regeneratorDefine = require_regeneratorDefine();
+    function AsyncIterator2(t, e) {
+      function n(r2, o, i, f) {
+        try {
+          var c = t[r2](o), u = c.value;
+          return u instanceof OverloadYield ? e.resolve(u.v).then(function(t2) {
+            n("next", t2, i, f);
+          }, function(t2) {
+            n("throw", t2, i, f);
+          }) : e.resolve(u).then(function(t2) {
+            c.value = t2, i(c);
+          }, function(t2) {
+            return n("throw", t2, i, f);
+          });
+        } catch (t2) {
+          f(t2);
+        }
+      }
+      __name(n, "n");
+      var r;
+      this.next || (regeneratorDefine(AsyncIterator2.prototype), regeneratorDefine(AsyncIterator2.prototype, "function" == typeof Symbol && Symbol.asyncIterator || "@asyncIterator", function() {
+        return this;
+      })), regeneratorDefine(this, "_invoke", function(t2, o, i) {
+        function f() {
+          return new e(function(e2, r2) {
+            n(t2, i, e2, r2);
+          });
+        }
+        __name(f, "f");
+        return r = r ? r.then(f, f) : f();
+      }, true);
+    }
+    __name(AsyncIterator2, "AsyncIterator");
+    module2.exports = AsyncIterator2, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/regeneratorAsyncGen.js
+var require_regeneratorAsyncGen = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/regeneratorAsyncGen.js"(exports2, module2) {
+    "use strict";
+    var regenerator = require_regenerator();
+    var regeneratorAsyncIterator = require_regeneratorAsyncIterator();
+    function _regeneratorAsyncGen(r, e, t, o, n) {
+      return new regeneratorAsyncIterator(regenerator().w(r, e, t, o), n || Promise);
+    }
+    __name(_regeneratorAsyncGen, "_regeneratorAsyncGen");
+    module2.exports = _regeneratorAsyncGen, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/regeneratorAsync.js
+var require_regeneratorAsync = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/regeneratorAsync.js"(exports2, module2) {
+    "use strict";
+    var regeneratorAsyncGen = require_regeneratorAsyncGen();
+    function _regeneratorAsync(n, e, r, t, o) {
+      var a = regeneratorAsyncGen(n, e, r, t, o);
+      return a.next().then(function(n2) {
+        return n2.done ? n2.value : a.next();
+      });
+    }
+    __name(_regeneratorAsync, "_regeneratorAsync");
+    module2.exports = _regeneratorAsync, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/regeneratorKeys.js
+var require_regeneratorKeys = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/regeneratorKeys.js"(exports2, module2) {
+    "use strict";
+    function _regeneratorKeys(e) {
+      var n = Object(e), r = [];
+      for (var t in n) r.unshift(t);
+      return /* @__PURE__ */ __name(function e2() {
+        for (; r.length; ) if ((t = r.pop()) in n) return e2.value = t, e2.done = false, e2;
+        return e2.done = true, e2;
+      }, "e");
+    }
+    __name(_regeneratorKeys, "_regeneratorKeys");
+    module2.exports = _regeneratorKeys, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/typeof.js
+var require_typeof = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/typeof.js"(exports2, module2) {
+    "use strict";
+    function _typeof(o) {
+      "@babel/helpers - typeof";
+      return module2.exports = _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+        return typeof o2;
+      } : function(o2) {
+        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
+      }, module2.exports.__esModule = true, module2.exports["default"] = module2.exports, _typeof(o);
+    }
+    __name(_typeof, "_typeof");
+    module2.exports = _typeof, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/regeneratorValues.js
+var require_regeneratorValues = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/regeneratorValues.js"(exports2, module2) {
+    "use strict";
+    var _typeof = require_typeof()["default"];
+    function _regeneratorValues(e) {
+      if (null != e) {
+        var t = e["function" == typeof Symbol && Symbol.iterator || "@@iterator"], r = 0;
+        if (t) return t.call(e);
+        if ("function" == typeof e.next) return e;
+        if (!isNaN(e.length)) return {
+          next: /* @__PURE__ */ __name(function next() {
+            return e && r >= e.length && (e = void 0), {
+              value: e && e[r++],
+              done: !e
+            };
+          }, "next")
+        };
+      }
+      throw new TypeError(_typeof(e) + " is not iterable");
+    }
+    __name(_regeneratorValues, "_regeneratorValues");
+    module2.exports = _regeneratorValues, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/regeneratorRuntime.js
+var require_regeneratorRuntime = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/regeneratorRuntime.js"(exports2, module2) {
+    "use strict";
+    var OverloadYield = require_OverloadYield();
+    var regenerator = require_regenerator();
+    var regeneratorAsync = require_regeneratorAsync();
+    var regeneratorAsyncGen = require_regeneratorAsyncGen();
+    var regeneratorAsyncIterator = require_regeneratorAsyncIterator();
+    var regeneratorKeys = require_regeneratorKeys();
+    var regeneratorValues = require_regeneratorValues();
+    function _regeneratorRuntime() {
+      "use strict";
+      var r = regenerator(), e = r.m(_regeneratorRuntime), t = (Object.getPrototypeOf ? Object.getPrototypeOf(e) : e.__proto__).constructor;
+      function n(r2) {
+        var e2 = "function" == typeof r2 && r2.constructor;
+        return !!e2 && (e2 === t || "GeneratorFunction" === (e2.displayName || e2.name));
+      }
+      __name(n, "n");
+      var o = {
+        "throw": 1,
+        "return": 2,
+        "break": 3,
+        "continue": 3
+      };
+      function a(r2) {
+        var e2, t2;
+        return function(n2) {
+          e2 || (e2 = {
+            stop: /* @__PURE__ */ __name(function stop() {
+              return t2(n2.a, 2);
+            }, "stop"),
+            "catch": /* @__PURE__ */ __name(function _catch() {
+              return n2.v;
+            }, "_catch"),
+            abrupt: /* @__PURE__ */ __name(function abrupt(r3, e3) {
+              return t2(n2.a, o[r3], e3);
+            }, "abrupt"),
+            delegateYield: /* @__PURE__ */ __name(function delegateYield(r3, o2, a2) {
+              return e2.resultName = o2, t2(n2.d, regeneratorValues(r3), a2);
+            }, "delegateYield"),
+            finish: /* @__PURE__ */ __name(function finish(r3) {
+              return t2(n2.f, r3);
+            }, "finish")
+          }, t2 = /* @__PURE__ */ __name(function t3(r3, _t, o2) {
+            n2.p = e2.prev, n2.n = e2.next;
+            try {
+              return r3(_t, o2);
+            } finally {
+              e2.next = n2.n;
+            }
+          }, "t")), e2.resultName && (e2[e2.resultName] = n2.v, e2.resultName = void 0), e2.sent = n2.v, e2.next = n2.n;
+          try {
+            return r2.call(this, e2);
+          } finally {
+            n2.p = e2.prev, n2.n = e2.next;
+          }
+        };
+      }
+      __name(a, "a");
+      return (module2.exports = _regeneratorRuntime = /* @__PURE__ */ __name(function _regeneratorRuntime2() {
+        return {
+          wrap: /* @__PURE__ */ __name(function wrap(e2, t2, n2, o2) {
+            return r.w(a(e2), t2, n2, o2 && o2.reverse());
+          }, "wrap"),
+          isGeneratorFunction: n,
+          mark: r.m,
+          awrap: /* @__PURE__ */ __name(function awrap(r2, e2) {
+            return new OverloadYield(r2, e2);
+          }, "awrap"),
+          AsyncIterator: regeneratorAsyncIterator,
+          async: /* @__PURE__ */ __name(function async(r2, e2, t2, o2, u) {
+            return (n(e2) ? regeneratorAsyncGen : regeneratorAsync)(a(r2), e2, t2, o2, u);
+          }, "async"),
+          keys: regeneratorKeys,
+          values: regeneratorValues
+        };
+      }, "_regeneratorRuntime"), module2.exports.__esModule = true, module2.exports["default"] = module2.exports)();
+    }
+    __name(_regeneratorRuntime, "_regeneratorRuntime");
+    module2.exports = _regeneratorRuntime, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/regenerator/index.js
+var require_regenerator2 = __commonJS({
+  "../../node_modules/@babel/runtime/regenerator/index.js"(exports2, module2) {
+    "use strict";
+    var runtime = require_regeneratorRuntime()();
+    module2.exports = runtime;
+    try {
+      regeneratorRuntime = runtime;
+    } catch (accidentalStrictMode) {
+      if (typeof globalThis === "object") {
+        globalThis.regeneratorRuntime = runtime;
+      } else {
+        Function("r", "regeneratorRuntime = r")(runtime);
+      }
+    }
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/toPrimitive.js
+var require_toPrimitive = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/toPrimitive.js"(exports2, module2) {
+    "use strict";
+    var _typeof = require_typeof()["default"];
+    function toPrimitive(t, r) {
+      if ("object" != _typeof(t) || !t) return t;
+      var e = t[Symbol.toPrimitive];
+      if (void 0 !== e) {
+        var i = e.call(t, r || "default");
+        if ("object" != _typeof(i)) return i;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+      }
+      return ("string" === r ? String : Number)(t);
+    }
+    __name(toPrimitive, "toPrimitive");
+    module2.exports = toPrimitive, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/toPropertyKey.js
+var require_toPropertyKey = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/toPropertyKey.js"(exports2, module2) {
+    "use strict";
+    var _typeof = require_typeof()["default"];
+    var toPrimitive = require_toPrimitive();
+    function toPropertyKey(t) {
+      var i = toPrimitive(t, "string");
+      return "symbol" == _typeof(i) ? i : i + "";
+    }
+    __name(toPropertyKey, "toPropertyKey");
+    module2.exports = toPropertyKey, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/defineProperty.js
+var require_defineProperty = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/defineProperty.js"(exports2, module2) {
+    "use strict";
+    var toPropertyKey = require_toPropertyKey();
+    function _defineProperty(e, r, t) {
+      return (r = toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
+        value: t,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      }) : e[r] = t, e;
+    }
+    __name(_defineProperty, "_defineProperty");
+    module2.exports = _defineProperty, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/arrayLikeToArray.js
+var require_arrayLikeToArray = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/arrayLikeToArray.js"(exports2, module2) {
+    "use strict";
+    function _arrayLikeToArray(r, a) {
+      (null == a || a > r.length) && (a = r.length);
+      for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+      return n;
+    }
+    __name(_arrayLikeToArray, "_arrayLikeToArray");
+    module2.exports = _arrayLikeToArray, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/arrayWithoutHoles.js
+var require_arrayWithoutHoles = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/arrayWithoutHoles.js"(exports2, module2) {
+    "use strict";
+    var arrayLikeToArray = require_arrayLikeToArray();
+    function _arrayWithoutHoles(r) {
+      if (Array.isArray(r)) return arrayLikeToArray(r);
+    }
+    __name(_arrayWithoutHoles, "_arrayWithoutHoles");
+    module2.exports = _arrayWithoutHoles, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/iterableToArray.js
+var require_iterableToArray = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/iterableToArray.js"(exports2, module2) {
+    "use strict";
+    function _iterableToArray(r) {
+      if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r);
+    }
+    __name(_iterableToArray, "_iterableToArray");
+    module2.exports = _iterableToArray, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js
+var require_unsupportedIterableToArray = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js"(exports2, module2) {
+    "use strict";
+    var arrayLikeToArray = require_arrayLikeToArray();
+    function _unsupportedIterableToArray(r, a) {
+      if (r) {
+        if ("string" == typeof r) return arrayLikeToArray(r, a);
+        var t = {}.toString.call(r).slice(8, -1);
+        return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? arrayLikeToArray(r, a) : void 0;
+      }
+    }
+    __name(_unsupportedIterableToArray, "_unsupportedIterableToArray");
+    module2.exports = _unsupportedIterableToArray, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/nonIterableSpread.js
+var require_nonIterableSpread = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/nonIterableSpread.js"(exports2, module2) {
+    "use strict";
+    function _nonIterableSpread() {
+      throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+    __name(_nonIterableSpread, "_nonIterableSpread");
+    module2.exports = _nonIterableSpread, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/toConsumableArray.js
+var require_toConsumableArray = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/toConsumableArray.js"(exports2, module2) {
+    "use strict";
+    var arrayWithoutHoles = require_arrayWithoutHoles();
+    var iterableToArray = require_iterableToArray();
+    var unsupportedIterableToArray = require_unsupportedIterableToArray();
+    var nonIterableSpread = require_nonIterableSpread();
+    function _toConsumableArray(r) {
+      return arrayWithoutHoles(r) || iterableToArray(r) || unsupportedIterableToArray(r) || nonIterableSpread();
+    }
+    __name(_toConsumableArray, "_toConsumableArray");
+    module2.exports = _toConsumableArray, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/iter-tools/impls/not-undefined/not-undefined.js
+var require_not_undefined = __commonJS({
+  "../../node_modules/iter-tools/impls/not-undefined/not-undefined.js"(exports2) {
+    "use strict";
+    function notUndefined(value) {
+      return typeof value !== "undefined";
+    }
+    __name(notUndefined, "notUndefined");
+    exports2.notUndefined = notUndefined;
+  }
+});
+
+// ../../node_modules/iter-tools/impls/is-iterable/is-iterable.js
+var require_is_iterable = __commonJS({
+  "../../node_modules/iter-tools/impls/is-iterable/is-iterable.js"(exports2) {
+    "use strict";
+    var _require = require_not_undefined();
+    var notUndefined = _require.notUndefined;
+    function isIterable(value) {
+      return value != null && notUndefined(value[Symbol.iterator]);
+    }
+    __name(isIterable, "isIterable");
+    exports2.isIterable = isIterable;
+  }
+});
+
+// ../../node_modules/iter-tools/impls/is-loopable/is-loopable.js
+var require_is_loopable = __commonJS({
+  "../../node_modules/iter-tools/impls/is-loopable/is-loopable.js"(exports2) {
+    "use strict";
+    exports2.isLoopable = require_is_iterable().isIterable;
+  }
+});
+
+// ../../node_modules/iter-tools/impls/is-wrappable/is-wrappable.js
+var require_is_wrappable = __commonJS({
+  "../../node_modules/iter-tools/impls/is-wrappable/is-wrappable.js"(exports2) {
+    "use strict";
+    var _require = require_not_undefined();
+    var notUndefined = _require.notUndefined;
+    function isWrappable(value) {
+      return value == null || notUndefined(value[Symbol.iterator]);
+    }
+    __name(isWrappable, "isWrappable");
+    exports2.isWrappable = isWrappable;
+  }
+});
+
+// ../../node_modules/iter-tools/internal/wrap.js
+var require_wrap = __commonJS({
+  "../../node_modules/iter-tools/internal/wrap.js"(exports2) {
+    "use strict";
+    var _regeneratorRuntime = require_regenerator2();
+    var _marked = /* @__PURE__ */ _regeneratorRuntime.mark(wrap);
+    var _marked2 = /* @__PURE__ */ _regeneratorRuntime.mark(nullableWrap);
+    function wrap(source) {
+      return _regeneratorRuntime.wrap(/* @__PURE__ */ __name(function wrap$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              return _context.delegateYield(source, "t0", 1);
+            case 1:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, "wrap$"), _marked);
+    }
+    __name(wrap, "wrap");
+    exports2.wrap = wrap;
+    function nullableWrap(source) {
+      return _regeneratorRuntime.wrap(/* @__PURE__ */ __name(function nullableWrap$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              if (!(source != null)) {
+                _context2.next = 2;
+                break;
+              }
+              return _context2.delegateYield(source, "t0", 2);
+            case 2:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, "nullableWrap$"), _marked2);
+    }
+    __name(nullableWrap, "nullableWrap");
+    exports2.nullableWrap = nullableWrap;
+  }
+});
+
+// ../../node_modules/iter-tools/internal/curry.js
+var require_curry = __commonJS({
+  "../../node_modules/iter-tools/internal/curry.js"(exports2) {
+    "use strict";
+    var _toConsumableArray = require_toConsumableArray();
+    function curry(fn) {
+      var expectedArgsLength = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : fn.length;
+      var appliedArgs = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : [];
+      return function() {
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+        if (expectedArgsLength <= args.length) {
+          return fn.apply(void 0, _toConsumableArray(appliedArgs).concat(args));
+        }
+        return curry(fn, expectedArgsLength - args.length, [].concat(_toConsumableArray(appliedArgs), args));
+      };
+    }
+    __name(curry, "curry");
+    exports2.curry = curry;
+    function variadicCurryWithValidationInner(config, args) {
+      var fn = config.fn, validateArgs = config.validateArgs, variadic = config.variadic, reduces = config.reduces, growRight = config.growRight, minArgs = config.minArgs, maxArgs = config.maxArgs, isIterable = config.isIterable, iterableType = config.iterableType, applyOnIterableArgs = config.applyOnIterableArgs, IterableClass = config.IterableClass;
+      if (args.length > minArgs) {
+        var argsIterable = true;
+        var iterableArgsStart = variadic ? args.findIndex(function(arg, i2) {
+          return isIterable(arg) && i2 >= minArgs;
+        }) : Math.min(maxArgs, args.length - 1);
+        var iterableArgsEnd = variadic ? args.length : iterableArgsStart + 1;
+        if (variadic) {
+          for (var i = iterableArgsStart; i < args.length; i++) {
+            argsIterable = argsIterable && isIterable(args[i]);
+          }
+        } else {
+          argsIterable = isIterable(args[iterableArgsStart]);
+        }
+        if (args.length > maxArgs && (iterableArgsStart === -1 || !argsIterable)) {
+          var iterableTypeOrNames = variadic ? "...".concat(iterableType, "s") : iterableType;
+          var baseMessage = "".concat(fn.name, " takes up to ").concat(maxArgs, " arguments, followed by ").concat(iterableTypeOrNames, ". ") + "You already passed ".concat(args.length, " arguments");
+          if (variadic) {
+            throw new Error("".concat(baseMessage, " and the following arguments were not all ").concat(iterableType, "s"));
+          } else {
+            throw new Error("".concat(baseMessage, " and the last argument was not ").concat(iterableType));
+          }
+        }
+        if (iterableArgsStart >= 0 && argsIterable) {
+          for (var _i = iterableArgsStart; _i < iterableArgsEnd; _i++) {
+            args[_i] = applyOnIterableArgs(args[_i]);
+          }
+          var iterablesArg = variadic ? args.slice(iterableArgsStart) : args[iterableArgsStart];
+          args.splice(iterableArgsStart);
+          if (!growRight) {
+            args.reverse();
+          }
+          args.unshift(iterablesArg);
+          validateArgs(args);
+          return reduces ? fn.apply(void 0, _toConsumableArray(args)) : new IterableClass(fn, args);
+        } else {
+        }
+      }
+      return variadicCurryWithValidation(config, args);
+    }
+    __name(variadicCurryWithValidationInner, "variadicCurryWithValidationInner");
+    function variadicCurryWithValidation(config) {
+      var previousArgs = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : [];
+      return function() {
+        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          args[_key2] = arguments[_key2];
+        }
+        if (args.length === 0) {
+          throw new Error("Cannot make a partial application with no arguments");
+        }
+        args.unshift.apply(args, _toConsumableArray(previousArgs));
+        return variadicCurryWithValidationInner(config, args);
+      };
+    }
+    __name(variadicCurryWithValidation, "variadicCurryWithValidation");
+    exports2.variadicCurryWithValidation = variadicCurryWithValidation;
+  }
+});
+
+// ../../node_modules/iter-tools/internal/symbols.js
+var require_symbols2 = __commonJS({
+  "../../node_modules/iter-tools/internal/symbols.js"(exports2) {
+    "use strict";
+    var _ = Symbol["for"]("_");
+    exports2._ = _;
+    var __iterate = Symbol("__iterate");
+    exports2.__iterate = __iterate;
+    var split = Symbol("split");
+    exports2.split = split;
+  }
+});
+
+// ../../node_modules/iter-tools/internal/iterable.js
+var require_iterable = __commonJS({
+  "../../node_modules/iter-tools/internal/iterable.js"(exports2) {
+    "use strict";
+    var _defineProperty = require_defineProperty();
+    var _toConsumableArray = require_toConsumableArray();
+    var _Object$assign;
+    var _require = require_is_iterable();
+    var isIterable = _require.isIterable;
+    var _require2 = require_is_loopable();
+    var isLoopable = _require2.isLoopable;
+    var _require3 = require_is_wrappable();
+    var isWrappable = _require3.isWrappable;
+    var _require4 = require_wrap();
+    var wrap = _require4.nullableWrap;
+    var _require5 = require_curry();
+    var variadicCurryWithValidation = _require5.variadicCurryWithValidation;
+    var _require6 = require_symbols2();
+    var _ = _require6._;
+    var __iterate = _require6.__iterate;
+    exports2.wrap = wrap;
+    exports2.isIterable = isIterable;
+    exports2.isLoopable = isLoopable;
+    exports2.isWrappable = isWrappable;
+    function ensureIterable(value) {
+      if (!isWrappable(value)) {
+        if (typeof value.next === "function") {
+          throw new TypeError("iter-tools received a value that looked like an iterator but was not iterable. Get help fixing this: https://github.com/iter-tools/iter-tools/wiki/Making-iterators-iterable");
+        } else throw new TypeError("Expected an iterable, null, or undefined");
+      } else if (isIterable(value)) {
+        return value;
+      } else {
+        return wrap(value);
+      }
+    }
+    __name(ensureIterable, "ensureIterable");
+    exports2.ensureIterable = ensureIterable;
+    function callReturn(iterator) {
+      if ("return" in iterator) iterator["return"]();
+    }
+    __name(callReturn, "callReturn");
+    exports2.callReturn = callReturn;
+    function BaseIterableIterator(fn, args) {
+      this[_] = {
+        fn,
+        args,
+        staticIterator: null
+      };
+    }
+    __name(BaseIterableIterator, "BaseIterableIterator");
+    exports2.BaseIterableIterator = BaseIterableIterator;
+    Object.assign(BaseIterableIterator.prototype, (_Object$assign = {
+      constructor: BaseIterableIterator
+    }, _defineProperty(_Object$assign, __iterate, function() {
+      var _this$_ = this[_], fn = _this$_.fn, args = _this$_.args;
+      return fn.apply(void 0, _toConsumableArray(args));
+    }), _defineProperty(_Object$assign, "next", /* @__PURE__ */ __name(function next() {
+      var this_ = this[_];
+      this_.staticIterator = this_.staticIterator || this[__iterate]();
+      return this_.staticIterator.next();
+    }, "next")), _defineProperty(_Object$assign, "return", /* @__PURE__ */ __name(function _return(value) {
+      var this_ = this[_];
+      this_.staticIterator = this_.staticIterator || this[__iterate]();
+      return this_.staticIterator["return"](value);
+    }, "_return")), _defineProperty(_Object$assign, "throw", /* @__PURE__ */ __name(function _throw(error) {
+      var this_ = this[_];
+      this_.staticIterator = this_.staticIterator || this[__iterate]();
+      return this_.staticIterator["throw"](error);
+    }, "_throw")), _Object$assign));
+    function IterableIterator() {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+      BaseIterableIterator.apply(this, args);
+    }
+    __name(IterableIterator, "IterableIterator");
+    exports2.IterableIterator = IterableIterator;
+    IterableIterator.prototype = Object.assign(Object.create(BaseIterableIterator.prototype), _defineProperty({
+      constructor: IterableIterator
+    }, Symbol.iterator, function() {
+      return this[__iterate]();
+    }));
+    function makeFunctionConfig(fn) {
+      var fnConfig = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+      var _fnConfig$validateArg = fnConfig.validateArgs, validateArgs = _fnConfig$validateArg === void 0 ? function(_2) {
+      } : _fnConfig$validateArg, _fnConfig$variadic = fnConfig.variadic, variadic = _fnConfig$variadic === void 0 ? false : _fnConfig$variadic, _fnConfig$reduces = fnConfig.reduces, reduces = _fnConfig$reduces === void 0 ? false : _fnConfig$reduces, _fnConfig$growRight = fnConfig.growRight, growRight = _fnConfig$growRight === void 0 ? false : _fnConfig$growRight, _fnConfig$minArgs = fnConfig.minArgs, minArgs = _fnConfig$minArgs === void 0 ? fn.length - 1 : _fnConfig$minArgs, _fnConfig$maxArgs = fnConfig.maxArgs, maxArgs = _fnConfig$maxArgs === void 0 ? fn.length - 1 : _fnConfig$maxArgs, _fnConfig$applyOnIter = fnConfig.applyOnIterableArgs, applyOnIterableArgs = _fnConfig$applyOnIter === void 0 ? ensureIterable : _fnConfig$applyOnIter;
+      return {
+        fn,
+        validateArgs,
+        variadic,
+        reduces,
+        growRight,
+        minArgs,
+        maxArgs,
+        isIterable: isWrappable,
+        iterableType: "iterable",
+        applyOnIterableArgs,
+        IterableClass: IterableIterator
+      };
+    }
+    __name(makeFunctionConfig, "makeFunctionConfig");
+    function cache(it) {
+      return _toConsumableArray(it);
+    }
+    __name(cache, "cache");
+    exports2.cache = cache;
+    function wrapWithIterableIterator(fn) {
+      var _ref = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, _ref$validateArgs = _ref.validateArgs, validateArgs = _ref$validateArgs === void 0 ? function(_2) {
+        return _2;
+      } : _ref$validateArgs;
+      return function() {
+        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          args[_key2] = arguments[_key2];
+        }
+        validateArgs(args);
+        return new IterableIterator(fn, args);
+      };
+    }
+    __name(wrapWithIterableIterator, "wrapWithIterableIterator");
+    exports2.wrapWithIterableIterator = wrapWithIterableIterator;
+    var iterableCurry = /* @__PURE__ */ __name(function iterableCurry2(fn, config) {
+      return variadicCurryWithValidation(makeFunctionConfig(fn, config));
+    }, "iterableCurry");
+    exports2.iterableCurry = iterableCurry;
+  }
+});
+
+// ../../node_modules/iter-tools/impls/$filter/filter.js
+var require_filter = __commonJS({
+  "../../node_modules/iter-tools/impls/$filter/filter.js"(exports2) {
+    "use strict";
+    var _regeneratorRuntime = require_regenerator2();
+    var _marked = /* @__PURE__ */ _regeneratorRuntime.mark(__filter);
+    function _createForOfIteratorHelper(o, allowArrayLike) {
+      var it;
+      if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+        if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+          if (it) o = it;
+          var i = 0;
+          var F = /* @__PURE__ */ __name(function F2() {
+          }, "F");
+          return { s: F, n: /* @__PURE__ */ __name(function n() {
+            if (i >= o.length) return { done: true };
+            return { done: false, value: o[i++] };
+          }, "n"), e: /* @__PURE__ */ __name(function e(_e) {
+            throw _e;
+          }, "e"), f: F };
+        }
+        throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+      }
+      var normalCompletion = true, didErr = false, err;
+      return { s: /* @__PURE__ */ __name(function s() {
+        it = o[Symbol.iterator]();
+      }, "s"), n: /* @__PURE__ */ __name(function n() {
+        var step = it.next();
+        normalCompletion = step.done;
+        return step;
+      }, "n"), e: /* @__PURE__ */ __name(function e(_e2) {
+        didErr = true;
+        err = _e2;
+      }, "e"), f: /* @__PURE__ */ __name(function f() {
+        try {
+          if (!normalCompletion && it["return"] != null) it["return"]();
+        } finally {
+          if (didErr) throw err;
+        }
+      }, "f") };
+    }
+    __name(_createForOfIteratorHelper, "_createForOfIteratorHelper");
+    function _unsupportedIterableToArray(o, minLen) {
+      if (!o) return;
+      if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+      var n = Object.prototype.toString.call(o).slice(8, -1);
+      if (n === "Object" && o.constructor) n = o.constructor.name;
+      if (n === "Map" || n === "Set") return Array.from(o);
+      if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    }
+    __name(_unsupportedIterableToArray, "_unsupportedIterableToArray");
+    function _arrayLikeToArray(arr, len) {
+      if (len == null || len > arr.length) len = arr.length;
+      for (var i = 0, arr2 = new Array(len); i < len; i++) {
+        arr2[i] = arr[i];
+      }
+      return arr2;
+    }
+    __name(_arrayLikeToArray, "_arrayLikeToArray");
+    var _require = require_iterable();
+    var iterableCurry = _require.iterableCurry;
+    function __filter(source, predicate) {
+      var c, _iterator, _step, value;
+      return _regeneratorRuntime.wrap(/* @__PURE__ */ __name(function __filter$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              c = 0;
+              _iterator = _createForOfIteratorHelper(source);
+              _context.prev = 2;
+              _iterator.s();
+            case 4:
+              if ((_step = _iterator.n()).done) {
+                _context.next = 11;
+                break;
+              }
+              value = _step.value;
+              if (!predicate(value, c++)) {
+                _context.next = 9;
+                break;
+              }
+              _context.next = 9;
+              return value;
+            case 9:
+              _context.next = 4;
+              break;
+            case 11:
+              _context.next = 16;
+              break;
+            case 13:
+              _context.prev = 13;
+              _context.t0 = _context["catch"](2);
+              _iterator.e(_context.t0);
+            case 16:
+              _context.prev = 16;
+              _iterator.f();
+              return _context.finish(16);
+            case 19:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, "__filter$"), _marked, null, [[2, 13, 16, 19]]);
+    }
+    __name(__filter, "__filter");
+    exports2.__filter = __filter;
+    var filter2 = /* @__PURE__ */ iterableCurry(__filter);
+    exports2.filter = filter2;
+  }
+});
+
+// ../../node_modules/iter-tools/methods/filter.js
+var require_filter2 = __commonJS({
+  "../../node_modules/iter-tools/methods/filter.js"(exports2, module2) {
+    "use strict";
+    module2.exports = require_filter().filter;
+  }
+});
+
+// ../../node_modules/iter-tools/methods/is-iterable.js
+var require_is_iterable2 = __commonJS({
+  "../../node_modules/iter-tools/methods/is-iterable.js"(exports2, module2) {
+    "use strict";
+    module2.exports = require_is_iterable().isIterable;
+  }
+});
+
+// ../../node_modules/iter-tools/impls/$map/map.js
+var require_map = __commonJS({
+  "../../node_modules/iter-tools/impls/$map/map.js"(exports2) {
+    "use strict";
+    var _regeneratorRuntime = require_regenerator2();
+    var _marked = /* @__PURE__ */ _regeneratorRuntime.mark(__map);
+    function _createForOfIteratorHelper(o, allowArrayLike) {
+      var it;
+      if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+        if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+          if (it) o = it;
+          var i = 0;
+          var F = /* @__PURE__ */ __name(function F2() {
+          }, "F");
+          return { s: F, n: /* @__PURE__ */ __name(function n() {
+            if (i >= o.length) return { done: true };
+            return { done: false, value: o[i++] };
+          }, "n"), e: /* @__PURE__ */ __name(function e(_e) {
+            throw _e;
+          }, "e"), f: F };
+        }
+        throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+      }
+      var normalCompletion = true, didErr = false, err;
+      return { s: /* @__PURE__ */ __name(function s() {
+        it = o[Symbol.iterator]();
+      }, "s"), n: /* @__PURE__ */ __name(function n() {
+        var step = it.next();
+        normalCompletion = step.done;
+        return step;
+      }, "n"), e: /* @__PURE__ */ __name(function e(_e2) {
+        didErr = true;
+        err = _e2;
+      }, "e"), f: /* @__PURE__ */ __name(function f() {
+        try {
+          if (!normalCompletion && it["return"] != null) it["return"]();
+        } finally {
+          if (didErr) throw err;
+        }
+      }, "f") };
+    }
+    __name(_createForOfIteratorHelper, "_createForOfIteratorHelper");
+    function _unsupportedIterableToArray(o, minLen) {
+      if (!o) return;
+      if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+      var n = Object.prototype.toString.call(o).slice(8, -1);
+      if (n === "Object" && o.constructor) n = o.constructor.name;
+      if (n === "Map" || n === "Set") return Array.from(o);
+      if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    }
+    __name(_unsupportedIterableToArray, "_unsupportedIterableToArray");
+    function _arrayLikeToArray(arr, len) {
+      if (len == null || len > arr.length) len = arr.length;
+      for (var i = 0, arr2 = new Array(len); i < len; i++) {
+        arr2[i] = arr[i];
+      }
+      return arr2;
+    }
+    __name(_arrayLikeToArray, "_arrayLikeToArray");
+    var _require = require_iterable();
+    var iterableCurry = _require.iterableCurry;
+    function __map(source, func) {
+      var c, _iterator, _step, value;
+      return _regeneratorRuntime.wrap(/* @__PURE__ */ __name(function __map$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              c = 0;
+              _iterator = _createForOfIteratorHelper(source);
+              _context.prev = 2;
+              _iterator.s();
+            case 4:
+              if ((_step = _iterator.n()).done) {
+                _context.next = 10;
+                break;
+              }
+              value = _step.value;
+              _context.next = 8;
+              return func(value, c++);
+            case 8:
+              _context.next = 4;
+              break;
+            case 10:
+              _context.next = 15;
+              break;
+            case 12:
+              _context.prev = 12;
+              _context.t0 = _context["catch"](2);
+              _iterator.e(_context.t0);
+            case 15:
+              _context.prev = 15;
+              _iterator.f();
+              return _context.finish(15);
+            case 18:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, "__map$"), _marked, null, [[2, 12, 15, 18]]);
+    }
+    __name(__map, "__map");
+    exports2.__map = __map;
+    var map3 = /* @__PURE__ */ iterableCurry(__map);
+    exports2.map = map3;
+  }
+});
+
+// ../../node_modules/iter-tools/methods/map.js
+var require_map2 = __commonJS({
+  "../../node_modules/iter-tools/methods/map.js"(exports2, module2) {
+    "use strict";
+    module2.exports = require_map().map;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/isNativeReflectConstruct.js
+var require_isNativeReflectConstruct = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/isNativeReflectConstruct.js"(exports2, module2) {
+    "use strict";
+    function _isNativeReflectConstruct() {
+      try {
+        var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+        }));
+      } catch (t2) {
+      }
+      return (module2.exports = _isNativeReflectConstruct = /* @__PURE__ */ __name(function _isNativeReflectConstruct2() {
+        return !!t;
+      }, "_isNativeReflectConstruct"), module2.exports.__esModule = true, module2.exports["default"] = module2.exports)();
+    }
+    __name(_isNativeReflectConstruct, "_isNativeReflectConstruct");
+    module2.exports = _isNativeReflectConstruct, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/setPrototypeOf.js
+var require_setPrototypeOf = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/setPrototypeOf.js"(exports2, module2) {
+    "use strict";
+    function _setPrototypeOf(t, e) {
+      return module2.exports = _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function(t2, e2) {
+        return t2.__proto__ = e2, t2;
+      }, module2.exports.__esModule = true, module2.exports["default"] = module2.exports, _setPrototypeOf(t, e);
+    }
+    __name(_setPrototypeOf, "_setPrototypeOf");
+    module2.exports = _setPrototypeOf, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/construct.js
+var require_construct = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/construct.js"(exports2, module2) {
+    "use strict";
+    var isNativeReflectConstruct = require_isNativeReflectConstruct();
+    var setPrototypeOf = require_setPrototypeOf();
+    function _construct(t, e, r) {
+      if (isNativeReflectConstruct()) return Reflect.construct.apply(null, arguments);
+      var o = [null];
+      o.push.apply(o, e);
+      var p = new (t.bind.apply(t, o))();
+      return r && setPrototypeOf(p, r.prototype), p;
+    }
+    __name(_construct, "_construct");
+    module2.exports = _construct, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/classCallCheck.js
+var require_classCallCheck = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/classCallCheck.js"(exports2, module2) {
+    "use strict";
+    function _classCallCheck(a, n) {
+      if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function");
+    }
+    __name(_classCallCheck, "_classCallCheck");
+    module2.exports = _classCallCheck, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/@babel/runtime/helpers/createClass.js
+var require_createClass = __commonJS({
+  "../../node_modules/@babel/runtime/helpers/createClass.js"(exports2, module2) {
+    "use strict";
+    var toPropertyKey = require_toPropertyKey();
+    function _defineProperties(e, r) {
+      for (var t = 0; t < r.length; t++) {
+        var o = r[t];
+        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, toPropertyKey(o.key), o);
+      }
+    }
+    __name(_defineProperties, "_defineProperties");
+    function _createClass(e, r, t) {
+      return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", {
+        writable: false
+      }), e;
+    }
+    __name(_createClass, "_createClass");
+    module2.exports = _createClass, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
+  }
+});
+
+// ../../node_modules/iter-tools/internal/peekerator.js
+var require_peekerator = __commonJS({
+  "../../node_modules/iter-tools/internal/peekerator.js"(exports2) {
+    "use strict";
+    var _construct = require_construct();
+    var _classCallCheck = require_classCallCheck();
+    var _createClass = require_createClass();
+    var _require = require_iterable();
+    var ensureIterable = _require.ensureIterable;
+    var callReturn = _require.callReturn;
+    var _ = Symbol["for"]("_");
+    var PeekeratorIterator = /* @__PURE__ */ function() {
+      function PeekeratorIterator2(peekr) {
+        _classCallCheck(this, PeekeratorIterator2);
+        this.peekr = peekr;
+      }
+      __name(PeekeratorIterator2, "PeekeratorIterator");
+      _createClass(PeekeratorIterator2, [{
+        key: "next",
+        value: /* @__PURE__ */ __name(function next() {
+          var peekr = this.peekr;
+          var current = peekr.current;
+          peekr.advance();
+          return current;
+        }, "next")
+      }, {
+        key: "return",
+        value: /* @__PURE__ */ __name(function _return() {
+          this.peekr["return"]();
+          return {
+            value: void 0,
+            done: true
+          };
+        }, "_return")
+      }, {
+        key: Symbol.iterator,
+        value: /* @__PURE__ */ __name(function value() {
+          return this;
+        }, "value")
+      }]);
+      return PeekeratorIterator2;
+    }();
+    var Peekerator = /* @__PURE__ */ function() {
+      _createClass(Peekerator2, null, [{
+        key: "from",
+        value: /* @__PURE__ */ __name(function from(iterable) {
+          var iterator = ensureIterable(iterable)[Symbol.iterator]();
+          var first = iterator.next();
+          for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            args[_key - 1] = arguments[_key];
+          }
+          return _construct(this, [iterator, first].concat(args));
+        }, "from")
+      }]);
+      function Peekerator2(iterator, first) {
+        _classCallCheck(this, Peekerator2);
+        this[_] = {
+          iterator,
+          current: first,
+          index: 0
+        };
+      }
+      __name(Peekerator2, "Peekerator");
+      _createClass(Peekerator2, [{
+        key: "advance",
+        value: /* @__PURE__ */ __name(function advance() {
+          var this_ = this[_];
+          if (!this_.current.done) {
+            this_.index++;
+            this_.current = this_.iterator.next();
+          }
+          return this;
+        }, "advance")
+      }, {
+        key: "return",
+        value: /* @__PURE__ */ __name(function _return() {
+          var this_ = this[_];
+          if (!this.done) {
+            callReturn(this_.iterator);
+          }
+          this_.current = {
+            value: void 0,
+            done: true
+          };
+          return this;
+        }, "_return")
+      }, {
+        key: "asIterator",
+        value: /* @__PURE__ */ __name(function asIterator() {
+          return new PeekeratorIterator(this);
+        }, "asIterator")
+      }, {
+        key: "current",
+        get: /* @__PURE__ */ __name(function get2() {
+          return this[_].current;
+        }, "get")
+      }, {
+        key: "value",
+        get: /* @__PURE__ */ __name(function get2() {
+          return this[_].current.value;
+        }, "get")
+      }, {
+        key: "done",
+        get: /* @__PURE__ */ __name(function get2() {
+          return this[_].current.done;
+        }, "get")
+      }, {
+        key: "index",
+        get: /* @__PURE__ */ __name(function get2() {
+          return this[_].index;
+        }, "get")
+      }]);
+      return Peekerator2;
+    }();
+    exports2.Peekerator = Peekerator;
+  }
+});
+
+// ../../node_modules/iter-tools/impls/$peekerate/peekerate.js
+var require_peekerate = __commonJS({
+  "../../node_modules/iter-tools/impls/$peekerate/peekerate.js"(exports2) {
+    "use strict";
+    var _require = require_iterable();
+    var ensureIterable = _require.ensureIterable;
+    var _require2 = require_peekerator();
+    var Peekerator = _require2.Peekerator;
+    function __peekerate(source) {
+      return Peekerator.from(source);
+    }
+    __name(__peekerate, "__peekerate");
+    exports2.__peekerate = __peekerate;
+    function wrapWithEnsureIterable(fn) {
+      return function(source) {
+        return fn(ensureIterable(source));
+      };
+    }
+    __name(wrapWithEnsureIterable, "wrapWithEnsureIterable");
+    var peekerate = wrapWithEnsureIterable(__peekerate);
+    exports2.peekerate = peekerate;
+  }
+});
+
+// ../../node_modules/iter-tools/impls/$reduce/reduce.js
+var require_reduce = __commonJS({
+  "../../node_modules/iter-tools/impls/$reduce/reduce.js"(exports2) {
+    "use strict";
+    var _require = require_iterable();
+    var iterableCurry = _require.iterableCurry;
+    var _require2 = require_peekerate();
+    var __peekerate = _require2.__peekerate;
+    function __reduce(iterable, reducer) {
+      var initial = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : void 0;
+      var c = 0;
+      var result = initial;
+      var peekr = __peekerate(iterable);
+      try {
+        if (initial === void 0) {
+          if (peekr.done) {
+            throw new Error("Cannot reduce: no initial value specified and iterable was empty");
+          }
+          result = peekr.value;
+          peekr.advance();
+          c = 1;
+        }
+        while (!peekr.done) {
+          result = reducer(result, peekr.value, c++);
+          peekr.advance();
+        }
+        return result;
+      } finally {
+        peekr["return"]();
+      }
+    }
+    __name(__reduce, "__reduce");
+    exports2.__reduce = __reduce;
+    var reduce = /* @__PURE__ */ iterableCurry(__reduce, {
+      reduces: true,
+      minArgs: 1,
+      maxArgs: 2
+    });
+    exports2.reduce = reduce;
+  }
+});
+
+// ../../node_modules/iter-tools/methods/reduce.js
+var require_reduce2 = __commonJS({
+  "../../node_modules/iter-tools/methods/reduce.js"(exports2, module2) {
+    "use strict";
+    module2.exports = require_reduce().reduce;
   }
 });
 
@@ -8396,6 +8213,189 @@ var require_memoizee = __commonJS({
       if (options.refCounter) require_ref_counter();
       return plain(fn, options);
     };
+  }
+});
+
+// ../../node_modules/upath/build/code/upath.js
+var require_upath = __commonJS({
+  "../../node_modules/upath/build/code/upath.js"(exports2) {
+    "use strict";
+    var VERSION = "2.0.1";
+    var extraFn;
+    var extraFunctions;
+    var isFunction2;
+    var isString2;
+    var isValidExt;
+    var name;
+    var path6;
+    var propName;
+    var propValue;
+    var toUnix;
+    var upath34;
+    var slice = [].slice;
+    var indexOf = [].indexOf || function(item) {
+      for (var i = 0, l = this.length; i < l; i++) {
+        if (i in this && this[i] === item)
+          return i;
+      }
+      return -1;
+    };
+    var hasProp = {}.hasOwnProperty;
+    path6 = require("path");
+    isFunction2 = /* @__PURE__ */ __name(function(val) {
+      return typeof val === "function";
+    }, "isFunction");
+    isString2 = /* @__PURE__ */ __name(function(val) {
+      return typeof val === "string" || !!val && typeof val === "object" && Object.prototype.toString.call(val) === "[object String]";
+    }, "isString");
+    upath34 = exports2;
+    upath34.VERSION = typeof VERSION !== "undefined" && VERSION !== null ? VERSION : "NO-VERSION";
+    toUnix = /* @__PURE__ */ __name(function(p) {
+      p = p.replace(/\\/g, "/");
+      p = p.replace(/(?<!^)\/+/g, "/");
+      return p;
+    }, "toUnix");
+    for (propName in path6) {
+      propValue = path6[propName];
+      if (isFunction2(propValue)) {
+        upath34[propName] = /* @__PURE__ */ function(propName2) {
+          return function() {
+            var args, result;
+            args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+            args = args.map(function(p) {
+              if (isString2(p)) {
+                return toUnix(p);
+              } else {
+                return p;
+              }
+            });
+            result = path6[propName2].apply(path6, args);
+            if (isString2(result)) {
+              return toUnix(result);
+            } else {
+              return result;
+            }
+          };
+        }(propName);
+      } else {
+        upath34[propName] = propValue;
+      }
+    }
+    upath34.sep = "/";
+    extraFunctions = {
+      toUnix,
+      normalizeSafe: /* @__PURE__ */ __name(function(p) {
+        var result;
+        p = toUnix(p);
+        result = upath34.normalize(p);
+        if (p.startsWith("./") && !result.startsWith("./") && !result.startsWith("..")) {
+          result = "./" + result;
+        } else if (p.startsWith("//") && !result.startsWith("//")) {
+          if (p.startsWith("//./")) {
+            result = "//." + result;
+          } else {
+            result = "/" + result;
+          }
+        }
+        return result;
+      }, "normalizeSafe"),
+      normalizeTrim: /* @__PURE__ */ __name(function(p) {
+        p = upath34.normalizeSafe(p);
+        if (p.endsWith("/")) {
+          return p.slice(0, +(p.length - 2) + 1 || 9e9);
+        } else {
+          return p;
+        }
+      }, "normalizeTrim"),
+      joinSafe: /* @__PURE__ */ __name(function() {
+        var p, p0, result;
+        p = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+        result = upath34.join.apply(null, p);
+        if (p.length > 0) {
+          p0 = toUnix(p[0]);
+          if (p0.startsWith("./") && !result.startsWith("./") && !result.startsWith("..")) {
+            result = "./" + result;
+          } else if (p0.startsWith("//") && !result.startsWith("//")) {
+            if (p0.startsWith("//./")) {
+              result = "//." + result;
+            } else {
+              result = "/" + result;
+            }
+          }
+        }
+        return result;
+      }, "joinSafe"),
+      addExt: /* @__PURE__ */ __name(function(file, ext2) {
+        if (!ext2) {
+          return file;
+        } else {
+          if (ext2[0] !== ".") {
+            ext2 = "." + ext2;
+          }
+          return file + (file.endsWith(ext2) ? "" : ext2);
+        }
+      }, "addExt"),
+      trimExt: /* @__PURE__ */ __name(function(filename, ignoreExts, maxSize) {
+        var oldExt;
+        if (maxSize == null) {
+          maxSize = 7;
+        }
+        oldExt = upath34.extname(filename);
+        if (isValidExt(oldExt, ignoreExts, maxSize)) {
+          return filename.slice(0, +(filename.length - oldExt.length - 1) + 1 || 9e9);
+        } else {
+          return filename;
+        }
+      }, "trimExt"),
+      removeExt: /* @__PURE__ */ __name(function(filename, ext2) {
+        if (!ext2) {
+          return filename;
+        } else {
+          ext2 = ext2[0] === "." ? ext2 : "." + ext2;
+          if (upath34.extname(filename) === ext2) {
+            return upath34.trimExt(filename, [], ext2.length);
+          } else {
+            return filename;
+          }
+        }
+      }, "removeExt"),
+      changeExt: /* @__PURE__ */ __name(function(filename, ext2, ignoreExts, maxSize) {
+        if (maxSize == null) {
+          maxSize = 7;
+        }
+        return upath34.trimExt(filename, ignoreExts, maxSize) + (!ext2 ? "" : ext2[0] === "." ? ext2 : "." + ext2);
+      }, "changeExt"),
+      defaultExt: /* @__PURE__ */ __name(function(filename, ext2, ignoreExts, maxSize) {
+        var oldExt;
+        if (maxSize == null) {
+          maxSize = 7;
+        }
+        oldExt = upath34.extname(filename);
+        if (isValidExt(oldExt, ignoreExts, maxSize)) {
+          return filename;
+        } else {
+          return upath34.addExt(filename, ext2);
+        }
+      }, "defaultExt")
+    };
+    isValidExt = /* @__PURE__ */ __name(function(ext2, ignoreExts, maxSize) {
+      if (ignoreExts == null) {
+        ignoreExts = [];
+      }
+      return ext2 && ext2.length <= maxSize && indexOf.call(ignoreExts.map(function(e) {
+        return (e && e[0] !== "." ? "." : "") + e;
+      }), ext2) < 0;
+    }, "isValidExt");
+    for (name in extraFunctions) {
+      if (!hasProp.call(extraFunctions, name))
+        continue;
+      extraFn = extraFunctions[name];
+      if (upath34[name] !== void 0) {
+        throw new Error("path." + name + " already exists.");
+      } else {
+        upath34[name] = extraFn;
+      }
+    }
   }
 });
 
@@ -13034,246 +13034,6 @@ var require_strip_comments = __commonJS({
       return compile(parse2(input, opts), opts);
     };
     strip3.parse = parse2;
-  }
-});
-
-// ../../node_modules/walkdir/walkdir.js
-var require_walkdir = __commonJS({
-  "../../node_modules/walkdir/walkdir.js"(exports2, module2) {
-    "use strict";
-    var EventEmitter2 = require("events").EventEmitter;
-    var _fs = require("fs");
-    var _path = require("path");
-    var sep2 = _path.sep || "/";
-    module2.exports = walkdir2;
-    walkdir2.find = walkdir2.walk = walkdir2;
-    walkdir2.sync = function(path6, options, eventHandler) {
-      if (typeof options == "function") cb = options;
-      options = options || {};
-      options.sync = true;
-      return walkdir2(path6, options, eventHandler);
-    };
-    walkdir2.async = function(path6, options, eventHandler) {
-      return new Promise((resolve, reject) => {
-        if (typeof options == "function") cb = options;
-        options = options || {};
-        let emitter = walkdir2(path6, options, eventHandler);
-        emitter.on("error", reject);
-        emitter.on("fail", (path7, err) => {
-          err.message = 'Error walking": ' + path7 + " " + err.message;
-          if (err) reject(err);
-        });
-        let allPaths = {};
-        emitter.on("path", (path7, stat) => {
-          if (options.no_return !== true) allPaths[path7] = stat;
-        });
-        emitter.on("end", () => {
-          if (options.no_return !== true) {
-            return resolve(options.return_object ? allPaths : Object.keys(allPaths));
-          }
-          resolve();
-        });
-      });
-    };
-    function walkdir2(path6, options, cb2) {
-      if (typeof options == "function") cb2 = options;
-      options = options || {};
-      if (options.find_links === void 0) {
-        options.find_links = true;
-      }
-      var fs26 = options.fs || _fs;
-      var emitter = new EventEmitter2(), dontTraverse = [], allPaths = options.return_object ? {} : [], resolved = false, inos = {}, stop = 0, pause = null, ended = 0, jobs = 0, job = /* @__PURE__ */ __name(function(value) {
-        jobs += value;
-        if (value < 1 && !tick) {
-          tick = 1;
-          process.nextTick(function() {
-            tick = 0;
-            if (jobs <= 0 && !ended) {
-              ended = 1;
-              emitter.emit("end");
-            }
-          });
-        }
-      }, "job"), tick = 0;
-      emitter.ignore = function(path7) {
-        if (Array.isArray(path7)) dontTraverse.push.apply(dontTraverse, path7);
-        else dontTraverse.push(path7);
-        return this;
-      };
-      var statIs = [["isFile", "file"], ["isDirectory", "directory"], ["isSymbolicLink", "link"], ["isSocket", "socket"], ["isFIFO", "fifo"], ["isBlockDevice", "blockdevice"], ["isCharacterDevice", "characterdevice"]];
-      var statter = /* @__PURE__ */ __name(function(path7, first, depth) {
-        job(1);
-        var statAction = /* @__PURE__ */ __name(function fn(err, stat2, data) {
-          job(-1);
-          if (stop) return;
-          if (err || !stat2) {
-            emitter.emit("fail", path7, err);
-            return;
-          }
-          var fileName = _path.basename(path7);
-          var fileKey = stat2.dev + "-" + stat2.ino + "-" + fileName;
-          if (options.track_inodes !== false) {
-            if (inos[fileKey] && stat2.ino) return;
-            inos[fileKey] = 1;
-          }
-          if (first && stat2.isDirectory()) {
-            emitter.emit("targetdirectory", path7, stat2, depth);
-            return;
-          }
-          emitter.emit("path", path7, stat2, depth);
-          var i, name;
-          for (var j = 0, k = statIs.length; j < k; j++) {
-            if (stat2[statIs[j][0]]()) {
-              emitter.emit(statIs[j][1], path7, stat2, depth);
-              break;
-            }
-          }
-        }, "fn");
-        if (options.sync) {
-          var stat, ex;
-          try {
-            stat = fs26[options.find_links ? "lstatSync" : "statSync"](path7);
-          } catch (e) {
-            ex = e;
-          }
-          statAction(ex, stat);
-        } else {
-          fs26[options.find_links ? "lstat" : "stat"](path7, statAction);
-        }
-      }, "statter"), readdir2 = /* @__PURE__ */ __name(function(path7, stat, depth) {
-        if (!resolved) {
-          path7 = _path.resolve(path7);
-          resolved = 1;
-        }
-        if (options.max_depth && depth >= options.max_depth) {
-          emitter.emit("maxdepth", path7, stat, depth);
-          return;
-        }
-        if (dontTraverse.length) {
-          for (var i = 0; i < dontTraverse.length; ++i) {
-            if (dontTraverse[i] == path7) {
-              dontTraverse.splice(i, 1);
-              return;
-            }
-          }
-        }
-        job(1);
-        var readdirAction = /* @__PURE__ */ __name(function(err, files3) {
-          job(-1);
-          if (err || !files3) {
-            emitter.emit("fail", path7, err);
-            return;
-          }
-          if (!files3.length) {
-            emitter.emit("empty", path7, stat, depth);
-            return;
-          }
-          if (path7 == sep2) path7 = "";
-          if (options.filter) {
-            var res = options.filter(path7, files3);
-            if (!res) {
-              throw new Error("option.filter function must return a array of strings or a promise");
-            }
-            if (res.then) {
-              job(1);
-              res.then((files4) => {
-                job(-1);
-                for (var i3 = 0, j2 = files4.length; i3 < j2; i3++) {
-                  statter(path7 + sep2 + files4[i3], false, (depth || 0) + 1);
-                }
-              });
-              return;
-            }
-            files3 = res;
-          }
-          for (var i2 = 0, j = files3.length; i2 < j; i2++) {
-            statter(path7 + sep2 + files3[i2], false, (depth || 0) + 1);
-          }
-        }, "readdirAction");
-        if (options.sync) {
-          var e, files2;
-          try {
-            files2 = fs26.readdirSync(path7);
-          } catch (_e) {
-            e = _e;
-          }
-          readdirAction(e, files2);
-        } else {
-          fs26.readdir(path7, readdirAction);
-        }
-      }, "readdir");
-      if (options.follow_symlinks) {
-        var linkAction = /* @__PURE__ */ __name(function(err, path7, depth) {
-          job(-1);
-          statter(path7, false, depth);
-        }, "linkAction");
-        emitter.on("link", function(path7, stat, depth) {
-          job(1);
-          if (options.sync) {
-            var lpath, ex;
-            try {
-              lpath = fs26.readlinkSync(path7);
-            } catch (e) {
-              ex = e;
-            }
-            linkAction(ex, _path.resolve(_path.dirname(path7), lpath), depth);
-          } else {
-            fs26.readlink(path7, function(err, lpath2) {
-              linkAction(err, _path.resolve(_path.dirname(path7), lpath2), depth);
-            });
-          }
-        });
-      }
-      if (cb2) {
-        emitter.on("path", cb2);
-      }
-      if (options.sync) {
-        if (!options.no_return) {
-          emitter.on("path", function(path7, stat) {
-            if (options.return_object) allPaths[path7] = stat;
-            else allPaths.push(path7);
-          });
-        }
-      }
-      if (!options.no_recurse) {
-        emitter.on("directory", readdir2);
-      }
-      emitter.once("targetdirectory", readdir2);
-      emitter.once("fail", function(_path2, err) {
-        if (path6 == _path2) {
-          emitter.emit("error", new Error("error reading first path in the walk " + path6 + "\n" + err), err);
-        }
-      });
-      statter(path6, 1);
-      if (options.sync) {
-        return allPaths;
-      } else {
-        emitter.end = emitter.stop = function() {
-          stop = 1;
-        };
-        var emitQ = [];
-        emitter.pause = function() {
-          job(1);
-          pause = true;
-          emitter.emit = function() {
-            emitQ.push(arguments);
-          };
-        };
-        emitter.resume = function() {
-          if (!pause) return;
-          pause = false;
-          job(-1);
-          emitter.emit = EventEmitter2.prototype.emit;
-          var q = emitQ;
-          emitQ = [];
-          while (q.length) {
-            emitter.emit.apply(emitter, q.shift());
-          }
-        };
-        return emitter;
-      }
-    }
-    __name(walkdir2, "walkdir");
   }
 });
 
@@ -230022,186 +229782,248 @@ ${e.message}`;
   }
 });
 
-// ../../node_modules/source-map-support/register.js
-require_source_map_support().install();
-
-// ../../libs/stacktrace/src/prettyStackTrace.ts
-var import_ansi_colors = __toESM(require_ansi_colors(), 1);
-var import_upath = __toESM(require_upath(), 1);
-
-// ../../node_modules/stacktrace-parser/dist/stack-trace-parser.esm.js
-var UNKNOWN_FUNCTION = "<unknown>";
-function parse(stackString) {
-  var lines = stackString.split("\n");
-  return lines.reduce(function(stack, line) {
-    var parseResult = parseChrome(line) || parseWinjs(line) || parseGecko(line) || parseNode(line) || parseJSC(line);
-    if (parseResult) {
-      stack.push(parseResult);
-    }
-    return stack;
-  }, []);
-}
-__name(parse, "parse");
-var chromeRe = /^\s*at (.*?) ?\(((?:file|https?|blob|chrome-extension|native|eval|webpack|rsc|<anonymous>|\/|[a-z]:\\|\\\\).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i;
-var chromeEvalRe = /\((\S*)(?::(\d+))(?::(\d+))\)/;
-function parseChrome(line) {
-  var parts = chromeRe.exec(line);
-  if (!parts) {
-    return null;
-  }
-  var isNative = parts[2] && parts[2].indexOf("native") === 0;
-  var isEval = parts[2] && parts[2].indexOf("eval") === 0;
-  var submatch = chromeEvalRe.exec(parts[2]);
-  if (isEval && submatch != null) {
-    parts[2] = submatch[1];
-    parts[3] = submatch[2];
-    parts[4] = submatch[3];
-  }
-  return {
-    file: !isNative ? parts[2] : null,
-    methodName: parts[1] || UNKNOWN_FUNCTION,
-    arguments: isNative ? [parts[2]] : [],
-    lineNumber: parts[3] ? +parts[3] : null,
-    column: parts[4] ? +parts[4] : null
-  };
-}
-__name(parseChrome, "parseChrome");
-var winjsRe = /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:file|ms-appx|https?|webpack|rsc|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i;
-function parseWinjs(line) {
-  var parts = winjsRe.exec(line);
-  if (!parts) {
-    return null;
-  }
-  return {
-    file: parts[2],
-    methodName: parts[1] || UNKNOWN_FUNCTION,
-    arguments: [],
-    lineNumber: +parts[3],
-    column: parts[4] ? +parts[4] : null
-  };
-}
-__name(parseWinjs, "parseWinjs");
-var geckoRe = /^\s*(.*?)(?:\((.*?)\))?(?:^|@)((?:file|https?|blob|chrome|webpack|rsc|resource|\[native).*?|[^@]*bundle)(?::(\d+))?(?::(\d+))?\s*$/i;
-var geckoEvalRe = /(\S+) line (\d+)(?: > eval line \d+)* > eval/i;
-function parseGecko(line) {
-  var parts = geckoRe.exec(line);
-  if (!parts) {
-    return null;
-  }
-  var isEval = parts[3] && parts[3].indexOf(" > eval") > -1;
-  var submatch = geckoEvalRe.exec(parts[3]);
-  if (isEval && submatch != null) {
-    parts[3] = submatch[1];
-    parts[4] = submatch[2];
-    parts[5] = null;
-  }
-  return {
-    file: parts[3],
-    methodName: parts[1] || UNKNOWN_FUNCTION,
-    arguments: parts[2] ? parts[2].split(",") : [],
-    lineNumber: parts[4] ? +parts[4] : null,
-    column: parts[5] ? +parts[5] : null
-  };
-}
-__name(parseGecko, "parseGecko");
-var javaScriptCoreRe = /^\s*(?:([^@]*)(?:\((.*?)\))?@)?(\S.*?):(\d+)(?::(\d+))?\s*$/i;
-function parseJSC(line) {
-  var parts = javaScriptCoreRe.exec(line);
-  if (!parts) {
-    return null;
-  }
-  return {
-    file: parts[3],
-    methodName: parts[1] || UNKNOWN_FUNCTION,
-    arguments: [],
-    lineNumber: +parts[4],
-    column: parts[5] ? +parts[5] : null
-  };
-}
-__name(parseJSC, "parseJSC");
-var nodeRe = /^\s*at (?:((?:\[object object\])?[^\\/]+(?: \[as \S+\])?) )?\(?(.*?):(\d+)(?::(\d+))?\)?\s*$/i;
-function parseNode(line) {
-  var parts = nodeRe.exec(line);
-  if (!parts) {
-    return null;
-  }
-  return {
-    file: parts[2],
-    methodName: parts[1] || UNKNOWN_FUNCTION,
-    arguments: [],
-    lineNumber: +parts[3],
-    column: parts[4] ? +parts[4] : null
-  };
-}
-__name(parseNode, "parseNode");
-
-// ../../libs/stacktrace/src/prettyStackTrace.ts
-var import_node_util = require("node:util");
-function prettyStackTrace(error, options = {}) {
-  return [renderMessage(error), renderProps(error, options), renderStack(error, options), ""].join("\n");
-}
-__name(prettyStackTrace, "prettyStackTrace");
-function renderMessage(error) {
-  return import_ansi_colors.default.red(error.name + ": " + error.message);
-}
-__name(renderMessage, "renderMessage");
-function renderStack(error, options) {
-  if (!error.stack || options.omitStack) return "";
-  const frames = parse(error.stack);
-  const offset = frames.reduce((acc, frame) => {
-    return Math.max(acc, frame.methodName.length);
-  }, 0);
-  const stack = frames.map((frame) => {
-    if (frame.file) frame.file = import_upath.default.relative(process.cwd(), frame.file.replace(/^file:[\\/]+/, ""));
-    const { methodName, file, lineNumber, column } = frame;
-    let s = "  ";
-    let fp = "";
-    if (file) {
-      const base = import_upath.default.basename(file);
-      if (file.startsWith("node:")) {
-        s += import_ansi_colors.default.gray(methodName);
-        fp = import_ansi_colors.default.gray(file);
-      } else if (file.includes("node_modules")) {
-        s += methodName;
-        fp = file.replace(base, import_ansi_colors.default.yellow(base));
+// ../../node_modules/walkdir/walkdir.js
+var require_walkdir = __commonJS({
+  "../../node_modules/walkdir/walkdir.js"(exports2, module2) {
+    "use strict";
+    var EventEmitter2 = require("events").EventEmitter;
+    var _fs = require("fs");
+    var _path = require("path");
+    var sep2 = _path.sep || "/";
+    module2.exports = walkdir2;
+    walkdir2.find = walkdir2.walk = walkdir2;
+    walkdir2.sync = function(path6, options, eventHandler) {
+      if (typeof options == "function") cb = options;
+      options = options || {};
+      options.sync = true;
+      return walkdir2(path6, options, eventHandler);
+    };
+    walkdir2.async = function(path6, options, eventHandler) {
+      return new Promise((resolve, reject) => {
+        if (typeof options == "function") cb = options;
+        options = options || {};
+        let emitter = walkdir2(path6, options, eventHandler);
+        emitter.on("error", reject);
+        emitter.on("fail", (path7, err) => {
+          err.message = 'Error walking": ' + path7 + " " + err.message;
+          if (err) reject(err);
+        });
+        let allPaths = {};
+        emitter.on("path", (path7, stat) => {
+          if (options.no_return !== true) allPaths[path7] = stat;
+        });
+        emitter.on("end", () => {
+          if (options.no_return !== true) {
+            return resolve(options.return_object ? allPaths : Object.keys(allPaths));
+          }
+          resolve();
+        });
+      });
+    };
+    function walkdir2(path6, options, cb2) {
+      if (typeof options == "function") cb2 = options;
+      options = options || {};
+      if (options.find_links === void 0) {
+        options.find_links = true;
+      }
+      var fs26 = options.fs || _fs;
+      var emitter = new EventEmitter2(), dontTraverse = [], allPaths = options.return_object ? {} : [], resolved = false, inos = {}, stop = 0, pause = null, ended = 0, jobs = 0, job = /* @__PURE__ */ __name(function(value) {
+        jobs += value;
+        if (value < 1 && !tick) {
+          tick = 1;
+          process.nextTick(function() {
+            tick = 0;
+            if (jobs <= 0 && !ended) {
+              ended = 1;
+              emitter.emit("end");
+            }
+          });
+        }
+      }, "job"), tick = 0;
+      emitter.ignore = function(path7) {
+        if (Array.isArray(path7)) dontTraverse.push.apply(dontTraverse, path7);
+        else dontTraverse.push(path7);
+        return this;
+      };
+      var statIs = [["isFile", "file"], ["isDirectory", "directory"], ["isSymbolicLink", "link"], ["isSocket", "socket"], ["isFIFO", "fifo"], ["isBlockDevice", "blockdevice"], ["isCharacterDevice", "characterdevice"]];
+      var statter = /* @__PURE__ */ __name(function(path7, first, depth) {
+        job(1);
+        var statAction = /* @__PURE__ */ __name(function fn(err, stat2, data) {
+          job(-1);
+          if (stop) return;
+          if (err || !stat2) {
+            emitter.emit("fail", path7, err);
+            return;
+          }
+          var fileName = _path.basename(path7);
+          var fileKey = stat2.dev + "-" + stat2.ino + "-" + fileName;
+          if (options.track_inodes !== false) {
+            if (inos[fileKey] && stat2.ino) return;
+            inos[fileKey] = 1;
+          }
+          if (first && stat2.isDirectory()) {
+            emitter.emit("targetdirectory", path7, stat2, depth);
+            return;
+          }
+          emitter.emit("path", path7, stat2, depth);
+          var i, name;
+          for (var j = 0, k = statIs.length; j < k; j++) {
+            if (stat2[statIs[j][0]]()) {
+              emitter.emit(statIs[j][1], path7, stat2, depth);
+              break;
+            }
+          }
+        }, "fn");
+        if (options.sync) {
+          var stat, ex;
+          try {
+            stat = fs26[options.find_links ? "lstatSync" : "statSync"](path7);
+          } catch (e) {
+            ex = e;
+          }
+          statAction(ex, stat);
+        } else {
+          fs26[options.find_links ? "lstat" : "stat"](path7, statAction);
+        }
+      }, "statter"), readdir2 = /* @__PURE__ */ __name(function(path7, stat, depth) {
+        if (!resolved) {
+          path7 = _path.resolve(path7);
+          resolved = 1;
+        }
+        if (options.max_depth && depth >= options.max_depth) {
+          emitter.emit("maxdepth", path7, stat, depth);
+          return;
+        }
+        if (dontTraverse.length) {
+          for (var i = 0; i < dontTraverse.length; ++i) {
+            if (dontTraverse[i] == path7) {
+              dontTraverse.splice(i, 1);
+              return;
+            }
+          }
+        }
+        job(1);
+        var readdirAction = /* @__PURE__ */ __name(function(err, files3) {
+          job(-1);
+          if (err || !files3) {
+            emitter.emit("fail", path7, err);
+            return;
+          }
+          if (!files3.length) {
+            emitter.emit("empty", path7, stat, depth);
+            return;
+          }
+          if (path7 == sep2) path7 = "";
+          if (options.filter) {
+            var res = options.filter(path7, files3);
+            if (!res) {
+              throw new Error("option.filter function must return a array of strings or a promise");
+            }
+            if (res.then) {
+              job(1);
+              res.then((files4) => {
+                job(-1);
+                for (var i3 = 0, j2 = files4.length; i3 < j2; i3++) {
+                  statter(path7 + sep2 + files4[i3], false, (depth || 0) + 1);
+                }
+              });
+              return;
+            }
+            files3 = res;
+          }
+          for (var i2 = 0, j = files3.length; i2 < j; i2++) {
+            statter(path7 + sep2 + files3[i2], false, (depth || 0) + 1);
+          }
+        }, "readdirAction");
+        if (options.sync) {
+          var e, files2;
+          try {
+            files2 = fs26.readdirSync(path7);
+          } catch (_e) {
+            e = _e;
+          }
+          readdirAction(e, files2);
+        } else {
+          fs26.readdir(path7, readdirAction);
+        }
+      }, "readdir");
+      if (options.follow_symlinks) {
+        var linkAction = /* @__PURE__ */ __name(function(err, path7, depth) {
+          job(-1);
+          statter(path7, false, depth);
+        }, "linkAction");
+        emitter.on("link", function(path7, stat, depth) {
+          job(1);
+          if (options.sync) {
+            var lpath, ex;
+            try {
+              lpath = fs26.readlinkSync(path7);
+            } catch (e) {
+              ex = e;
+            }
+            linkAction(ex, _path.resolve(_path.dirname(path7), lpath), depth);
+          } else {
+            fs26.readlink(path7, function(err, lpath2) {
+              linkAction(err, _path.resolve(_path.dirname(path7), lpath2), depth);
+            });
+          }
+        });
+      }
+      if (cb2) {
+        emitter.on("path", cb2);
+      }
+      if (options.sync) {
+        if (!options.no_return) {
+          emitter.on("path", function(path7, stat) {
+            if (options.return_object) allPaths[path7] = stat;
+            else allPaths.push(path7);
+          });
+        }
+      }
+      if (!options.no_recurse) {
+        emitter.on("directory", readdir2);
+      }
+      emitter.once("targetdirectory", readdir2);
+      emitter.once("fail", function(_path2, err) {
+        if (path6 == _path2) {
+          emitter.emit("error", new Error("error reading first path in the walk " + path6 + "\n" + err), err);
+        }
+      });
+      statter(path6, 1);
+      if (options.sync) {
+        return allPaths;
       } else {
-        s += methodName;
-        fp = file.replace(base, import_ansi_colors.default.red(base));
+        emitter.end = emitter.stop = function() {
+          stop = 1;
+        };
+        var emitQ = [];
+        emitter.pause = function() {
+          job(1);
+          pause = true;
+          emitter.emit = function() {
+            emitQ.push(arguments);
+          };
+        };
+        emitter.resume = function() {
+          if (!pause) return;
+          pause = false;
+          job(-1);
+          emitter.emit = EventEmitter2.prototype.emit;
+          var q = emitQ;
+          emitQ = [];
+          while (q.length) {
+            emitter.emit.apply(emitter, q.shift());
+          }
+        };
+        return emitter;
       }
     }
-    s += " ".repeat(2 + offset - methodName.length);
-    s += fp + ":" + lineNumber + ":" + column;
-    return s;
-  });
-  return [
-    import_ansi_colors.default.magenta("stack:"),
-    //
-    ...stack
-  ].join("\n");
-}
-__name(renderStack, "renderStack");
-function renderProps(error, options) {
-  if (options.omitProps) return "";
-  const ignore = ["name", "message", "frames", "stack"];
-  const keys = Object.getOwnPropertyNames(error).filter((key) => !ignore.includes(key));
-  if (!keys.length) return "";
-  const data = {};
-  for (const [k, v] of Object.entries(error)) {
-    if (keys.includes(k)) {
-      data[k] = v;
-    }
+    __name(walkdir2, "walkdir");
   }
-  return (0, import_node_util.inspect)(data, { colors: true });
-}
-__name(renderProps, "renderProps");
+});
 
-// ../../libs/stacktrace/src/enablePrettyStackTrace.ts
-function enablePrettyStackTrace() {
-  process.prependOnceListener("uncaughtException", (e) => {
-    console.error(prettyStackTrace(e));
-  });
-}
-__name(enablePrettyStackTrace, "enablePrettyStackTrace");
+// ../../node_modules/source-map-support/register.js
+require_source_map_support().install();
 
 // ../../node_modules/dotenv/config.js
 (function() {
@@ -230214,40 +230036,373 @@ __name(enablePrettyStackTrace, "enablePrettyStackTrace");
   );
 })();
 
-// ../../libs/array/src/arrLast.ts
-function arrLast(array) {
-  if (!array.length) throw new Error("Cannot get last element of empty array.");
-  return array[array.length - 1];
-}
-__name(arrLast, "arrLast");
+// ../../libs/cli/src/lib/Help.ts
+var import_ansi_colors3 = __toESM(require_ansi_colors(), 1);
 
-// ../../libs/array/src/arrRemoveDuplicates.ts
-function arrRemoveDuplicates(array) {
-  return Array.from(new Set(array));
+// ../../libs/decorators/src/assertDescriptorValueIsFunction.ts
+function assertDescriptorValueIsFunction(key, descriptor) {
+  if (!(typeof descriptor.value === "function" && descriptor.value !== Function.prototype)) {
+    throw new TypeError(`"value" not a function for ${key} with descriptor: ${JSON.stringify(descriptor)}.`);
+  }
 }
-__name(arrRemoveDuplicates, "arrRemoveDuplicates");
+__name(assertDescriptorValueIsFunction, "assertDescriptorValueIsFunction");
 
-// ../../libs/fn/src/preserveNameAndLength.ts
-function preserveNameAndLength(source, target, adjustLengthBy = 0) {
-  return Object.defineProperties(target, {
-    name: { configurable: true, value: source.name },
-    //
-    length: { configurable: true, value: source.length + adjustLengthBy }
+// ../../libs/composition/src/View.ts
+var TARGET_SYMBOL = Symbol("target");
+var View = class {
+  static {
+    __name(this, "View");
+  }
+  [TARGET_SYMBOL];
+  constructor(target) {
+    this[TARGET_SYMBOL] = target;
+  }
+  get [Symbol.toStringTag]() {
+    return this.constructor.name;
+  }
+  get target() {
+    return this[TARGET_SYMBOL];
+  }
+};
+
+// ../../libs/composition/src/inheritProxifiedPrototypeProperty.ts
+function inheritProxifiedPrototypeProperty(ViewerClass, TargetClass, key) {
+  const des = Reflect.getOwnPropertyDescriptor(TargetClass.prototype, key);
+  if (!des) {
+    return;
+  }
+  if (des.value && typeof des.value === "function") {
+    return Object.defineProperty(ViewerClass.prototype, key, {
+      value(...args) {
+        return this.target[key](...args);
+      },
+      writable: true,
+      configurable: true,
+      enumerable: false
+    });
+  } else if (des && !des.get && !des.set) {
+    return Object.defineProperty(ViewerClass.prototype, key, {
+      get() {
+        return this.target[key];
+      },
+      set: des.writable ? /* @__PURE__ */ __name(function set(value) {
+        this.target[key] = value;
+      }, "set") : void 0,
+      configurable: true,
+      enumerable: false
+    });
+  } else {
+    Object.defineProperty(ViewerClass.prototype, key, {
+      get: des.get ? function() {
+        return this.target[key];
+      } : void 0,
+      set: des.set ? function(value) {
+        this.target[key] = value;
+      } : void 0,
+      configurable: true,
+      enumerable: false
+    });
+  }
+}
+__name(inheritProxifiedPrototypeProperty, "inheritProxifiedPrototypeProperty");
+
+// ../../libs/composition/src/inheritProxifiedPrototype.ts
+function inheritProxifiedPrototype(ViewerClass, TargetClass, omitKeys) {
+  Reflect.ownKeys(TargetClass.prototype).filter((k) => {
+    return k !== "constructor" && k !== Symbol.toStringTag;
+  }).filter((k) => {
+    return omitKeys ? !omitKeys.includes(k) : true;
+  }).forEach((k) => {
+    return inheritProxifiedPrototypeProperty(ViewerClass, TargetClass, k);
   });
+  return ViewerClass;
 }
-__name(preserveNameAndLength, "preserveNameAndLength");
+__name(inheritProxifiedPrototype, "inheritProxifiedPrototype");
 
-// ../../libs/fn/src/bindArg.ts
-function bindArg(fn, boundArgIndex, boundArgValue) {
-  return preserveNameAndLength(
-    fn,
-    (...args) => {
-      return fn(...args.slice(0, boundArgIndex), boundArgValue, ...args.slice(boundArgIndex));
-    },
-    -1
-  );
+// ../../node_modules/es-toolkit/dist/predicate/isPrimitive.mjs
+function isPrimitive(value) {
+  return value == null || typeof value !== "object" && typeof value !== "function";
 }
-__name(bindArg, "bindArg");
+__name(isPrimitive, "isPrimitive");
+
+// ../../node_modules/es-toolkit/dist/predicate/isTypedArray.mjs
+function isTypedArray(x) {
+  return ArrayBuffer.isView(x) && !(x instanceof DataView);
+}
+__name(isTypedArray, "isTypedArray");
+
+// ../../node_modules/es-toolkit/dist/compat/_internal/getSymbols.mjs
+function getSymbols(object) {
+  return Object.getOwnPropertySymbols(object).filter((symbol) => Object.prototype.propertyIsEnumerable.call(object, symbol));
+}
+__name(getSymbols, "getSymbols");
+
+// ../../node_modules/es-toolkit/dist/compat/_internal/getTag.mjs
+function getTag(value) {
+  if (value == null) {
+    return value === void 0 ? "[object Undefined]" : "[object Null]";
+  }
+  return Object.prototype.toString.call(value);
+}
+__name(getTag, "getTag");
+
+// ../../node_modules/es-toolkit/dist/compat/_internal/tags.mjs
+var regexpTag = "[object RegExp]";
+var stringTag = "[object String]";
+var numberTag = "[object Number]";
+var booleanTag = "[object Boolean]";
+var argumentsTag = "[object Arguments]";
+var symbolTag = "[object Symbol]";
+var dateTag = "[object Date]";
+var mapTag = "[object Map]";
+var setTag = "[object Set]";
+var arrayTag = "[object Array]";
+var arrayBufferTag = "[object ArrayBuffer]";
+var objectTag = "[object Object]";
+var dataViewTag = "[object DataView]";
+var uint8ArrayTag = "[object Uint8Array]";
+var uint8ClampedArrayTag = "[object Uint8ClampedArray]";
+var uint16ArrayTag = "[object Uint16Array]";
+var uint32ArrayTag = "[object Uint32Array]";
+var int8ArrayTag = "[object Int8Array]";
+var int16ArrayTag = "[object Int16Array]";
+var int32ArrayTag = "[object Int32Array]";
+var float32ArrayTag = "[object Float32Array]";
+var float64ArrayTag = "[object Float64Array]";
+
+// ../../node_modules/es-toolkit/dist/object/cloneDeepWith.mjs
+function cloneDeepWith(obj, cloneValue) {
+  return cloneDeepWithImpl(obj, void 0, obj, /* @__PURE__ */ new Map(), cloneValue);
+}
+__name(cloneDeepWith, "cloneDeepWith");
+function cloneDeepWithImpl(valueToClone, keyToClone, objectToClone, stack = /* @__PURE__ */ new Map(), cloneValue = void 0) {
+  const cloned = cloneValue?.(valueToClone, keyToClone, objectToClone, stack);
+  if (cloned !== void 0) {
+    return cloned;
+  }
+  if (isPrimitive(valueToClone)) {
+    return valueToClone;
+  }
+  if (stack.has(valueToClone)) {
+    return stack.get(valueToClone);
+  }
+  if (Array.isArray(valueToClone)) {
+    const result = new Array(valueToClone.length);
+    stack.set(valueToClone, result);
+    for (let i = 0; i < valueToClone.length; i++) {
+      result[i] = cloneDeepWithImpl(valueToClone[i], i, objectToClone, stack, cloneValue);
+    }
+    if (Object.hasOwn(valueToClone, "index")) {
+      result.index = valueToClone.index;
+    }
+    if (Object.hasOwn(valueToClone, "input")) {
+      result.input = valueToClone.input;
+    }
+    return result;
+  }
+  if (valueToClone instanceof Date) {
+    return new Date(valueToClone.getTime());
+  }
+  if (valueToClone instanceof RegExp) {
+    const result = new RegExp(valueToClone.source, valueToClone.flags);
+    result.lastIndex = valueToClone.lastIndex;
+    return result;
+  }
+  if (valueToClone instanceof Map) {
+    const result = /* @__PURE__ */ new Map();
+    stack.set(valueToClone, result);
+    for (const [key, value] of valueToClone) {
+      result.set(key, cloneDeepWithImpl(value, key, objectToClone, stack, cloneValue));
+    }
+    return result;
+  }
+  if (valueToClone instanceof Set) {
+    const result = /* @__PURE__ */ new Set();
+    stack.set(valueToClone, result);
+    for (const value of valueToClone) {
+      result.add(cloneDeepWithImpl(value, void 0, objectToClone, stack, cloneValue));
+    }
+    return result;
+  }
+  if (typeof Buffer !== "undefined" && Buffer.isBuffer(valueToClone)) {
+    return valueToClone.subarray();
+  }
+  if (isTypedArray(valueToClone)) {
+    const result = new (Object.getPrototypeOf(valueToClone)).constructor(valueToClone.length);
+    stack.set(valueToClone, result);
+    for (let i = 0; i < valueToClone.length; i++) {
+      result[i] = cloneDeepWithImpl(valueToClone[i], i, objectToClone, stack, cloneValue);
+    }
+    return result;
+  }
+  if (valueToClone instanceof ArrayBuffer || typeof SharedArrayBuffer !== "undefined" && valueToClone instanceof SharedArrayBuffer) {
+    return valueToClone.slice(0);
+  }
+  if (valueToClone instanceof DataView) {
+    const result = new DataView(valueToClone.buffer.slice(0), valueToClone.byteOffset, valueToClone.byteLength);
+    stack.set(valueToClone, result);
+    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
+    return result;
+  }
+  if (typeof File !== "undefined" && valueToClone instanceof File) {
+    const result = new File([valueToClone], valueToClone.name, {
+      type: valueToClone.type
+    });
+    stack.set(valueToClone, result);
+    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
+    return result;
+  }
+  if (typeof Blob !== "undefined" && valueToClone instanceof Blob) {
+    const result = new Blob([valueToClone], { type: valueToClone.type });
+    stack.set(valueToClone, result);
+    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
+    return result;
+  }
+  if (valueToClone instanceof Error) {
+    const result = new valueToClone.constructor();
+    stack.set(valueToClone, result);
+    result.message = valueToClone.message;
+    result.name = valueToClone.name;
+    result.stack = valueToClone.stack;
+    result.cause = valueToClone.cause;
+    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
+    return result;
+  }
+  if (valueToClone instanceof Boolean) {
+    const result = new Boolean(valueToClone.valueOf());
+    stack.set(valueToClone, result);
+    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
+    return result;
+  }
+  if (valueToClone instanceof Number) {
+    const result = new Number(valueToClone.valueOf());
+    stack.set(valueToClone, result);
+    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
+    return result;
+  }
+  if (valueToClone instanceof String) {
+    const result = new String(valueToClone.valueOf());
+    stack.set(valueToClone, result);
+    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
+    return result;
+  }
+  if (typeof valueToClone === "object" && isCloneableObject(valueToClone)) {
+    const result = Object.create(Object.getPrototypeOf(valueToClone));
+    stack.set(valueToClone, result);
+    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
+    return result;
+  }
+  return valueToClone;
+}
+__name(cloneDeepWithImpl, "cloneDeepWithImpl");
+function copyProperties(target, source, objectToClone = target, stack, cloneValue) {
+  const keys = [...Object.keys(source), ...getSymbols(source)];
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const descriptor = Object.getOwnPropertyDescriptor(target, key);
+    if (descriptor == null || descriptor.writable) {
+      target[key] = cloneDeepWithImpl(source[key], key, objectToClone, stack, cloneValue);
+    }
+  }
+}
+__name(copyProperties, "copyProperties");
+function isCloneableObject(object) {
+  switch (getTag(object)) {
+    case argumentsTag:
+    case arrayTag:
+    case arrayBufferTag:
+    case dataViewTag:
+    case booleanTag:
+    case dateTag:
+    case float32ArrayTag:
+    case float64ArrayTag:
+    case int8ArrayTag:
+    case int16ArrayTag:
+    case int32ArrayTag:
+    case mapTag:
+    case numberTag:
+    case objectTag:
+    case regexpTag:
+    case setTag:
+    case stringTag:
+    case symbolTag:
+    case uint8ArrayTag:
+    case uint8ClampedArrayTag:
+    case uint16ArrayTag:
+    case uint32ArrayTag: {
+      return true;
+    }
+    default: {
+      return false;
+    }
+  }
+}
+__name(isCloneableObject, "isCloneableObject");
+
+// ../../node_modules/es-toolkit/dist/object/cloneDeep.mjs
+function cloneDeep(obj) {
+  return cloneDeepWithImpl(obj, void 0, obj, /* @__PURE__ */ new Map(), void 0);
+}
+__name(cloneDeep, "cloneDeep");
+
+// ../../node_modules/es-toolkit/dist/object/mapValues.mjs
+function mapValues(object, getNewValue) {
+  const result = {};
+  const keys = Object.keys(object);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const value = object[key];
+    result[key] = getNewValue(value, key, object);
+  }
+  return result;
+}
+__name(mapValues, "mapValues");
+
+// ../../node_modules/es-toolkit/dist/_internal/isUnsafeProperty.mjs
+function isUnsafeProperty(key) {
+  return key === "__proto__";
+}
+__name(isUnsafeProperty, "isUnsafeProperty");
+
+// ../../node_modules/es-toolkit/dist/string/words.mjs
+var CASE_SPLIT_PATTERN = new RegExp("\\p{Lu}?\\p{Ll}+|[0-9]+|\\p{Lu}+(?!\\p{Ll})|\\p{Emoji_Presentation}|\\p{Extended_Pictographic}|\\p{L}+", "gu");
+function words(str) {
+  return Array.from(str.match(CASE_SPLIT_PATTERN) ?? []);
+}
+__name(words, "words");
+
+// ../../node_modules/es-toolkit/dist/compat/predicate/isPlainObject.mjs
+function isPlainObject(object) {
+  if (typeof object !== "object") {
+    return false;
+  }
+  if (object == null) {
+    return false;
+  }
+  if (Object.getPrototypeOf(object) === null) {
+    return true;
+  }
+  if (Object.prototype.toString.call(object) !== "[object Object]") {
+    const tag = object[Symbol.toStringTag];
+    if (tag == null) {
+      return false;
+    }
+    const isTagReadonly = !Object.getOwnPropertyDescriptor(object, Symbol.toStringTag)?.writable;
+    if (isTagReadonly) {
+      return false;
+    }
+    return object.toString() === `[object ${tag}]`;
+  }
+  let proto = object;
+  while (Object.getPrototypeOf(proto) !== null) {
+    proto = Object.getPrototypeOf(proto);
+  }
+  return Object.getPrototypeOf(object) === proto;
+}
+__name(isPlainObject, "isPlainObject");
+
+// ../../libs/composition/src/inspector/Inspector.ts
+var import_ansi_colors = __toESM(require_ansi_colors(), 1);
 
 // ../../node_modules/@sinclair/typebox/build/esm/type/guard/value.mjs
 var value_exports = {};
@@ -233618,45 +233773,6 @@ function isBuffer(x) {
 }
 __name(isBuffer, "isBuffer");
 
-// ../../node_modules/es-toolkit/dist/compat/_internal/getSymbols.mjs
-function getSymbols(object) {
-  return Object.getOwnPropertySymbols(object).filter((symbol) => Object.prototype.propertyIsEnumerable.call(object, symbol));
-}
-__name(getSymbols, "getSymbols");
-
-// ../../node_modules/es-toolkit/dist/compat/_internal/getTag.mjs
-function getTag(value) {
-  if (value == null) {
-    return value === void 0 ? "[object Undefined]" : "[object Null]";
-  }
-  return Object.prototype.toString.call(value);
-}
-__name(getTag, "getTag");
-
-// ../../node_modules/es-toolkit/dist/compat/_internal/tags.mjs
-var regexpTag = "[object RegExp]";
-var stringTag = "[object String]";
-var numberTag = "[object Number]";
-var booleanTag = "[object Boolean]";
-var argumentsTag = "[object Arguments]";
-var symbolTag = "[object Symbol]";
-var dateTag = "[object Date]";
-var mapTag = "[object Map]";
-var setTag = "[object Set]";
-var arrayTag = "[object Array]";
-var arrayBufferTag = "[object ArrayBuffer]";
-var objectTag = "[object Object]";
-var dataViewTag = "[object DataView]";
-var uint8ArrayTag = "[object Uint8Array]";
-var uint8ClampedArrayTag = "[object Uint8ClampedArray]";
-var uint16ArrayTag = "[object Uint16Array]";
-var uint32ArrayTag = "[object Uint32Array]";
-var int8ArrayTag = "[object Int8Array]";
-var int16ArrayTag = "[object Int16Array]";
-var int32ArrayTag = "[object Int32Array]";
-var float32ArrayTag = "[object Float32Array]";
-var float64ArrayTag = "[object Float64Array]";
-
 // ../../node_modules/es-toolkit/dist/predicate/isFunction.mjs
 function isFunction(value) {
   return typeof value === "function";
@@ -233669,28 +233785,20 @@ function isLength(value) {
 }
 __name(isLength, "isLength");
 
-// ../../node_modules/es-toolkit/dist/predicate/isPrimitive.mjs
-function isPrimitive(value) {
-  return value == null || typeof value !== "object" && typeof value !== "function";
-}
-__name(isPrimitive, "isPrimitive");
-
 // ../../node_modules/es-toolkit/dist/predicate/isString.mjs
 function isString(value) {
   return typeof value === "string";
 }
 __name(isString, "isString");
 
-// ../../node_modules/es-toolkit/dist/predicate/isTypedArray.mjs
-function isTypedArray(x) {
-  return ArrayBuffer.isView(x) && !(x instanceof DataView);
-}
-__name(isTypedArray, "isTypedArray");
-
 // ../../libs/is/src/isConstructor.ts
 function isConstructor(value) {
-  if (typeof value !== "function") return false;
-  if (!value.prototype || value.prototype.constructor !== value) return false;
+  if (typeof value !== "function") {
+    return false;
+  }
+  if (!value.prototype || value.prototype.constructor !== value) {
+    return false;
+  }
   return true;
 }
 __name(isConstructor, "isConstructor");
@@ -233780,7 +233888,9 @@ __name(hasOwnProperty2, "hasOwnProperty");
 
 // ../../libs/object/src/hasPrototypeChainProperty.ts
 function hasPrototypeChainProperty(object, key) {
-  return getClassChain(object).some((ctor) => hasOwnProperty2(ctor.prototype, key));
+  return getClassChain(object).some((ctor) => {
+    return hasOwnProperty2(ctor.prototype, key);
+  });
 }
 __name(hasPrototypeChainProperty, "hasPrototypeChainProperty");
 
@@ -233790,183 +233900,179 @@ function hasProperty(object, key) {
 }
 __name(hasProperty, "hasProperty");
 
+// ../../node_modules/mnemonist/index.mjs
+var import_fibonacci_heap = __toESM(require_fibonacci_heap(), 1);
+var import_heap = __toESM(require_heap(), 1);
+var import_suffix_array = __toESM(require_suffix_array(), 1);
+var import_vector = __toESM(require_vector(), 1);
+var import_default_map = __toESM(require_default_map(), 1);
+var import_multi_set = __toESM(require_multi_set(), 1);
+var MinFibonacciHeap = import_fibonacci_heap.default.MinFibonacciHeap;
+var MaxFibonacciHeap = import_fibonacci_heap.default.MaxFibonacciHeap;
+var MinHeap = import_heap.default.MinHeap;
+var MaxHeap = import_heap.default.MaxHeap;
+var GeneralizedSuffixArray = import_suffix_array.default.GeneralizedSuffixArray;
+var Uint8Vector = import_vector.default.Uint8Vector;
+var Uint8ClampedVector = import_vector.default.Uint8ClampedVector;
+var Int8Vector = import_vector.default.Int8Vector;
+var Uint16Vector = import_vector.default.Uint16Vector;
+var Int16Vector = import_vector.default.Int16Vector;
+var Uint32Vector = import_vector.default.Uint32Vector;
+var Int32Vector = import_vector.default.Int32Vector;
+var Float32Vector = import_vector.default.Float32Vector;
+var Float64Vector = import_vector.default.Float64Vector;
+var PointerVector = import_vector.default.PointerVector;
+
 // ../../node_modules/iter-tools/index.mjs
 var import_filter = __toESM(require_filter2(), 1);
 var import_is_iterable = __toESM(require_is_iterable2(), 1);
 var import_map = __toESM(require_map2(), 1);
 var import_reduce = __toESM(require_reduce2(), 1);
 
-// ../../libs/map/src/mapLoad.ts
-function mapLoad(ins, entries) {
-  for (const [key, value] of entries) {
-    ins.set(key, value);
+// ../../libs/iter/src/countUniques.ts
+function countUniques(input) {
+  return new ExtMap(
+    (0, import_reduce.default)(
+      new import_multi_set.default(),
+      //
+      (acc, imp) => {
+        return acc.add(imp);
+      },
+      input
+    ).multiplicities()
+  ).sortByValues((a, b) => {
+    return b - a;
+  });
+}
+__name(countUniques, "countUniques");
+
+// ../../libs/iter/src/filterIterable.ts
+function filterIterable(mapLike, predicate) {
+  return (0, import_filter.default)(([k, v]) => {
+    return predicate(v, k);
+  }, mapLike);
+}
+__name(filterIterable, "filterIterable");
+
+// ../../libs/iter/src/mapIterable.ts
+function mapIterable(mapLike, transform) {
+  return (0, import_map.default)(([k, v]) => {
+    return transform(v, k);
+  }, mapLike);
+}
+__name(mapIterable, "mapIterable");
+
+// ../../libs/iter/src/mapIterableKeys.ts
+function mapIterableKeys(mapLike, transform) {
+  return (0, import_map.default)(([k, v]) => {
+    return [transform(k, v), v];
+  }, mapLike);
+}
+__name(mapIterableKeys, "mapIterableKeys");
+
+// ../../libs/iter/src/mapIterableValues.ts
+function mapIterableValues(mapLike, transform) {
+  return (0, import_map.default)(([k, v]) => {
+    return [k, transform(v, k)];
+  }, mapLike);
+}
+__name(mapIterableValues, "mapIterableValues");
+
+// ../../libs/iter/src/reduceIterable.ts
+function reduceIterable(mapLike, reducer, initialValue) {
+  for (const [key, value] of mapLike) {
+    initialValue = reducer(initialValue, value, key);
   }
-  return ins;
+  return initialValue;
 }
-__name(mapLoad, "mapLoad");
+__name(reduceIterable, "reduceIterable");
 
-// ../../libs/map/src/keysArray.ts
-function keysArray(ins) {
-  return Array.from(ins.keys());
+// ../../libs/iter/src/toObjectIterable.ts
+function toObjectIterable(mapLike) {
+  return Object.fromEntries(mapLike);
 }
-__name(keysArray, "keysArray");
+__name(toObjectIterable, "toObjectIterable");
 
-// ../../libs/map/src/valuesArray.ts
-function valuesArray(ins) {
-  return Array.from(ins.values());
-}
-__name(valuesArray, "valuesArray");
-
-// ../../libs/map/src/entriesArray.ts
-function entriesArray(ins) {
-  return Array.from(ins);
-}
-__name(entriesArray, "entriesArray");
-
-// ../../libs/map/src/toMap.ts
-function toMap(ins) {
-  return new Map(ins);
-}
-__name(toMap, "toMap");
-
-// ../../libs/map/src/sort.ts
-function sort(ins, compare) {
-  const entries = Array.from(ins).sort(compare);
-  ins.clear();
-  for (const [k, v] of entries) {
-    ins.set(k, v);
+// ../../libs/object/src/objSortKeys.ts
+function objSortKeys(o, compare) {
+  const entries = Object.entries(o);
+  if (compare) {
+    entries.sort(compare);
+  } else {
+    entries.sort((a, b) => {
+      return a[0].localeCompare(b[0]);
+    });
   }
-  return ins;
+  return Object.fromEntries(entries);
 }
-__name(sort, "sort");
+__name(objSortKeys, "objSortKeys");
 
-// ../../libs/map/src/sortByKeys.ts
-function sortByKeys(ins, compare) {
-  const entries = Array.from(ins).sort((a, b) => compare(a[0], b[0]));
-  ins.clear();
-  for (const [k, v] of entries) {
-    ins.set(k, v);
-  }
-  return ins;
+// ../../libs/object/src/valuesOf.ts
+function valuesOf(obj) {
+  return Object.values(obj);
 }
-__name(sortByKeys, "sortByKeys");
+__name(valuesOf, "valuesOf");
 
-// ../../libs/map/src/sortByValues.ts
-function sortByValues(ins, compare) {
-  const entries = Array.from(ins).sort((a, b) => compare(a[1], b[1]));
-  ins.clear();
-  for (const [k, v] of entries) {
-    ins.set(k, v);
-  }
-  return ins;
-}
-__name(sortByValues, "sortByValues");
-
-// ../../libs/map/src/mapUpdate.ts
-function mapUpdate(ins, key, update) {
-  const newValue = update(ins.get(key), key, ins);
-  ins.set(key, newValue);
-  return ins;
-}
-__name(mapUpdate, "mapUpdate");
-
-// ../../libs/map/src/mapGetOrDefault.ts
-function mapGetOrDefault(map3, key, factory) {
-  let value = map3.get(key);
-  if (value !== void 0 || map3.has(key)) return value;
-  value = factory(key, map3);
-  map3.set(key, value);
-  return value;
-}
-__name(mapGetOrDefault, "mapGetOrDefault");
-
-// ../../libs/map/src/mapReverse.ts
-function mapReverse(ins) {
-  const entries = Array.from(ins).reverse();
-  ins.clear();
-  mapLoad(ins, entries);
-  return ins;
-}
-__name(mapReverse, "mapReverse");
-
-// ../../libs/composition/src/View.ts
-var TARGET_SYMBOL = Symbol("target");
-var View = class {
-  static {
-    __name(this, "View");
-  }
-  [TARGET_SYMBOL];
-  constructor(target) {
-    this[TARGET_SYMBOL] = target;
-  }
-  get [Symbol.toStringTag]() {
-    return this.constructor.name;
-  }
-  get target() {
-    return this[TARGET_SYMBOL];
-  }
+// ../../libs/composition/src/inspector/defaults/ignoreValuesFilterDefaults.ts
+var ignoreValuesFilterDefaults = {
+  noFalse: /* @__PURE__ */ __name((value) => {
+    return value !== false;
+  }, "noFalse"),
+  noNull: /* @__PURE__ */ __name((value) => {
+    return value !== null;
+  }, "noNull"),
+  noUndefined: /* @__PURE__ */ __name((value) => {
+    return value !== void 0;
+  }, "noUndefined"),
+  noEmptyArray: /* @__PURE__ */ __name((value) => {
+    return !Array.isArray(value) || !!value.length;
+  }, "noEmptyArray"),
+  noEmptyObject: /* @__PURE__ */ __name((value) => {
+    return !value || typeof value !== "object" || Array.isArray(value) || !!Object.keys(value).length;
+  }, "noEmptyObject")
 };
 
-// ../../libs/composition/src/inheritProxifiedPrototypeProperty.ts
-function inheritProxifiedPrototypeProperty(ViewerClass, TargetClass, key) {
-  const des = Reflect.getOwnPropertyDescriptor(TargetClass.prototype, key);
-  if (!des) return;
-  if (des.value && typeof des.value === "function") {
-    return Object.defineProperty(ViewerClass.prototype, key, {
-      value(...args) {
-        return this.target[key](...args);
-      },
-      writable: true,
-      configurable: true,
-      enumerable: false
-    });
-  } else if (des && !des.get && !des.set) {
-    return Object.defineProperty(ViewerClass.prototype, key, {
-      get() {
-        return this.target[key];
-      },
-      set: des.writable ? /* @__PURE__ */ __name(function set(value) {
-        this.target[key] = value;
-      }, "set") : void 0,
-      configurable: true,
-      enumerable: false
-    });
-  } else {
-    Object.defineProperty(ViewerClass.prototype, key, {
-      get: des.get ? function() {
-        return this.target[key];
-      } : void 0,
-      set: des.set ? function(value) {
-        this.target[key] = value;
-      } : void 0,
-      configurable: true,
-      enumerable: false
-    });
-  }
-}
-__name(inheritProxifiedPrototypeProperty, "inheritProxifiedPrototypeProperty");
-
-// ../../libs/composition/src/inheritProxifiedPrototype.ts
-function inheritProxifiedPrototype(ViewerClass, TargetClass, omitKeys) {
-  Reflect.ownKeys(TargetClass.prototype).filter((k) => k !== "constructor" && k !== Symbol.toStringTag).filter((k) => omitKeys ? !omitKeys.includes(k) : true).forEach((k) => inheritProxifiedPrototypeProperty(ViewerClass, TargetClass, k));
-  return ViewerClass;
-}
-__name(inheritProxifiedPrototype, "inheritProxifiedPrototype");
-
 // ../../libs/composition/src/inspector/Inspector.ts
-var import_ansi_colors2 = __toESM(require_ansi_colors(), 1);
+var import_node_util2 = require("node:util");
+
+// ../../libs/composition/src/inspector/defaults/ignoreValuesDefaults.ts
+var ignoreValuesDefaults = {
+  noEmptyArray: true,
+  noEmptyObject: true,
+  noNull: true,
+  noUndefined: true,
+  noFalse: false
+};
+
+// ../../libs/composition/src/inspector/defaults/inspectDefaults.ts
+var import_node_util = require("node:util");
+var inspectDefaults = {
+  ...import_node_util.inspect.defaultOptions,
+  customInspect: true,
+  maxStringLength: 500,
+  maxArrayLength: 200,
+  breakLength: 100,
+  colors: true,
+  depth: 100,
+  compact: false,
+  numericSeparator: true
+};
+
+// ../../libs/composition/src/inspector/defaults/inspectorDefaults.ts
+var inspectorDefaults = {
+  inspect: inspectDefaults,
+  ignoreValues: ignoreValuesDefaults,
+  keys: [],
+  autoAddBooleanKeys: false,
+  ignoreKeys: [],
+  filters: []
+};
 
 // ../../node_modules/es-toolkit/dist/compat/predicate/isArrayLike.mjs
 function isArrayLike(value) {
   return value != null && typeof value !== "function" && isLength(value.length);
 }
 __name(isArrayLike, "isArrayLike");
-
-// ../../node_modules/es-toolkit/dist/_internal/isUnsafeProperty.mjs
-function isUnsafeProperty(key) {
-  return key === "__proto__";
-}
-__name(isUnsafeProperty, "isUnsafeProperty");
 
 // ../../node_modules/es-toolkit/dist/compat/_internal/isDeepKey.mjs
 function isDeepKey(key) {
@@ -234153,181 +234259,6 @@ function getWithPath(object, path6, defaultValue) {
   return current;
 }
 __name(getWithPath, "getWithPath");
-
-// ../../node_modules/es-toolkit/dist/object/cloneDeepWith.mjs
-function cloneDeepWith(obj, cloneValue) {
-  return cloneDeepWithImpl(obj, void 0, obj, /* @__PURE__ */ new Map(), cloneValue);
-}
-__name(cloneDeepWith, "cloneDeepWith");
-function cloneDeepWithImpl(valueToClone, keyToClone, objectToClone, stack = /* @__PURE__ */ new Map(), cloneValue = void 0) {
-  const cloned = cloneValue?.(valueToClone, keyToClone, objectToClone, stack);
-  if (cloned !== void 0) {
-    return cloned;
-  }
-  if (isPrimitive(valueToClone)) {
-    return valueToClone;
-  }
-  if (stack.has(valueToClone)) {
-    return stack.get(valueToClone);
-  }
-  if (Array.isArray(valueToClone)) {
-    const result = new Array(valueToClone.length);
-    stack.set(valueToClone, result);
-    for (let i = 0; i < valueToClone.length; i++) {
-      result[i] = cloneDeepWithImpl(valueToClone[i], i, objectToClone, stack, cloneValue);
-    }
-    if (Object.hasOwn(valueToClone, "index")) {
-      result.index = valueToClone.index;
-    }
-    if (Object.hasOwn(valueToClone, "input")) {
-      result.input = valueToClone.input;
-    }
-    return result;
-  }
-  if (valueToClone instanceof Date) {
-    return new Date(valueToClone.getTime());
-  }
-  if (valueToClone instanceof RegExp) {
-    const result = new RegExp(valueToClone.source, valueToClone.flags);
-    result.lastIndex = valueToClone.lastIndex;
-    return result;
-  }
-  if (valueToClone instanceof Map) {
-    const result = /* @__PURE__ */ new Map();
-    stack.set(valueToClone, result);
-    for (const [key, value] of valueToClone) {
-      result.set(key, cloneDeepWithImpl(value, key, objectToClone, stack, cloneValue));
-    }
-    return result;
-  }
-  if (valueToClone instanceof Set) {
-    const result = /* @__PURE__ */ new Set();
-    stack.set(valueToClone, result);
-    for (const value of valueToClone) {
-      result.add(cloneDeepWithImpl(value, void 0, objectToClone, stack, cloneValue));
-    }
-    return result;
-  }
-  if (typeof Buffer !== "undefined" && Buffer.isBuffer(valueToClone)) {
-    return valueToClone.subarray();
-  }
-  if (isTypedArray(valueToClone)) {
-    const result = new (Object.getPrototypeOf(valueToClone)).constructor(valueToClone.length);
-    stack.set(valueToClone, result);
-    for (let i = 0; i < valueToClone.length; i++) {
-      result[i] = cloneDeepWithImpl(valueToClone[i], i, objectToClone, stack, cloneValue);
-    }
-    return result;
-  }
-  if (valueToClone instanceof ArrayBuffer || typeof SharedArrayBuffer !== "undefined" && valueToClone instanceof SharedArrayBuffer) {
-    return valueToClone.slice(0);
-  }
-  if (valueToClone instanceof DataView) {
-    const result = new DataView(valueToClone.buffer.slice(0), valueToClone.byteOffset, valueToClone.byteLength);
-    stack.set(valueToClone, result);
-    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
-    return result;
-  }
-  if (typeof File !== "undefined" && valueToClone instanceof File) {
-    const result = new File([valueToClone], valueToClone.name, {
-      type: valueToClone.type
-    });
-    stack.set(valueToClone, result);
-    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
-    return result;
-  }
-  if (typeof Blob !== "undefined" && valueToClone instanceof Blob) {
-    const result = new Blob([valueToClone], { type: valueToClone.type });
-    stack.set(valueToClone, result);
-    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
-    return result;
-  }
-  if (valueToClone instanceof Error) {
-    const result = new valueToClone.constructor();
-    stack.set(valueToClone, result);
-    result.message = valueToClone.message;
-    result.name = valueToClone.name;
-    result.stack = valueToClone.stack;
-    result.cause = valueToClone.cause;
-    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
-    return result;
-  }
-  if (valueToClone instanceof Boolean) {
-    const result = new Boolean(valueToClone.valueOf());
-    stack.set(valueToClone, result);
-    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
-    return result;
-  }
-  if (valueToClone instanceof Number) {
-    const result = new Number(valueToClone.valueOf());
-    stack.set(valueToClone, result);
-    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
-    return result;
-  }
-  if (valueToClone instanceof String) {
-    const result = new String(valueToClone.valueOf());
-    stack.set(valueToClone, result);
-    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
-    return result;
-  }
-  if (typeof valueToClone === "object" && isCloneableObject(valueToClone)) {
-    const result = Object.create(Object.getPrototypeOf(valueToClone));
-    stack.set(valueToClone, result);
-    copyProperties(result, valueToClone, objectToClone, stack, cloneValue);
-    return result;
-  }
-  return valueToClone;
-}
-__name(cloneDeepWithImpl, "cloneDeepWithImpl");
-function copyProperties(target, source, objectToClone = target, stack, cloneValue) {
-  const keys = [...Object.keys(source), ...getSymbols(source)];
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
-    const descriptor = Object.getOwnPropertyDescriptor(target, key);
-    if (descriptor == null || descriptor.writable) {
-      target[key] = cloneDeepWithImpl(source[key], key, objectToClone, stack, cloneValue);
-    }
-  }
-}
-__name(copyProperties, "copyProperties");
-function isCloneableObject(object) {
-  switch (getTag(object)) {
-    case argumentsTag:
-    case arrayTag:
-    case arrayBufferTag:
-    case dataViewTag:
-    case booleanTag:
-    case dateTag:
-    case float32ArrayTag:
-    case float64ArrayTag:
-    case int8ArrayTag:
-    case int16ArrayTag:
-    case int32ArrayTag:
-    case mapTag:
-    case numberTag:
-    case objectTag:
-    case regexpTag:
-    case setTag:
-    case stringTag:
-    case symbolTag:
-    case uint8ArrayTag:
-    case uint8ClampedArrayTag:
-    case uint16ArrayTag:
-    case uint32ArrayTag: {
-      return true;
-    }
-    default: {
-      return false;
-    }
-  }
-}
-__name(isCloneableObject, "isCloneableObject");
-
-// ../../node_modules/es-toolkit/dist/object/cloneDeep.mjs
-function cloneDeep(obj) {
-  return cloneDeepWithImpl(obj, void 0, obj, /* @__PURE__ */ new Map(), void 0);
-}
-__name(cloneDeep, "cloneDeep");
 
 // ../../node_modules/es-toolkit/dist/compat/object/cloneDeepWith.mjs
 function cloneDeepWith2(obj, customizer) {
@@ -234602,49 +234533,6 @@ function arrayLikeKeysIn(object) {
 }
 __name(arrayLikeKeysIn, "arrayLikeKeysIn");
 
-// ../../node_modules/es-toolkit/dist/compat/predicate/isPlainObject.mjs
-function isPlainObject(object) {
-  if (typeof object !== "object") {
-    return false;
-  }
-  if (object == null) {
-    return false;
-  }
-  if (Object.getPrototypeOf(object) === null) {
-    return true;
-  }
-  if (Object.prototype.toString.call(object) !== "[object Object]") {
-    const tag = object[Symbol.toStringTag];
-    if (tag == null) {
-      return false;
-    }
-    const isTagReadonly = !Object.getOwnPropertyDescriptor(object, Symbol.toStringTag)?.writable;
-    if (isTagReadonly) {
-      return false;
-    }
-    return object.toString() === `[object ${tag}]`;
-  }
-  let proto = object;
-  while (Object.getPrototypeOf(proto) !== null) {
-    proto = Object.getPrototypeOf(proto);
-  }
-  return Object.getPrototypeOf(object) === proto;
-}
-__name(isPlainObject, "isPlainObject");
-
-// ../../node_modules/es-toolkit/dist/object/mapValues.mjs
-function mapValues(object, getNewValue) {
-  const result = {};
-  const keys = Object.keys(object);
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
-    const value = object[key];
-    result[key] = getNewValue(value, key, object);
-  }
-  return result;
-}
-__name(mapValues, "mapValues");
-
 // ../../node_modules/es-toolkit/dist/compat/_internal/getSymbolsIn.mjs
 function getSymbolsIn(object) {
   const result = [];
@@ -234721,13 +234609,6 @@ function deepCloneInOmit(obj) {
 }
 __name(deepCloneInOmit, "deepCloneInOmit");
 
-// ../../node_modules/es-toolkit/dist/string/words.mjs
-var CASE_SPLIT_PATTERN = new RegExp("\\p{Lu}?\\p{Ll}+|[0-9]+|\\p{Lu}+(?!\\p{Ll})|\\p{Emoji_Presentation}|\\p{Extended_Pictographic}|\\p{L}+", "gu");
-function words(str) {
-  return Array.from(str.match(CASE_SPLIT_PATTERN) ?? []);
-}
-__name(words, "words");
-
 // ../../node_modules/es-toolkit/dist/string/kebabCase.mjs
 function kebabCase(str) {
   const words$1 = words(str);
@@ -234735,50 +234616,7 @@ function kebabCase(str) {
 }
 __name(kebabCase, "kebabCase");
 
-// ../../libs/composition/src/inspector/defaults/ignoreValuesFilterDefaults.ts
-var ignoreValuesFilterDefaults = {
-  noFalse: /* @__PURE__ */ __name((value) => value !== false, "noFalse"),
-  noNull: /* @__PURE__ */ __name((value) => value !== null, "noNull"),
-  noUndefined: /* @__PURE__ */ __name((value) => value !== void 0, "noUndefined"),
-  noEmptyArray: /* @__PURE__ */ __name((value) => !Array.isArray(value) || !!value.length, "noEmptyArray"),
-  noEmptyObject: /* @__PURE__ */ __name((value) => !value || typeof value !== "object" || Array.isArray(value) || !!Object.keys(value).length, "noEmptyObject")
-};
-
-// ../../libs/composition/src/inspector/defaults/inspectDefaults.ts
-var import_node_util2 = require("node:util");
-var inspectDefaults = {
-  ...import_node_util2.inspect.defaultOptions,
-  customInspect: true,
-  maxStringLength: 500,
-  maxArrayLength: 200,
-  breakLength: 100,
-  colors: true,
-  depth: 100,
-  compact: false,
-  numericSeparator: true
-};
-
-// ../../libs/composition/src/inspector/defaults/ignoreValuesDefaults.ts
-var ignoreValuesDefaults = {
-  noEmptyArray: true,
-  noEmptyObject: true,
-  noNull: true,
-  noUndefined: true,
-  noFalse: false
-};
-
-// ../../libs/composition/src/inspector/defaults/inspectorDefaults.ts
-var inspectorDefaults = {
-  inspect: inspectDefaults,
-  ignoreValues: ignoreValuesDefaults,
-  keys: [],
-  autoAddBooleanKeys: false,
-  ignoreKeys: [],
-  filters: []
-};
-
 // ../../libs/composition/src/inspector/Inspector.ts
-var import_node_util3 = require("node:util");
 var Inspector = class _Inspector extends View {
   static {
     __name(this, "Inspector");
@@ -234788,10 +234626,10 @@ var Inspector = class _Inspector extends View {
    * This follows the Composition pattern to extend classes without inheritance.
    */
   static compose(cls, options = {}) {
-    if (!hasProperty(cls.prototype, import_node_util3.inspect.custom)) {
+    if (!hasProperty(cls.prototype, import_node_util2.inspect.custom)) {
       defineMethod(
         cls.prototype,
-        import_node_util3.inspect.custom,
+        import_node_util2.inspect.custom,
         function(depth, options2) {
           return this.inspector.inspect(depth, options2);
         }
@@ -234814,8 +234652,12 @@ var Inspector = class _Inspector extends View {
    */
   toObject(depth = 0) {
     const result = mapValues(this.compile(depth).output, (value) => {
-      if (!value) return value;
-      if (typeof value !== "object") return value;
+      if (!value) {
+        return value;
+      }
+      if (typeof value !== "object") {
+        return value;
+      }
       if (Array.isArray(value)) {
         return value.map((v) => {
           if (v.inspector && v.inspector instanceof _Inspector) {
@@ -234837,10 +234679,10 @@ var Inspector = class _Inspector extends View {
   inspect(depth = 0, options = {}) {
     const { output, inspectOptions } = this.compile(depth);
     Object.assign(inspectOptions, options);
-    const result = (0, import_node_util3.inspect)(output, options);
+    const result = (0, import_node_util2.inspect)(output, options);
     return result.replace(/Object \[\w+\] \{/gm, (match2) => {
       match2 = match2.substring(8, match2.length - 3);
-      return `[${inspectOptions.colors ? import_ansi_colors2.default.magenta(match2) : match2}] {`;
+      return `[${inspectOptions.colors ? import_ansi_colors.default.magenta(match2) : match2}] {`;
     });
   }
   /**
@@ -234855,28 +234697,60 @@ var Inspector = class _Inspector extends View {
     const options = this.mergePrototypeOptions();
     const keys = new Set(options.keys);
     if (options.autoAddBooleanKeys) {
-      const insBooleanValueKeys = Object.entries(this.target).filter(([_key, value]) => typeof value === "boolean").map(([key]) => key);
+      const insBooleanValueKeys = Object.entries(this.target).filter(([_key, value]) => {
+        return typeof value === "boolean";
+      }).map(([key]) => {
+        return key;
+      });
       const protoGetterKeys = getClassChain(this.target, { includeSelf: false }).map((cls) => {
         return Object.getOwnPropertyNames(cls.prototype).filter((key) => {
           return hasOwnProperty2(Reflect.getOwnPropertyDescriptor(cls.prototype, key), "get");
         });
       }).flat(2);
-      const booleanKeys = insBooleanValueKeys.concat(protoGetterKeys).filter((key) => /^(is|was|has|should)[A-Z]/.test(key));
-      booleanKeys.forEach((key) => keys.add(key));
+      const booleanKeys = insBooleanValueKeys.concat(protoGetterKeys).filter((key) => {
+        return /^(is|was|has|should)[A-Z]/.test(key);
+      });
+      booleanKeys.forEach((key) => {
+        return keys.add(key);
+      });
     }
-    const ignoreFilters = Object.entries(options.ignoreValues).filter(([_name, enabled]) => enabled).map(([name]) => ignoreValuesFilterDefaults[name]);
+    const ignoreFilters = Object.entries(options.ignoreValues).filter(([_name, enabled]) => {
+      return enabled;
+    }).map(([name]) => {
+      return ignoreValuesFilterDefaults[name];
+    });
     const objectValues = [];
     const arrayValues = [];
     for (const key of keys) {
       const value = this.target[key];
-      if (!ignoreFilters.every((filter2) => filter2(value))) continue;
-      if (!options.filters.every((filter2) => filter2.call(this.target, value, key, depth, output))) continue;
-      if (Array.isArray(value)) arrayValues.push(() => defineValue(output, key, value));
-      else if (isObjectLike(value)) objectValues.push(() => defineValue(output, key, value));
-      else defineValue(output, key, value);
+      if (!ignoreFilters.every((filter2) => {
+        return filter2(value);
+      })) {
+        continue;
+      }
+      if (!options.filters.every((filter2) => {
+        return filter2.call(this.target, value, key, depth, output);
+      })) {
+        continue;
+      }
+      if (Array.isArray(value)) {
+        arrayValues.push(() => {
+          return defineValue(output, key, value);
+        });
+      } else if (isObjectLike(value)) {
+        objectValues.push(() => {
+          return defineValue(output, key, value);
+        });
+      } else {
+        defineValue(output, key, value);
+      }
     }
-    objectValues.forEach((fn) => fn());
-    arrayValues.forEach((fn) => fn());
+    objectValues.forEach((fn) => {
+      return fn();
+    });
+    arrayValues.forEach((fn) => {
+      return fn();
+    });
     return { output, inspectOptions: options.inspect };
   }
   /**
@@ -234891,16 +234765,34 @@ var Inspector = class _Inspector extends View {
     const ignoreKeys = new Set(defaults2.ignoreKeys);
     const ignoreValues = defaults2.ignoreValues;
     const customFilters = defaults2.filters;
-    const prototypeChainOptions = getClassChain(this.target.constructor, { includeSelf: true }).reverse().map((cls) => cls.inspector ?? {});
+    const prototypeChainOptions = getClassChain(this.target.constructor, { includeSelf: true }).reverse().map((cls) => {
+      return cls.inspector ?? {};
+    });
     for (const options of prototypeChainOptions) {
-      if (options.inspect) inspectOptions = { ...inspectOptions, ...options.inspect };
-      options.keys?.forEach((elem) => keys.add(elem));
-      if (options.autoAddBooleanKeys != null) autoAddBooleanKeys = options.autoAddBooleanKeys;
-      keys.forEach((elem) => ignoreKeys.delete(elem));
-      options.ignoreKeys?.forEach((elem) => ignoreKeys.add(elem));
-      ignoreKeys.forEach((elem) => keys.delete(elem));
-      if (options.ignoreValues) Object.assign(ignoreValues, options.ignoreValues);
-      options.filters?.forEach((filter2) => customFilters.push(filter2));
+      if (options.inspect) {
+        inspectOptions = { ...inspectOptions, ...options.inspect };
+      }
+      options.keys?.forEach((elem) => {
+        return keys.add(elem);
+      });
+      if (options.autoAddBooleanKeys != null) {
+        autoAddBooleanKeys = options.autoAddBooleanKeys;
+      }
+      keys.forEach((elem) => {
+        return ignoreKeys.delete(elem);
+      });
+      options.ignoreKeys?.forEach((elem) => {
+        return ignoreKeys.add(elem);
+      });
+      ignoreKeys.forEach((elem) => {
+        return keys.delete(elem);
+      });
+      if (options.ignoreValues) {
+        Object.assign(ignoreValues, options.ignoreValues);
+      }
+      options.filters?.forEach((filter2) => {
+        return customFilters.push(filter2);
+      });
     }
     return {
       inspect: inspectOptions,
@@ -234922,32 +234814,7 @@ var Inspector = class _Inspector extends View {
 };
 
 // ../../libs/composition/src/parenting/ParentRelationTypes.ts
-var import_ansi_colors3 = __toESM(require_ansi_colors(), 1);
-
-// ../../node_modules/mnemonist/index.mjs
-var import_fibonacci_heap = __toESM(require_fibonacci_heap(), 1);
-var import_heap = __toESM(require_heap(), 1);
-var import_suffix_array = __toESM(require_suffix_array(), 1);
-var import_vector = __toESM(require_vector(), 1);
-var import_default_map = __toESM(require_default_map(), 1);
-var import_multi_set = __toESM(require_multi_set(), 1);
-var MinFibonacciHeap = import_fibonacci_heap.default.MinFibonacciHeap;
-var MaxFibonacciHeap = import_fibonacci_heap.default.MaxFibonacciHeap;
-var MinHeap = import_heap.default.MinHeap;
-var MaxHeap = import_heap.default.MaxHeap;
-var GeneralizedSuffixArray = import_suffix_array.default.GeneralizedSuffixArray;
-var Uint8Vector = import_vector.default.Uint8Vector;
-var Uint8ClampedVector = import_vector.default.Uint8ClampedVector;
-var Int8Vector = import_vector.default.Int8Vector;
-var Uint16Vector = import_vector.default.Uint16Vector;
-var Int16Vector = import_vector.default.Int16Vector;
-var Uint32Vector = import_vector.default.Uint32Vector;
-var Int32Vector = import_vector.default.Int32Vector;
-var Float32Vector = import_vector.default.Float32Vector;
-var Float64Vector = import_vector.default.Float64Vector;
-var PointerVector = import_vector.default.PointerVector;
-
-// ../../libs/composition/src/parenting/ParentRelationTypes.ts
+var import_ansi_colors2 = __toESM(require_ansi_colors(), 1);
 var ParentRelationTypes = class _ParentRelationTypes extends View {
   static {
     __name(this, "ParentRelationTypes");
@@ -234981,8 +234848,12 @@ var ParentRelationTypes = class _ParentRelationTypes extends View {
     const res = {};
     Array.from(this.childTypesStats.entries()).map(([cls, multimap]) => {
       multimap.forEachMultiplicity((count, key) => {
-        if (!res[cls.name]) res[cls.name] = {};
-        if (!res[cls.name][key.name]) res[cls.name][key.name] = count;
+        if (!res[cls.name]) {
+          res[cls.name] = {};
+        }
+        if (!res[cls.name][key.name]) {
+          res[cls.name][key.name] = count;
+        }
       });
     });
     return res;
@@ -234991,8 +234862,12 @@ var ParentRelationTypes = class _ParentRelationTypes extends View {
     const res = {};
     Array.from(this.parentTypesStats.entries()).map(([cls, multimap]) => {
       multimap.forEachMultiplicity((count, key) => {
-        if (!res[cls.name]) res[cls.name] = {};
-        if (!res[cls.name][key.name]) res[cls.name][key.name] = count;
+        if (!res[cls.name]) {
+          res[cls.name] = {};
+        }
+        if (!res[cls.name][key.name]) {
+          res[cls.name][key.name] = count;
+        }
       });
     });
     return res;
@@ -235003,44 +234878,50 @@ var ParentRelationTypes = class _ParentRelationTypes extends View {
       ...Array.from(this.parentTypesStats.keys())
     ]);
     return Array.from(classes).map((cls) => {
-      const parents = Array.from(this.parentTypesStats.get(cls).multiplicities()).map(([cls2, count]) => [
-        cls2.name,
-        count
-      ]);
-      const children = Array.from(this.childTypesStats.get(cls).multiplicities()).map(([cls2, count]) => [
-        cls2.name,
-        count
-      ]);
+      const parents = Array.from(this.parentTypesStats.get(cls).multiplicities()).map(([cls2, count]) => {
+        return [cls2.name, count];
+      });
+      const children = Array.from(this.childTypesStats.get(cls).multiplicities()).map(([cls2, count]) => {
+        return [cls2.name, count];
+      });
       const result = { class: cls.name };
-      if (parents.length) result.parents = Object.fromEntries(parents);
-      if (children.length) result.children = Object.fromEntries(children);
+      if (parents.length) {
+        result.parents = Object.fromEntries(parents);
+      }
+      if (children.length) {
+        result.children = Object.fromEntries(children);
+      }
       return result;
     });
   }
   static printAllStats() {
     console.log();
-    console.log(import_ansi_colors3.default.bold.yellow("Parent-Child Relation Stats"));
+    console.log(import_ansi_colors2.default.bold.yellow("Parent-Child Relation Stats"));
     for (const stats of this.getAllStats()) {
       console.log(stats.class);
       if (stats.parents) {
-        let prefix = ` ${import_ansi_colors3.default.dim("parents  : ")}`;
+        let prefix = ` ${import_ansi_colors2.default.dim("parents  : ")}`;
         for (const [parent, count] of Object.entries(stats.parents)) {
-          console.log(prefix + `${import_ansi_colors3.default.blue(parent)}: ${import_ansi_colors3.default.yellow(String(count))}`);
+          console.log(`${prefix}${import_ansi_colors2.default.blue(parent)}: ${import_ansi_colors2.default.yellow(String(count))}`);
           prefix = " ".repeat(12);
         }
       }
       if (stats.children) {
-        let prefix = ` ${import_ansi_colors3.default.dim("children : ")}`;
+        let prefix = ` ${import_ansi_colors2.default.dim("children : ")}`;
         for (const [child, count] of Object.entries(stats.children)) {
-          console.log(prefix + `${import_ansi_colors3.default.green(child)}: ${import_ansi_colors3.default.yellow(String(count))}`);
+          console.log(`${prefix}${import_ansi_colors2.default.green(child)}: ${import_ansi_colors2.default.yellow(String(count))}`);
           prefix = " ".repeat(12);
         }
       }
       console.log();
     }
   }
-  static childTypesStats = new import_default_map.default(() => new import_multi_set.default());
-  static parentTypesStats = new import_default_map.default(() => new import_multi_set.default());
+  static childTypesStats = new import_default_map.default(() => {
+    return new import_multi_set.default();
+  });
+  static parentTypesStats = new import_default_map.default(() => {
+    return new import_multi_set.default();
+  });
 };
 
 // ../../libs/composition/src/parenting/Parenting.ts
@@ -235067,7 +234948,9 @@ var Parenting = class _Parenting extends View {
    * Store a weak refences to the target object's parent.
    */
   onInstance(parent) {
-    if (!parent) return;
+    if (!parent) {
+      return;
+    }
     const targetClass = this.parentingTargetConstructor;
     _Parenting.parentWeakRefMap.get(targetClass).set(this.target, parent);
     targetClass.parenting?.registerParent(parent.constructor);
@@ -235085,10 +234968,14 @@ var Parenting = class _Parenting extends View {
    */
   *iterateAncestors() {
     let node = this.target.parenting.getParent();
-    if (!node) return;
+    if (!node) {
+      return;
+    }
     const seen = /* @__PURE__ */ new Set();
     while (node) {
-      if (seen.has(node)) return;
+      if (seen.has(node)) {
+        return;
+      }
       seen.add(node);
       yield node;
       node = node?.parenting?.getParent();
@@ -235109,11 +234996,114 @@ var Parenting = class _Parenting extends View {
   /**
    * A WeakMap for parent references.
    */
-  static parentWeakRefMap = new import_default_map.default(() => /* @__PURE__ */ new WeakMap());
+  static parentWeakRefMap = new import_default_map.default(() => {
+    return /* @__PURE__ */ new WeakMap();
+  });
 };
 
+// ../../libs/map/src/entriesArray.ts
+function entriesArray(ins) {
+  return Array.from(ins);
+}
+__name(entriesArray, "entriesArray");
+
 // ../../libs/map/src/ExtMap.ts
-var import_node_util4 = require("node:util");
+var import_node_util3 = require("node:util");
+
+// ../../libs/map/src/keysArray.ts
+function keysArray(ins) {
+  return Array.from(ins.keys());
+}
+__name(keysArray, "keysArray");
+
+// ../../libs/map/src/mapGetOrDefault.ts
+function mapGetOrDefault(map3, key, factory) {
+  let value = map3.get(key);
+  if (value !== void 0 || map3.has(key)) {
+    return value;
+  }
+  value = factory(key, map3);
+  map3.set(key, value);
+  return value;
+}
+__name(mapGetOrDefault, "mapGetOrDefault");
+
+// ../../libs/map/src/mapLoad.ts
+function mapLoad(ins, entries) {
+  for (const [key, value] of entries) {
+    ins.set(key, value);
+  }
+  return ins;
+}
+__name(mapLoad, "mapLoad");
+
+// ../../libs/map/src/mapReverse.ts
+function mapReverse(ins) {
+  const entries = Array.from(ins).reverse();
+  ins.clear();
+  mapLoad(ins, entries);
+  return ins;
+}
+__name(mapReverse, "mapReverse");
+
+// ../../libs/map/src/mapUpdate.ts
+function mapUpdate(ins, key, update) {
+  const newValue = update(ins.get(key), key, ins);
+  ins.set(key, newValue);
+  return ins;
+}
+__name(mapUpdate, "mapUpdate");
+
+// ../../libs/map/src/sort.ts
+function sort(ins, compare) {
+  const entries = Array.from(ins).sort(compare);
+  ins.clear();
+  for (const [k, v] of entries) {
+    ins.set(k, v);
+  }
+  return ins;
+}
+__name(sort, "sort");
+
+// ../../libs/map/src/sortByKeys.ts
+function sortByKeys(ins, compare) {
+  const entries = Array.from(ins).sort((a, b) => {
+    return compare(a[0], b[0]);
+  });
+  ins.clear();
+  for (const [k, v] of entries) {
+    ins.set(k, v);
+  }
+  return ins;
+}
+__name(sortByKeys, "sortByKeys");
+
+// ../../libs/map/src/sortByValues.ts
+function sortByValues(ins, compare) {
+  const entries = Array.from(ins).sort((a, b) => {
+    return compare(a[1], b[1]);
+  });
+  ins.clear();
+  for (const [k, v] of entries) {
+    ins.set(k, v);
+  }
+  return ins;
+}
+__name(sortByValues, "sortByValues");
+
+// ../../libs/map/src/toMap.ts
+function toMap(ins) {
+  return new Map(ins);
+}
+__name(toMap, "toMap");
+
+// ../../libs/map/src/valuesArray.ts
+function valuesArray(ins) {
+  return Array.from(ins.values());
+}
+__name(valuesArray, "valuesArray");
+
+// ../../libs/map/src/ExtMap.ts
 var ExtMap = class _ExtMap extends View {
   static {
     __name(this, "ExtMap");
@@ -235150,8 +235140,8 @@ var ExtMap = class _ExtMap extends View {
    * @param _options - Options for inspection
    * @returns A string representation of the map
    */
-  [import_node_util4.inspect.custom](_depth, _options) {
-    return (0, import_node_util4.inspect)(this.target, { breakLength: 50 });
+  [import_node_util3.inspect.custom](_depth, _options) {
+    return (0, import_node_util3.inspect)(this.target, { breakLength: 50 });
   }
 };
 function thisify(fn) {
@@ -235206,7 +235196,9 @@ var TimeoutWeakMap = class {
    */
   get(key) {
     const vt = this.wmap.get(key);
-    if (!vt) return void 0;
+    if (!vt) {
+      return void 0;
+    }
     const [value, timeout] = vt;
     timeout.refresh();
     return value;
@@ -235236,7 +235228,9 @@ var TimeoutWeakMap = class {
    */
   delete(key) {
     const vt = this.wmap.get(key);
-    if (!vt) return false;
+    if (!vt) {
+      return false;
+    }
     const timeout = vt[1];
     clearTimeout(timeout);
     return this.wmap.delete(key);
@@ -235297,192 +235291,8 @@ var TimeoutWeakMap = class {
   }
 };
 
-// ../../libs/iter/src/countUniques.ts
-function countUniques(input) {
-  return new ExtMap(
-    (0, import_reduce.default)(
-      new import_multi_set.default(),
-      //
-      (acc, imp) => acc.add(imp),
-      input
-    ).multiplicities()
-  ).sortByValues((a, b) => b - a);
-}
-__name(countUniques, "countUniques");
-
-// ../../libs/iter/src/filterIterable.ts
-function filterIterable(mapLike, predicate) {
-  return (0, import_filter.default)(([k, v]) => predicate(v, k), mapLike);
-}
-__name(filterIterable, "filterIterable");
-
-// ../../libs/iter/src/mapIterable.ts
-function mapIterable(mapLike, transform) {
-  return (0, import_map.default)(([k, v]) => transform(v, k), mapLike);
-}
-__name(mapIterable, "mapIterable");
-
-// ../../libs/iter/src/mapIterableKeys.ts
-function mapIterableKeys(mapLike, transform) {
-  return (0, import_map.default)(([k, v]) => [transform(k, v), v], mapLike);
-}
-__name(mapIterableKeys, "mapIterableKeys");
-
-// ../../libs/iter/src/mapIterableValues.ts
-function mapIterableValues(mapLike, transform) {
-  return (0, import_map.default)(([k, v]) => [k, transform(v, k)], mapLike);
-}
-__name(mapIterableValues, "mapIterableValues");
-
-// ../../libs/iter/src/reduceIterable.ts
-function reduceIterable(mapLike, reducer, initialValue) {
-  for (const [key, value] of mapLike) {
-    initialValue = reducer(initialValue, value, key);
-  }
-  return initialValue;
-}
-__name(reduceIterable, "reduceIterable");
-
-// ../../libs/iter/src/toObjectIterable.ts
-function toObjectIterable(mapLike) {
-  return Object.fromEntries(mapLike);
-}
-__name(toObjectIterable, "toObjectIterable");
-
-// ../../libs/object/src/objSortKeys.ts
-function objSortKeys(o, compare) {
-  const entries = Object.entries(o);
-  if (compare) entries.sort(compare);
-  else entries.sort((a, b) => a[0].localeCompare(b[0]));
-  return Object.fromEntries(entries);
-}
-__name(objSortKeys, "objSortKeys");
-
-// ../../libs/object/src/valuesOf.ts
-function valuesOf(obj) {
-  return Object.values(obj);
-}
-__name(valuesOf, "valuesOf");
-
-// ../../libs/fn/src/setName.ts
-function setName(name, target) {
-  return defineValue(target, "name", typeof name === "string" ? name : name.name, { enumerable: false });
-}
-__name(setName, "setName");
-
-// ../../libs/cli/src/lib/internal/collectVariadicOptionValues.ts
-function collectVariadicOptionValues(parsed, options) {
-  for (let i = 0; i < parsed.tokens.length; i++) {
-    const token = parsed.tokens[i];
-    if (token.kind !== "option") continue;
-    const def = options.find((o) => o.name === token.name);
-    if (!def?.variadic || def.type !== "string") continue;
-    const values = [token.value];
-    let j = i + 1;
-    while (j < parsed.tokens.length && parsed.tokens[j].kind === "positional") {
-      const positionalToken = parsed.tokens[j];
-      values.push(positionalToken.value);
-      const posIndex = parsed.positionals.indexOf(positionalToken.value);
-      if (posIndex !== -1) parsed.positionals.splice(posIndex, 1);
-      j++;
-    }
-    Reflect.set(
-      parsed.values,
-      token.name,
-      values.filter((v) => v !== void 0)
-    );
-  }
-}
-__name(collectVariadicOptionValues, "collectVariadicOptionValues");
-
-// ../../libs/cli/src/lib/internal/mergeOptionDefaults.ts
-function mergeOptionDefaults(values, options) {
-  for (const option of options) {
-    if (option.defaultValue !== void 0 && option.name in values) {
-      values[option.name] ??= option.defaultValue;
-    }
-  }
-}
-__name(mergeOptionDefaults, "mergeOptionDefaults");
-
-// ../../libs/cli/src/lib/internal/normalizeArgv.ts
-function normalizeArgv(argv, options) {
-  for (const o of options) {
-    if (o.long === o.name) continue;
-    argv = argv.map((a) => {
-      if (a === `--${o.long}`) return `--${o.name}`;
-      if (a === `--no-${o.long}`) return `--no-${o.name}`;
-      return a;
-    });
-  }
-  return argv;
-}
-__name(normalizeArgv, "normalizeArgv");
-
-// ../../libs/cli/src/lib/internal/resolveArguments.ts
-function resolveArguments(positionals, args) {
-  const result = args.map((arg, index) => {
-    if (arg.variadic) {
-      const remaining = positionals.slice(index);
-      return remaining.length > 0 ? remaining : arg.defaultValue;
-    }
-    return positionals[index] ?? arg.defaultValue;
-  });
-  while (result.length && arrLast(result) === void 0) result.pop();
-  return result;
-}
-__name(resolveArguments, "resolveArguments");
-
-// ../../libs/cli/src/lib/internal/validateParsed.ts
-function validateParsed(args, optionValues, argDefs, optionDefs) {
-  return argDefs.map((def, index) => {
-    const value = args[index];
-    if (def.required) {
-      if (def.variadic ? Array.isArray(value) && value.length === 0 : value === void 0) {
-        return `Missing argument [${index}] ${def.usage}`;
-      }
-    }
-    if (def.choices && value !== void 0) {
-      if (![value].flat().every((v) => def.choices.includes(v))) {
-        return `Invalid argument [${index}] ${def.usage}: Got \`${value}\`. Accepted values: [${def.choices.map((c) => `\`${c}\``).join(",")}]`;
-      }
-    }
-  }).concat(
-    entriesOf(optionValues).map(([key, value]) => {
-      const def = optionDefs.find((o) => o.name === key);
-      if (!def) return `Unknown option --${key}`;
-      if (def.choices && value !== void 0) {
-        if (!(def.variadic ? value : [value]).every((v) => def.choices.includes(v))) {
-          return `Invalid option value ${def.flags}: Got \`${value}\`. Accepted values: [${def.choices.map((c) => `\`${c}\``).join(",")}]`;
-        }
-      }
-    })
-  ).filter((s) => s !== void 0).reduce(
-    (acc, curr) => {
-      return (acc ?? []).concat(curr);
-    },
-    void 0
-  );
-}
-__name(validateParsed, "validateParsed");
-
-// ../../libs/string/src/lib/strFirstCharToUpperCase.ts
-function strFirstCharToUpperCase(string) {
-  return string.charAt(0).toUpperCase() + string.substring(1);
-}
-__name(strFirstCharToUpperCase, "strFirstCharToUpperCase");
-
-// ../../libs/cli/src/lib/Command.ts
-var import_ansi_colors7 = __toESM(require_ansi_colors(), 1);
-var import_node_util5 = require("node:util");
-
-// ../../libs/decorators/src/assertDescriptorValueIsFunction.ts
-function assertDescriptorValueIsFunction(key, descriptor) {
-  if (!(typeof descriptor.value === "function" && descriptor.value !== Function.prototype)) {
-    throw new TypeError(`"value" not a function for ${key} with descriptor: ${JSON.stringify(descriptor)}.`);
-  }
-}
-__name(assertDescriptorValueIsFunction, "assertDescriptorValueIsFunction");
+// ../../libs/decorators/src/memoizeSync.ts
+var import_memoizee = __toESM(require_memoizee(), 1);
 
 // ../../node_modules/enhanced-ms/dist/index.js
 var units = {
@@ -236358,11 +236168,12 @@ __name(createMs, "createMs");
 var ms = createMs({ language: "en" });
 
 // ../../libs/decorators/src/memoizeSync.ts
-var import_memoizee = __toESM(require_memoizee(), 1);
 function memoizeSync(arg = {}) {
   const opts = typeof arg === "object" ? arg : { maxAge: typeof arg === "number" ? arg : ms(arg) };
   return /* @__PURE__ */ __name(function decorator(target, key, descriptor) {
-    if (!descriptor) throw new TypeError("descriptor is undefined");
+    if (!descriptor) {
+      throw new TypeError("descriptor is undefined");
+    }
     const orig = descriptor.value;
     assertDescriptorValueIsFunction(key, descriptor);
     const options = { length: false, ...opts };
@@ -236372,7 +236183,9 @@ function memoizeSync(arg = {}) {
     } else {
       const wmap = /* @__PURE__ */ new WeakMap();
       descriptor.value = function(...args) {
-        const memoized = mapGetOrDefault(wmap, this, () => (0, import_memoizee.default)(orig, options));
+        const memoized = mapGetOrDefault(wmap, this, () => {
+          return (0, import_memoizee.default)(orig, options);
+        });
         return memoized.apply(this, args);
       };
     }
@@ -236397,7 +236210,9 @@ function createLazyPropDecorator(map3) {
     const { get: get2, value } = descriptor;
     if (isFunction(get2)) {
       descriptor.get = function() {
-        return mapGetOrDefault(map3, this, () => get2.call(this));
+        return mapGetOrDefault(map3, this, () => {
+          return get2.call(this);
+        });
       };
       return descriptor;
     }
@@ -236410,7 +236225,6 @@ function createLazyPropDecorator(map3) {
 __name(createLazyPropDecorator, "createLazyPropDecorator");
 
 // ../../libs/cli/src/lib/Help.ts
-var import_ansi_colors4 = __toESM(require_ansi_colors(), 1);
 var Help = class {
   static {
     __name(this, "Help");
@@ -236428,7 +236242,9 @@ var Help = class {
     Object.defineProperty(this, "cmd", { enumerable: false });
   }
   visibleCommands() {
-    const res = Object.values(this.cmd.commands).filter((c) => !c.hidden);
+    const res = Object.values(this.cmd.commands).filter((c) => {
+      return !c.hidden;
+    });
     if (this.sortSubcommands) {
       res.sort((a, b) => {
         return a.name.localeCompare(b.name);
@@ -236446,12 +236262,18 @@ var Help = class {
     return getSortKey(a).localeCompare(getSortKey(b));
   }
   visibleOptions() {
-    const res = this.cmd.options.filter((option) => !option.hidden);
-    if (this.sortOptions) res.sort(this.compareOptions);
+    const res = this.cmd.options.filter((option) => {
+      return !option.hidden;
+    });
+    if (this.sortOptions) {
+      res.sort(this.compareOptions);
+    }
     return res;
   }
   visibleArguments() {
-    if (this.cmd.arguments.find((argument) => !!argument.description)) {
+    if (this.cmd.arguments.find((argument) => {
+      return !!argument.description;
+    })) {
       return [...this.cmd.arguments];
     }
     return [];
@@ -236460,9 +236282,11 @@ var Help = class {
    * Get the command term to show in the list of subcommands.
    */
   subcommandTerm(sub) {
-    const args = sub.arguments.map((arg) => arg.usage).join(" ");
-    return (sub.aliases[0] ? sub.aliases[0].padEnd(this.longestSubcommandAliasLength(), " ") + " | " : "") + sub.name + (sub.options.length ? " " + this.usageDisplayOptionsAs : "") + // simplistic check for non-help option
-    (args ? " " + args : "");
+    const args = sub.arguments.map((arg) => {
+      return arg.usage;
+    }).join(" ");
+    return (sub.aliases[0] ? `${sub.aliases[0].padEnd(this.longestSubcommandAliasLength(), " ")} | ` : "") + sub.name + (sub.options.length ? ` ${this.usageDisplayOptionsAs}` : "") + // simplistic check for non-help option
+    (args ? ` ${args}` : "");
   }
   /**
    * Get the option term to show in the list of options.
@@ -236477,7 +236301,12 @@ var Help = class {
     return argument.name;
   }
   longestSubcommandAliasLength() {
-    return Math.max(0, ...this.visibleCommands().map((c) => c.aliases[0]?.length || 0));
+    return Math.max(
+      0,
+      ...this.visibleCommands().map((c) => {
+        return c.aliases[0]?.length || 0;
+      })
+    );
   }
   longestSubcommandTermLength() {
     return this.visibleCommands().reduce((max, command) => {
@@ -236500,15 +236329,15 @@ var Help = class {
   commandUsage() {
     let path6 = "";
     for (let ancestor = this.cmd.parent; ancestor; ancestor = ancestor.parent) {
-      path6 = ancestor.name + " " + path6;
+      path6 = `${ancestor.name} ${path6}`;
     }
-    return (path6 + this.cmd.name + " " + [
+    return `${path6 + this.cmd.name} ${[
       ...Object.keys(this.cmd.commands).length ? [this.usageDisplaySubcommandAs] : [],
       ...this.cmd.options.length ? [this.usageDisplayOptionsAs] : [],
       ...this.cmd.arguments.map((arg) => {
         return arg.required ? arg.variadic ? `<${arg.name}...>` : `<${arg.name}>` : arg.variadic ? `[${arg.name}...]` : `[${arg.name}]`;
       })
-    ].join(" ")).trim();
+    ].join(" ")}`.trim();
   }
   /**
    * Get the description for the command.
@@ -236537,7 +236366,9 @@ var Help = class {
     if (option.choices) {
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${option.choices.map((choice) => String(choice)).join(", ")}`
+        `choices: ${option.choices.map((choice) => {
+          return String(choice);
+        }).join(", ")}`
       );
     }
     if (option.defaultValue && !(Array.isArray(option.defaultValue) && option.defaultValue.length === 0)) {
@@ -236563,7 +236394,9 @@ var Help = class {
     if (argument.choices) {
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${argument.choices.map((choice) => String(choice)).join(", ")}`
+        `choices: ${argument.choices.map((choice) => {
+          return String(choice);
+        }).join(", ")}`
       );
     }
     if (argument.defaultValue !== void 0) {
@@ -236582,7 +236415,9 @@ var Help = class {
    * Format a list of items, given a heading and an array of formatted items.
    */
   formatItemList(heading, items) {
-    if (items.length === 0) return [];
+    if (items.length === 0) {
+      return [];
+    }
     return [this.styleTitle(heading), ...items, ""];
   }
   /**
@@ -236592,7 +236427,9 @@ var Help = class {
     const result = /* @__PURE__ */ new Map();
     unsortedItems.forEach((item) => {
       const group = getGroup(item);
-      if (!result.has(group)) result.set(group, []);
+      if (!result.has(group)) {
+        result.set(group, []);
+      }
     });
     visibleItems.forEach((item) => {
       const group = getGroup(item);
@@ -236614,18 +236451,28 @@ var Help = class {
    * Style the title for displaying in the help. Called with 'Usage:', 'Options:', etc.
    */
   styleTitle(str) {
-    return import_ansi_colors4.default.yellow(str);
+    return import_ansi_colors3.default.yellow(str);
   }
   /**
    * Style the usage line for displaying in the help. Applies specific styling to different parts like options, commands, and arguments.
    */
   styleUsage(str) {
     return str.split(" ").map((word, index, arr) => {
-      if (word === this.usageDisplaySubcommandAs) return import_ansi_colors4.default.green(word);
-      if (word === this.usageDisplayOptionsAs) return import_ansi_colors4.default.blue(word);
-      if (word[0] === "<") return import_ansi_colors4.default.red(word);
-      if (word[0] === "[") return import_ansi_colors4.default.cyan(word);
-      if (arr[index + 1]?.startsWith("[")) return import_ansi_colors4.default.magenta(word);
+      if (word === this.usageDisplaySubcommandAs) {
+        return import_ansi_colors3.default.green(word);
+      }
+      if (word === this.usageDisplayOptionsAs) {
+        return import_ansi_colors3.default.blue(word);
+      }
+      if (word[0] === "<") {
+        return import_ansi_colors3.default.red(word);
+      }
+      if (word[0] === "[") {
+        return import_ansi_colors3.default.cyan(word);
+      }
+      if (arr[index + 1]?.startsWith("[")) {
+        return import_ansi_colors3.default.magenta(word);
+      }
       return this.styleCommandText(word);
     }).join(" ");
   }
@@ -236639,7 +236486,7 @@ var Help = class {
    * Style option descriptions for display in help output.
    */
   styleOptionDescription(str) {
-    return import_ansi_colors4.default.gray(this.styleDescriptionText(str));
+    return import_ansi_colors3.default.gray(this.styleDescriptionText(str));
   }
   /**
    * Style subcommand descriptions for display in help output.
@@ -236651,13 +236498,13 @@ var Help = class {
    * Style argument descriptions for display in help output.
    */
   styleArgumentDescription(str) {
-    return import_ansi_colors4.default.gray(this.styleDescriptionText(str));
+    return import_ansi_colors3.default.gray(this.styleDescriptionText(str));
   }
   /**
    * Base style used by descriptions. Override in subclass to apply custom formatting.
    */
   styleDescriptionText(str) {
-    return import_ansi_colors4.default.gray(str);
+    return import_ansi_colors3.default.gray(str);
   }
   /**
    * Style option terms (flags) for display in help output.
@@ -236670,15 +236517,19 @@ var Help = class {
    */
   styleSubcommandTerm(str) {
     const res = str.split(" ").map((word) => {
-      if (word === this.usageDisplayOptionsAs) return import_ansi_colors4.default.dim(word);
-      if (word[0] === "[" || word[0] === "<") return import_ansi_colors4.default.dim(word);
+      if (word === this.usageDisplayOptionsAs) {
+        return import_ansi_colors3.default.dim(word);
+      }
+      if (word[0] === "[" || word[0] === "<") {
+        return import_ansi_colors3.default.dim(word);
+      }
       return this.styleSubcommandText(word);
     }).join(" ");
     const split = res.split("|");
     if (split.length === 1) {
       return res;
     }
-    split[0] = import_ansi_colors4.default.green(split[0]);
+    split[0] = import_ansi_colors3.default.green(split[0]);
     return split.join("|");
   }
   /**
@@ -236734,7 +236585,9 @@ var Help = class {
   formatItem(term, termWidth, description) {
     const itemIndent = 2;
     const itemIndentStr = " ".repeat(itemIndent);
-    if (!description) return itemIndentStr + term;
+    if (!description) {
+      return itemIndentStr + term;
+    }
     const paddedTerm = term.padEnd(termWidth + term.length - this.displayWidth(term));
     const spacerWidth = 2;
     const helpWidth = this.helpWidth;
@@ -236744,7 +236597,8 @@ var Help = class {
       formattedDescription = description;
     } else {
       const wrappedDescription = this.boxWrap(description, remainingWidth);
-      formattedDescription = wrappedDescription.replace(/\n/g, "\n" + " ".repeat(termWidth + spacerWidth));
+      formattedDescription = wrappedDescription.replace(/\n/g, `
+${" ".repeat(termWidth + spacerWidth)}`);
     }
     return itemIndentStr + paddedTerm + " ".repeat(spacerWidth) + formattedDescription.replace(/\n/g, `
 ${itemIndentStr}`);
@@ -236754,7 +236608,9 @@ ${itemIndentStr}`);
    * Wrapping is skipped if the width is less than `minWidthToWrap`.
    */
   boxWrap(str, width) {
-    if (width < this.minWidthToWrap) return str;
+    if (width < this.minWidthToWrap) {
+      return str;
+    }
     const rawLines = str.split(/\r\n|\n/);
     const chunkPattern = /[\s]*[^\s]+/g;
     const wrappedLines = [];
@@ -236799,11 +236655,9 @@ ${itemIndentStr}`);
       );
     });
     output = output.concat(this.formatItemList("Arguments:", argumentList));
-    const optionGroups = this.groupItems(
-      this.cmd.options,
-      this.visibleOptions(),
-      (option) => option.group ?? "Options:"
-    );
+    const optionGroups = this.groupItems(this.cmd.options, this.visibleOptions(), (option) => {
+      return option.group ?? "Options:";
+    });
     optionGroups.forEach((options, group) => {
       const optionList = options.map((option) => {
         return this.formatItem(
@@ -236817,7 +236671,9 @@ ${itemIndentStr}`);
     const commandGroups = this.groupItems(
       Object.values(this.cmd.commands),
       this.visibleCommands(),
-      (sub) => sub.group || "Commands:"
+      (sub) => {
+        return sub.group || "Commands:";
+      }
     );
     commandGroups.forEach((commands2, group) => {
       const commandList = commands2.map((sub) => {
@@ -236857,11 +236713,78 @@ __decorateClass([
   lazyProp
 ], Help.prototype, "padWidth", 1);
 
+// ../../libs/array/src/arrLast.ts
+function arrLast(array) {
+  if (!array.length) {
+    throw new Error("Cannot get last element of empty array.");
+  }
+  return array[array.length - 1];
+}
+__name(arrLast, "arrLast");
+
+// ../../libs/array/src/arrRemoveDuplicates.ts
+function arrRemoveDuplicates(array) {
+  return Array.from(new Set(array));
+}
+__name(arrRemoveDuplicates, "arrRemoveDuplicates");
+
+// ../../libs/cli/src/lib/internal/collectVariadicOptionValues.ts
+function collectVariadicOptionValues(parsed, options) {
+  for (let i = 0; i < parsed.tokens.length; i++) {
+    const token = parsed.tokens[i];
+    if (token.kind !== "option") {
+      continue;
+    }
+    const def = options.find((o) => {
+      return o.name === token.name;
+    });
+    if (!def?.variadic || def.type !== "string") {
+      continue;
+    }
+    const values = [token.value];
+    let j = i + 1;
+    while (j < parsed.tokens.length && parsed.tokens[j].kind === "positional") {
+      const positionalToken = parsed.tokens[j];
+      values.push(positionalToken.value);
+      const posIndex = parsed.positionals.indexOf(positionalToken.value);
+      if (posIndex !== -1) {
+        parsed.positionals.splice(posIndex, 1);
+      }
+      j++;
+    }
+    Reflect.set(
+      parsed.values,
+      token.name,
+      values.filter((v) => {
+        return v !== void 0;
+      })
+    );
+  }
+}
+__name(collectVariadicOptionValues, "collectVariadicOptionValues");
+
+// ../../libs/cli/src/lib/Command.ts
+var import_ansi_colors6 = __toESM(require_ansi_colors(), 1);
+
 // ../../libs/cli/src/lib/helpers/findCommand.ts
 function findCommand(cmd, nameOrAlias) {
-  return cmd.commands[nameOrAlias] ?? valuesOf(cmd.commands).find((c) => c.aliases.includes(nameOrAlias));
+  return cmd.commands[nameOrAlias] ?? valuesOf(cmd.commands).find((c) => {
+    return c.aliases.includes(nameOrAlias);
+  });
 }
 __name(findCommand, "findCommand");
+
+// ../../libs/cli/src/lib/helpers/findOption.ts
+function findOption(cmd, nameOrShortOrLong) {
+  return nameOrShortOrLong.startsWith("--") ? cmd.options.find((o) => {
+    return o.long === nameOrShortOrLong.slice(2);
+  }) : nameOrShortOrLong.startsWith("-") ? cmd.options.find((o) => {
+    return o.short === nameOrShortOrLong.slice(1);
+  }) : cmd.options.find((o) => {
+    return o.name === nameOrShortOrLong;
+  });
+}
+__name(findOption, "findOption");
 
 // ../../libs/cli/src/lib/helpers/getCommandAndAncestors.ts
 function getCommandAndAncestors(cmd) {
@@ -236880,27 +236803,148 @@ function getCommandAncestors(cmd) {
 }
 __name(getCommandAncestors, "getCommandAncestors");
 
+// ../../libs/cli/src/lib/Command.ts
+var import_node_util4 = require("node:util");
+
+// ../../libs/cli/src/lib/internal/mergeOptionDefaults.ts
+function mergeOptionDefaults(values, options) {
+  for (const option of options) {
+    if (option.defaultValue !== void 0 && option.name in values) {
+      values[option.name] ??= option.defaultValue;
+    }
+  }
+}
+__name(mergeOptionDefaults, "mergeOptionDefaults");
+
+// ../../libs/cli/src/lib/internal/normalizeArgv.ts
+function normalizeArgv(argv, options) {
+  for (const o of options) {
+    if (o.long === o.name) {
+      continue;
+    }
+    argv = argv.map((a) => {
+      if (a === `--${o.long}`) {
+        return `--${o.name}`;
+      }
+      if (a === `--no-${o.long}`) {
+        return `--no-${o.name}`;
+      }
+      return a;
+    });
+  }
+  return argv;
+}
+__name(normalizeArgv, "normalizeArgv");
+
+// ../../libs/cli/src/lib/Command.ts
+var import_node_util5 = require("node:util");
+
+// ../../libs/cli/src/lib/helpers/parseOptionFlags.ts
+function parseOptionFlags(flags) {
+  const match2 = flags.match(/^-(.+?), --([a-zA-Z][\w-]*)(?:\s*(<(.+?)>|\[(.+?)\]))?$/);
+  if (!match2) {
+    throw new Error(`Invalid option format: ${flags}`);
+  }
+  const short = match2[1];
+  if (short.length !== 1) {
+    throw new Error(`Expected short name to be a single character. Got: -${short}`);
+  }
+  const long = match2[2];
+  const argName = (match2[4] || match2[5])?.replace(/\.\.\.$/, "") || void 0;
+  const name = long.split("-").reduce((str, word) => {
+    return str + word[0].toUpperCase() + word.slice(1);
+  });
+  return { short, long, name, argName };
+}
+__name(parseOptionFlags, "parseOptionFlags");
+
+// ../../libs/cli/src/lib/internal/resolveArguments.ts
+function resolveArguments(positionals, args) {
+  const result = args.map((arg, index) => {
+    if (arg.variadic) {
+      const remaining = positionals.slice(index);
+      return remaining.length > 0 ? remaining : arg.defaultValue;
+    }
+    return positionals[index] ?? arg.defaultValue;
+  });
+  while (result.length && arrLast(result) === void 0) {
+    result.pop();
+  }
+  return result;
+}
+__name(resolveArguments, "resolveArguments");
+
+// ../../libs/fn/src/preserveNameAndLength.ts
+function preserveNameAndLength(source, target, adjustLengthBy = 0) {
+  return Object.defineProperties(target, {
+    name: { configurable: true, value: source.name },
+    //
+    length: { configurable: true, value: source.length + adjustLengthBy }
+  });
+}
+__name(preserveNameAndLength, "preserveNameAndLength");
+
+// ../../libs/fn/src/bindArg.ts
+function bindArg(fn, boundArgIndex, boundArgValue) {
+  return preserveNameAndLength(
+    fn,
+    (...args) => {
+      return fn(...args.slice(0, boundArgIndex), boundArgValue, ...args.slice(boundArgIndex));
+    },
+    -1
+  );
+}
+__name(bindArg, "bindArg");
+
+// ../../libs/fn/src/setName.ts
+function setName(name, target) {
+  return defineValue(target, "name", typeof name === "string" ? name : name.name, { enumerable: false });
+}
+__name(setName, "setName");
+
+// ../../libs/string/src/lib/strFirstCharToUpperCase.ts
+function strFirstCharToUpperCase(string) {
+  return string.charAt(0).toUpperCase() + string.substring(1);
+}
+__name(strFirstCharToUpperCase, "strFirstCharToUpperCase");
+
 // ../../libs/node/src/createLogger.ts
-var import_ansi_colors5 = __toESM(require_ansi_colors(), 1);
+var import_ansi_colors4 = __toESM(require_ansi_colors(), 1);
 function createLogger(name) {
-  const NAME = name ? import_ansi_colors5.default.dim.cyan(name) : name;
-  const START = [NAME, import_ansi_colors5.default.dim.gray("[START]")].filter(Boolean);
-  const DEBUG = [NAME, import_ansi_colors5.default.dim.magenta("[DEBUG]")].filter(Boolean);
-  const INFO = [NAME, import_ansi_colors5.default.dim.gray("[INFO]")].filter(Boolean);
-  const DONE = [NAME, import_ansi_colors5.default.dim.green("[DONE] ")].filter(Boolean);
-  const WARN = [NAME, import_ansi_colors5.default.dim.yellow("[WARN] ")].filter(Boolean);
-  const ERROR2 = [NAME, import_ansi_colors5.default.dim.red("[ERROR]")].filter(Boolean);
-  const grayArgs = createColoredArgs(import_ansi_colors5.default.gray);
-  const cyanArgs = createColoredArgs(import_ansi_colors5.default.cyan);
-  const yellowArgs = createColoredArgs(import_ansi_colors5.default.yellow);
+  const NAME = name ? import_ansi_colors4.default.dim.cyan(name) : name;
+  const START = [NAME, import_ansi_colors4.default.dim.gray("[START]")].filter(Boolean);
+  const DEBUG = [NAME, import_ansi_colors4.default.dim.magenta("[DEBUG]")].filter(Boolean);
+  const INFO = [NAME, import_ansi_colors4.default.dim.gray("[INFO]")].filter(Boolean);
+  const DONE = [NAME, import_ansi_colors4.default.dim.green("[DONE] ")].filter(Boolean);
+  const WARN = [NAME, import_ansi_colors4.default.dim.yellow("[WARN] ")].filter(Boolean);
+  const ERROR2 = [NAME, import_ansi_colors4.default.dim.red("[ERROR]")].filter(Boolean);
+  const grayArgs = createColoredArgs(import_ansi_colors4.default.gray);
+  const cyanArgs = createColoredArgs(import_ansi_colors4.default.cyan);
+  const yellowArgs = createColoredArgs(import_ansi_colors4.default.yellow);
   return {
-    start: /* @__PURE__ */ __name((...args) => console.info(...START, ...args), "start"),
-    done: /* @__PURE__ */ __name((...args) => console.info(...DONE, ...args), "done"),
-    info: /* @__PURE__ */ __name((...args) => console.info(...INFO, ...grayArgs(args)), "info"),
-    log: /* @__PURE__ */ __name((...args) => console.log(...NAME ? [NAME, ...args] : args), "log"),
-    warn: /* @__PURE__ */ __name((...args) => console.warn(...WARN, ...yellowArgs(args)), "warn"),
-    debug: /* @__PURE__ */ __name((...args) => console.debug(...DEBUG, ...cyanArgs(args)), "debug"),
-    error: /* @__PURE__ */ __name((...args) => args.forEach((arg) => console.error(...ERROR2, arg)), "error")
+    start: /* @__PURE__ */ __name((...args) => {
+      return console.info(...START, ...args);
+    }, "start"),
+    done: /* @__PURE__ */ __name((...args) => {
+      return console.info(...DONE, ...args);
+    }, "done"),
+    info: /* @__PURE__ */ __name((...args) => {
+      return console.info(...INFO, ...grayArgs(args));
+    }, "info"),
+    log: /* @__PURE__ */ __name((...args) => {
+      return console.log(...NAME ? [NAME, ...args] : args);
+    }, "log"),
+    warn: /* @__PURE__ */ __name((...args) => {
+      return console.warn(...WARN, ...yellowArgs(args));
+    }, "warn"),
+    debug: /* @__PURE__ */ __name((...args) => {
+      return console.debug(...DEBUG, ...cyanArgs(args));
+    }, "debug"),
+    error: /* @__PURE__ */ __name((...args) => {
+      return args.forEach((arg) => {
+        return console.error(...ERROR2, arg);
+      });
+    }, "error")
   };
 }
 __name(createLogger, "createLogger");
@@ -236908,7 +236952,7 @@ function createColoredArgs(colorFn) {
   return (args) => {
     return args.map((arg) => {
       if (isString(arg)) {
-        if (arg === import_ansi_colors5.default.stripColor(arg)) {
+        if (arg === import_ansi_colors4.default.stripColor(arg)) {
           return colorFn(arg);
         } else {
           return arg;
@@ -237002,9 +237046,9 @@ onetime.callCount = (function_) => {
 var onetime_default = onetime;
 
 // ../../libs/node/src/timer.ts
-var import_types = require("node:util/types");
-var import_ansi_colors6 = __toESM(require_ansi_colors(), 1);
+var import_ansi_colors5 = __toESM(require_ansi_colors(), 1);
 var import_humanize_duration = __toESM(require_humanize_duration(), 1);
+var import_types = require("node:util/types");
 function timer(arg, task) {
   const t0 = process.hrtime.bigint();
   const [name, description] = Array.isArray(arg) ? arg : [arg, ""];
@@ -237020,69 +237064,95 @@ function timer(arg, task) {
     return done(result);
   });
   function done(retval2) {
-    if (process.exitCode) return retval2;
+    if (process.exitCode) {
+      return retval2;
+    }
     const ns = process.hrtime.bigint() - t0;
     const ms2 = Math.floor(Number(ns) / 1e6);
-    log.done(import_ansi_colors6.default.dim((0, import_humanize_duration.default)(ms2)));
+    log.done(import_ansi_colors5.default.dim((0, import_humanize_duration.default)(ms2)));
     return retval2;
   }
   __name(done, "done");
 }
 __name(timer, "timer");
 
-// ../../libs/cli/src/lib/helpers/findOption.ts
-function findOption(cmd, nameOrShortOrLong) {
-  return nameOrShortOrLong.startsWith("--") ? cmd.options.find((o) => o.long === nameOrShortOrLong.slice(2)) : nameOrShortOrLong.startsWith("-") ? cmd.options.find((o) => o.short === nameOrShortOrLong.slice(1)) : cmd.options.find((o) => o.name === nameOrShortOrLong);
+// ../../libs/cli/src/lib/internal/validateParsed.ts
+function validateParsed(args, optionValues, argDefs, optionDefs) {
+  return argDefs.map((def, index) => {
+    const value = args[index];
+    if (def.required) {
+      if (def.variadic ? Array.isArray(value) && value.length === 0 : value === void 0) {
+        return `Missing argument [${index}] ${def.usage}`;
+      }
+    }
+    if (def.choices && value !== void 0) {
+      if (![value].flat().every((v) => {
+        return def.choices.includes(v);
+      })) {
+        return `Invalid argument [${index}] ${def.usage}: Got \`${value}\`. Accepted values: [${def.choices.map((c) => {
+          return `\`${c}\``;
+        }).join(",")}]`;
+      }
+    }
+  }).concat(
+    entriesOf(optionValues).map(([key, value]) => {
+      const def = optionDefs.find((o) => {
+        return o.name === key;
+      });
+      if (!def) {
+        return `Unknown option --${key}`;
+      }
+      if (def.choices && value !== void 0) {
+        if (!(def.variadic ? value : [value]).every((v) => {
+          return def.choices.includes(v);
+        })) {
+          return `Invalid option value ${def.flags}: Got \`${value}\`. Accepted values: [${def.choices.map((c) => {
+            return `\`${c}\``;
+          }).join(",")}]`;
+        }
+      }
+    })
+  ).filter((s) => {
+    return s !== void 0;
+  }).reduce(
+    (acc, curr) => {
+      return (acc ?? []).concat(curr);
+    },
+    void 0
+  );
 }
-__name(findOption, "findOption");
-
-// ../../libs/cli/src/lib/helpers/parseOptionFlags.ts
-function parseOptionFlags(flags) {
-  const match2 = flags.match(/^-(.+?), --([a-zA-Z][\w-]*)(?:\s*(<(.+?)>|\[(.+?)\]))?$/);
-  if (!match2) throw new Error(`Invalid option format: ${flags}`);
-  const short = match2[1];
-  if (short.length !== 1) {
-    throw new Error(`Expected short name to be a single character. Got: -${short}`);
-  }
-  const long = match2[2];
-  const argName = (match2[4] || match2[5])?.replace(/\.\.\.$/, "") || void 0;
-  const name = long.split("-").reduce((str, word) => {
-    return str + word[0].toUpperCase() + word.slice(1);
-  });
-  return { short, long, name, argName };
-}
-__name(parseOptionFlags, "parseOptionFlags");
+__name(validateParsed, "validateParsed");
 
 // ../../libs/cli/src/lib/Command.ts
 var _Command = class _Command {
   static {
     __name(this, "Command");
   }
-  /** Parent command in the hierarchy, undefined for root command */
+  /** parent command in the hierarchy, undefined for root command */
   parent;
-  /** The command name used to invoke it */
+  /** the command name used to invoke it */
   name;
-  /** Semantic version string displayed by --version flag */
+  /** semantic version string displayed by --version flag */
   version;
-  /** Alternative names for invoking this command */
+  /** alternative names for invoking this command */
   aliases;
-  /** Brief one-line description shown in command lists */
+  /** brief one-line description shown in command lists */
   summary;
-  /** Full description displayed in help text */
+  /** full description displayed in help text */
   description;
-  /** Whether to exclude from help listings */
+  /** whether to exclude from help listings */
   hidden;
-  /** Category for organizing related commands in help output */
+  /** category for organizing related commands in help output */
   group;
-  /** Positional arguments this command accepts */
+  /** positional arguments this command accepts */
   arguments;
-  /** CLI options (flags) this command recognizes */
+  /** cLI options (flags) this command recognizes */
   options;
-  /** Subcommands registered with this command */
+  /** subcommands registered with this command */
   commands;
-  /** Main action handler executed when command is invoked */
+  /** main action handler executed when command is invoked */
   action;
-  /** Option-driven actions (e.g., --help, --version) executed when their conditions match */
+  /** option-driven actions (e.g., --help, --version) executed when their conditions match */
   hooks;
   constructor(name, parent) {
     this.name = name;
@@ -237095,8 +237165,8 @@ var _Command = class _Command {
     Object.defineProperty(this, "parent", { value: parent, enumerable: false });
     if (!parent) {
       this.addOption("-D, --debug", { description: "Display debug information" }).addOptionHook("debug", ({ cmd, ...data }) => {
-        console.debug((0, import_node_util5.inspect)(cmd, { depth: 1, colors: true }));
-        console.debug((0, import_node_util5.inspect)(data, { depth: 3, colors: true }));
+        console.debug((0, import_node_util4.inspect)(cmd, { depth: 1, colors: true }));
+        console.debug((0, import_node_util4.inspect)(data, { depth: 3, colors: true }));
       });
       this.addOption("-h, --help", { description: "Display help information" }).addOptionHook("help", ({ cmd }) => {
         console.log(cmd.renderHelp());
@@ -237107,31 +237177,35 @@ var _Command = class _Command {
   get help() {
     return new Help(this);
   }
-  /** Configure how the help is rendered */
+  /** configure how the help is rendered */
   helpConfiguration(cb2) {
     const help = this.help;
     cb2?.(help);
     return this;
   }
-  /** Renders formatted help text using provided help definition */
+  /** renders formatted help text using provided help definition */
   renderHelp(config = {}) {
     const result = this.help.render();
-    return config.noColor ? import_ansi_colors7.default.stripColor(result) : result;
+    return config.noColor ? import_ansi_colors6.default.stripColor(result) : result;
   }
-  /** Sets the command name */
+  /** sets the command name */
   setName(name) {
     this.name = name;
   }
-  /** Sets command aliases, flattening nested arrays */
+  /** sets command aliases, flattening nested arrays */
   setAliases(...aliases) {
     this.aliases = [];
     this.addAliases(...aliases);
     return this;
   }
-  /** Adds aliases to existing ones */
+  /** adds aliases to existing ones */
   addAliases(...aliases) {
-    const taken = this.parent ? valuesOf(this.parent.commands).flatMap((c) => [c.name, ...c.aliases]) : [];
-    arrRemoveDuplicates(aliases.flat()).filter((a) => !this.aliases.includes(a) && a !== this.name).forEach((a) => {
+    const taken = this.parent ? valuesOf(this.parent.commands).flatMap((c) => {
+      return [c.name, ...c.aliases];
+    }) : [];
+    arrRemoveDuplicates(aliases.flat()).filter((a) => {
+      return !this.aliases.includes(a) && a !== this.name;
+    }).forEach((a) => {
       if (taken.includes(a)) {
         throw new Error(
           `Alias "${a}" is already used by a sibling command: ${findCommand(this.parent, a)?.name}`
@@ -237139,39 +237213,47 @@ var _Command = class _Command {
       }
       this.aliases.push(a);
     });
-    this.aliases.sort((a, b) => a.length - b.length);
+    this.aliases.sort((a, b) => {
+      return a.length - b.length;
+    });
     return this;
   }
-  /** Sets the command version */
+  /** sets the command version */
   setVersion(version) {
     this.version = version;
-    if (findOption(this, "version")) return this;
+    if (findOption(this, "version")) {
+      return this;
+    }
     return this.addOption("-V, --version", { description: "Display semver version" }).addOptionHook("version", ({ cmd }) => {
-      console.log(getCommandAndAncestors(cmd).find((c) => c.version)?.version);
+      console.log(
+        getCommandAndAncestors(cmd).find((c) => {
+          return c.version;
+        })?.version
+      );
       process.exitCode = 0;
     });
   }
-  /** Sets the command summary */
+  /** sets the command summary */
   setSummary(summary) {
     this.summary = summary;
     return this;
   }
-  /** Sets command description, joining variadic lines */
+  /** sets command description, joining variadic lines */
   setDescription(...lines) {
     this.description = lines.join("\n");
     return this;
   }
-  /** Sets whether command is hidden from help */
+  /** sets whether command is hidden from help */
   setHidden(hidden = true) {
     this.hidden = hidden;
     return this;
   }
-  /** Sets the command group for help organization */
+  /** sets the command group for help organization */
   setGroup(group) {
     this.group = group;
     return this;
   }
-  /** Add a subcommand and return the subcommand. All options are inherited by the subcommand. */
+  /** add a subcommand and return the subcommand. All options are inherited by the subcommand. */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   command(name, cb2) {
     if (this.arguments.length) {
@@ -237182,21 +237264,33 @@ var _Command = class _Command {
     const sub = this.createSubcommand(name);
     const inherit = this.options;
     sub.options.push(...inherit);
-    const inheritHooks = this.hooks.filter((t) => inherit.some((i) => i.name === t.name));
+    const inheritHooks = this.hooks.filter((t) => {
+      return inherit.some((i) => {
+        return i.name === t.name;
+      });
+    });
     sub.hooks.push(...inheritHooks);
-    const taken = valuesOf(this.commands).flatMap((c) => [c.name, ...c.aliases]);
+    const taken = valuesOf(this.commands).flatMap((c) => {
+      return [c.name, ...c.aliases];
+    });
     if (taken.includes(name)) {
       throw new Error(
-        `Command name "${getCommandAndAncestors(sub).map((c) => c.name)}" is already used by this command or its aliases: ${taken.join(", ")}`
+        `Command name "${getCommandAndAncestors(sub).map((c) => {
+          return c.name;
+        })}" is already used by this command or its aliases: ${taken.join(", ")}`
       );
     }
     const kebab = kebabCase(name);
     const words2 = kebab.split("-");
-    const initials = words2.map((s) => s[0]).join("");
+    const initials = words2.map((s) => {
+      return s[0];
+    }).join("");
     if (!taken.includes(initials)) {
       sub.addAliases(initials);
     } else {
-      const initials2 = words2.map((s) => s[0] + s[1]).join("");
+      const initials2 = words2.map((s) => {
+        return s[0] + s[1];
+      }).join("");
       if (!taken.includes(initials2)) {
         sub.addAliases(initials2);
       }
@@ -237204,13 +237298,13 @@ var _Command = class _Command {
     this.commands[name] = sub;
     return cb2 ? cb2(sub, this) : sub;
   }
-  /** Add a subcommand and return the subcommand. All options are inherited by the subcommand. */
+  /** add a subcommand and return the subcommand. All options are inherited by the subcommand. */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addCommand(name, cb2) {
     this.command(name, cb2);
     return this;
   }
-  // Implementation
+  // implementation
   addArgument(usage, options = {}) {
     if (!/^<(.*?)>$|^\[(.*?)\]$/.test(usage)) {
       throw new Error(`Invalid argument format: ${usage}`);
@@ -237244,7 +237338,7 @@ var _Command = class _Command {
     return this;
   }
   /**
-   * Adds command-line option with type inference. Parses format: `-s, --long [<value>|[value]|<value...>|[value...]]`
+   * adds command-line option with type inference. Parses format: `-s, --long [<value>|[value]|<value...>|[value...]]`
    */
   addOption(flags, opts = {}) {
     const ins = {};
@@ -237282,7 +237376,9 @@ var _Command = class _Command {
       }
     }
     for (const [key, value] of Object.entries(opts)) {
-      if (value !== void 0) Reflect.set(ins, key, value);
+      if (value !== void 0) {
+        Reflect.set(ins, key, value);
+      }
     }
     if (ins.env && ins.defaultValue === void 0 && typeof process.env[ins.env] === "string") {
       ins.required = false;
@@ -237290,7 +237386,9 @@ var _Command = class _Command {
       if (ins.type === "boolean") {
         ins.defaultValue = /^(t(rue)?|y(es)?|1)$/i.test(process.env[ins.env]);
       } else if (ins.variadic) {
-        ins.defaultValue = process.env[ins.env].replace(/\]|\[/, "").split(",").map((v) => v.trim());
+        ins.defaultValue = process.env[ins.env].replace(/\]|\[/, "").split(",").map((v) => {
+          return v.trim();
+        });
       } else {
         ins.defaultValue = process.env[ins.env];
       }
@@ -237299,7 +237397,7 @@ var _Command = class _Command {
     return this;
   }
   /**
-   * Register an action to be invoked when an option is set to true or string value.
+   * register an action to be invoked when an option is set to true or string value.
    *
    * Hooks execute in addition to or instead of the main action handler,
    * allowing for option-driven behavior. For example, `--help` and `--version`
@@ -237312,25 +237410,26 @@ var _Command = class _Command {
     }
     this.hooks.push({
       name: optionName,
-      predicate: setName("has" + strFirstCharToUpperCase(optionName), ({ opts }) => {
+      predicate: setName(`has${strFirstCharToUpperCase(optionName)}`, ({ opts }) => {
         return opts[optionName] !== void 0 && opts[optionName] !== false && !(Array.isArray(opts[optionName]) && opts[optionName].length === 0);
       }),
       action: setName(optionName, action)
     });
     return this;
   }
-  /** Parses command-line arguments with subcommand support and type-safe validation. */
+  /** parses command-line arguments with subcommand support and type-safe validation. */
   parseArgv(argv = process.argv.slice(2)) {
     const sub = findCommand(this, argv[0]);
-    if (sub) return sub.parseArgv(argv.slice(1));
+    if (sub) {
+      return sub.parseArgv(argv.slice(1));
+    }
     argv = normalizeArgv(argv, this.options);
     const parsed = (0, import_node_util5.parseArgs)({
       args: argv,
       options: Object.fromEntries(
-        this.options.map((o) => [
-          o.name,
-          { type: o.type, short: o.short, default: o.defaultValue, multiple: !!o.variadic }
-        ])
+        this.options.map((o) => {
+          return [o.name, { type: o.type, short: o.short, default: o.defaultValue, multiple: !!o.variadic }];
+        })
       ),
       allowPositionals: true,
       tokens: true,
@@ -237343,9 +237442,13 @@ var _Command = class _Command {
       return a[1] === false ? 1 : b[1] === false ? -1 : a[1] === true ? 1 : b[1] === true ? -1 : 0;
     });
     const args = resolveArguments(parsed.positionals, this.arguments);
-    const opts = filterObject(parsed.values, (value) => value !== void 0);
+    const opts = filterObject(parsed.values, (value) => {
+      return value !== void 0;
+    });
     const errors = validateParsed(args, parsed.values, this.arguments, this.options);
-    const path6 = getCommandAncestors(this).map((c) => c.name);
+    const path6 = getCommandAncestors(this).map((c) => {
+      return c.name;
+    });
     const data = {
       path: path6,
       name: this.name,
@@ -237355,7 +237458,9 @@ var _Command = class _Command {
       errors,
       cmd: this
     };
-    const hooks = this.hooks.filter((t) => t.predicate(data));
+    const hooks = this.hooks.filter((t) => {
+      return t.predicate(data);
+    });
     const execute = /* @__PURE__ */ __name(async () => {
       for (const hook of hooks) {
         await hook.action(data);
@@ -237365,7 +237470,9 @@ var _Command = class _Command {
       }
       await timer([[...path6, this.name].join(" "), this.description], async (logger) => {
         if (errors) {
-          errors.forEach((msg) => logger.error(import_ansi_colors7.default.red(msg)));
+          errors.forEach((msg) => {
+            return logger.error(import_ansi_colors6.default.red(msg));
+          });
           process.exitCode = 1;
           return;
         }
@@ -237384,14 +237491,14 @@ var _Command = class _Command {
     return { ...data, hooks, execute };
   }
   /**
-   * Sets the main action handler for this command, which is executed after any matching option hooks when the command is invoked.
+   * sets the main action handler for this command, which is executed after any matching option hooks when the command is invoked.
    * The handler receives parsed arguments and options with correct typings.
    */
   setAction(fn) {
     this.action = setName(this.name, fn);
     return this;
   }
-  /** Returns a new Command instance. Override this method in subclasses. */
+  /** returns a new Command instance. Override this method in subclasses. */
   createSubcommand(name) {
     return new _Command(name, this);
   }
@@ -237401,14 +237508,7420 @@ __decorateClass([
 ], _Command.prototype, "help", 1);
 var Command = _Command;
 
-// src/core/version.ts
-var version_default = `1.1.3`;
+// src/lib/buildFile.ts
+var import_node_child_process = __toESM(require("node:child_process"), 1);
+var import_fs_extra = __toESM(require_lib2(), 1);
 
-// src/core/description.ts
-var description_default = `Development utilities for the monorepo.`;
+// src/lib/getRepoRootDirpath.ts
+var import_upath = __toESM(require_upath(), 1);
+var import_meta = {};
+var _cached;
+function getRepoRootDirpath() {
+  if (_cached) {
+    return _cached;
+  }
+  const raw = typeof import_meta !== "undefined" && import_meta.dirname || typeof __dirname !== "undefined" && __dirname || process.cwd();
+  const path6 = import_upath.default.normalizeSafe(raw);
+  const parts = path6.split("/");
+  const repoRootIndex = parts.findLastIndex((part) => {
+    return part === "mono";
+  });
+  if (repoRootIndex === -1) {
+    _cached = import_upath.default.normalizeSafe(process.cwd());
+    return _cached;
+  }
+  _cached = parts.slice(0, repoRootIndex + 1).join("/");
+  return _cached;
+}
+__name(getRepoRootDirpath, "getRepoRootDirpath");
 
-// src/core/config/config.ts
+// src/lib/relativeImportPath.ts
+var import_upath2 = __toESM(require_upath(), 1);
+function relativeImportPath(path6, filepathToImport) {
+  path6 = import_upath2.default.resolve(path6);
+  path6 = import_upath2.default.basename(path6).includes(".") ? import_upath2.default.dirname(path6) : path6;
+  filepathToImport = import_upath2.default.resolve(filepathToImport).replace(/([/]?index)?[.]m?tsx?$/i, "");
+  const relative = import_upath2.default.relative(path6, filepathToImport);
+  return relative.startsWith(".") ? relative : `./${relative}`;
+}
+__name(relativeImportPath, "relativeImportPath");
+
+// src/lib/buildFile.ts
+var import_upath3 = __toESM(require_upath(), 1);
+var import_meta2 = {};
+var cwd = process.cwd();
+async function buildFile(filepath, outfile, tsconfig, optionsOverride = {}) {
+  const parsed = import_upath3.default.parse(outfile);
+  const outfileTemp = import_upath3.default.joinSafe(parsed.dir, `${parsed.name}-temp${import_upath3.default.extname(outfile)}`);
+  const esbuild2 = await import("esbuild");
+  const result = await esbuild2.build({
+    entryPoints: [filepath],
+    bundle: true,
+    outfile: outfileTemp,
+    tsconfig,
+    platform: "node",
+    format: "cjs",
+    target: ["node20", "es2022"],
+    minify: false,
+    minifyWhitespace: false,
+    minifySyntax: false,
+    minifyIdentifiers: false,
+    keepNames: true,
+    mainFields: ["module", "main"],
+    external: ["esbuild", "type-fest"],
+    sourcemap: true,
+    treeShaking: true,
+    ...optionsOverride
+  });
+  process.chdir(getRepoRootDirpath());
+  if (import_upath3.default.basename(filepath) !== "main.ts") {
+    const currentFile = typeof import_meta2 !== "undefined" && import_meta2.filename || typeof __filename !== "undefined" && __filename || "";
+    const importPath = relativeImportPath(currentFile, outfileTemp);
+    const loadedBuiltModule = await import(importPath);
+    Object.entries(loadedBuiltModule);
+  } else {
+    const stdout = import_node_child_process.default.execSync(`node ${outfileTemp} --help`).toString();
+    if (typeof stdout !== "string" || !stdout) {
+      console.error(`Build did not produce a valid module: ${outfileTemp}`);
+      process.exit(1);
+    }
+  }
+  process.chdir(cwd);
+  await import_fs_extra.default.remove(outfile);
+  await import_fs_extra.default.rename(outfileTemp, outfile);
+  await import_fs_extra.default.remove(`${outfile}.map`);
+  await import_fs_extra.default.rename(`${outfileTemp}.map`, `${outfile}.map`);
+  return result;
+}
+__name(buildFile, "buildFile");
+
+// src/lib/buildStats.ts
+var import_fs_extra2 = __toESM(require_lib2(), 1);
+async function buildStats(outfile) {
+  const code = await import_fs_extra2.default.readFile(outfile, "utf8");
+  const lines = code.split("\n").length;
+  const stats = await import_fs_extra2.default.stat(outfile);
+  const sizeKB = Math.floor(stats.size / 1024);
+  return { lines, sizeKB };
+}
+__name(buildStats, "buildStats");
+
+// src/lib/getRepoPackageJson.ts
+var import_fs_extra3 = __toESM(require_lib2(), 1);
 var import_upath4 = __toESM(require_upath(), 1);
+async function getRepoPackageJson() {
+  return await import_fs_extra3.default.readJson(getRepoPackageJsonPath());
+}
+__name(getRepoPackageJson, "getRepoPackageJson");
+function getRepoPackageJsonPath() {
+  return import_upath4.default.joinSafe(getRepoRootDirpath(), "package.json");
+}
+__name(getRepoPackageJsonPath, "getRepoPackageJsonPath");
+
+// src/lib/getWsPaths.ts
+var import_upath5 = __toESM(require_upath(), 1);
+function getWsPaths(importMetaDirname) {
+  importMetaDirname = import_upath5.default.normalizeSafe(importMetaDirname);
+  const wsDirname = import_upath5.default.basename(importMetaDirname);
+  const tsconfig = import_upath5.default.joinSafe(importMetaDirname, "tsconfig.json");
+  const pkg = import_upath5.default.joinSafe(importMetaDirname, "package.json");
+  const srcDir = import_upath5.default.joinSafe(importMetaDirname, "src");
+  const repoRootDir = getRepoRootDirpath();
+  const distDir = import_upath5.default.joinSafe(repoRootDir, ".dist", "libs");
+  const indexTs2 = import_upath5.default.joinSafe(srcDir, "index.ts");
+  const indexCjs = import_upath5.default.joinSafe(distDir, `${wsDirname}.cjs`);
+  const indexMjs = import_upath5.default.joinSafe(distDir, `${wsDirname}.mjs`);
+  const toRelative = /* @__PURE__ */ __name((path6) => {
+    return import_upath5.default.relative(repoRootDir, path6);
+  }, "toRelative");
+  return {
+    wsDir: importMetaDirname,
+    wsDirname,
+    distDir,
+    tsconfig,
+    pkg,
+    srcDir,
+    indexTs: indexTs2,
+    indexCjs,
+    indexMjs,
+    toRelative
+  };
+}
+__name(getWsPaths, "getWsPaths");
+
+// src/lib/buildLibsWorkspace.ts
+var import_upath6 = __toESM(require_upath(), 1);
+async function buildLibsWorkspace(importMetaDirname, options = {}) {
+  const { debug, ...optionsOverride } = options;
+  importMetaDirname = import_upath6.default.normalizeSafe(importMetaDirname);
+  const wsPaths = getWsPaths(importMetaDirname);
+  const repoPkg = await getRepoPackageJson();
+  const external = /* @__PURE__ */ new Set([
+    ...Object.keys(repoPkg.dependencies || {}),
+    ...Object.keys(repoPkg.devDependencies || {})
+  ]);
+  external.delete("onetime");
+  await buildFile(
+    wsPaths.indexTs,
+    optionsOverride.format === "esm" ? wsPaths.indexMjs : wsPaths.indexCjs,
+    wsPaths.tsconfig,
+    {
+      external: Array.from(external),
+      ...optionsOverride
+    }
+  );
+  if (debug || process.argv.includes("--debug")) {
+    console.debug({
+      workspace: wsPaths.toRelative(importMetaDirname),
+      tsconfig: wsPaths.toRelative(wsPaths.tsconfig),
+      infile: wsPaths.toRelative(wsPaths.indexTs),
+      outfile: wsPaths.toRelative(wsPaths.indexCjs),
+      stats: await buildStats(wsPaths.indexCjs)
+    });
+  }
+}
+__name(buildLibsWorkspace, "buildLibsWorkspace");
+
+// src/commands/build_libs.ts
+var import_fs_extra4 = __toESM(require_lib2(), 1);
+var import_upath7 = __toESM(require_upath(), 1);
+async function buildLibsAction(dirnames, opts, { logger: log }) {
+  if (dirnames.length === 0) {
+    dirnames = await import_fs_extra4.default.readdir(import_upath7.default.join(getRepoRootDirpath(), "libs"));
+  }
+  for (const dirname of dirnames) {
+    if (!await import_fs_extra4.default.pathExists(import_upath7.default.join(getRepoRootDirpath(), "libs", dirname))) {
+      throw new Error(`Directory does not exist: libs/${dirname}`);
+    }
+  }
+  const failed = [];
+  for (const dirname of dirnames) {
+    const wsDir = import_upath7.default.join(getRepoRootDirpath(), "libs", dirname);
+    log.info(`Building ${dirname}...`);
+    try {
+      await buildLibsWorkspace(wsDir, { debug: opts.debug });
+    } catch (error) {
+      log.error(error);
+      failed.push(dirname);
+    }
+  }
+  if (failed.length) {
+    log.error(`Failed to build the following workspaces: ${failed.join(", ")}`);
+    process.exit(1);
+  }
+}
+__name(buildLibsAction, "buildLibsAction");
+
+// src/commands/build_readme.ts
+var import_node_child_process3 = __toESM(require("node:child_process"), 1);
+var import_fs_extra9 = __toESM(require_lib2(), 1);
+
+// src/lib/arrayTableToMarkdown.ts
+function arrayTableToMarkdown(table) {
+  if (table.length === 0 || table.some((row) => {
+    return row.length !== table[0].length;
+  })) {
+    throw new Error("Invalid table: all rows must have the same number of columns and cannot be empty");
+  }
+  const columnLengths = table[0].map((_, columnIndex) => {
+    return Math.max(
+      ...table.map((row) => {
+        return row[columnIndex].length;
+      })
+    );
+  });
+  const padCell = /* @__PURE__ */ __name((cell, index) => {
+    return cell.padEnd(columnLengths[index], " ");
+  }, "padCell");
+  let md = "";
+  md += `| ${table[0].map(padCell).join(" | ")} |
+`;
+  md += `| ${columnLengths.map((length) => {
+    return "-".repeat(length);
+  }).join(" | ")} |
+`;
+  for (let i = 1; i < table.length; i++) {
+    md += `| ${table[i].map(padCell).join(" | ")} |
+`;
+  }
+  return md.trim();
+}
+__name(arrayTableToMarkdown, "arrayTableToMarkdown");
+
+// src/lib/renderReadme.ts
+var import_node_child_process2 = __toESM(require("node:child_process"), 1);
+var import_fs_extra8 = __toESM(require_lib2(), 1);
+
+// src/lib/getLinesOfCode.ts
+var import_fs_extra5 = __toESM(require_lib2(), 1);
+
+// ../../node_modules/@isaacs/balanced-match/dist/esm/index.js
+var balanced = /* @__PURE__ */ __name((a, b, str) => {
+  const ma = a instanceof RegExp ? maybeMatch(a, str) : a;
+  const mb = b instanceof RegExp ? maybeMatch(b, str) : b;
+  const r = ma !== null && mb != null && range(ma, mb, str);
+  return r && {
+    start: r[0],
+    end: r[1],
+    pre: str.slice(0, r[0]),
+    body: str.slice(r[0] + ma.length, r[1]),
+    post: str.slice(r[1] + mb.length)
+  };
+}, "balanced");
+var maybeMatch = /* @__PURE__ */ __name((reg, str) => {
+  const m = str.match(reg);
+  return m ? m[0] : null;
+}, "maybeMatch");
+var range = /* @__PURE__ */ __name((a, b, str) => {
+  let begs, beg, left, right = void 0, result;
+  let ai = str.indexOf(a);
+  let bi = str.indexOf(b, ai + 1);
+  let i = ai;
+  if (ai >= 0 && bi > 0) {
+    if (a === b) {
+      return [ai, bi];
+    }
+    begs = [];
+    left = str.length;
+    while (i >= 0 && !result) {
+      if (i === ai) {
+        begs.push(i);
+        ai = str.indexOf(a, i + 1);
+      } else if (begs.length === 1) {
+        const r = begs.pop();
+        if (r !== void 0)
+          result = [r, bi];
+      } else {
+        beg = begs.pop();
+        if (beg !== void 0 && beg < left) {
+          left = beg;
+          right = bi;
+        }
+        bi = str.indexOf(b, i + 1);
+      }
+      i = ai < bi && ai >= 0 ? ai : bi;
+    }
+    if (begs.length && right !== void 0) {
+      result = [left, right];
+    }
+  }
+  return result;
+}, "range");
+
+// ../../node_modules/@isaacs/brace-expansion/dist/esm/index.js
+var escSlash = "\0SLASH" + Math.random() + "\0";
+var escOpen = "\0OPEN" + Math.random() + "\0";
+var escClose = "\0CLOSE" + Math.random() + "\0";
+var escComma = "\0COMMA" + Math.random() + "\0";
+var escPeriod = "\0PERIOD" + Math.random() + "\0";
+var escSlashPattern = new RegExp(escSlash, "g");
+var escOpenPattern = new RegExp(escOpen, "g");
+var escClosePattern = new RegExp(escClose, "g");
+var escCommaPattern = new RegExp(escComma, "g");
+var escPeriodPattern = new RegExp(escPeriod, "g");
+var slashPattern = /\\\\/g;
+var openPattern = /\\{/g;
+var closePattern = /\\}/g;
+var commaPattern = /\\,/g;
+var periodPattern = /\\./g;
+function numeric(str) {
+  return !isNaN(str) ? parseInt(str, 10) : str.charCodeAt(0);
+}
+__name(numeric, "numeric");
+function escapeBraces(str) {
+  return str.replace(slashPattern, escSlash).replace(openPattern, escOpen).replace(closePattern, escClose).replace(commaPattern, escComma).replace(periodPattern, escPeriod);
+}
+__name(escapeBraces, "escapeBraces");
+function unescapeBraces(str) {
+  return str.replace(escSlashPattern, "\\").replace(escOpenPattern, "{").replace(escClosePattern, "}").replace(escCommaPattern, ",").replace(escPeriodPattern, ".");
+}
+__name(unescapeBraces, "unescapeBraces");
+function parseCommaParts(str) {
+  if (!str) {
+    return [""];
+  }
+  const parts = [];
+  const m = balanced("{", "}", str);
+  if (!m) {
+    return str.split(",");
+  }
+  const { pre, body, post } = m;
+  const p = pre.split(",");
+  p[p.length - 1] += "{" + body + "}";
+  const postParts = parseCommaParts(post);
+  if (post.length) {
+    ;
+    p[p.length - 1] += postParts.shift();
+    p.push.apply(p, postParts);
+  }
+  parts.push.apply(parts, p);
+  return parts;
+}
+__name(parseCommaParts, "parseCommaParts");
+function expand(str) {
+  if (!str) {
+    return [];
+  }
+  if (str.slice(0, 2) === "{}") {
+    str = "\\{\\}" + str.slice(2);
+  }
+  return expand_(escapeBraces(str), true).map(unescapeBraces);
+}
+__name(expand, "expand");
+function embrace(str) {
+  return "{" + str + "}";
+}
+__name(embrace, "embrace");
+function isPadded(el) {
+  return /^-?0\d/.test(el);
+}
+__name(isPadded, "isPadded");
+function lte(i, y) {
+  return i <= y;
+}
+__name(lte, "lte");
+function gte(i, y) {
+  return i >= y;
+}
+__name(gte, "gte");
+function expand_(str, isTop) {
+  const expansions = [];
+  const m = balanced("{", "}", str);
+  if (!m)
+    return [str];
+  const pre = m.pre;
+  const post = m.post.length ? expand_(m.post, false) : [""];
+  if (/\$$/.test(m.pre)) {
+    for (let k = 0; k < post.length; k++) {
+      const expansion = pre + "{" + m.body + "}" + post[k];
+      expansions.push(expansion);
+    }
+  } else {
+    const isNumericSequence = /^-?\d+\.\.-?\d+(?:\.\.-?\d+)?$/.test(m.body);
+    const isAlphaSequence = /^[a-zA-Z]\.\.[a-zA-Z](?:\.\.-?\d+)?$/.test(m.body);
+    const isSequence = isNumericSequence || isAlphaSequence;
+    const isOptions = m.body.indexOf(",") >= 0;
+    if (!isSequence && !isOptions) {
+      if (m.post.match(/,(?!,).*\}/)) {
+        str = m.pre + "{" + m.body + escClose + m.post;
+        return expand_(str);
+      }
+      return [str];
+    }
+    let n;
+    if (isSequence) {
+      n = m.body.split(/\.\./);
+    } else {
+      n = parseCommaParts(m.body);
+      if (n.length === 1 && n[0] !== void 0) {
+        n = expand_(n[0], false).map(embrace);
+        if (n.length === 1) {
+          return post.map((p) => m.pre + n[0] + p);
+        }
+      }
+    }
+    let N;
+    if (isSequence && n[0] !== void 0 && n[1] !== void 0) {
+      const x = numeric(n[0]);
+      const y = numeric(n[1]);
+      const width = Math.max(n[0].length, n[1].length);
+      let incr = n.length === 3 && n[2] !== void 0 ? Math.abs(numeric(n[2])) : 1;
+      let test = lte;
+      const reverse = y < x;
+      if (reverse) {
+        incr *= -1;
+        test = gte;
+      }
+      const pad = n.some(isPadded);
+      N = [];
+      for (let i = x; test(i, y); i += incr) {
+        let c;
+        if (isAlphaSequence) {
+          c = String.fromCharCode(i);
+          if (c === "\\") {
+            c = "";
+          }
+        } else {
+          c = String(i);
+          if (pad) {
+            const need = width - c.length;
+            if (need > 0) {
+              const z = new Array(need + 1).join("0");
+              if (i < 0) {
+                c = "-" + z + c.slice(1);
+              } else {
+                c = z + c;
+              }
+            }
+          }
+        }
+        N.push(c);
+      }
+    } else {
+      N = [];
+      for (let j = 0; j < n.length; j++) {
+        N.push.apply(N, expand_(n[j], false));
+      }
+    }
+    for (let j = 0; j < N.length; j++) {
+      for (let k = 0; k < post.length; k++) {
+        const expansion = pre + N[j] + post[k];
+        if (!isTop || isSequence || expansion) {
+          expansions.push(expansion);
+        }
+      }
+    }
+  }
+  return expansions;
+}
+__name(expand_, "expand_");
+
+// ../../node_modules/glob/node_modules/minimatch/dist/esm/assert-valid-pattern.js
+var MAX_PATTERN_LENGTH = 1024 * 64;
+var assertValidPattern = /* @__PURE__ */ __name((pattern) => {
+  if (typeof pattern !== "string") {
+    throw new TypeError("invalid pattern");
+  }
+  if (pattern.length > MAX_PATTERN_LENGTH) {
+    throw new TypeError("pattern is too long");
+  }
+}, "assertValidPattern");
+
+// ../../node_modules/glob/node_modules/minimatch/dist/esm/brace-expressions.js
+var posixClasses = {
+  "[:alnum:]": ["\\p{L}\\p{Nl}\\p{Nd}", true],
+  "[:alpha:]": ["\\p{L}\\p{Nl}", true],
+  "[:ascii:]": ["\\x00-\\x7f", false],
+  "[:blank:]": ["\\p{Zs}\\t", true],
+  "[:cntrl:]": ["\\p{Cc}", true],
+  "[:digit:]": ["\\p{Nd}", true],
+  "[:graph:]": ["\\p{Z}\\p{C}", true, true],
+  "[:lower:]": ["\\p{Ll}", true],
+  "[:print:]": ["\\p{C}", true],
+  "[:punct:]": ["\\p{P}", true],
+  "[:space:]": ["\\p{Z}\\t\\r\\n\\v\\f", true],
+  "[:upper:]": ["\\p{Lu}", true],
+  "[:word:]": ["\\p{L}\\p{Nl}\\p{Nd}\\p{Pc}", true],
+  "[:xdigit:]": ["A-Fa-f0-9", false]
+};
+var braceEscape = /* @__PURE__ */ __name((s) => s.replace(/[[\]\\-]/g, "\\$&"), "braceEscape");
+var regexpEscape = /* @__PURE__ */ __name((s) => s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "regexpEscape");
+var rangesToString = /* @__PURE__ */ __name((ranges) => ranges.join(""), "rangesToString");
+var parseClass = /* @__PURE__ */ __name((glob2, position) => {
+  const pos = position;
+  if (glob2.charAt(pos) !== "[") {
+    throw new Error("not in a brace expression");
+  }
+  const ranges = [];
+  const negs = [];
+  let i = pos + 1;
+  let sawStart = false;
+  let uflag = false;
+  let escaping = false;
+  let negate = false;
+  let endPos = pos;
+  let rangeStart = "";
+  WHILE: while (i < glob2.length) {
+    const c = glob2.charAt(i);
+    if ((c === "!" || c === "^") && i === pos + 1) {
+      negate = true;
+      i++;
+      continue;
+    }
+    if (c === "]" && sawStart && !escaping) {
+      endPos = i + 1;
+      break;
+    }
+    sawStart = true;
+    if (c === "\\") {
+      if (!escaping) {
+        escaping = true;
+        i++;
+        continue;
+      }
+    }
+    if (c === "[" && !escaping) {
+      for (const [cls, [unip, u, neg]] of Object.entries(posixClasses)) {
+        if (glob2.startsWith(cls, i)) {
+          if (rangeStart) {
+            return ["$.", false, glob2.length - pos, true];
+          }
+          i += cls.length;
+          if (neg)
+            negs.push(unip);
+          else
+            ranges.push(unip);
+          uflag = uflag || u;
+          continue WHILE;
+        }
+      }
+    }
+    escaping = false;
+    if (rangeStart) {
+      if (c > rangeStart) {
+        ranges.push(braceEscape(rangeStart) + "-" + braceEscape(c));
+      } else if (c === rangeStart) {
+        ranges.push(braceEscape(c));
+      }
+      rangeStart = "";
+      i++;
+      continue;
+    }
+    if (glob2.startsWith("-]", i + 1)) {
+      ranges.push(braceEscape(c + "-"));
+      i += 2;
+      continue;
+    }
+    if (glob2.startsWith("-", i + 1)) {
+      rangeStart = c;
+      i += 2;
+      continue;
+    }
+    ranges.push(braceEscape(c));
+    i++;
+  }
+  if (endPos < i) {
+    return ["", false, 0, false];
+  }
+  if (!ranges.length && !negs.length) {
+    return ["$.", false, glob2.length - pos, true];
+  }
+  if (negs.length === 0 && ranges.length === 1 && /^\\?.$/.test(ranges[0]) && !negate) {
+    const r = ranges[0].length === 2 ? ranges[0].slice(-1) : ranges[0];
+    return [regexpEscape(r), false, endPos - pos, false];
+  }
+  const sranges = "[" + (negate ? "^" : "") + rangesToString(ranges) + "]";
+  const snegs = "[" + (negate ? "" : "^") + rangesToString(negs) + "]";
+  const comb = ranges.length && negs.length ? "(" + sranges + "|" + snegs + ")" : ranges.length ? sranges : snegs;
+  return [comb, uflag, endPos - pos, true];
+}, "parseClass");
+
+// ../../node_modules/glob/node_modules/minimatch/dist/esm/unescape.js
+var unescape = /* @__PURE__ */ __name((s, { windowsPathsNoEscape = false } = {}) => {
+  return windowsPathsNoEscape ? s.replace(/\[([^\/\\])\]/g, "$1") : s.replace(/((?!\\).|^)\[([^\/\\])\]/g, "$1$2").replace(/\\([^\/])/g, "$1");
+}, "unescape");
+
+// ../../node_modules/glob/node_modules/minimatch/dist/esm/ast.js
+var types = /* @__PURE__ */ new Set(["!", "?", "+", "*", "@"]);
+var isExtglobType = /* @__PURE__ */ __name((c) => types.has(c), "isExtglobType");
+var startNoTraversal = "(?!(?:^|/)\\.\\.?(?:$|/))";
+var startNoDot = "(?!\\.)";
+var addPatternStart = /* @__PURE__ */ new Set(["[", "."]);
+var justDots = /* @__PURE__ */ new Set(["..", "."]);
+var reSpecials = new Set("().*{}+?[]^$\\!");
+var regExpEscape = /* @__PURE__ */ __name((s) => s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "regExpEscape");
+var qmark = "[^/]";
+var star = qmark + "*?";
+var starNoEmpty = qmark + "+?";
+var AST = class _AST {
+  static {
+    __name(this, "AST");
+  }
+  type;
+  #root;
+  #hasMagic;
+  #uflag = false;
+  #parts = [];
+  #parent;
+  #parentIndex;
+  #negs;
+  #filledNegs = false;
+  #options;
+  #toString;
+  // set to true if it's an extglob with no children
+  // (which really means one child of '')
+  #emptyExt = false;
+  constructor(type, parent, options = {}) {
+    this.type = type;
+    if (type)
+      this.#hasMagic = true;
+    this.#parent = parent;
+    this.#root = this.#parent ? this.#parent.#root : this;
+    this.#options = this.#root === this ? options : this.#root.#options;
+    this.#negs = this.#root === this ? [] : this.#root.#negs;
+    if (type === "!" && !this.#root.#filledNegs)
+      this.#negs.push(this);
+    this.#parentIndex = this.#parent ? this.#parent.#parts.length : 0;
+  }
+  get hasMagic() {
+    if (this.#hasMagic !== void 0)
+      return this.#hasMagic;
+    for (const p of this.#parts) {
+      if (typeof p === "string")
+        continue;
+      if (p.type || p.hasMagic)
+        return this.#hasMagic = true;
+    }
+    return this.#hasMagic;
+  }
+  // reconstructs the pattern
+  toString() {
+    if (this.#toString !== void 0)
+      return this.#toString;
+    if (!this.type) {
+      return this.#toString = this.#parts.map((p) => String(p)).join("");
+    } else {
+      return this.#toString = this.type + "(" + this.#parts.map((p) => String(p)).join("|") + ")";
+    }
+  }
+  #fillNegs() {
+    if (this !== this.#root)
+      throw new Error("should only call on root");
+    if (this.#filledNegs)
+      return this;
+    this.toString();
+    this.#filledNegs = true;
+    let n;
+    while (n = this.#negs.pop()) {
+      if (n.type !== "!")
+        continue;
+      let p = n;
+      let pp = p.#parent;
+      while (pp) {
+        for (let i = p.#parentIndex + 1; !pp.type && i < pp.#parts.length; i++) {
+          for (const part of n.#parts) {
+            if (typeof part === "string") {
+              throw new Error("string part in extglob AST??");
+            }
+            part.copyIn(pp.#parts[i]);
+          }
+        }
+        p = pp;
+        pp = p.#parent;
+      }
+    }
+    return this;
+  }
+  push(...parts) {
+    for (const p of parts) {
+      if (p === "")
+        continue;
+      if (typeof p !== "string" && !(p instanceof _AST && p.#parent === this)) {
+        throw new Error("invalid part: " + p);
+      }
+      this.#parts.push(p);
+    }
+  }
+  toJSON() {
+    const ret = this.type === null ? this.#parts.slice().map((p) => typeof p === "string" ? p : p.toJSON()) : [this.type, ...this.#parts.map((p) => p.toJSON())];
+    if (this.isStart() && !this.type)
+      ret.unshift([]);
+    if (this.isEnd() && (this === this.#root || this.#root.#filledNegs && this.#parent?.type === "!")) {
+      ret.push({});
+    }
+    return ret;
+  }
+  isStart() {
+    if (this.#root === this)
+      return true;
+    if (!this.#parent?.isStart())
+      return false;
+    if (this.#parentIndex === 0)
+      return true;
+    const p = this.#parent;
+    for (let i = 0; i < this.#parentIndex; i++) {
+      const pp = p.#parts[i];
+      if (!(pp instanceof _AST && pp.type === "!")) {
+        return false;
+      }
+    }
+    return true;
+  }
+  isEnd() {
+    if (this.#root === this)
+      return true;
+    if (this.#parent?.type === "!")
+      return true;
+    if (!this.#parent?.isEnd())
+      return false;
+    if (!this.type)
+      return this.#parent?.isEnd();
+    const pl = this.#parent ? this.#parent.#parts.length : 0;
+    return this.#parentIndex === pl - 1;
+  }
+  copyIn(part) {
+    if (typeof part === "string")
+      this.push(part);
+    else
+      this.push(part.clone(this));
+  }
+  clone(parent) {
+    const c = new _AST(this.type, parent);
+    for (const p of this.#parts) {
+      c.copyIn(p);
+    }
+    return c;
+  }
+  static #parseAST(str, ast, pos, opt) {
+    let escaping = false;
+    let inBrace = false;
+    let braceStart = -1;
+    let braceNeg = false;
+    if (ast.type === null) {
+      let i2 = pos;
+      let acc2 = "";
+      while (i2 < str.length) {
+        const c = str.charAt(i2++);
+        if (escaping || c === "\\") {
+          escaping = !escaping;
+          acc2 += c;
+          continue;
+        }
+        if (inBrace) {
+          if (i2 === braceStart + 1) {
+            if (c === "^" || c === "!") {
+              braceNeg = true;
+            }
+          } else if (c === "]" && !(i2 === braceStart + 2 && braceNeg)) {
+            inBrace = false;
+          }
+          acc2 += c;
+          continue;
+        } else if (c === "[") {
+          inBrace = true;
+          braceStart = i2;
+          braceNeg = false;
+          acc2 += c;
+          continue;
+        }
+        if (!opt.noext && isExtglobType(c) && str.charAt(i2) === "(") {
+          ast.push(acc2);
+          acc2 = "";
+          const ext2 = new _AST(c, ast);
+          i2 = _AST.#parseAST(str, ext2, i2, opt);
+          ast.push(ext2);
+          continue;
+        }
+        acc2 += c;
+      }
+      ast.push(acc2);
+      return i2;
+    }
+    let i = pos + 1;
+    let part = new _AST(null, ast);
+    const parts = [];
+    let acc = "";
+    while (i < str.length) {
+      const c = str.charAt(i++);
+      if (escaping || c === "\\") {
+        escaping = !escaping;
+        acc += c;
+        continue;
+      }
+      if (inBrace) {
+        if (i === braceStart + 1) {
+          if (c === "^" || c === "!") {
+            braceNeg = true;
+          }
+        } else if (c === "]" && !(i === braceStart + 2 && braceNeg)) {
+          inBrace = false;
+        }
+        acc += c;
+        continue;
+      } else if (c === "[") {
+        inBrace = true;
+        braceStart = i;
+        braceNeg = false;
+        acc += c;
+        continue;
+      }
+      if (isExtglobType(c) && str.charAt(i) === "(") {
+        part.push(acc);
+        acc = "";
+        const ext2 = new _AST(c, part);
+        part.push(ext2);
+        i = _AST.#parseAST(str, ext2, i, opt);
+        continue;
+      }
+      if (c === "|") {
+        part.push(acc);
+        acc = "";
+        parts.push(part);
+        part = new _AST(null, ast);
+        continue;
+      }
+      if (c === ")") {
+        if (acc === "" && ast.#parts.length === 0) {
+          ast.#emptyExt = true;
+        }
+        part.push(acc);
+        acc = "";
+        ast.push(...parts, part);
+        return i;
+      }
+      acc += c;
+    }
+    ast.type = null;
+    ast.#hasMagic = void 0;
+    ast.#parts = [str.substring(pos - 1)];
+    return i;
+  }
+  static fromGlob(pattern, options = {}) {
+    const ast = new _AST(null, void 0, options);
+    _AST.#parseAST(pattern, ast, 0, options);
+    return ast;
+  }
+  // returns the regular expression if there's magic, or the unescaped
+  // string if not.
+  toMMPattern() {
+    if (this !== this.#root)
+      return this.#root.toMMPattern();
+    const glob2 = this.toString();
+    const [re, body, hasMagic2, uflag] = this.toRegExpSource();
+    const anyMagic = hasMagic2 || this.#hasMagic || this.#options.nocase && !this.#options.nocaseMagicOnly && glob2.toUpperCase() !== glob2.toLowerCase();
+    if (!anyMagic) {
+      return body;
+    }
+    const flags = (this.#options.nocase ? "i" : "") + (uflag ? "u" : "");
+    return Object.assign(new RegExp(`^${re}$`, flags), {
+      _src: re,
+      _glob: glob2
+    });
+  }
+  get options() {
+    return this.#options;
+  }
+  // returns the string match, the regexp source, whether there's magic
+  // in the regexp (so a regular expression is required) and whether or
+  // not the uflag is needed for the regular expression (for posix classes)
+  // TODO: instead of injecting the start/end at this point, just return
+  // the BODY of the regexp, along with the start/end portions suitable
+  // for binding the start/end in either a joined full-path makeRe context
+  // (where we bind to (^|/), or a standalone matchPart context (where
+  // we bind to ^, and not /).  Otherwise slashes get duped!
+  //
+  // In part-matching mode, the start is:
+  // - if not isStart: nothing
+  // - if traversal possible, but not allowed: ^(?!\.\.?$)
+  // - if dots allowed or not possible: ^
+  // - if dots possible and not allowed: ^(?!\.)
+  // end is:
+  // - if not isEnd(): nothing
+  // - else: $
+  //
+  // In full-path matching mode, we put the slash at the START of the
+  // pattern, so start is:
+  // - if first pattern: same as part-matching mode
+  // - if not isStart(): nothing
+  // - if traversal possible, but not allowed: /(?!\.\.?(?:$|/))
+  // - if dots allowed or not possible: /
+  // - if dots possible and not allowed: /(?!\.)
+  // end is:
+  // - if last pattern, same as part-matching mode
+  // - else nothing
+  //
+  // Always put the (?:$|/) on negated tails, though, because that has to be
+  // there to bind the end of the negated pattern portion, and it's easier to
+  // just stick it in now rather than try to inject it later in the middle of
+  // the pattern.
+  //
+  // We can just always return the same end, and leave it up to the caller
+  // to know whether it's going to be used joined or in parts.
+  // And, if the start is adjusted slightly, can do the same there:
+  // - if not isStart: nothing
+  // - if traversal possible, but not allowed: (?:/|^)(?!\.\.?$)
+  // - if dots allowed or not possible: (?:/|^)
+  // - if dots possible and not allowed: (?:/|^)(?!\.)
+  //
+  // But it's better to have a simpler binding without a conditional, for
+  // performance, so probably better to return both start options.
+  //
+  // Then the caller just ignores the end if it's not the first pattern,
+  // and the start always gets applied.
+  //
+  // But that's always going to be $ if it's the ending pattern, or nothing,
+  // so the caller can just attach $ at the end of the pattern when building.
+  //
+  // So the todo is:
+  // - better detect what kind of start is needed
+  // - return both flavors of starting pattern
+  // - attach $ at the end of the pattern when creating the actual RegExp
+  //
+  // Ah, but wait, no, that all only applies to the root when the first pattern
+  // is not an extglob. If the first pattern IS an extglob, then we need all
+  // that dot prevention biz to live in the extglob portions, because eg
+  // +(*|.x*) can match .xy but not .yx.
+  //
+  // So, return the two flavors if it's #root and the first child is not an
+  // AST, otherwise leave it to the child AST to handle it, and there,
+  // use the (?:^|/) style of start binding.
+  //
+  // Even simplified further:
+  // - Since the start for a join is eg /(?!\.) and the start for a part
+  // is ^(?!\.), we can just prepend (?!\.) to the pattern (either root
+  // or start or whatever) and prepend ^ or / at the Regexp construction.
+  toRegExpSource(allowDot) {
+    const dot = allowDot ?? !!this.#options.dot;
+    if (this.#root === this)
+      this.#fillNegs();
+    if (!this.type) {
+      const noEmpty = this.isStart() && this.isEnd();
+      const src = this.#parts.map((p) => {
+        const [re, _, hasMagic2, uflag] = typeof p === "string" ? _AST.#parseGlob(p, this.#hasMagic, noEmpty) : p.toRegExpSource(allowDot);
+        this.#hasMagic = this.#hasMagic || hasMagic2;
+        this.#uflag = this.#uflag || uflag;
+        return re;
+      }).join("");
+      let start2 = "";
+      if (this.isStart()) {
+        if (typeof this.#parts[0] === "string") {
+          const dotTravAllowed = this.#parts.length === 1 && justDots.has(this.#parts[0]);
+          if (!dotTravAllowed) {
+            const aps = addPatternStart;
+            const needNoTrav = (
+              // dots are allowed, and the pattern starts with [ or .
+              dot && aps.has(src.charAt(0)) || // the pattern starts with \., and then [ or .
+              src.startsWith("\\.") && aps.has(src.charAt(2)) || // the pattern starts with \.\., and then [ or .
+              src.startsWith("\\.\\.") && aps.has(src.charAt(4))
+            );
+            const needNoDot = !dot && !allowDot && aps.has(src.charAt(0));
+            start2 = needNoTrav ? startNoTraversal : needNoDot ? startNoDot : "";
+          }
+        }
+      }
+      let end = "";
+      if (this.isEnd() && this.#root.#filledNegs && this.#parent?.type === "!") {
+        end = "(?:$|\\/)";
+      }
+      const final2 = start2 + src + end;
+      return [
+        final2,
+        unescape(src),
+        this.#hasMagic = !!this.#hasMagic,
+        this.#uflag
+      ];
+    }
+    const repeated = this.type === "*" || this.type === "+";
+    const start = this.type === "!" ? "(?:(?!(?:" : "(?:";
+    let body = this.#partsToRegExp(dot);
+    if (this.isStart() && this.isEnd() && !body && this.type !== "!") {
+      const s = this.toString();
+      this.#parts = [s];
+      this.type = null;
+      this.#hasMagic = void 0;
+      return [s, unescape(this.toString()), false, false];
+    }
+    let bodyDotAllowed = !repeated || allowDot || dot || !startNoDot ? "" : this.#partsToRegExp(true);
+    if (bodyDotAllowed === body) {
+      bodyDotAllowed = "";
+    }
+    if (bodyDotAllowed) {
+      body = `(?:${body})(?:${bodyDotAllowed})*?`;
+    }
+    let final = "";
+    if (this.type === "!" && this.#emptyExt) {
+      final = (this.isStart() && !dot ? startNoDot : "") + starNoEmpty;
+    } else {
+      const close = this.type === "!" ? (
+        // !() must match something,but !(x) can match ''
+        "))" + (this.isStart() && !dot && !allowDot ? startNoDot : "") + star + ")"
+      ) : this.type === "@" ? ")" : this.type === "?" ? ")?" : this.type === "+" && bodyDotAllowed ? ")" : this.type === "*" && bodyDotAllowed ? `)?` : `)${this.type}`;
+      final = start + body + close;
+    }
+    return [
+      final,
+      unescape(body),
+      this.#hasMagic = !!this.#hasMagic,
+      this.#uflag
+    ];
+  }
+  #partsToRegExp(dot) {
+    return this.#parts.map((p) => {
+      if (typeof p === "string") {
+        throw new Error("string type in extglob ast??");
+      }
+      const [re, _, _hasMagic, uflag] = p.toRegExpSource(dot);
+      this.#uflag = this.#uflag || uflag;
+      return re;
+    }).filter((p) => !(this.isStart() && this.isEnd()) || !!p).join("|");
+  }
+  static #parseGlob(glob2, hasMagic2, noEmpty = false) {
+    let escaping = false;
+    let re = "";
+    let uflag = false;
+    for (let i = 0; i < glob2.length; i++) {
+      const c = glob2.charAt(i);
+      if (escaping) {
+        escaping = false;
+        re += (reSpecials.has(c) ? "\\" : "") + c;
+        continue;
+      }
+      if (c === "\\") {
+        if (i === glob2.length - 1) {
+          re += "\\\\";
+        } else {
+          escaping = true;
+        }
+        continue;
+      }
+      if (c === "[") {
+        const [src, needUflag, consumed, magic] = parseClass(glob2, i);
+        if (consumed) {
+          re += src;
+          uflag = uflag || needUflag;
+          i += consumed - 1;
+          hasMagic2 = hasMagic2 || magic;
+          continue;
+        }
+      }
+      if (c === "*") {
+        if (noEmpty && glob2 === "*")
+          re += starNoEmpty;
+        else
+          re += star;
+        hasMagic2 = true;
+        continue;
+      }
+      if (c === "?") {
+        re += qmark;
+        hasMagic2 = true;
+        continue;
+      }
+      re += regExpEscape(c);
+    }
+    return [re, unescape(glob2), !!hasMagic2, uflag];
+  }
+};
+
+// ../../node_modules/glob/node_modules/minimatch/dist/esm/escape.js
+var escape = /* @__PURE__ */ __name((s, { windowsPathsNoEscape = false } = {}) => {
+  return windowsPathsNoEscape ? s.replace(/[?*()[\]]/g, "[$&]") : s.replace(/[?*()[\]\\]/g, "\\$&");
+}, "escape");
+
+// ../../node_modules/glob/node_modules/minimatch/dist/esm/index.js
+var minimatch = /* @__PURE__ */ __name((p, pattern, options = {}) => {
+  assertValidPattern(pattern);
+  if (!options.nocomment && pattern.charAt(0) === "#") {
+    return false;
+  }
+  return new Minimatch(pattern, options).match(p);
+}, "minimatch");
+var starDotExtRE = /^\*+([^+@!?\*\[\(]*)$/;
+var starDotExtTest = /* @__PURE__ */ __name((ext2) => (f) => !f.startsWith(".") && f.endsWith(ext2), "starDotExtTest");
+var starDotExtTestDot = /* @__PURE__ */ __name((ext2) => (f) => f.endsWith(ext2), "starDotExtTestDot");
+var starDotExtTestNocase = /* @__PURE__ */ __name((ext2) => {
+  ext2 = ext2.toLowerCase();
+  return (f) => !f.startsWith(".") && f.toLowerCase().endsWith(ext2);
+}, "starDotExtTestNocase");
+var starDotExtTestNocaseDot = /* @__PURE__ */ __name((ext2) => {
+  ext2 = ext2.toLowerCase();
+  return (f) => f.toLowerCase().endsWith(ext2);
+}, "starDotExtTestNocaseDot");
+var starDotStarRE = /^\*+\.\*+$/;
+var starDotStarTest = /* @__PURE__ */ __name((f) => !f.startsWith(".") && f.includes("."), "starDotStarTest");
+var starDotStarTestDot = /* @__PURE__ */ __name((f) => f !== "." && f !== ".." && f.includes("."), "starDotStarTestDot");
+var dotStarRE = /^\.\*+$/;
+var dotStarTest = /* @__PURE__ */ __name((f) => f !== "." && f !== ".." && f.startsWith("."), "dotStarTest");
+var starRE = /^\*+$/;
+var starTest = /* @__PURE__ */ __name((f) => f.length !== 0 && !f.startsWith("."), "starTest");
+var starTestDot = /* @__PURE__ */ __name((f) => f.length !== 0 && f !== "." && f !== "..", "starTestDot");
+var qmarksRE = /^\?+([^+@!?\*\[\(]*)?$/;
+var qmarksTestNocase = /* @__PURE__ */ __name(([$0, ext2 = ""]) => {
+  const noext = qmarksTestNoExt([$0]);
+  if (!ext2)
+    return noext;
+  ext2 = ext2.toLowerCase();
+  return (f) => noext(f) && f.toLowerCase().endsWith(ext2);
+}, "qmarksTestNocase");
+var qmarksTestNocaseDot = /* @__PURE__ */ __name(([$0, ext2 = ""]) => {
+  const noext = qmarksTestNoExtDot([$0]);
+  if (!ext2)
+    return noext;
+  ext2 = ext2.toLowerCase();
+  return (f) => noext(f) && f.toLowerCase().endsWith(ext2);
+}, "qmarksTestNocaseDot");
+var qmarksTestDot = /* @__PURE__ */ __name(([$0, ext2 = ""]) => {
+  const noext = qmarksTestNoExtDot([$0]);
+  return !ext2 ? noext : (f) => noext(f) && f.endsWith(ext2);
+}, "qmarksTestDot");
+var qmarksTest = /* @__PURE__ */ __name(([$0, ext2 = ""]) => {
+  const noext = qmarksTestNoExt([$0]);
+  return !ext2 ? noext : (f) => noext(f) && f.endsWith(ext2);
+}, "qmarksTest");
+var qmarksTestNoExt = /* @__PURE__ */ __name(([$0]) => {
+  const len = $0.length;
+  return (f) => f.length === len && !f.startsWith(".");
+}, "qmarksTestNoExt");
+var qmarksTestNoExtDot = /* @__PURE__ */ __name(([$0]) => {
+  const len = $0.length;
+  return (f) => f.length === len && f !== "." && f !== "..";
+}, "qmarksTestNoExtDot");
+var defaultPlatform = typeof process === "object" && process ? typeof process.env === "object" && process.env && process.env.__MINIMATCH_TESTING_PLATFORM__ || process.platform : "posix";
+var path = {
+  win32: { sep: "\\" },
+  posix: { sep: "/" }
+};
+var sep = defaultPlatform === "win32" ? path.win32.sep : path.posix.sep;
+minimatch.sep = sep;
+var GLOBSTAR = Symbol("globstar **");
+minimatch.GLOBSTAR = GLOBSTAR;
+var qmark2 = "[^/]";
+var star2 = qmark2 + "*?";
+var twoStarDot = "(?:(?!(?:\\/|^)(?:\\.{1,2})($|\\/)).)*?";
+var twoStarNoDot = "(?:(?!(?:\\/|^)\\.).)*?";
+var filter = /* @__PURE__ */ __name((pattern, options = {}) => (p) => minimatch(p, pattern, options), "filter");
+minimatch.filter = filter;
+var ext = /* @__PURE__ */ __name((a, b = {}) => Object.assign({}, a, b), "ext");
+var defaults = /* @__PURE__ */ __name((def) => {
+  if (!def || typeof def !== "object" || !Object.keys(def).length) {
+    return minimatch;
+  }
+  const orig = minimatch;
+  const m = /* @__PURE__ */ __name((p, pattern, options = {}) => orig(p, pattern, ext(def, options)), "m");
+  return Object.assign(m, {
+    Minimatch: class Minimatch extends orig.Minimatch {
+      static {
+        __name(this, "Minimatch");
+      }
+      constructor(pattern, options = {}) {
+        super(pattern, ext(def, options));
+      }
+      static defaults(options) {
+        return orig.defaults(ext(def, options)).Minimatch;
+      }
+    },
+    AST: class AST extends orig.AST {
+      static {
+        __name(this, "AST");
+      }
+      /* c8 ignore start */
+      constructor(type, parent, options = {}) {
+        super(type, parent, ext(def, options));
+      }
+      /* c8 ignore stop */
+      static fromGlob(pattern, options = {}) {
+        return orig.AST.fromGlob(pattern, ext(def, options));
+      }
+    },
+    unescape: /* @__PURE__ */ __name((s, options = {}) => orig.unescape(s, ext(def, options)), "unescape"),
+    escape: /* @__PURE__ */ __name((s, options = {}) => orig.escape(s, ext(def, options)), "escape"),
+    filter: /* @__PURE__ */ __name((pattern, options = {}) => orig.filter(pattern, ext(def, options)), "filter"),
+    defaults: /* @__PURE__ */ __name((options) => orig.defaults(ext(def, options)), "defaults"),
+    makeRe: /* @__PURE__ */ __name((pattern, options = {}) => orig.makeRe(pattern, ext(def, options)), "makeRe"),
+    braceExpand: /* @__PURE__ */ __name((pattern, options = {}) => orig.braceExpand(pattern, ext(def, options)), "braceExpand"),
+    match: /* @__PURE__ */ __name((list, pattern, options = {}) => orig.match(list, pattern, ext(def, options)), "match"),
+    sep: orig.sep,
+    GLOBSTAR
+  });
+}, "defaults");
+minimatch.defaults = defaults;
+var braceExpand = /* @__PURE__ */ __name((pattern, options = {}) => {
+  assertValidPattern(pattern);
+  if (options.nobrace || !/\{(?:(?!\{).)*\}/.test(pattern)) {
+    return [pattern];
+  }
+  return expand(pattern);
+}, "braceExpand");
+minimatch.braceExpand = braceExpand;
+var makeRe = /* @__PURE__ */ __name((pattern, options = {}) => new Minimatch(pattern, options).makeRe(), "makeRe");
+minimatch.makeRe = makeRe;
+var match = /* @__PURE__ */ __name((list, pattern, options = {}) => {
+  const mm = new Minimatch(pattern, options);
+  list = list.filter((f) => mm.match(f));
+  if (mm.options.nonull && !list.length) {
+    list.push(pattern);
+  }
+  return list;
+}, "match");
+minimatch.match = match;
+var globMagic = /[?*]|[+@!]\(.*?\)|\[|\]/;
+var regExpEscape2 = /* @__PURE__ */ __name((s) => s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "regExpEscape");
+var Minimatch = class {
+  static {
+    __name(this, "Minimatch");
+  }
+  options;
+  set;
+  pattern;
+  windowsPathsNoEscape;
+  nonegate;
+  negate;
+  comment;
+  empty;
+  preserveMultipleSlashes;
+  partial;
+  globSet;
+  globParts;
+  nocase;
+  isWindows;
+  platform;
+  windowsNoMagicRoot;
+  regexp;
+  constructor(pattern, options = {}) {
+    assertValidPattern(pattern);
+    options = options || {};
+    this.options = options;
+    this.pattern = pattern;
+    this.platform = options.platform || defaultPlatform;
+    this.isWindows = this.platform === "win32";
+    this.windowsPathsNoEscape = !!options.windowsPathsNoEscape || options.allowWindowsEscape === false;
+    if (this.windowsPathsNoEscape) {
+      this.pattern = this.pattern.replace(/\\/g, "/");
+    }
+    this.preserveMultipleSlashes = !!options.preserveMultipleSlashes;
+    this.regexp = null;
+    this.negate = false;
+    this.nonegate = !!options.nonegate;
+    this.comment = false;
+    this.empty = false;
+    this.partial = !!options.partial;
+    this.nocase = !!this.options.nocase;
+    this.windowsNoMagicRoot = options.windowsNoMagicRoot !== void 0 ? options.windowsNoMagicRoot : !!(this.isWindows && this.nocase);
+    this.globSet = [];
+    this.globParts = [];
+    this.set = [];
+    this.make();
+  }
+  hasMagic() {
+    if (this.options.magicalBraces && this.set.length > 1) {
+      return true;
+    }
+    for (const pattern of this.set) {
+      for (const part of pattern) {
+        if (typeof part !== "string")
+          return true;
+      }
+    }
+    return false;
+  }
+  debug(..._) {
+  }
+  make() {
+    const pattern = this.pattern;
+    const options = this.options;
+    if (!options.nocomment && pattern.charAt(0) === "#") {
+      this.comment = true;
+      return;
+    }
+    if (!pattern) {
+      this.empty = true;
+      return;
+    }
+    this.parseNegate();
+    this.globSet = [...new Set(this.braceExpand())];
+    if (options.debug) {
+      this.debug = (...args) => console.error(...args);
+    }
+    this.debug(this.pattern, this.globSet);
+    const rawGlobParts = this.globSet.map((s) => this.slashSplit(s));
+    this.globParts = this.preprocess(rawGlobParts);
+    this.debug(this.pattern, this.globParts);
+    let set = this.globParts.map((s, _, __) => {
+      if (this.isWindows && this.windowsNoMagicRoot) {
+        const isUNC = s[0] === "" && s[1] === "" && (s[2] === "?" || !globMagic.test(s[2])) && !globMagic.test(s[3]);
+        const isDrive = /^[a-z]:/i.test(s[0]);
+        if (isUNC) {
+          return [...s.slice(0, 4), ...s.slice(4).map((ss) => this.parse(ss))];
+        } else if (isDrive) {
+          return [s[0], ...s.slice(1).map((ss) => this.parse(ss))];
+        }
+      }
+      return s.map((ss) => this.parse(ss));
+    });
+    this.debug(this.pattern, set);
+    this.set = set.filter((s) => s.indexOf(false) === -1);
+    if (this.isWindows) {
+      for (let i = 0; i < this.set.length; i++) {
+        const p = this.set[i];
+        if (p[0] === "" && p[1] === "" && this.globParts[i][2] === "?" && typeof p[3] === "string" && /^[a-z]:$/i.test(p[3])) {
+          p[2] = "?";
+        }
+      }
+    }
+    this.debug(this.pattern, this.set);
+  }
+  // various transforms to equivalent pattern sets that are
+  // faster to process in a filesystem walk.  The goal is to
+  // eliminate what we can, and push all ** patterns as far
+  // to the right as possible, even if it increases the number
+  // of patterns that we have to process.
+  preprocess(globParts) {
+    if (this.options.noglobstar) {
+      for (let i = 0; i < globParts.length; i++) {
+        for (let j = 0; j < globParts[i].length; j++) {
+          if (globParts[i][j] === "**") {
+            globParts[i][j] = "*";
+          }
+        }
+      }
+    }
+    const { optimizationLevel = 1 } = this.options;
+    if (optimizationLevel >= 2) {
+      globParts = this.firstPhasePreProcess(globParts);
+      globParts = this.secondPhasePreProcess(globParts);
+    } else if (optimizationLevel >= 1) {
+      globParts = this.levelOneOptimize(globParts);
+    } else {
+      globParts = this.adjascentGlobstarOptimize(globParts);
+    }
+    return globParts;
+  }
+  // just get rid of adjascent ** portions
+  adjascentGlobstarOptimize(globParts) {
+    return globParts.map((parts) => {
+      let gs = -1;
+      while (-1 !== (gs = parts.indexOf("**", gs + 1))) {
+        let i = gs;
+        while (parts[i + 1] === "**") {
+          i++;
+        }
+        if (i !== gs) {
+          parts.splice(gs, i - gs);
+        }
+      }
+      return parts;
+    });
+  }
+  // get rid of adjascent ** and resolve .. portions
+  levelOneOptimize(globParts) {
+    return globParts.map((parts) => {
+      parts = parts.reduce((set, part) => {
+        const prev = set[set.length - 1];
+        if (part === "**" && prev === "**") {
+          return set;
+        }
+        if (part === "..") {
+          if (prev && prev !== ".." && prev !== "." && prev !== "**") {
+            set.pop();
+            return set;
+          }
+        }
+        set.push(part);
+        return set;
+      }, []);
+      return parts.length === 0 ? [""] : parts;
+    });
+  }
+  levelTwoFileOptimize(parts) {
+    if (!Array.isArray(parts)) {
+      parts = this.slashSplit(parts);
+    }
+    let didSomething = false;
+    do {
+      didSomething = false;
+      if (!this.preserveMultipleSlashes) {
+        for (let i = 1; i < parts.length - 1; i++) {
+          const p = parts[i];
+          if (i === 1 && p === "" && parts[0] === "")
+            continue;
+          if (p === "." || p === "") {
+            didSomething = true;
+            parts.splice(i, 1);
+            i--;
+          }
+        }
+        if (parts[0] === "." && parts.length === 2 && (parts[1] === "." || parts[1] === "")) {
+          didSomething = true;
+          parts.pop();
+        }
+      }
+      let dd = 0;
+      while (-1 !== (dd = parts.indexOf("..", dd + 1))) {
+        const p = parts[dd - 1];
+        if (p && p !== "." && p !== ".." && p !== "**") {
+          didSomething = true;
+          parts.splice(dd - 1, 2);
+          dd -= 2;
+        }
+      }
+    } while (didSomething);
+    return parts.length === 0 ? [""] : parts;
+  }
+  // First phase: single-pattern processing
+  // <pre> is 1 or more portions
+  // <rest> is 1 or more portions
+  // <p> is any portion other than ., .., '', or **
+  // <e> is . or ''
+  //
+  // **/.. is *brutal* for filesystem walking performance, because
+  // it effectively resets the recursive walk each time it occurs,
+  // and ** cannot be reduced out by a .. pattern part like a regexp
+  // or most strings (other than .., ., and '') can be.
+  //
+  // <pre>/**/../<p>/<p>/<rest> -> {<pre>/../<p>/<p>/<rest>,<pre>/**/<p>/<p>/<rest>}
+  // <pre>/<e>/<rest> -> <pre>/<rest>
+  // <pre>/<p>/../<rest> -> <pre>/<rest>
+  // **/**/<rest> -> **/<rest>
+  //
+  // **/*/<rest> -> */**/<rest> <== not valid because ** doesn't follow
+  // this WOULD be allowed if ** did follow symlinks, or * didn't
+  firstPhasePreProcess(globParts) {
+    let didSomething = false;
+    do {
+      didSomething = false;
+      for (let parts of globParts) {
+        let gs = -1;
+        while (-1 !== (gs = parts.indexOf("**", gs + 1))) {
+          let gss = gs;
+          while (parts[gss + 1] === "**") {
+            gss++;
+          }
+          if (gss > gs) {
+            parts.splice(gs + 1, gss - gs);
+          }
+          let next = parts[gs + 1];
+          const p = parts[gs + 2];
+          const p2 = parts[gs + 3];
+          if (next !== "..")
+            continue;
+          if (!p || p === "." || p === ".." || !p2 || p2 === "." || p2 === "..") {
+            continue;
+          }
+          didSomething = true;
+          parts.splice(gs, 1);
+          const other = parts.slice(0);
+          other[gs] = "**";
+          globParts.push(other);
+          gs--;
+        }
+        if (!this.preserveMultipleSlashes) {
+          for (let i = 1; i < parts.length - 1; i++) {
+            const p = parts[i];
+            if (i === 1 && p === "" && parts[0] === "")
+              continue;
+            if (p === "." || p === "") {
+              didSomething = true;
+              parts.splice(i, 1);
+              i--;
+            }
+          }
+          if (parts[0] === "." && parts.length === 2 && (parts[1] === "." || parts[1] === "")) {
+            didSomething = true;
+            parts.pop();
+          }
+        }
+        let dd = 0;
+        while (-1 !== (dd = parts.indexOf("..", dd + 1))) {
+          const p = parts[dd - 1];
+          if (p && p !== "." && p !== ".." && p !== "**") {
+            didSomething = true;
+            const needDot = dd === 1 && parts[dd + 1] === "**";
+            const splin = needDot ? ["."] : [];
+            parts.splice(dd - 1, 2, ...splin);
+            if (parts.length === 0)
+              parts.push("");
+            dd -= 2;
+          }
+        }
+      }
+    } while (didSomething);
+    return globParts;
+  }
+  // second phase: multi-pattern dedupes
+  // {<pre>/*/<rest>,<pre>/<p>/<rest>} -> <pre>/*/<rest>
+  // {<pre>/<rest>,<pre>/<rest>} -> <pre>/<rest>
+  // {<pre>/**/<rest>,<pre>/<rest>} -> <pre>/**/<rest>
+  //
+  // {<pre>/**/<rest>,<pre>/**/<p>/<rest>} -> <pre>/**/<rest>
+  // ^-- not valid because ** doens't follow symlinks
+  secondPhasePreProcess(globParts) {
+    for (let i = 0; i < globParts.length - 1; i++) {
+      for (let j = i + 1; j < globParts.length; j++) {
+        const matched = this.partsMatch(globParts[i], globParts[j], !this.preserveMultipleSlashes);
+        if (matched) {
+          globParts[i] = [];
+          globParts[j] = matched;
+          break;
+        }
+      }
+    }
+    return globParts.filter((gs) => gs.length);
+  }
+  partsMatch(a, b, emptyGSMatch = false) {
+    let ai = 0;
+    let bi = 0;
+    let result = [];
+    let which = "";
+    while (ai < a.length && bi < b.length) {
+      if (a[ai] === b[bi]) {
+        result.push(which === "b" ? b[bi] : a[ai]);
+        ai++;
+        bi++;
+      } else if (emptyGSMatch && a[ai] === "**" && b[bi] === a[ai + 1]) {
+        result.push(a[ai]);
+        ai++;
+      } else if (emptyGSMatch && b[bi] === "**" && a[ai] === b[bi + 1]) {
+        result.push(b[bi]);
+        bi++;
+      } else if (a[ai] === "*" && b[bi] && (this.options.dot || !b[bi].startsWith(".")) && b[bi] !== "**") {
+        if (which === "b")
+          return false;
+        which = "a";
+        result.push(a[ai]);
+        ai++;
+        bi++;
+      } else if (b[bi] === "*" && a[ai] && (this.options.dot || !a[ai].startsWith(".")) && a[ai] !== "**") {
+        if (which === "a")
+          return false;
+        which = "b";
+        result.push(b[bi]);
+        ai++;
+        bi++;
+      } else {
+        return false;
+      }
+    }
+    return a.length === b.length && result;
+  }
+  parseNegate() {
+    if (this.nonegate)
+      return;
+    const pattern = this.pattern;
+    let negate = false;
+    let negateOffset = 0;
+    for (let i = 0; i < pattern.length && pattern.charAt(i) === "!"; i++) {
+      negate = !negate;
+      negateOffset++;
+    }
+    if (negateOffset)
+      this.pattern = pattern.slice(negateOffset);
+    this.negate = negate;
+  }
+  // set partial to true to test if, for example,
+  // "/a/b" matches the start of "/*/b/*/d"
+  // Partial means, if you run out of file before you run
+  // out of pattern, then that's fine, as long as all
+  // the parts match.
+  matchOne(file, pattern, partial = false) {
+    const options = this.options;
+    if (this.isWindows) {
+      const fileDrive = typeof file[0] === "string" && /^[a-z]:$/i.test(file[0]);
+      const fileUNC = !fileDrive && file[0] === "" && file[1] === "" && file[2] === "?" && /^[a-z]:$/i.test(file[3]);
+      const patternDrive = typeof pattern[0] === "string" && /^[a-z]:$/i.test(pattern[0]);
+      const patternUNC = !patternDrive && pattern[0] === "" && pattern[1] === "" && pattern[2] === "?" && typeof pattern[3] === "string" && /^[a-z]:$/i.test(pattern[3]);
+      const fdi = fileUNC ? 3 : fileDrive ? 0 : void 0;
+      const pdi = patternUNC ? 3 : patternDrive ? 0 : void 0;
+      if (typeof fdi === "number" && typeof pdi === "number") {
+        const [fd, pd] = [file[fdi], pattern[pdi]];
+        if (fd.toLowerCase() === pd.toLowerCase()) {
+          pattern[pdi] = fd;
+          if (pdi > fdi) {
+            pattern = pattern.slice(pdi);
+          } else if (fdi > pdi) {
+            file = file.slice(fdi);
+          }
+        }
+      }
+    }
+    const { optimizationLevel = 1 } = this.options;
+    if (optimizationLevel >= 2) {
+      file = this.levelTwoFileOptimize(file);
+    }
+    this.debug("matchOne", this, { file, pattern });
+    this.debug("matchOne", file.length, pattern.length);
+    for (var fi = 0, pi = 0, fl = file.length, pl = pattern.length; fi < fl && pi < pl; fi++, pi++) {
+      this.debug("matchOne loop");
+      var p = pattern[pi];
+      var f = file[fi];
+      this.debug(pattern, p, f);
+      if (p === false) {
+        return false;
+      }
+      if (p === GLOBSTAR) {
+        this.debug("GLOBSTAR", [pattern, p, f]);
+        var fr = fi;
+        var pr = pi + 1;
+        if (pr === pl) {
+          this.debug("** at the end");
+          for (; fi < fl; fi++) {
+            if (file[fi] === "." || file[fi] === ".." || !options.dot && file[fi].charAt(0) === ".")
+              return false;
+          }
+          return true;
+        }
+        while (fr < fl) {
+          var swallowee = file[fr];
+          this.debug("\nglobstar while", file, fr, pattern, pr, swallowee);
+          if (this.matchOne(file.slice(fr), pattern.slice(pr), partial)) {
+            this.debug("globstar found match!", fr, fl, swallowee);
+            return true;
+          } else {
+            if (swallowee === "." || swallowee === ".." || !options.dot && swallowee.charAt(0) === ".") {
+              this.debug("dot detected!", file, fr, pattern, pr);
+              break;
+            }
+            this.debug("globstar swallow a segment, and continue");
+            fr++;
+          }
+        }
+        if (partial) {
+          this.debug("\n>>> no match, partial?", file, fr, pattern, pr);
+          if (fr === fl) {
+            return true;
+          }
+        }
+        return false;
+      }
+      let hit;
+      if (typeof p === "string") {
+        hit = f === p;
+        this.debug("string match", p, f, hit);
+      } else {
+        hit = p.test(f);
+        this.debug("pattern match", p, f, hit);
+      }
+      if (!hit)
+        return false;
+    }
+    if (fi === fl && pi === pl) {
+      return true;
+    } else if (fi === fl) {
+      return partial;
+    } else if (pi === pl) {
+      return fi === fl - 1 && file[fi] === "";
+    } else {
+      throw new Error("wtf?");
+    }
+  }
+  braceExpand() {
+    return braceExpand(this.pattern, this.options);
+  }
+  parse(pattern) {
+    assertValidPattern(pattern);
+    const options = this.options;
+    if (pattern === "**")
+      return GLOBSTAR;
+    if (pattern === "")
+      return "";
+    let m;
+    let fastTest = null;
+    if (m = pattern.match(starRE)) {
+      fastTest = options.dot ? starTestDot : starTest;
+    } else if (m = pattern.match(starDotExtRE)) {
+      fastTest = (options.nocase ? options.dot ? starDotExtTestNocaseDot : starDotExtTestNocase : options.dot ? starDotExtTestDot : starDotExtTest)(m[1]);
+    } else if (m = pattern.match(qmarksRE)) {
+      fastTest = (options.nocase ? options.dot ? qmarksTestNocaseDot : qmarksTestNocase : options.dot ? qmarksTestDot : qmarksTest)(m);
+    } else if (m = pattern.match(starDotStarRE)) {
+      fastTest = options.dot ? starDotStarTestDot : starDotStarTest;
+    } else if (m = pattern.match(dotStarRE)) {
+      fastTest = dotStarTest;
+    }
+    const re = AST.fromGlob(pattern, this.options).toMMPattern();
+    if (fastTest && typeof re === "object") {
+      Reflect.defineProperty(re, "test", { value: fastTest });
+    }
+    return re;
+  }
+  makeRe() {
+    if (this.regexp || this.regexp === false)
+      return this.regexp;
+    const set = this.set;
+    if (!set.length) {
+      this.regexp = false;
+      return this.regexp;
+    }
+    const options = this.options;
+    const twoStar = options.noglobstar ? star2 : options.dot ? twoStarDot : twoStarNoDot;
+    const flags = new Set(options.nocase ? ["i"] : []);
+    let re = set.map((pattern) => {
+      const pp = pattern.map((p) => {
+        if (p instanceof RegExp) {
+          for (const f of p.flags.split(""))
+            flags.add(f);
+        }
+        return typeof p === "string" ? regExpEscape2(p) : p === GLOBSTAR ? GLOBSTAR : p._src;
+      });
+      pp.forEach((p, i) => {
+        const next = pp[i + 1];
+        const prev = pp[i - 1];
+        if (p !== GLOBSTAR || prev === GLOBSTAR) {
+          return;
+        }
+        if (prev === void 0) {
+          if (next !== void 0 && next !== GLOBSTAR) {
+            pp[i + 1] = "(?:\\/|" + twoStar + "\\/)?" + next;
+          } else {
+            pp[i] = twoStar;
+          }
+        } else if (next === void 0) {
+          pp[i - 1] = prev + "(?:\\/|" + twoStar + ")?";
+        } else if (next !== GLOBSTAR) {
+          pp[i - 1] = prev + "(?:\\/|\\/" + twoStar + "\\/)" + next;
+          pp[i + 1] = GLOBSTAR;
+        }
+      });
+      return pp.filter((p) => p !== GLOBSTAR).join("/");
+    }).join("|");
+    const [open, close] = set.length > 1 ? ["(?:", ")"] : ["", ""];
+    re = "^" + open + re + close + "$";
+    if (this.negate)
+      re = "^(?!" + re + ").+$";
+    try {
+      this.regexp = new RegExp(re, [...flags].join(""));
+    } catch (ex) {
+      this.regexp = false;
+    }
+    return this.regexp;
+  }
+  slashSplit(p) {
+    if (this.preserveMultipleSlashes) {
+      return p.split("/");
+    } else if (this.isWindows && /^\/\/[^\/]+/.test(p)) {
+      return ["", ...p.split(/\/+/)];
+    } else {
+      return p.split(/\/+/);
+    }
+  }
+  match(f, partial = this.partial) {
+    this.debug("match", f, this.pattern);
+    if (this.comment) {
+      return false;
+    }
+    if (this.empty) {
+      return f === "";
+    }
+    if (f === "/" && partial) {
+      return true;
+    }
+    const options = this.options;
+    if (this.isWindows) {
+      f = f.split("\\").join("/");
+    }
+    const ff = this.slashSplit(f);
+    this.debug(this.pattern, "split", ff);
+    const set = this.set;
+    this.debug(this.pattern, "set", set);
+    let filename = ff[ff.length - 1];
+    if (!filename) {
+      for (let i = ff.length - 2; !filename && i >= 0; i--) {
+        filename = ff[i];
+      }
+    }
+    for (let i = 0; i < set.length; i++) {
+      const pattern = set[i];
+      let file = ff;
+      if (options.matchBase && pattern.length === 1) {
+        file = [filename];
+      }
+      const hit = this.matchOne(file, pattern, partial);
+      if (hit) {
+        if (options.flipNegate) {
+          return true;
+        }
+        return !this.negate;
+      }
+    }
+    if (options.flipNegate) {
+      return false;
+    }
+    return this.negate;
+  }
+  static defaults(def) {
+    return minimatch.defaults(def).Minimatch;
+  }
+};
+minimatch.AST = AST;
+minimatch.Minimatch = Minimatch;
+minimatch.escape = escape;
+minimatch.unescape = unescape;
+
+// ../../node_modules/glob/dist/esm/glob.js
+var import_node_url2 = require("node:url");
+
+// ../../node_modules/lru-cache/dist/esm/index.js
+var perf = typeof performance === "object" && performance && typeof performance.now === "function" ? performance : Date;
+var warned = /* @__PURE__ */ new Set();
+var PROCESS = typeof process === "object" && !!process ? process : {};
+var emitWarning = /* @__PURE__ */ __name((msg, type, code, fn) => {
+  typeof PROCESS.emitWarning === "function" ? PROCESS.emitWarning(msg, type, code, fn) : console.error(`[${code}] ${type}: ${msg}`);
+}, "emitWarning");
+var AC = globalThis.AbortController;
+var AS = globalThis.AbortSignal;
+if (typeof AC === "undefined") {
+  AS = class AbortSignal {
+    static {
+      __name(this, "AbortSignal");
+    }
+    onabort;
+    _onabort = [];
+    reason;
+    aborted = false;
+    addEventListener(_, fn) {
+      this._onabort.push(fn);
+    }
+  };
+  AC = class AbortController {
+    static {
+      __name(this, "AbortController");
+    }
+    constructor() {
+      warnACPolyfill();
+    }
+    signal = new AS();
+    abort(reason) {
+      if (this.signal.aborted)
+        return;
+      this.signal.reason = reason;
+      this.signal.aborted = true;
+      for (const fn of this.signal._onabort) {
+        fn(reason);
+      }
+      this.signal.onabort?.(reason);
+    }
+  };
+  let printACPolyfillWarning = PROCESS.env?.LRU_CACHE_IGNORE_AC_WARNING !== "1";
+  const warnACPolyfill = /* @__PURE__ */ __name(() => {
+    if (!printACPolyfillWarning)
+      return;
+    printACPolyfillWarning = false;
+    emitWarning("AbortController is not defined. If using lru-cache in node 14, load an AbortController polyfill from the `node-abort-controller` package. A minimal polyfill is provided for use by LRUCache.fetch(), but it should not be relied upon in other contexts (eg, passing it to other APIs that use AbortController/AbortSignal might have undesirable effects). You may disable this with LRU_CACHE_IGNORE_AC_WARNING=1 in the env.", "NO_ABORT_CONTROLLER", "ENOTSUP", warnACPolyfill);
+  }, "warnACPolyfill");
+}
+var shouldWarn = /* @__PURE__ */ __name((code) => !warned.has(code), "shouldWarn");
+var TYPE = Symbol("type");
+var isPosInt = /* @__PURE__ */ __name((n) => n && n === Math.floor(n) && n > 0 && isFinite(n), "isPosInt");
+var getUintArray = /* @__PURE__ */ __name((max) => !isPosInt(max) ? null : max <= Math.pow(2, 8) ? Uint8Array : max <= Math.pow(2, 16) ? Uint16Array : max <= Math.pow(2, 32) ? Uint32Array : max <= Number.MAX_SAFE_INTEGER ? ZeroArray : null, "getUintArray");
+var ZeroArray = class extends Array {
+  static {
+    __name(this, "ZeroArray");
+  }
+  constructor(size) {
+    super(size);
+    this.fill(0);
+  }
+};
+var Stack = class _Stack {
+  static {
+    __name(this, "Stack");
+  }
+  heap;
+  length;
+  // private constructor
+  static #constructing = false;
+  static create(max) {
+    const HeapCls = getUintArray(max);
+    if (!HeapCls)
+      return [];
+    _Stack.#constructing = true;
+    const s = new _Stack(max, HeapCls);
+    _Stack.#constructing = false;
+    return s;
+  }
+  constructor(max, HeapCls) {
+    if (!_Stack.#constructing) {
+      throw new TypeError("instantiate Stack using Stack.create(n)");
+    }
+    this.heap = new HeapCls(max);
+    this.length = 0;
+  }
+  push(n) {
+    this.heap[this.length++] = n;
+  }
+  pop() {
+    return this.heap[--this.length];
+  }
+};
+var LRUCache = class _LRUCache {
+  static {
+    __name(this, "LRUCache");
+  }
+  // options that cannot be changed without disaster
+  #max;
+  #maxSize;
+  #dispose;
+  #onInsert;
+  #disposeAfter;
+  #fetchMethod;
+  #memoMethod;
+  /**
+   * {@link LRUCache.OptionsBase.ttl}
+   */
+  ttl;
+  /**
+   * {@link LRUCache.OptionsBase.ttlResolution}
+   */
+  ttlResolution;
+  /**
+   * {@link LRUCache.OptionsBase.ttlAutopurge}
+   */
+  ttlAutopurge;
+  /**
+   * {@link LRUCache.OptionsBase.updateAgeOnGet}
+   */
+  updateAgeOnGet;
+  /**
+   * {@link LRUCache.OptionsBase.updateAgeOnHas}
+   */
+  updateAgeOnHas;
+  /**
+   * {@link LRUCache.OptionsBase.allowStale}
+   */
+  allowStale;
+  /**
+   * {@link LRUCache.OptionsBase.noDisposeOnSet}
+   */
+  noDisposeOnSet;
+  /**
+   * {@link LRUCache.OptionsBase.noUpdateTTL}
+   */
+  noUpdateTTL;
+  /**
+   * {@link LRUCache.OptionsBase.maxEntrySize}
+   */
+  maxEntrySize;
+  /**
+   * {@link LRUCache.OptionsBase.sizeCalculation}
+   */
+  sizeCalculation;
+  /**
+   * {@link LRUCache.OptionsBase.noDeleteOnFetchRejection}
+   */
+  noDeleteOnFetchRejection;
+  /**
+   * {@link LRUCache.OptionsBase.noDeleteOnStaleGet}
+   */
+  noDeleteOnStaleGet;
+  /**
+   * {@link LRUCache.OptionsBase.allowStaleOnFetchAbort}
+   */
+  allowStaleOnFetchAbort;
+  /**
+   * {@link LRUCache.OptionsBase.allowStaleOnFetchRejection}
+   */
+  allowStaleOnFetchRejection;
+  /**
+   * {@link LRUCache.OptionsBase.ignoreFetchAbort}
+   */
+  ignoreFetchAbort;
+  // computed properties
+  #size;
+  #calculatedSize;
+  #keyMap;
+  #keyList;
+  #valList;
+  #next;
+  #prev;
+  #head;
+  #tail;
+  #free;
+  #disposed;
+  #sizes;
+  #starts;
+  #ttls;
+  #hasDispose;
+  #hasFetchMethod;
+  #hasDisposeAfter;
+  #hasOnInsert;
+  /**
+   * Do not call this method unless you need to inspect the
+   * inner workings of the cache.  If anything returned by this
+   * object is modified in any way, strange breakage may occur.
+   *
+   * These fields are private for a reason!
+   *
+   * @internal
+   */
+  static unsafeExposeInternals(c) {
+    return {
+      // properties
+      starts: c.#starts,
+      ttls: c.#ttls,
+      sizes: c.#sizes,
+      keyMap: c.#keyMap,
+      keyList: c.#keyList,
+      valList: c.#valList,
+      next: c.#next,
+      prev: c.#prev,
+      get head() {
+        return c.#head;
+      },
+      get tail() {
+        return c.#tail;
+      },
+      free: c.#free,
+      // methods
+      isBackgroundFetch: /* @__PURE__ */ __name((p) => c.#isBackgroundFetch(p), "isBackgroundFetch"),
+      backgroundFetch: /* @__PURE__ */ __name((k, index, options, context) => c.#backgroundFetch(k, index, options, context), "backgroundFetch"),
+      moveToTail: /* @__PURE__ */ __name((index) => c.#moveToTail(index), "moveToTail"),
+      indexes: /* @__PURE__ */ __name((options) => c.#indexes(options), "indexes"),
+      rindexes: /* @__PURE__ */ __name((options) => c.#rindexes(options), "rindexes"),
+      isStale: /* @__PURE__ */ __name((index) => c.#isStale(index), "isStale")
+    };
+  }
+  // Protected read-only members
+  /**
+   * {@link LRUCache.OptionsBase.max} (read-only)
+   */
+  get max() {
+    return this.#max;
+  }
+  /**
+   * {@link LRUCache.OptionsBase.maxSize} (read-only)
+   */
+  get maxSize() {
+    return this.#maxSize;
+  }
+  /**
+   * The total computed size of items in the cache (read-only)
+   */
+  get calculatedSize() {
+    return this.#calculatedSize;
+  }
+  /**
+   * The number of items stored in the cache (read-only)
+   */
+  get size() {
+    return this.#size;
+  }
+  /**
+   * {@link LRUCache.OptionsBase.fetchMethod} (read-only)
+   */
+  get fetchMethod() {
+    return this.#fetchMethod;
+  }
+  get memoMethod() {
+    return this.#memoMethod;
+  }
+  /**
+   * {@link LRUCache.OptionsBase.dispose} (read-only)
+   */
+  get dispose() {
+    return this.#dispose;
+  }
+  /**
+   * {@link LRUCache.OptionsBase.onInsert} (read-only)
+   */
+  get onInsert() {
+    return this.#onInsert;
+  }
+  /**
+   * {@link LRUCache.OptionsBase.disposeAfter} (read-only)
+   */
+  get disposeAfter() {
+    return this.#disposeAfter;
+  }
+  constructor(options) {
+    const { max = 0, ttl, ttlResolution = 1, ttlAutopurge, updateAgeOnGet, updateAgeOnHas, allowStale, dispose, onInsert, disposeAfter, noDisposeOnSet, noUpdateTTL, maxSize = 0, maxEntrySize = 0, sizeCalculation, fetchMethod, memoMethod, noDeleteOnFetchRejection, noDeleteOnStaleGet, allowStaleOnFetchRejection, allowStaleOnFetchAbort, ignoreFetchAbort } = options;
+    if (max !== 0 && !isPosInt(max)) {
+      throw new TypeError("max option must be a nonnegative integer");
+    }
+    const UintArray = max ? getUintArray(max) : Array;
+    if (!UintArray) {
+      throw new Error("invalid max value: " + max);
+    }
+    this.#max = max;
+    this.#maxSize = maxSize;
+    this.maxEntrySize = maxEntrySize || this.#maxSize;
+    this.sizeCalculation = sizeCalculation;
+    if (this.sizeCalculation) {
+      if (!this.#maxSize && !this.maxEntrySize) {
+        throw new TypeError("cannot set sizeCalculation without setting maxSize or maxEntrySize");
+      }
+      if (typeof this.sizeCalculation !== "function") {
+        throw new TypeError("sizeCalculation set to non-function");
+      }
+    }
+    if (memoMethod !== void 0 && typeof memoMethod !== "function") {
+      throw new TypeError("memoMethod must be a function if defined");
+    }
+    this.#memoMethod = memoMethod;
+    if (fetchMethod !== void 0 && typeof fetchMethod !== "function") {
+      throw new TypeError("fetchMethod must be a function if specified");
+    }
+    this.#fetchMethod = fetchMethod;
+    this.#hasFetchMethod = !!fetchMethod;
+    this.#keyMap = /* @__PURE__ */ new Map();
+    this.#keyList = new Array(max).fill(void 0);
+    this.#valList = new Array(max).fill(void 0);
+    this.#next = new UintArray(max);
+    this.#prev = new UintArray(max);
+    this.#head = 0;
+    this.#tail = 0;
+    this.#free = Stack.create(max);
+    this.#size = 0;
+    this.#calculatedSize = 0;
+    if (typeof dispose === "function") {
+      this.#dispose = dispose;
+    }
+    if (typeof onInsert === "function") {
+      this.#onInsert = onInsert;
+    }
+    if (typeof disposeAfter === "function") {
+      this.#disposeAfter = disposeAfter;
+      this.#disposed = [];
+    } else {
+      this.#disposeAfter = void 0;
+      this.#disposed = void 0;
+    }
+    this.#hasDispose = !!this.#dispose;
+    this.#hasOnInsert = !!this.#onInsert;
+    this.#hasDisposeAfter = !!this.#disposeAfter;
+    this.noDisposeOnSet = !!noDisposeOnSet;
+    this.noUpdateTTL = !!noUpdateTTL;
+    this.noDeleteOnFetchRejection = !!noDeleteOnFetchRejection;
+    this.allowStaleOnFetchRejection = !!allowStaleOnFetchRejection;
+    this.allowStaleOnFetchAbort = !!allowStaleOnFetchAbort;
+    this.ignoreFetchAbort = !!ignoreFetchAbort;
+    if (this.maxEntrySize !== 0) {
+      if (this.#maxSize !== 0) {
+        if (!isPosInt(this.#maxSize)) {
+          throw new TypeError("maxSize must be a positive integer if specified");
+        }
+      }
+      if (!isPosInt(this.maxEntrySize)) {
+        throw new TypeError("maxEntrySize must be a positive integer if specified");
+      }
+      this.#initializeSizeTracking();
+    }
+    this.allowStale = !!allowStale;
+    this.noDeleteOnStaleGet = !!noDeleteOnStaleGet;
+    this.updateAgeOnGet = !!updateAgeOnGet;
+    this.updateAgeOnHas = !!updateAgeOnHas;
+    this.ttlResolution = isPosInt(ttlResolution) || ttlResolution === 0 ? ttlResolution : 1;
+    this.ttlAutopurge = !!ttlAutopurge;
+    this.ttl = ttl || 0;
+    if (this.ttl) {
+      if (!isPosInt(this.ttl)) {
+        throw new TypeError("ttl must be a positive integer if specified");
+      }
+      this.#initializeTTLTracking();
+    }
+    if (this.#max === 0 && this.ttl === 0 && this.#maxSize === 0) {
+      throw new TypeError("At least one of max, maxSize, or ttl is required");
+    }
+    if (!this.ttlAutopurge && !this.#max && !this.#maxSize) {
+      const code = "LRU_CACHE_UNBOUNDED";
+      if (shouldWarn(code)) {
+        warned.add(code);
+        const msg = "TTL caching without ttlAutopurge, max, or maxSize can result in unbounded memory consumption.";
+        emitWarning(msg, "UnboundedCacheWarning", code, _LRUCache);
+      }
+    }
+  }
+  /**
+   * Return the number of ms left in the item's TTL. If item is not in cache,
+   * returns `0`. Returns `Infinity` if item is in cache without a defined TTL.
+   */
+  getRemainingTTL(key) {
+    return this.#keyMap.has(key) ? Infinity : 0;
+  }
+  #initializeTTLTracking() {
+    const ttls = new ZeroArray(this.#max);
+    const starts = new ZeroArray(this.#max);
+    this.#ttls = ttls;
+    this.#starts = starts;
+    this.#setItemTTL = (index, ttl, start = perf.now()) => {
+      starts[index] = ttl !== 0 ? start : 0;
+      ttls[index] = ttl;
+      if (ttl !== 0 && this.ttlAutopurge) {
+        const t = setTimeout(() => {
+          if (this.#isStale(index)) {
+            this.#delete(this.#keyList[index], "expire");
+          }
+        }, ttl + 1);
+        if (t.unref) {
+          t.unref();
+        }
+      }
+    };
+    this.#updateItemAge = (index) => {
+      starts[index] = ttls[index] !== 0 ? perf.now() : 0;
+    };
+    this.#statusTTL = (status, index) => {
+      if (ttls[index]) {
+        const ttl = ttls[index];
+        const start = starts[index];
+        if (!ttl || !start)
+          return;
+        status.ttl = ttl;
+        status.start = start;
+        status.now = cachedNow || getNow();
+        const age = status.now - start;
+        status.remainingTTL = ttl - age;
+      }
+    };
+    let cachedNow = 0;
+    const getNow = /* @__PURE__ */ __name(() => {
+      const n = perf.now();
+      if (this.ttlResolution > 0) {
+        cachedNow = n;
+        const t = setTimeout(() => cachedNow = 0, this.ttlResolution);
+        if (t.unref) {
+          t.unref();
+        }
+      }
+      return n;
+    }, "getNow");
+    this.getRemainingTTL = (key) => {
+      const index = this.#keyMap.get(key);
+      if (index === void 0) {
+        return 0;
+      }
+      const ttl = ttls[index];
+      const start = starts[index];
+      if (!ttl || !start) {
+        return Infinity;
+      }
+      const age = (cachedNow || getNow()) - start;
+      return ttl - age;
+    };
+    this.#isStale = (index) => {
+      const s = starts[index];
+      const t = ttls[index];
+      return !!t && !!s && (cachedNow || getNow()) - s > t;
+    };
+  }
+  // conditionally set private methods related to TTL
+  #updateItemAge = /* @__PURE__ */ __name(() => {
+  }, "#updateItemAge");
+  #statusTTL = /* @__PURE__ */ __name(() => {
+  }, "#statusTTL");
+  #setItemTTL = /* @__PURE__ */ __name(() => {
+  }, "#setItemTTL");
+  /* c8 ignore stop */
+  #isStale = /* @__PURE__ */ __name(() => false, "#isStale");
+  #initializeSizeTracking() {
+    const sizes = new ZeroArray(this.#max);
+    this.#calculatedSize = 0;
+    this.#sizes = sizes;
+    this.#removeItemSize = (index) => {
+      this.#calculatedSize -= sizes[index];
+      sizes[index] = 0;
+    };
+    this.#requireSize = (k, v, size, sizeCalculation) => {
+      if (this.#isBackgroundFetch(v)) {
+        return 0;
+      }
+      if (!isPosInt(size)) {
+        if (sizeCalculation) {
+          if (typeof sizeCalculation !== "function") {
+            throw new TypeError("sizeCalculation must be a function");
+          }
+          size = sizeCalculation(v, k);
+          if (!isPosInt(size)) {
+            throw new TypeError("sizeCalculation return invalid (expect positive integer)");
+          }
+        } else {
+          throw new TypeError("invalid size value (must be positive integer). When maxSize or maxEntrySize is used, sizeCalculation or size must be set.");
+        }
+      }
+      return size;
+    };
+    this.#addItemSize = (index, size, status) => {
+      sizes[index] = size;
+      if (this.#maxSize) {
+        const maxSize = this.#maxSize - sizes[index];
+        while (this.#calculatedSize > maxSize) {
+          this.#evict(true);
+        }
+      }
+      this.#calculatedSize += sizes[index];
+      if (status) {
+        status.entrySize = size;
+        status.totalCalculatedSize = this.#calculatedSize;
+      }
+    };
+  }
+  #removeItemSize = /* @__PURE__ */ __name((_i) => {
+  }, "#removeItemSize");
+  #addItemSize = /* @__PURE__ */ __name((_i, _s, _st) => {
+  }, "#addItemSize");
+  #requireSize = /* @__PURE__ */ __name((_k, _v, size, sizeCalculation) => {
+    if (size || sizeCalculation) {
+      throw new TypeError("cannot set size without setting maxSize or maxEntrySize on cache");
+    }
+    return 0;
+  }, "#requireSize");
+  *#indexes({ allowStale = this.allowStale } = {}) {
+    if (this.#size) {
+      for (let i = this.#tail; true; ) {
+        if (!this.#isValidIndex(i)) {
+          break;
+        }
+        if (allowStale || !this.#isStale(i)) {
+          yield i;
+        }
+        if (i === this.#head) {
+          break;
+        } else {
+          i = this.#prev[i];
+        }
+      }
+    }
+  }
+  *#rindexes({ allowStale = this.allowStale } = {}) {
+    if (this.#size) {
+      for (let i = this.#head; true; ) {
+        if (!this.#isValidIndex(i)) {
+          break;
+        }
+        if (allowStale || !this.#isStale(i)) {
+          yield i;
+        }
+        if (i === this.#tail) {
+          break;
+        } else {
+          i = this.#next[i];
+        }
+      }
+    }
+  }
+  #isValidIndex(index) {
+    return index !== void 0 && this.#keyMap.get(this.#keyList[index]) === index;
+  }
+  /**
+   * Return a generator yielding `[key, value]` pairs,
+   * in order from most recently used to least recently used.
+   */
+  *entries() {
+    for (const i of this.#indexes()) {
+      if (this.#valList[i] !== void 0 && this.#keyList[i] !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
+        yield [this.#keyList[i], this.#valList[i]];
+      }
+    }
+  }
+  /**
+   * Inverse order version of {@link LRUCache.entries}
+   *
+   * Return a generator yielding `[key, value]` pairs,
+   * in order from least recently used to most recently used.
+   */
+  *rentries() {
+    for (const i of this.#rindexes()) {
+      if (this.#valList[i] !== void 0 && this.#keyList[i] !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
+        yield [this.#keyList[i], this.#valList[i]];
+      }
+    }
+  }
+  /**
+   * Return a generator yielding the keys in the cache,
+   * in order from most recently used to least recently used.
+   */
+  *keys() {
+    for (const i of this.#indexes()) {
+      const k = this.#keyList[i];
+      if (k !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
+        yield k;
+      }
+    }
+  }
+  /**
+   * Inverse order version of {@link LRUCache.keys}
+   *
+   * Return a generator yielding the keys in the cache,
+   * in order from least recently used to most recently used.
+   */
+  *rkeys() {
+    for (const i of this.#rindexes()) {
+      const k = this.#keyList[i];
+      if (k !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
+        yield k;
+      }
+    }
+  }
+  /**
+   * Return a generator yielding the values in the cache,
+   * in order from most recently used to least recently used.
+   */
+  *values() {
+    for (const i of this.#indexes()) {
+      const v = this.#valList[i];
+      if (v !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
+        yield this.#valList[i];
+      }
+    }
+  }
+  /**
+   * Inverse order version of {@link LRUCache.values}
+   *
+   * Return a generator yielding the values in the cache,
+   * in order from least recently used to most recently used.
+   */
+  *rvalues() {
+    for (const i of this.#rindexes()) {
+      const v = this.#valList[i];
+      if (v !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
+        yield this.#valList[i];
+      }
+    }
+  }
+  /**
+   * Iterating over the cache itself yields the same results as
+   * {@link LRUCache.entries}
+   */
+  [Symbol.iterator]() {
+    return this.entries();
+  }
+  /**
+   * A String value that is used in the creation of the default string
+   * description of an object. Called by the built-in method
+   * `Object.prototype.toString`.
+   */
+  [Symbol.toStringTag] = "LRUCache";
+  /**
+   * Find a value for which the supplied fn method returns a truthy value,
+   * similar to `Array.find()`. fn is called as `fn(value, key, cache)`.
+   */
+  find(fn, getOptions = {}) {
+    for (const i of this.#indexes()) {
+      const v = this.#valList[i];
+      const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
+      if (value === void 0)
+        continue;
+      if (fn(value, this.#keyList[i], this)) {
+        return this.get(this.#keyList[i], getOptions);
+      }
+    }
+  }
+  /**
+   * Call the supplied function on each item in the cache, in order from most
+   * recently used to least recently used.
+   *
+   * `fn` is called as `fn(value, key, cache)`.
+   *
+   * If `thisp` is provided, function will be called in the `this`-context of
+   * the provided object, or the cache if no `thisp` object is provided.
+   *
+   * Does not update age or recenty of use, or iterate over stale values.
+   */
+  forEach(fn, thisp = this) {
+    for (const i of this.#indexes()) {
+      const v = this.#valList[i];
+      const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
+      if (value === void 0)
+        continue;
+      fn.call(thisp, value, this.#keyList[i], this);
+    }
+  }
+  /**
+   * The same as {@link LRUCache.forEach} but items are iterated over in
+   * reverse order.  (ie, less recently used items are iterated over first.)
+   */
+  rforEach(fn, thisp = this) {
+    for (const i of this.#rindexes()) {
+      const v = this.#valList[i];
+      const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
+      if (value === void 0)
+        continue;
+      fn.call(thisp, value, this.#keyList[i], this);
+    }
+  }
+  /**
+   * Delete any stale entries. Returns true if anything was removed,
+   * false otherwise.
+   */
+  purgeStale() {
+    let deleted = false;
+    for (const i of this.#rindexes({ allowStale: true })) {
+      if (this.#isStale(i)) {
+        this.#delete(this.#keyList[i], "expire");
+        deleted = true;
+      }
+    }
+    return deleted;
+  }
+  /**
+   * Get the extended info about a given entry, to get its value, size, and
+   * TTL info simultaneously. Returns `undefined` if the key is not present.
+   *
+   * Unlike {@link LRUCache#dump}, which is designed to be portable and survive
+   * serialization, the `start` value is always the current timestamp, and the
+   * `ttl` is a calculated remaining time to live (negative if expired).
+   *
+   * Always returns stale values, if their info is found in the cache, so be
+   * sure to check for expirations (ie, a negative {@link LRUCache.Entry#ttl})
+   * if relevant.
+   */
+  info(key) {
+    const i = this.#keyMap.get(key);
+    if (i === void 0)
+      return void 0;
+    const v = this.#valList[i];
+    const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
+    if (value === void 0)
+      return void 0;
+    const entry = { value };
+    if (this.#ttls && this.#starts) {
+      const ttl = this.#ttls[i];
+      const start = this.#starts[i];
+      if (ttl && start) {
+        const remain = ttl - (perf.now() - start);
+        entry.ttl = remain;
+        entry.start = Date.now();
+      }
+    }
+    if (this.#sizes) {
+      entry.size = this.#sizes[i];
+    }
+    return entry;
+  }
+  /**
+   * Return an array of [key, {@link LRUCache.Entry}] tuples which can be
+   * passed to {@link LRUCache#load}.
+   *
+   * The `start` fields are calculated relative to a portable `Date.now()`
+   * timestamp, even if `performance.now()` is available.
+   *
+   * Stale entries are always included in the `dump`, even if
+   * {@link LRUCache.OptionsBase.allowStale} is false.
+   *
+   * Note: this returns an actual array, not a generator, so it can be more
+   * easily passed around.
+   */
+  dump() {
+    const arr = [];
+    for (const i of this.#indexes({ allowStale: true })) {
+      const key = this.#keyList[i];
+      const v = this.#valList[i];
+      const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
+      if (value === void 0 || key === void 0)
+        continue;
+      const entry = { value };
+      if (this.#ttls && this.#starts) {
+        entry.ttl = this.#ttls[i];
+        const age = perf.now() - this.#starts[i];
+        entry.start = Math.floor(Date.now() - age);
+      }
+      if (this.#sizes) {
+        entry.size = this.#sizes[i];
+      }
+      arr.unshift([key, entry]);
+    }
+    return arr;
+  }
+  /**
+   * Reset the cache and load in the items in entries in the order listed.
+   *
+   * The shape of the resulting cache may be different if the same options are
+   * not used in both caches.
+   *
+   * The `start` fields are assumed to be calculated relative to a portable
+   * `Date.now()` timestamp, even if `performance.now()` is available.
+   */
+  load(arr) {
+    this.clear();
+    for (const [key, entry] of arr) {
+      if (entry.start) {
+        const age = Date.now() - entry.start;
+        entry.start = perf.now() - age;
+      }
+      this.set(key, entry.value, entry);
+    }
+  }
+  /**
+   * Add a value to the cache.
+   *
+   * Note: if `undefined` is specified as a value, this is an alias for
+   * {@link LRUCache#delete}
+   *
+   * Fields on the {@link LRUCache.SetOptions} options param will override
+   * their corresponding values in the constructor options for the scope
+   * of this single `set()` operation.
+   *
+   * If `start` is provided, then that will set the effective start
+   * time for the TTL calculation. Note that this must be a previous
+   * value of `performance.now()` if supported, or a previous value of
+   * `Date.now()` if not.
+   *
+   * Options object may also include `size`, which will prevent
+   * calling the `sizeCalculation` function and just use the specified
+   * number if it is a positive integer, and `noDisposeOnSet` which
+   * will prevent calling a `dispose` function in the case of
+   * overwrites.
+   *
+   * If the `size` (or return value of `sizeCalculation`) for a given
+   * entry is greater than `maxEntrySize`, then the item will not be
+   * added to the cache.
+   *
+   * Will update the recency of the entry.
+   *
+   * If the value is `undefined`, then this is an alias for
+   * `cache.delete(key)`. `undefined` is never stored in the cache.
+   */
+  set(k, v, setOptions = {}) {
+    if (v === void 0) {
+      this.delete(k);
+      return this;
+    }
+    const { ttl = this.ttl, start, noDisposeOnSet = this.noDisposeOnSet, sizeCalculation = this.sizeCalculation, status } = setOptions;
+    let { noUpdateTTL = this.noUpdateTTL } = setOptions;
+    const size = this.#requireSize(k, v, setOptions.size || 0, sizeCalculation);
+    if (this.maxEntrySize && size > this.maxEntrySize) {
+      if (status) {
+        status.set = "miss";
+        status.maxEntrySizeExceeded = true;
+      }
+      this.#delete(k, "set");
+      return this;
+    }
+    let index = this.#size === 0 ? void 0 : this.#keyMap.get(k);
+    if (index === void 0) {
+      index = this.#size === 0 ? this.#tail : this.#free.length !== 0 ? this.#free.pop() : this.#size === this.#max ? this.#evict(false) : this.#size;
+      this.#keyList[index] = k;
+      this.#valList[index] = v;
+      this.#keyMap.set(k, index);
+      this.#next[this.#tail] = index;
+      this.#prev[index] = this.#tail;
+      this.#tail = index;
+      this.#size++;
+      this.#addItemSize(index, size, status);
+      if (status)
+        status.set = "add";
+      noUpdateTTL = false;
+      if (this.#hasOnInsert) {
+        this.#onInsert?.(v, k, "add");
+      }
+    } else {
+      this.#moveToTail(index);
+      const oldVal = this.#valList[index];
+      if (v !== oldVal) {
+        if (this.#hasFetchMethod && this.#isBackgroundFetch(oldVal)) {
+          oldVal.__abortController.abort(new Error("replaced"));
+          const { __staleWhileFetching: s } = oldVal;
+          if (s !== void 0 && !noDisposeOnSet) {
+            if (this.#hasDispose) {
+              this.#dispose?.(s, k, "set");
+            }
+            if (this.#hasDisposeAfter) {
+              this.#disposed?.push([s, k, "set"]);
+            }
+          }
+        } else if (!noDisposeOnSet) {
+          if (this.#hasDispose) {
+            this.#dispose?.(oldVal, k, "set");
+          }
+          if (this.#hasDisposeAfter) {
+            this.#disposed?.push([oldVal, k, "set"]);
+          }
+        }
+        this.#removeItemSize(index);
+        this.#addItemSize(index, size, status);
+        this.#valList[index] = v;
+        if (status) {
+          status.set = "replace";
+          const oldValue = oldVal && this.#isBackgroundFetch(oldVal) ? oldVal.__staleWhileFetching : oldVal;
+          if (oldValue !== void 0)
+            status.oldValue = oldValue;
+        }
+      } else if (status) {
+        status.set = "update";
+      }
+      if (this.#hasOnInsert) {
+        this.onInsert?.(v, k, v === oldVal ? "update" : "replace");
+      }
+    }
+    if (ttl !== 0 && !this.#ttls) {
+      this.#initializeTTLTracking();
+    }
+    if (this.#ttls) {
+      if (!noUpdateTTL) {
+        this.#setItemTTL(index, ttl, start);
+      }
+      if (status)
+        this.#statusTTL(status, index);
+    }
+    if (!noDisposeOnSet && this.#hasDisposeAfter && this.#disposed) {
+      const dt = this.#disposed;
+      let task;
+      while (task = dt?.shift()) {
+        this.#disposeAfter?.(...task);
+      }
+    }
+    return this;
+  }
+  /**
+   * Evict the least recently used item, returning its value or
+   * `undefined` if cache is empty.
+   */
+  pop() {
+    try {
+      while (this.#size) {
+        const val = this.#valList[this.#head];
+        this.#evict(true);
+        if (this.#isBackgroundFetch(val)) {
+          if (val.__staleWhileFetching) {
+            return val.__staleWhileFetching;
+          }
+        } else if (val !== void 0) {
+          return val;
+        }
+      }
+    } finally {
+      if (this.#hasDisposeAfter && this.#disposed) {
+        const dt = this.#disposed;
+        let task;
+        while (task = dt?.shift()) {
+          this.#disposeAfter?.(...task);
+        }
+      }
+    }
+  }
+  #evict(free) {
+    const head = this.#head;
+    const k = this.#keyList[head];
+    const v = this.#valList[head];
+    if (this.#hasFetchMethod && this.#isBackgroundFetch(v)) {
+      v.__abortController.abort(new Error("evicted"));
+    } else if (this.#hasDispose || this.#hasDisposeAfter) {
+      if (this.#hasDispose) {
+        this.#dispose?.(v, k, "evict");
+      }
+      if (this.#hasDisposeAfter) {
+        this.#disposed?.push([v, k, "evict"]);
+      }
+    }
+    this.#removeItemSize(head);
+    if (free) {
+      this.#keyList[head] = void 0;
+      this.#valList[head] = void 0;
+      this.#free.push(head);
+    }
+    if (this.#size === 1) {
+      this.#head = this.#tail = 0;
+      this.#free.length = 0;
+    } else {
+      this.#head = this.#next[head];
+    }
+    this.#keyMap.delete(k);
+    this.#size--;
+    return head;
+  }
+  /**
+   * Check if a key is in the cache, without updating the recency of use.
+   * Will return false if the item is stale, even though it is technically
+   * in the cache.
+   *
+   * Check if a key is in the cache, without updating the recency of
+   * use. Age is updated if {@link LRUCache.OptionsBase.updateAgeOnHas} is set
+   * to `true` in either the options or the constructor.
+   *
+   * Will return `false` if the item is stale, even though it is technically in
+   * the cache. The difference can be determined (if it matters) by using a
+   * `status` argument, and inspecting the `has` field.
+   *
+   * Will not update item age unless
+   * {@link LRUCache.OptionsBase.updateAgeOnHas} is set.
+   */
+  has(k, hasOptions = {}) {
+    const { updateAgeOnHas = this.updateAgeOnHas, status } = hasOptions;
+    const index = this.#keyMap.get(k);
+    if (index !== void 0) {
+      const v = this.#valList[index];
+      if (this.#isBackgroundFetch(v) && v.__staleWhileFetching === void 0) {
+        return false;
+      }
+      if (!this.#isStale(index)) {
+        if (updateAgeOnHas) {
+          this.#updateItemAge(index);
+        }
+        if (status) {
+          status.has = "hit";
+          this.#statusTTL(status, index);
+        }
+        return true;
+      } else if (status) {
+        status.has = "stale";
+        this.#statusTTL(status, index);
+      }
+    } else if (status) {
+      status.has = "miss";
+    }
+    return false;
+  }
+  /**
+   * Like {@link LRUCache#get} but doesn't update recency or delete stale
+   * items.
+   *
+   * Returns `undefined` if the item is stale, unless
+   * {@link LRUCache.OptionsBase.allowStale} is set.
+   */
+  peek(k, peekOptions = {}) {
+    const { allowStale = this.allowStale } = peekOptions;
+    const index = this.#keyMap.get(k);
+    if (index === void 0 || !allowStale && this.#isStale(index)) {
+      return;
+    }
+    const v = this.#valList[index];
+    return this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
+  }
+  #backgroundFetch(k, index, options, context) {
+    const v = index === void 0 ? void 0 : this.#valList[index];
+    if (this.#isBackgroundFetch(v)) {
+      return v;
+    }
+    const ac = new AC();
+    const { signal } = options;
+    signal?.addEventListener("abort", () => ac.abort(signal.reason), {
+      signal: ac.signal
+    });
+    const fetchOpts = {
+      signal: ac.signal,
+      options,
+      context
+    };
+    const cb2 = /* @__PURE__ */ __name((v2, updateCache = false) => {
+      const { aborted } = ac.signal;
+      const ignoreAbort = options.ignoreFetchAbort && v2 !== void 0;
+      if (options.status) {
+        if (aborted && !updateCache) {
+          options.status.fetchAborted = true;
+          options.status.fetchError = ac.signal.reason;
+          if (ignoreAbort)
+            options.status.fetchAbortIgnored = true;
+        } else {
+          options.status.fetchResolved = true;
+        }
+      }
+      if (aborted && !ignoreAbort && !updateCache) {
+        return fetchFail(ac.signal.reason);
+      }
+      const bf2 = p;
+      if (this.#valList[index] === p) {
+        if (v2 === void 0) {
+          if (bf2.__staleWhileFetching) {
+            this.#valList[index] = bf2.__staleWhileFetching;
+          } else {
+            this.#delete(k, "fetch");
+          }
+        } else {
+          if (options.status)
+            options.status.fetchUpdated = true;
+          this.set(k, v2, fetchOpts.options);
+        }
+      }
+      return v2;
+    }, "cb");
+    const eb = /* @__PURE__ */ __name((er) => {
+      if (options.status) {
+        options.status.fetchRejected = true;
+        options.status.fetchError = er;
+      }
+      return fetchFail(er);
+    }, "eb");
+    const fetchFail = /* @__PURE__ */ __name((er) => {
+      const { aborted } = ac.signal;
+      const allowStaleAborted = aborted && options.allowStaleOnFetchAbort;
+      const allowStale = allowStaleAborted || options.allowStaleOnFetchRejection;
+      const noDelete = allowStale || options.noDeleteOnFetchRejection;
+      const bf2 = p;
+      if (this.#valList[index] === p) {
+        const del = !noDelete || bf2.__staleWhileFetching === void 0;
+        if (del) {
+          this.#delete(k, "fetch");
+        } else if (!allowStaleAborted) {
+          this.#valList[index] = bf2.__staleWhileFetching;
+        }
+      }
+      if (allowStale) {
+        if (options.status && bf2.__staleWhileFetching !== void 0) {
+          options.status.returnedStale = true;
+        }
+        return bf2.__staleWhileFetching;
+      } else if (bf2.__returned === bf2) {
+        throw er;
+      }
+    }, "fetchFail");
+    const pcall = /* @__PURE__ */ __name((res, rej) => {
+      const fmp = this.#fetchMethod?.(k, v, fetchOpts);
+      if (fmp && fmp instanceof Promise) {
+        fmp.then((v2) => res(v2 === void 0 ? void 0 : v2), rej);
+      }
+      ac.signal.addEventListener("abort", () => {
+        if (!options.ignoreFetchAbort || options.allowStaleOnFetchAbort) {
+          res(void 0);
+          if (options.allowStaleOnFetchAbort) {
+            res = /* @__PURE__ */ __name((v2) => cb2(v2, true), "res");
+          }
+        }
+      });
+    }, "pcall");
+    if (options.status)
+      options.status.fetchDispatched = true;
+    const p = new Promise(pcall).then(cb2, eb);
+    const bf = Object.assign(p, {
+      __abortController: ac,
+      __staleWhileFetching: v,
+      __returned: void 0
+    });
+    if (index === void 0) {
+      this.set(k, bf, { ...fetchOpts.options, status: void 0 });
+      index = this.#keyMap.get(k);
+    } else {
+      this.#valList[index] = bf;
+    }
+    return bf;
+  }
+  #isBackgroundFetch(p) {
+    if (!this.#hasFetchMethod)
+      return false;
+    const b = p;
+    return !!b && b instanceof Promise && b.hasOwnProperty("__staleWhileFetching") && b.__abortController instanceof AC;
+  }
+  async fetch(k, fetchOptions = {}) {
+    const {
+      // get options
+      allowStale = this.allowStale,
+      updateAgeOnGet = this.updateAgeOnGet,
+      noDeleteOnStaleGet = this.noDeleteOnStaleGet,
+      // set options
+      ttl = this.ttl,
+      noDisposeOnSet = this.noDisposeOnSet,
+      size = 0,
+      sizeCalculation = this.sizeCalculation,
+      noUpdateTTL = this.noUpdateTTL,
+      // fetch exclusive options
+      noDeleteOnFetchRejection = this.noDeleteOnFetchRejection,
+      allowStaleOnFetchRejection = this.allowStaleOnFetchRejection,
+      ignoreFetchAbort = this.ignoreFetchAbort,
+      allowStaleOnFetchAbort = this.allowStaleOnFetchAbort,
+      context,
+      forceRefresh = false,
+      status,
+      signal
+    } = fetchOptions;
+    if (!this.#hasFetchMethod) {
+      if (status)
+        status.fetch = "get";
+      return this.get(k, {
+        allowStale,
+        updateAgeOnGet,
+        noDeleteOnStaleGet,
+        status
+      });
+    }
+    const options = {
+      allowStale,
+      updateAgeOnGet,
+      noDeleteOnStaleGet,
+      ttl,
+      noDisposeOnSet,
+      size,
+      sizeCalculation,
+      noUpdateTTL,
+      noDeleteOnFetchRejection,
+      allowStaleOnFetchRejection,
+      allowStaleOnFetchAbort,
+      ignoreFetchAbort,
+      status,
+      signal
+    };
+    let index = this.#keyMap.get(k);
+    if (index === void 0) {
+      if (status)
+        status.fetch = "miss";
+      const p = this.#backgroundFetch(k, index, options, context);
+      return p.__returned = p;
+    } else {
+      const v = this.#valList[index];
+      if (this.#isBackgroundFetch(v)) {
+        const stale = allowStale && v.__staleWhileFetching !== void 0;
+        if (status) {
+          status.fetch = "inflight";
+          if (stale)
+            status.returnedStale = true;
+        }
+        return stale ? v.__staleWhileFetching : v.__returned = v;
+      }
+      const isStale = this.#isStale(index);
+      if (!forceRefresh && !isStale) {
+        if (status)
+          status.fetch = "hit";
+        this.#moveToTail(index);
+        if (updateAgeOnGet) {
+          this.#updateItemAge(index);
+        }
+        if (status)
+          this.#statusTTL(status, index);
+        return v;
+      }
+      const p = this.#backgroundFetch(k, index, options, context);
+      const hasStale = p.__staleWhileFetching !== void 0;
+      const staleVal = hasStale && allowStale;
+      if (status) {
+        status.fetch = isStale ? "stale" : "refresh";
+        if (staleVal && isStale)
+          status.returnedStale = true;
+      }
+      return staleVal ? p.__staleWhileFetching : p.__returned = p;
+    }
+  }
+  async forceFetch(k, fetchOptions = {}) {
+    const v = await this.fetch(k, fetchOptions);
+    if (v === void 0)
+      throw new Error("fetch() returned undefined");
+    return v;
+  }
+  memo(k, memoOptions = {}) {
+    const memoMethod = this.#memoMethod;
+    if (!memoMethod) {
+      throw new Error("no memoMethod provided to constructor");
+    }
+    const { context, forceRefresh, ...options } = memoOptions;
+    const v = this.get(k, options);
+    if (!forceRefresh && v !== void 0)
+      return v;
+    const vv = memoMethod(k, v, {
+      options,
+      context
+    });
+    this.set(k, vv, options);
+    return vv;
+  }
+  /**
+   * Return a value from the cache. Will update the recency of the cache
+   * entry found.
+   *
+   * If the key is not found, get() will return `undefined`.
+   */
+  get(k, getOptions = {}) {
+    const { allowStale = this.allowStale, updateAgeOnGet = this.updateAgeOnGet, noDeleteOnStaleGet = this.noDeleteOnStaleGet, status } = getOptions;
+    const index = this.#keyMap.get(k);
+    if (index !== void 0) {
+      const value = this.#valList[index];
+      const fetching = this.#isBackgroundFetch(value);
+      if (status)
+        this.#statusTTL(status, index);
+      if (this.#isStale(index)) {
+        if (status)
+          status.get = "stale";
+        if (!fetching) {
+          if (!noDeleteOnStaleGet) {
+            this.#delete(k, "expire");
+          }
+          if (status && allowStale)
+            status.returnedStale = true;
+          return allowStale ? value : void 0;
+        } else {
+          if (status && allowStale && value.__staleWhileFetching !== void 0) {
+            status.returnedStale = true;
+          }
+          return allowStale ? value.__staleWhileFetching : void 0;
+        }
+      } else {
+        if (status)
+          status.get = "hit";
+        if (fetching) {
+          return value.__staleWhileFetching;
+        }
+        this.#moveToTail(index);
+        if (updateAgeOnGet) {
+          this.#updateItemAge(index);
+        }
+        return value;
+      }
+    } else if (status) {
+      status.get = "miss";
+    }
+  }
+  #connect(p, n) {
+    this.#prev[n] = p;
+    this.#next[p] = n;
+  }
+  #moveToTail(index) {
+    if (index !== this.#tail) {
+      if (index === this.#head) {
+        this.#head = this.#next[index];
+      } else {
+        this.#connect(this.#prev[index], this.#next[index]);
+      }
+      this.#connect(this.#tail, index);
+      this.#tail = index;
+    }
+  }
+  /**
+   * Deletes a key out of the cache.
+   *
+   * Returns true if the key was deleted, false otherwise.
+   */
+  delete(k) {
+    return this.#delete(k, "delete");
+  }
+  #delete(k, reason) {
+    let deleted = false;
+    if (this.#size !== 0) {
+      const index = this.#keyMap.get(k);
+      if (index !== void 0) {
+        deleted = true;
+        if (this.#size === 1) {
+          this.#clear(reason);
+        } else {
+          this.#removeItemSize(index);
+          const v = this.#valList[index];
+          if (this.#isBackgroundFetch(v)) {
+            v.__abortController.abort(new Error("deleted"));
+          } else if (this.#hasDispose || this.#hasDisposeAfter) {
+            if (this.#hasDispose) {
+              this.#dispose?.(v, k, reason);
+            }
+            if (this.#hasDisposeAfter) {
+              this.#disposed?.push([v, k, reason]);
+            }
+          }
+          this.#keyMap.delete(k);
+          this.#keyList[index] = void 0;
+          this.#valList[index] = void 0;
+          if (index === this.#tail) {
+            this.#tail = this.#prev[index];
+          } else if (index === this.#head) {
+            this.#head = this.#next[index];
+          } else {
+            const pi = this.#prev[index];
+            this.#next[pi] = this.#next[index];
+            const ni = this.#next[index];
+            this.#prev[ni] = this.#prev[index];
+          }
+          this.#size--;
+          this.#free.push(index);
+        }
+      }
+    }
+    if (this.#hasDisposeAfter && this.#disposed?.length) {
+      const dt = this.#disposed;
+      let task;
+      while (task = dt?.shift()) {
+        this.#disposeAfter?.(...task);
+      }
+    }
+    return deleted;
+  }
+  /**
+   * Clear the cache entirely, throwing away all values.
+   */
+  clear() {
+    return this.#clear("delete");
+  }
+  #clear(reason) {
+    for (const index of this.#rindexes({ allowStale: true })) {
+      const v = this.#valList[index];
+      if (this.#isBackgroundFetch(v)) {
+        v.__abortController.abort(new Error("deleted"));
+      } else {
+        const k = this.#keyList[index];
+        if (this.#hasDispose) {
+          this.#dispose?.(v, k, reason);
+        }
+        if (this.#hasDisposeAfter) {
+          this.#disposed?.push([v, k, reason]);
+        }
+      }
+    }
+    this.#keyMap.clear();
+    this.#valList.fill(void 0);
+    this.#keyList.fill(void 0);
+    if (this.#ttls && this.#starts) {
+      this.#ttls.fill(0);
+      this.#starts.fill(0);
+    }
+    if (this.#sizes) {
+      this.#sizes.fill(0);
+    }
+    this.#head = 0;
+    this.#tail = 0;
+    this.#free.length = 0;
+    this.#calculatedSize = 0;
+    this.#size = 0;
+    if (this.#hasDisposeAfter && this.#disposed) {
+      const dt = this.#disposed;
+      let task;
+      while (task = dt?.shift()) {
+        this.#disposeAfter?.(...task);
+      }
+    }
+  }
+};
+
+// ../../node_modules/path-scurry/dist/esm/index.js
+var import_node_path = require("node:path");
+var import_node_url = require("node:url");
+var import_fs = require("fs");
+var actualFS = __toESM(require("node:fs"), 1);
+var import_promises = require("node:fs/promises");
+
+// ../../node_modules/minipass/dist/esm/index.js
+var import_node_events = require("node:events");
+var import_node_stream = __toESM(require("node:stream"), 1);
+var import_node_string_decoder = require("node:string_decoder");
+var proc = typeof process === "object" && process ? process : {
+  stdout: null,
+  stderr: null
+};
+var isStream = /* @__PURE__ */ __name((s) => !!s && typeof s === "object" && (s instanceof Minipass || s instanceof import_node_stream.default || isReadable(s) || isWritable(s)), "isStream");
+var isReadable = /* @__PURE__ */ __name((s) => !!s && typeof s === "object" && s instanceof import_node_events.EventEmitter && typeof s.pipe === "function" && // node core Writable streams have a pipe() method, but it throws
+s.pipe !== import_node_stream.default.Writable.prototype.pipe, "isReadable");
+var isWritable = /* @__PURE__ */ __name((s) => !!s && typeof s === "object" && s instanceof import_node_events.EventEmitter && typeof s.write === "function" && typeof s.end === "function", "isWritable");
+var EOF = Symbol("EOF");
+var MAYBE_EMIT_END = Symbol("maybeEmitEnd");
+var EMITTED_END = Symbol("emittedEnd");
+var EMITTING_END = Symbol("emittingEnd");
+var EMITTED_ERROR = Symbol("emittedError");
+var CLOSED = Symbol("closed");
+var READ = Symbol("read");
+var FLUSH = Symbol("flush");
+var FLUSHCHUNK = Symbol("flushChunk");
+var ENCODING = Symbol("encoding");
+var DECODER = Symbol("decoder");
+var FLOWING = Symbol("flowing");
+var PAUSED = Symbol("paused");
+var RESUME = Symbol("resume");
+var BUFFER = Symbol("buffer");
+var PIPES = Symbol("pipes");
+var BUFFERLENGTH = Symbol("bufferLength");
+var BUFFERPUSH = Symbol("bufferPush");
+var BUFFERSHIFT = Symbol("bufferShift");
+var OBJECTMODE = Symbol("objectMode");
+var DESTROYED = Symbol("destroyed");
+var ERROR = Symbol("error");
+var EMITDATA = Symbol("emitData");
+var EMITEND = Symbol("emitEnd");
+var EMITEND2 = Symbol("emitEnd2");
+var ASYNC = Symbol("async");
+var ABORT = Symbol("abort");
+var ABORTED = Symbol("aborted");
+var SIGNAL = Symbol("signal");
+var DATALISTENERS = Symbol("dataListeners");
+var DISCARDED = Symbol("discarded");
+var defer = /* @__PURE__ */ __name((fn) => Promise.resolve().then(fn), "defer");
+var nodefer = /* @__PURE__ */ __name((fn) => fn(), "nodefer");
+var isEndish = /* @__PURE__ */ __name((ev) => ev === "end" || ev === "finish" || ev === "prefinish", "isEndish");
+var isArrayBufferLike = /* @__PURE__ */ __name((b) => b instanceof ArrayBuffer || !!b && typeof b === "object" && b.constructor && b.constructor.name === "ArrayBuffer" && b.byteLength >= 0, "isArrayBufferLike");
+var isArrayBufferView = /* @__PURE__ */ __name((b) => !Buffer.isBuffer(b) && ArrayBuffer.isView(b), "isArrayBufferView");
+var Pipe = class {
+  static {
+    __name(this, "Pipe");
+  }
+  src;
+  dest;
+  opts;
+  ondrain;
+  constructor(src, dest, opts) {
+    this.src = src;
+    this.dest = dest;
+    this.opts = opts;
+    this.ondrain = () => src[RESUME]();
+    this.dest.on("drain", this.ondrain);
+  }
+  unpipe() {
+    this.dest.removeListener("drain", this.ondrain);
+  }
+  // only here for the prototype
+  /* c8 ignore start */
+  proxyErrors(_er) {
+  }
+  /* c8 ignore stop */
+  end() {
+    this.unpipe();
+    if (this.opts.end)
+      this.dest.end();
+  }
+};
+var PipeProxyErrors = class extends Pipe {
+  static {
+    __name(this, "PipeProxyErrors");
+  }
+  unpipe() {
+    this.src.removeListener("error", this.proxyErrors);
+    super.unpipe();
+  }
+  constructor(src, dest, opts) {
+    super(src, dest, opts);
+    this.proxyErrors = (er) => dest.emit("error", er);
+    src.on("error", this.proxyErrors);
+  }
+};
+var isObjectModeOptions = /* @__PURE__ */ __name((o) => !!o.objectMode, "isObjectModeOptions");
+var isEncodingOptions = /* @__PURE__ */ __name((o) => !o.objectMode && !!o.encoding && o.encoding !== "buffer", "isEncodingOptions");
+var Minipass = class extends import_node_events.EventEmitter {
+  static {
+    __name(this, "Minipass");
+  }
+  [FLOWING] = false;
+  [PAUSED] = false;
+  [PIPES] = [];
+  [BUFFER] = [];
+  [OBJECTMODE];
+  [ENCODING];
+  [ASYNC];
+  [DECODER];
+  [EOF] = false;
+  [EMITTED_END] = false;
+  [EMITTING_END] = false;
+  [CLOSED] = false;
+  [EMITTED_ERROR] = null;
+  [BUFFERLENGTH] = 0;
+  [DESTROYED] = false;
+  [SIGNAL];
+  [ABORTED] = false;
+  [DATALISTENERS] = 0;
+  [DISCARDED] = false;
+  /**
+   * true if the stream can be written
+   */
+  writable = true;
+  /**
+   * true if the stream can be read
+   */
+  readable = true;
+  /**
+   * If `RType` is Buffer, then options do not need to be provided.
+   * Otherwise, an options object must be provided to specify either
+   * {@link Minipass.SharedOptions.objectMode} or
+   * {@link Minipass.SharedOptions.encoding}, as appropriate.
+   */
+  constructor(...args) {
+    const options = args[0] || {};
+    super();
+    if (options.objectMode && typeof options.encoding === "string") {
+      throw new TypeError("Encoding and objectMode may not be used together");
+    }
+    if (isObjectModeOptions(options)) {
+      this[OBJECTMODE] = true;
+      this[ENCODING] = null;
+    } else if (isEncodingOptions(options)) {
+      this[ENCODING] = options.encoding;
+      this[OBJECTMODE] = false;
+    } else {
+      this[OBJECTMODE] = false;
+      this[ENCODING] = null;
+    }
+    this[ASYNC] = !!options.async;
+    this[DECODER] = this[ENCODING] ? new import_node_string_decoder.StringDecoder(this[ENCODING]) : null;
+    if (options && options.debugExposeBuffer === true) {
+      Object.defineProperty(this, "buffer", { get: /* @__PURE__ */ __name(() => this[BUFFER], "get") });
+    }
+    if (options && options.debugExposePipes === true) {
+      Object.defineProperty(this, "pipes", { get: /* @__PURE__ */ __name(() => this[PIPES], "get") });
+    }
+    const { signal } = options;
+    if (signal) {
+      this[SIGNAL] = signal;
+      if (signal.aborted) {
+        this[ABORT]();
+      } else {
+        signal.addEventListener("abort", () => this[ABORT]());
+      }
+    }
+  }
+  /**
+   * The amount of data stored in the buffer waiting to be read.
+   *
+   * For Buffer strings, this will be the total byte length.
+   * For string encoding streams, this will be the string character length,
+   * according to JavaScript's `string.length` logic.
+   * For objectMode streams, this is a count of the items waiting to be
+   * emitted.
+   */
+  get bufferLength() {
+    return this[BUFFERLENGTH];
+  }
+  /**
+   * The `BufferEncoding` currently in use, or `null`
+   */
+  get encoding() {
+    return this[ENCODING];
+  }
+  /**
+   * @deprecated - This is a read only property
+   */
+  set encoding(_enc) {
+    throw new Error("Encoding must be set at instantiation time");
+  }
+  /**
+   * @deprecated - Encoding may only be set at instantiation time
+   */
+  setEncoding(_enc) {
+    throw new Error("Encoding must be set at instantiation time");
+  }
+  /**
+   * True if this is an objectMode stream
+   */
+  get objectMode() {
+    return this[OBJECTMODE];
+  }
+  /**
+   * @deprecated - This is a read-only property
+   */
+  set objectMode(_om) {
+    throw new Error("objectMode must be set at instantiation time");
+  }
+  /**
+   * true if this is an async stream
+   */
+  get ["async"]() {
+    return this[ASYNC];
+  }
+  /**
+   * Set to true to make this stream async.
+   *
+   * Once set, it cannot be unset, as this would potentially cause incorrect
+   * behavior.  Ie, a sync stream can be made async, but an async stream
+   * cannot be safely made sync.
+   */
+  set ["async"](a) {
+    this[ASYNC] = this[ASYNC] || !!a;
+  }
+  // drop everything and get out of the flow completely
+  [ABORT]() {
+    this[ABORTED] = true;
+    this.emit("abort", this[SIGNAL]?.reason);
+    this.destroy(this[SIGNAL]?.reason);
+  }
+  /**
+   * True if the stream has been aborted.
+   */
+  get aborted() {
+    return this[ABORTED];
+  }
+  /**
+   * No-op setter. Stream aborted status is set via the AbortSignal provided
+   * in the constructor options.
+   */
+  set aborted(_) {
+  }
+  write(chunk, encoding, cb2) {
+    if (this[ABORTED])
+      return false;
+    if (this[EOF])
+      throw new Error("write after end");
+    if (this[DESTROYED]) {
+      this.emit("error", Object.assign(new Error("Cannot call write after a stream was destroyed"), { code: "ERR_STREAM_DESTROYED" }));
+      return true;
+    }
+    if (typeof encoding === "function") {
+      cb2 = encoding;
+      encoding = "utf8";
+    }
+    if (!encoding)
+      encoding = "utf8";
+    const fn = this[ASYNC] ? defer : nodefer;
+    if (!this[OBJECTMODE] && !Buffer.isBuffer(chunk)) {
+      if (isArrayBufferView(chunk)) {
+        chunk = Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength);
+      } else if (isArrayBufferLike(chunk)) {
+        chunk = Buffer.from(chunk);
+      } else if (typeof chunk !== "string") {
+        throw new Error("Non-contiguous data written to non-objectMode stream");
+      }
+    }
+    if (this[OBJECTMODE]) {
+      if (this[FLOWING] && this[BUFFERLENGTH] !== 0)
+        this[FLUSH](true);
+      if (this[FLOWING])
+        this.emit("data", chunk);
+      else
+        this[BUFFERPUSH](chunk);
+      if (this[BUFFERLENGTH] !== 0)
+        this.emit("readable");
+      if (cb2)
+        fn(cb2);
+      return this[FLOWING];
+    }
+    if (!chunk.length) {
+      if (this[BUFFERLENGTH] !== 0)
+        this.emit("readable");
+      if (cb2)
+        fn(cb2);
+      return this[FLOWING];
+    }
+    if (typeof chunk === "string" && // unless it is a string already ready for us to use
+    !(encoding === this[ENCODING] && !this[DECODER]?.lastNeed)) {
+      chunk = Buffer.from(chunk, encoding);
+    }
+    if (Buffer.isBuffer(chunk) && this[ENCODING]) {
+      chunk = this[DECODER].write(chunk);
+    }
+    if (this[FLOWING] && this[BUFFERLENGTH] !== 0)
+      this[FLUSH](true);
+    if (this[FLOWING])
+      this.emit("data", chunk);
+    else
+      this[BUFFERPUSH](chunk);
+    if (this[BUFFERLENGTH] !== 0)
+      this.emit("readable");
+    if (cb2)
+      fn(cb2);
+    return this[FLOWING];
+  }
+  /**
+   * Low-level explicit read method.
+   *
+   * In objectMode, the argument is ignored, and one item is returned if
+   * available.
+   *
+   * `n` is the number of bytes (or in the case of encoding streams,
+   * characters) to consume. If `n` is not provided, then the entire buffer
+   * is returned, or `null` is returned if no data is available.
+   *
+   * If `n` is greater that the amount of data in the internal buffer,
+   * then `null` is returned.
+   */
+  read(n) {
+    if (this[DESTROYED])
+      return null;
+    this[DISCARDED] = false;
+    if (this[BUFFERLENGTH] === 0 || n === 0 || n && n > this[BUFFERLENGTH]) {
+      this[MAYBE_EMIT_END]();
+      return null;
+    }
+    if (this[OBJECTMODE])
+      n = null;
+    if (this[BUFFER].length > 1 && !this[OBJECTMODE]) {
+      this[BUFFER] = [
+        this[ENCODING] ? this[BUFFER].join("") : Buffer.concat(this[BUFFER], this[BUFFERLENGTH])
+      ];
+    }
+    const ret = this[READ](n || null, this[BUFFER][0]);
+    this[MAYBE_EMIT_END]();
+    return ret;
+  }
+  [READ](n, chunk) {
+    if (this[OBJECTMODE])
+      this[BUFFERSHIFT]();
+    else {
+      const c = chunk;
+      if (n === c.length || n === null)
+        this[BUFFERSHIFT]();
+      else if (typeof c === "string") {
+        this[BUFFER][0] = c.slice(n);
+        chunk = c.slice(0, n);
+        this[BUFFERLENGTH] -= n;
+      } else {
+        this[BUFFER][0] = c.subarray(n);
+        chunk = c.subarray(0, n);
+        this[BUFFERLENGTH] -= n;
+      }
+    }
+    this.emit("data", chunk);
+    if (!this[BUFFER].length && !this[EOF])
+      this.emit("drain");
+    return chunk;
+  }
+  end(chunk, encoding, cb2) {
+    if (typeof chunk === "function") {
+      cb2 = chunk;
+      chunk = void 0;
+    }
+    if (typeof encoding === "function") {
+      cb2 = encoding;
+      encoding = "utf8";
+    }
+    if (chunk !== void 0)
+      this.write(chunk, encoding);
+    if (cb2)
+      this.once("end", cb2);
+    this[EOF] = true;
+    this.writable = false;
+    if (this[FLOWING] || !this[PAUSED])
+      this[MAYBE_EMIT_END]();
+    return this;
+  }
+  // don't let the internal resume be overwritten
+  [RESUME]() {
+    if (this[DESTROYED])
+      return;
+    if (!this[DATALISTENERS] && !this[PIPES].length) {
+      this[DISCARDED] = true;
+    }
+    this[PAUSED] = false;
+    this[FLOWING] = true;
+    this.emit("resume");
+    if (this[BUFFER].length)
+      this[FLUSH]();
+    else if (this[EOF])
+      this[MAYBE_EMIT_END]();
+    else
+      this.emit("drain");
+  }
+  /**
+   * Resume the stream if it is currently in a paused state
+   *
+   * If called when there are no pipe destinations or `data` event listeners,
+   * this will place the stream in a "discarded" state, where all data will
+   * be thrown away. The discarded state is removed if a pipe destination or
+   * data handler is added, if pause() is called, or if any synchronous or
+   * asynchronous iteration is started.
+   */
+  resume() {
+    return this[RESUME]();
+  }
+  /**
+   * Pause the stream
+   */
+  pause() {
+    this[FLOWING] = false;
+    this[PAUSED] = true;
+    this[DISCARDED] = false;
+  }
+  /**
+   * true if the stream has been forcibly destroyed
+   */
+  get destroyed() {
+    return this[DESTROYED];
+  }
+  /**
+   * true if the stream is currently in a flowing state, meaning that
+   * any writes will be immediately emitted.
+   */
+  get flowing() {
+    return this[FLOWING];
+  }
+  /**
+   * true if the stream is currently in a paused state
+   */
+  get paused() {
+    return this[PAUSED];
+  }
+  [BUFFERPUSH](chunk) {
+    if (this[OBJECTMODE])
+      this[BUFFERLENGTH] += 1;
+    else
+      this[BUFFERLENGTH] += chunk.length;
+    this[BUFFER].push(chunk);
+  }
+  [BUFFERSHIFT]() {
+    if (this[OBJECTMODE])
+      this[BUFFERLENGTH] -= 1;
+    else
+      this[BUFFERLENGTH] -= this[BUFFER][0].length;
+    return this[BUFFER].shift();
+  }
+  [FLUSH](noDrain = false) {
+    do {
+    } while (this[FLUSHCHUNK](this[BUFFERSHIFT]()) && this[BUFFER].length);
+    if (!noDrain && !this[BUFFER].length && !this[EOF])
+      this.emit("drain");
+  }
+  [FLUSHCHUNK](chunk) {
+    this.emit("data", chunk);
+    return this[FLOWING];
+  }
+  /**
+   * Pipe all data emitted by this stream into the destination provided.
+   *
+   * Triggers the flow of data.
+   */
+  pipe(dest, opts) {
+    if (this[DESTROYED])
+      return dest;
+    this[DISCARDED] = false;
+    const ended = this[EMITTED_END];
+    opts = opts || {};
+    if (dest === proc.stdout || dest === proc.stderr)
+      opts.end = false;
+    else
+      opts.end = opts.end !== false;
+    opts.proxyErrors = !!opts.proxyErrors;
+    if (ended) {
+      if (opts.end)
+        dest.end();
+    } else {
+      this[PIPES].push(!opts.proxyErrors ? new Pipe(this, dest, opts) : new PipeProxyErrors(this, dest, opts));
+      if (this[ASYNC])
+        defer(() => this[RESUME]());
+      else
+        this[RESUME]();
+    }
+    return dest;
+  }
+  /**
+   * Fully unhook a piped destination stream.
+   *
+   * If the destination stream was the only consumer of this stream (ie,
+   * there are no other piped destinations or `'data'` event listeners)
+   * then the flow of data will stop until there is another consumer or
+   * {@link Minipass#resume} is explicitly called.
+   */
+  unpipe(dest) {
+    const p = this[PIPES].find((p2) => p2.dest === dest);
+    if (p) {
+      if (this[PIPES].length === 1) {
+        if (this[FLOWING] && this[DATALISTENERS] === 0) {
+          this[FLOWING] = false;
+        }
+        this[PIPES] = [];
+      } else
+        this[PIPES].splice(this[PIPES].indexOf(p), 1);
+      p.unpipe();
+    }
+  }
+  /**
+   * Alias for {@link Minipass#on}
+   */
+  addListener(ev, handler) {
+    return this.on(ev, handler);
+  }
+  /**
+   * Mostly identical to `EventEmitter.on`, with the following
+   * behavior differences to prevent data loss and unnecessary hangs:
+   *
+   * - Adding a 'data' event handler will trigger the flow of data
+   *
+   * - Adding a 'readable' event handler when there is data waiting to be read
+   *   will cause 'readable' to be emitted immediately.
+   *
+   * - Adding an 'endish' event handler ('end', 'finish', etc.) which has
+   *   already passed will cause the event to be emitted immediately and all
+   *   handlers removed.
+   *
+   * - Adding an 'error' event handler after an error has been emitted will
+   *   cause the event to be re-emitted immediately with the error previously
+   *   raised.
+   */
+  on(ev, handler) {
+    const ret = super.on(ev, handler);
+    if (ev === "data") {
+      this[DISCARDED] = false;
+      this[DATALISTENERS]++;
+      if (!this[PIPES].length && !this[FLOWING]) {
+        this[RESUME]();
+      }
+    } else if (ev === "readable" && this[BUFFERLENGTH] !== 0) {
+      super.emit("readable");
+    } else if (isEndish(ev) && this[EMITTED_END]) {
+      super.emit(ev);
+      this.removeAllListeners(ev);
+    } else if (ev === "error" && this[EMITTED_ERROR]) {
+      const h = handler;
+      if (this[ASYNC])
+        defer(() => h.call(this, this[EMITTED_ERROR]));
+      else
+        h.call(this, this[EMITTED_ERROR]);
+    }
+    return ret;
+  }
+  /**
+   * Alias for {@link Minipass#off}
+   */
+  removeListener(ev, handler) {
+    return this.off(ev, handler);
+  }
+  /**
+   * Mostly identical to `EventEmitter.off`
+   *
+   * If a 'data' event handler is removed, and it was the last consumer
+   * (ie, there are no pipe destinations or other 'data' event listeners),
+   * then the flow of data will stop until there is another consumer or
+   * {@link Minipass#resume} is explicitly called.
+   */
+  off(ev, handler) {
+    const ret = super.off(ev, handler);
+    if (ev === "data") {
+      this[DATALISTENERS] = this.listeners("data").length;
+      if (this[DATALISTENERS] === 0 && !this[DISCARDED] && !this[PIPES].length) {
+        this[FLOWING] = false;
+      }
+    }
+    return ret;
+  }
+  /**
+   * Mostly identical to `EventEmitter.removeAllListeners`
+   *
+   * If all 'data' event handlers are removed, and they were the last consumer
+   * (ie, there are no pipe destinations), then the flow of data will stop
+   * until there is another consumer or {@link Minipass#resume} is explicitly
+   * called.
+   */
+  removeAllListeners(ev) {
+    const ret = super.removeAllListeners(ev);
+    if (ev === "data" || ev === void 0) {
+      this[DATALISTENERS] = 0;
+      if (!this[DISCARDED] && !this[PIPES].length) {
+        this[FLOWING] = false;
+      }
+    }
+    return ret;
+  }
+  /**
+   * true if the 'end' event has been emitted
+   */
+  get emittedEnd() {
+    return this[EMITTED_END];
+  }
+  [MAYBE_EMIT_END]() {
+    if (!this[EMITTING_END] && !this[EMITTED_END] && !this[DESTROYED] && this[BUFFER].length === 0 && this[EOF]) {
+      this[EMITTING_END] = true;
+      this.emit("end");
+      this.emit("prefinish");
+      this.emit("finish");
+      if (this[CLOSED])
+        this.emit("close");
+      this[EMITTING_END] = false;
+    }
+  }
+  /**
+   * Mostly identical to `EventEmitter.emit`, with the following
+   * behavior differences to prevent data loss and unnecessary hangs:
+   *
+   * If the stream has been destroyed, and the event is something other
+   * than 'close' or 'error', then `false` is returned and no handlers
+   * are called.
+   *
+   * If the event is 'end', and has already been emitted, then the event
+   * is ignored. If the stream is in a paused or non-flowing state, then
+   * the event will be deferred until data flow resumes. If the stream is
+   * async, then handlers will be called on the next tick rather than
+   * immediately.
+   *
+   * If the event is 'close', and 'end' has not yet been emitted, then
+   * the event will be deferred until after 'end' is emitted.
+   *
+   * If the event is 'error', and an AbortSignal was provided for the stream,
+   * and there are no listeners, then the event is ignored, matching the
+   * behavior of node core streams in the presense of an AbortSignal.
+   *
+   * If the event is 'finish' or 'prefinish', then all listeners will be
+   * removed after emitting the event, to prevent double-firing.
+   */
+  emit(ev, ...args) {
+    const data = args[0];
+    if (ev !== "error" && ev !== "close" && ev !== DESTROYED && this[DESTROYED]) {
+      return false;
+    } else if (ev === "data") {
+      return !this[OBJECTMODE] && !data ? false : this[ASYNC] ? (defer(() => this[EMITDATA](data)), true) : this[EMITDATA](data);
+    } else if (ev === "end") {
+      return this[EMITEND]();
+    } else if (ev === "close") {
+      this[CLOSED] = true;
+      if (!this[EMITTED_END] && !this[DESTROYED])
+        return false;
+      const ret2 = super.emit("close");
+      this.removeAllListeners("close");
+      return ret2;
+    } else if (ev === "error") {
+      this[EMITTED_ERROR] = data;
+      super.emit(ERROR, data);
+      const ret2 = !this[SIGNAL] || this.listeners("error").length ? super.emit("error", data) : false;
+      this[MAYBE_EMIT_END]();
+      return ret2;
+    } else if (ev === "resume") {
+      const ret2 = super.emit("resume");
+      this[MAYBE_EMIT_END]();
+      return ret2;
+    } else if (ev === "finish" || ev === "prefinish") {
+      const ret2 = super.emit(ev);
+      this.removeAllListeners(ev);
+      return ret2;
+    }
+    const ret = super.emit(ev, ...args);
+    this[MAYBE_EMIT_END]();
+    return ret;
+  }
+  [EMITDATA](data) {
+    for (const p of this[PIPES]) {
+      if (p.dest.write(data) === false)
+        this.pause();
+    }
+    const ret = this[DISCARDED] ? false : super.emit("data", data);
+    this[MAYBE_EMIT_END]();
+    return ret;
+  }
+  [EMITEND]() {
+    if (this[EMITTED_END])
+      return false;
+    this[EMITTED_END] = true;
+    this.readable = false;
+    return this[ASYNC] ? (defer(() => this[EMITEND2]()), true) : this[EMITEND2]();
+  }
+  [EMITEND2]() {
+    if (this[DECODER]) {
+      const data = this[DECODER].end();
+      if (data) {
+        for (const p of this[PIPES]) {
+          p.dest.write(data);
+        }
+        if (!this[DISCARDED])
+          super.emit("data", data);
+      }
+    }
+    for (const p of this[PIPES]) {
+      p.end();
+    }
+    const ret = super.emit("end");
+    this.removeAllListeners("end");
+    return ret;
+  }
+  /**
+   * Return a Promise that resolves to an array of all emitted data once
+   * the stream ends.
+   */
+  async collect() {
+    const buf = Object.assign([], {
+      dataLength: 0
+    });
+    if (!this[OBJECTMODE])
+      buf.dataLength = 0;
+    const p = this.promise();
+    this.on("data", (c) => {
+      buf.push(c);
+      if (!this[OBJECTMODE])
+        buf.dataLength += c.length;
+    });
+    await p;
+    return buf;
+  }
+  /**
+   * Return a Promise that resolves to the concatenation of all emitted data
+   * once the stream ends.
+   *
+   * Not allowed on objectMode streams.
+   */
+  async concat() {
+    if (this[OBJECTMODE]) {
+      throw new Error("cannot concat in objectMode");
+    }
+    const buf = await this.collect();
+    return this[ENCODING] ? buf.join("") : Buffer.concat(buf, buf.dataLength);
+  }
+  /**
+   * Return a void Promise that resolves once the stream ends.
+   */
+  async promise() {
+    return new Promise((resolve, reject) => {
+      this.on(DESTROYED, () => reject(new Error("stream destroyed")));
+      this.on("error", (er) => reject(er));
+      this.on("end", () => resolve());
+    });
+  }
+  /**
+   * Asynchronous `for await of` iteration.
+   *
+   * This will continue emitting all chunks until the stream terminates.
+   */
+  [Symbol.asyncIterator]() {
+    this[DISCARDED] = false;
+    let stopped = false;
+    const stop = /* @__PURE__ */ __name(async () => {
+      this.pause();
+      stopped = true;
+      return { value: void 0, done: true };
+    }, "stop");
+    const next = /* @__PURE__ */ __name(() => {
+      if (stopped)
+        return stop();
+      const res = this.read();
+      if (res !== null)
+        return Promise.resolve({ done: false, value: res });
+      if (this[EOF])
+        return stop();
+      let resolve;
+      let reject;
+      const onerr = /* @__PURE__ */ __name((er) => {
+        this.off("data", ondata);
+        this.off("end", onend);
+        this.off(DESTROYED, ondestroy);
+        stop();
+        reject(er);
+      }, "onerr");
+      const ondata = /* @__PURE__ */ __name((value) => {
+        this.off("error", onerr);
+        this.off("end", onend);
+        this.off(DESTROYED, ondestroy);
+        this.pause();
+        resolve({ value, done: !!this[EOF] });
+      }, "ondata");
+      const onend = /* @__PURE__ */ __name(() => {
+        this.off("error", onerr);
+        this.off("data", ondata);
+        this.off(DESTROYED, ondestroy);
+        stop();
+        resolve({ done: true, value: void 0 });
+      }, "onend");
+      const ondestroy = /* @__PURE__ */ __name(() => onerr(new Error("stream destroyed")), "ondestroy");
+      return new Promise((res2, rej) => {
+        reject = rej;
+        resolve = res2;
+        this.once(DESTROYED, ondestroy);
+        this.once("error", onerr);
+        this.once("end", onend);
+        this.once("data", ondata);
+      });
+    }, "next");
+    return {
+      next,
+      throw: stop,
+      return: stop,
+      [Symbol.asyncIterator]() {
+        return this;
+      }
+    };
+  }
+  /**
+   * Synchronous `for of` iteration.
+   *
+   * The iteration will terminate when the internal buffer runs out, even
+   * if the stream has not yet terminated.
+   */
+  [Symbol.iterator]() {
+    this[DISCARDED] = false;
+    let stopped = false;
+    const stop = /* @__PURE__ */ __name(() => {
+      this.pause();
+      this.off(ERROR, stop);
+      this.off(DESTROYED, stop);
+      this.off("end", stop);
+      stopped = true;
+      return { done: true, value: void 0 };
+    }, "stop");
+    const next = /* @__PURE__ */ __name(() => {
+      if (stopped)
+        return stop();
+      const value = this.read();
+      return value === null ? stop() : { done: false, value };
+    }, "next");
+    this.once("end", stop);
+    this.once(ERROR, stop);
+    this.once(DESTROYED, stop);
+    return {
+      next,
+      throw: stop,
+      return: stop,
+      [Symbol.iterator]() {
+        return this;
+      }
+    };
+  }
+  /**
+   * Destroy a stream, preventing it from being used for any further purpose.
+   *
+   * If the stream has a `close()` method, then it will be called on
+   * destruction.
+   *
+   * After destruction, any attempt to write data, read data, or emit most
+   * events will be ignored.
+   *
+   * If an error argument is provided, then it will be emitted in an
+   * 'error' event.
+   */
+  destroy(er) {
+    if (this[DESTROYED]) {
+      if (er)
+        this.emit("error", er);
+      else
+        this.emit(DESTROYED);
+      return this;
+    }
+    this[DESTROYED] = true;
+    this[DISCARDED] = true;
+    this[BUFFER].length = 0;
+    this[BUFFERLENGTH] = 0;
+    const wc = this;
+    if (typeof wc.close === "function" && !this[CLOSED])
+      wc.close();
+    if (er)
+      this.emit("error", er);
+    else
+      this.emit(DESTROYED);
+    return this;
+  }
+  /**
+   * Alias for {@link isStream}
+   *
+   * Former export location, maintained for backwards compatibility.
+   *
+   * @deprecated
+   */
+  static get isStream() {
+    return isStream;
+  }
+};
+
+// ../../node_modules/path-scurry/dist/esm/index.js
+var realpathSync = import_fs.realpathSync.native;
+var defaultFS = {
+  lstatSync: import_fs.lstatSync,
+  readdir: import_fs.readdir,
+  readdirSync: import_fs.readdirSync,
+  readlinkSync: import_fs.readlinkSync,
+  realpathSync,
+  promises: {
+    lstat: import_promises.lstat,
+    readdir: import_promises.readdir,
+    readlink: import_promises.readlink,
+    realpath: import_promises.realpath
+  }
+};
+var fsFromOption = /* @__PURE__ */ __name((fsOption) => !fsOption || fsOption === defaultFS || fsOption === actualFS ? defaultFS : {
+  ...defaultFS,
+  ...fsOption,
+  promises: {
+    ...defaultFS.promises,
+    ...fsOption.promises || {}
+  }
+}, "fsFromOption");
+var uncDriveRegexp = /^\\\\\?\\([a-z]:)\\?$/i;
+var uncToDrive = /* @__PURE__ */ __name((rootPath) => rootPath.replace(/\//g, "\\").replace(uncDriveRegexp, "$1\\"), "uncToDrive");
+var eitherSep = /[\\\/]/;
+var UNKNOWN = 0;
+var IFIFO = 1;
+var IFCHR = 2;
+var IFDIR = 4;
+var IFBLK = 6;
+var IFREG = 8;
+var IFLNK = 10;
+var IFSOCK = 12;
+var IFMT = 15;
+var IFMT_UNKNOWN = ~IFMT;
+var READDIR_CALLED = 16;
+var LSTAT_CALLED = 32;
+var ENOTDIR = 64;
+var ENOENT = 128;
+var ENOREADLINK = 256;
+var ENOREALPATH = 512;
+var ENOCHILD = ENOTDIR | ENOENT | ENOREALPATH;
+var TYPEMASK = 1023;
+var entToType = /* @__PURE__ */ __name((s) => s.isFile() ? IFREG : s.isDirectory() ? IFDIR : s.isSymbolicLink() ? IFLNK : s.isCharacterDevice() ? IFCHR : s.isBlockDevice() ? IFBLK : s.isSocket() ? IFSOCK : s.isFIFO() ? IFIFO : UNKNOWN, "entToType");
+var normalizeCache = /* @__PURE__ */ new Map();
+var normalize = /* @__PURE__ */ __name((s) => {
+  const c = normalizeCache.get(s);
+  if (c)
+    return c;
+  const n = s.normalize("NFKD");
+  normalizeCache.set(s, n);
+  return n;
+}, "normalize");
+var normalizeNocaseCache = /* @__PURE__ */ new Map();
+var normalizeNocase = /* @__PURE__ */ __name((s) => {
+  const c = normalizeNocaseCache.get(s);
+  if (c)
+    return c;
+  const n = normalize(s.toLowerCase());
+  normalizeNocaseCache.set(s, n);
+  return n;
+}, "normalizeNocase");
+var ResolveCache = class extends LRUCache {
+  static {
+    __name(this, "ResolveCache");
+  }
+  constructor() {
+    super({ max: 256 });
+  }
+};
+var ChildrenCache = class extends LRUCache {
+  static {
+    __name(this, "ChildrenCache");
+  }
+  constructor(maxSize = 16 * 1024) {
+    super({
+      maxSize,
+      // parent + children
+      sizeCalculation: /* @__PURE__ */ __name((a) => a.length + 1, "sizeCalculation")
+    });
+  }
+};
+var setAsCwd = Symbol("PathScurry setAsCwd");
+var PathBase = class {
+  static {
+    __name(this, "PathBase");
+  }
+  /**
+   * the basename of this path
+   *
+   * **Important**: *always* test the path name against any test string
+   * usingthe {@link isNamed} method, and not by directly comparing this
+   * string. Otherwise, unicode path strings that the system sees as identical
+   * will not be properly treated as the same path, leading to incorrect
+   * behavior and possible security issues.
+   */
+  name;
+  /**
+   * the Path entry corresponding to the path root.
+   *
+   * @internal
+   */
+  root;
+  /**
+   * All roots found within the current PathScurry family
+   *
+   * @internal
+   */
+  roots;
+  /**
+   * a reference to the parent path, or undefined in the case of root entries
+   *
+   * @internal
+   */
+  parent;
+  /**
+   * boolean indicating whether paths are compared case-insensitively
+   * @internal
+   */
+  nocase;
+  /**
+   * boolean indicating that this path is the current working directory
+   * of the PathScurry collection that contains it.
+   */
+  isCWD = false;
+  // potential default fs override
+  #fs;
+  // Stats fields
+  #dev;
+  get dev() {
+    return this.#dev;
+  }
+  #mode;
+  get mode() {
+    return this.#mode;
+  }
+  #nlink;
+  get nlink() {
+    return this.#nlink;
+  }
+  #uid;
+  get uid() {
+    return this.#uid;
+  }
+  #gid;
+  get gid() {
+    return this.#gid;
+  }
+  #rdev;
+  get rdev() {
+    return this.#rdev;
+  }
+  #blksize;
+  get blksize() {
+    return this.#blksize;
+  }
+  #ino;
+  get ino() {
+    return this.#ino;
+  }
+  #size;
+  get size() {
+    return this.#size;
+  }
+  #blocks;
+  get blocks() {
+    return this.#blocks;
+  }
+  #atimeMs;
+  get atimeMs() {
+    return this.#atimeMs;
+  }
+  #mtimeMs;
+  get mtimeMs() {
+    return this.#mtimeMs;
+  }
+  #ctimeMs;
+  get ctimeMs() {
+    return this.#ctimeMs;
+  }
+  #birthtimeMs;
+  get birthtimeMs() {
+    return this.#birthtimeMs;
+  }
+  #atime;
+  get atime() {
+    return this.#atime;
+  }
+  #mtime;
+  get mtime() {
+    return this.#mtime;
+  }
+  #ctime;
+  get ctime() {
+    return this.#ctime;
+  }
+  #birthtime;
+  get birthtime() {
+    return this.#birthtime;
+  }
+  #matchName;
+  #depth;
+  #fullpath;
+  #fullpathPosix;
+  #relative;
+  #relativePosix;
+  #type;
+  #children;
+  #linkTarget;
+  #realpath;
+  /**
+   * This property is for compatibility with the Dirent class as of
+   * Node v20, where Dirent['parentPath'] refers to the path of the
+   * directory that was passed to readdir. For root entries, it's the path
+   * to the entry itself.
+   */
+  get parentPath() {
+    return (this.parent || this).fullpath();
+  }
+  /**
+   * Deprecated alias for Dirent['parentPath'] Somewhat counterintuitively,
+   * this property refers to the *parent* path, not the path object itself.
+   *
+   * @deprecated
+   */
+  get path() {
+    return this.parentPath;
+  }
+  /**
+   * Do not create new Path objects directly.  They should always be accessed
+   * via the PathScurry class or other methods on the Path class.
+   *
+   * @internal
+   */
+  constructor(name, type = UNKNOWN, root2, roots, nocase, children, opts) {
+    this.name = name;
+    this.#matchName = nocase ? normalizeNocase(name) : normalize(name);
+    this.#type = type & TYPEMASK;
+    this.nocase = nocase;
+    this.roots = roots;
+    this.root = root2 || this;
+    this.#children = children;
+    this.#fullpath = opts.fullpath;
+    this.#relative = opts.relative;
+    this.#relativePosix = opts.relativePosix;
+    this.parent = opts.parent;
+    if (this.parent) {
+      this.#fs = this.parent.#fs;
+    } else {
+      this.#fs = fsFromOption(opts.fs);
+    }
+  }
+  /**
+   * Returns the depth of the Path object from its root.
+   *
+   * For example, a path at `/foo/bar` would have a depth of 2.
+   */
+  depth() {
+    if (this.#depth !== void 0)
+      return this.#depth;
+    if (!this.parent)
+      return this.#depth = 0;
+    return this.#depth = this.parent.depth() + 1;
+  }
+  /**
+   * @internal
+   */
+  childrenCache() {
+    return this.#children;
+  }
+  /**
+   * Get the Path object referenced by the string path, resolved from this Path
+   */
+  resolve(path6) {
+    if (!path6) {
+      return this;
+    }
+    const rootPath = this.getRootString(path6);
+    const dir = path6.substring(rootPath.length);
+    const dirParts = dir.split(this.splitSep);
+    const result = rootPath ? this.getRoot(rootPath).#resolveParts(dirParts) : this.#resolveParts(dirParts);
+    return result;
+  }
+  #resolveParts(dirParts) {
+    let p = this;
+    for (const part of dirParts) {
+      p = p.child(part);
+    }
+    return p;
+  }
+  /**
+   * Returns the cached children Path objects, if still available.  If they
+   * have fallen out of the cache, then returns an empty array, and resets the
+   * READDIR_CALLED bit, so that future calls to readdir() will require an fs
+   * lookup.
+   *
+   * @internal
+   */
+  children() {
+    const cached = this.#children.get(this);
+    if (cached) {
+      return cached;
+    }
+    const children = Object.assign([], { provisional: 0 });
+    this.#children.set(this, children);
+    this.#type &= ~READDIR_CALLED;
+    return children;
+  }
+  /**
+   * Resolves a path portion and returns or creates the child Path.
+   *
+   * Returns `this` if pathPart is `''` or `'.'`, or `parent` if pathPart is
+   * `'..'`.
+   *
+   * This should not be called directly.  If `pathPart` contains any path
+   * separators, it will lead to unsafe undefined behavior.
+   *
+   * Use `Path.resolve()` instead.
+   *
+   * @internal
+   */
+  child(pathPart, opts) {
+    if (pathPart === "" || pathPart === ".") {
+      return this;
+    }
+    if (pathPart === "..") {
+      return this.parent || this;
+    }
+    const children = this.children();
+    const name = this.nocase ? normalizeNocase(pathPart) : normalize(pathPart);
+    for (const p of children) {
+      if (p.#matchName === name) {
+        return p;
+      }
+    }
+    const s = this.parent ? this.sep : "";
+    const fullpath = this.#fullpath ? this.#fullpath + s + pathPart : void 0;
+    const pchild = this.newChild(pathPart, UNKNOWN, {
+      ...opts,
+      parent: this,
+      fullpath
+    });
+    if (!this.canReaddir()) {
+      pchild.#type |= ENOENT;
+    }
+    children.push(pchild);
+    return pchild;
+  }
+  /**
+   * The relative path from the cwd. If it does not share an ancestor with
+   * the cwd, then this ends up being equivalent to the fullpath()
+   */
+  relative() {
+    if (this.isCWD)
+      return "";
+    if (this.#relative !== void 0) {
+      return this.#relative;
+    }
+    const name = this.name;
+    const p = this.parent;
+    if (!p) {
+      return this.#relative = this.name;
+    }
+    const pv = p.relative();
+    return pv + (!pv || !p.parent ? "" : this.sep) + name;
+  }
+  /**
+   * The relative path from the cwd, using / as the path separator.
+   * If it does not share an ancestor with
+   * the cwd, then this ends up being equivalent to the fullpathPosix()
+   * On posix systems, this is identical to relative().
+   */
+  relativePosix() {
+    if (this.sep === "/")
+      return this.relative();
+    if (this.isCWD)
+      return "";
+    if (this.#relativePosix !== void 0)
+      return this.#relativePosix;
+    const name = this.name;
+    const p = this.parent;
+    if (!p) {
+      return this.#relativePosix = this.fullpathPosix();
+    }
+    const pv = p.relativePosix();
+    return pv + (!pv || !p.parent ? "" : "/") + name;
+  }
+  /**
+   * The fully resolved path string for this Path entry
+   */
+  fullpath() {
+    if (this.#fullpath !== void 0) {
+      return this.#fullpath;
+    }
+    const name = this.name;
+    const p = this.parent;
+    if (!p) {
+      return this.#fullpath = this.name;
+    }
+    const pv = p.fullpath();
+    const fp = pv + (!p.parent ? "" : this.sep) + name;
+    return this.#fullpath = fp;
+  }
+  /**
+   * On platforms other than windows, this is identical to fullpath.
+   *
+   * On windows, this is overridden to return the forward-slash form of the
+   * full UNC path.
+   */
+  fullpathPosix() {
+    if (this.#fullpathPosix !== void 0)
+      return this.#fullpathPosix;
+    if (this.sep === "/")
+      return this.#fullpathPosix = this.fullpath();
+    if (!this.parent) {
+      const p2 = this.fullpath().replace(/\\/g, "/");
+      if (/^[a-z]:\//i.test(p2)) {
+        return this.#fullpathPosix = `//?/${p2}`;
+      } else {
+        return this.#fullpathPosix = p2;
+      }
+    }
+    const p = this.parent;
+    const pfpp = p.fullpathPosix();
+    const fpp = pfpp + (!pfpp || !p.parent ? "" : "/") + this.name;
+    return this.#fullpathPosix = fpp;
+  }
+  /**
+   * Is the Path of an unknown type?
+   *
+   * Note that we might know *something* about it if there has been a previous
+   * filesystem operation, for example that it does not exist, or is not a
+   * link, or whether it has child entries.
+   */
+  isUnknown() {
+    return (this.#type & IFMT) === UNKNOWN;
+  }
+  isType(type) {
+    return this[`is${type}`]();
+  }
+  getType() {
+    return this.isUnknown() ? "Unknown" : this.isDirectory() ? "Directory" : this.isFile() ? "File" : this.isSymbolicLink() ? "SymbolicLink" : this.isFIFO() ? "FIFO" : this.isCharacterDevice() ? "CharacterDevice" : this.isBlockDevice() ? "BlockDevice" : (
+      /* c8 ignore start */
+      this.isSocket() ? "Socket" : "Unknown"
+    );
+  }
+  /**
+   * Is the Path a regular file?
+   */
+  isFile() {
+    return (this.#type & IFMT) === IFREG;
+  }
+  /**
+   * Is the Path a directory?
+   */
+  isDirectory() {
+    return (this.#type & IFMT) === IFDIR;
+  }
+  /**
+   * Is the path a character device?
+   */
+  isCharacterDevice() {
+    return (this.#type & IFMT) === IFCHR;
+  }
+  /**
+   * Is the path a block device?
+   */
+  isBlockDevice() {
+    return (this.#type & IFMT) === IFBLK;
+  }
+  /**
+   * Is the path a FIFO pipe?
+   */
+  isFIFO() {
+    return (this.#type & IFMT) === IFIFO;
+  }
+  /**
+   * Is the path a socket?
+   */
+  isSocket() {
+    return (this.#type & IFMT) === IFSOCK;
+  }
+  /**
+   * Is the path a symbolic link?
+   */
+  isSymbolicLink() {
+    return (this.#type & IFLNK) === IFLNK;
+  }
+  /**
+   * Return the entry if it has been subject of a successful lstat, or
+   * undefined otherwise.
+   *
+   * Does not read the filesystem, so an undefined result *could* simply
+   * mean that we haven't called lstat on it.
+   */
+  lstatCached() {
+    return this.#type & LSTAT_CALLED ? this : void 0;
+  }
+  /**
+   * Return the cached link target if the entry has been the subject of a
+   * successful readlink, or undefined otherwise.
+   *
+   * Does not read the filesystem, so an undefined result *could* just mean we
+   * don't have any cached data. Only use it if you are very sure that a
+   * readlink() has been called at some point.
+   */
+  readlinkCached() {
+    return this.#linkTarget;
+  }
+  /**
+   * Returns the cached realpath target if the entry has been the subject
+   * of a successful realpath, or undefined otherwise.
+   *
+   * Does not read the filesystem, so an undefined result *could* just mean we
+   * don't have any cached data. Only use it if you are very sure that a
+   * realpath() has been called at some point.
+   */
+  realpathCached() {
+    return this.#realpath;
+  }
+  /**
+   * Returns the cached child Path entries array if the entry has been the
+   * subject of a successful readdir(), or [] otherwise.
+   *
+   * Does not read the filesystem, so an empty array *could* just mean we
+   * don't have any cached data. Only use it if you are very sure that a
+   * readdir() has been called recently enough to still be valid.
+   */
+  readdirCached() {
+    const children = this.children();
+    return children.slice(0, children.provisional);
+  }
+  /**
+   * Return true if it's worth trying to readlink.  Ie, we don't (yet) have
+   * any indication that readlink will definitely fail.
+   *
+   * Returns false if the path is known to not be a symlink, if a previous
+   * readlink failed, or if the entry does not exist.
+   */
+  canReadlink() {
+    if (this.#linkTarget)
+      return true;
+    if (!this.parent)
+      return false;
+    const ifmt = this.#type & IFMT;
+    return !(ifmt !== UNKNOWN && ifmt !== IFLNK || this.#type & ENOREADLINK || this.#type & ENOENT);
+  }
+  /**
+   * Return true if readdir has previously been successfully called on this
+   * path, indicating that cachedReaddir() is likely valid.
+   */
+  calledReaddir() {
+    return !!(this.#type & READDIR_CALLED);
+  }
+  /**
+   * Returns true if the path is known to not exist. That is, a previous lstat
+   * or readdir failed to verify its existence when that would have been
+   * expected, or a parent entry was marked either enoent or enotdir.
+   */
+  isENOENT() {
+    return !!(this.#type & ENOENT);
+  }
+  /**
+   * Return true if the path is a match for the given path name.  This handles
+   * case sensitivity and unicode normalization.
+   *
+   * Note: even on case-sensitive systems, it is **not** safe to test the
+   * equality of the `.name` property to determine whether a given pathname
+   * matches, due to unicode normalization mismatches.
+   *
+   * Always use this method instead of testing the `path.name` property
+   * directly.
+   */
+  isNamed(n) {
+    return !this.nocase ? this.#matchName === normalize(n) : this.#matchName === normalizeNocase(n);
+  }
+  /**
+   * Return the Path object corresponding to the target of a symbolic link.
+   *
+   * If the Path is not a symbolic link, or if the readlink call fails for any
+   * reason, `undefined` is returned.
+   *
+   * Result is cached, and thus may be outdated if the filesystem is mutated.
+   */
+  async readlink() {
+    const target = this.#linkTarget;
+    if (target) {
+      return target;
+    }
+    if (!this.canReadlink()) {
+      return void 0;
+    }
+    if (!this.parent) {
+      return void 0;
+    }
+    try {
+      const read = await this.#fs.promises.readlink(this.fullpath());
+      const linkTarget = (await this.parent.realpath())?.resolve(read);
+      if (linkTarget) {
+        return this.#linkTarget = linkTarget;
+      }
+    } catch (er) {
+      this.#readlinkFail(er.code);
+      return void 0;
+    }
+  }
+  /**
+   * Synchronous {@link PathBase.readlink}
+   */
+  readlinkSync() {
+    const target = this.#linkTarget;
+    if (target) {
+      return target;
+    }
+    if (!this.canReadlink()) {
+      return void 0;
+    }
+    if (!this.parent) {
+      return void 0;
+    }
+    try {
+      const read = this.#fs.readlinkSync(this.fullpath());
+      const linkTarget = this.parent.realpathSync()?.resolve(read);
+      if (linkTarget) {
+        return this.#linkTarget = linkTarget;
+      }
+    } catch (er) {
+      this.#readlinkFail(er.code);
+      return void 0;
+    }
+  }
+  #readdirSuccess(children) {
+    this.#type |= READDIR_CALLED;
+    for (let p = children.provisional; p < children.length; p++) {
+      const c = children[p];
+      if (c)
+        c.#markENOENT();
+    }
+  }
+  #markENOENT() {
+    if (this.#type & ENOENT)
+      return;
+    this.#type = (this.#type | ENOENT) & IFMT_UNKNOWN;
+    this.#markChildrenENOENT();
+  }
+  #markChildrenENOENT() {
+    const children = this.children();
+    children.provisional = 0;
+    for (const p of children) {
+      p.#markENOENT();
+    }
+  }
+  #markENOREALPATH() {
+    this.#type |= ENOREALPATH;
+    this.#markENOTDIR();
+  }
+  // save the information when we know the entry is not a dir
+  #markENOTDIR() {
+    if (this.#type & ENOTDIR)
+      return;
+    let t = this.#type;
+    if ((t & IFMT) === IFDIR)
+      t &= IFMT_UNKNOWN;
+    this.#type = t | ENOTDIR;
+    this.#markChildrenENOENT();
+  }
+  #readdirFail(code = "") {
+    if (code === "ENOTDIR" || code === "EPERM") {
+      this.#markENOTDIR();
+    } else if (code === "ENOENT") {
+      this.#markENOENT();
+    } else {
+      this.children().provisional = 0;
+    }
+  }
+  #lstatFail(code = "") {
+    if (code === "ENOTDIR") {
+      const p = this.parent;
+      p.#markENOTDIR();
+    } else if (code === "ENOENT") {
+      this.#markENOENT();
+    }
+  }
+  #readlinkFail(code = "") {
+    let ter = this.#type;
+    ter |= ENOREADLINK;
+    if (code === "ENOENT")
+      ter |= ENOENT;
+    if (code === "EINVAL" || code === "UNKNOWN") {
+      ter &= IFMT_UNKNOWN;
+    }
+    this.#type = ter;
+    if (code === "ENOTDIR" && this.parent) {
+      this.parent.#markENOTDIR();
+    }
+  }
+  #readdirAddChild(e, c) {
+    return this.#readdirMaybePromoteChild(e, c) || this.#readdirAddNewChild(e, c);
+  }
+  #readdirAddNewChild(e, c) {
+    const type = entToType(e);
+    const child = this.newChild(e.name, type, { parent: this });
+    const ifmt = child.#type & IFMT;
+    if (ifmt !== IFDIR && ifmt !== IFLNK && ifmt !== UNKNOWN) {
+      child.#type |= ENOTDIR;
+    }
+    c.unshift(child);
+    c.provisional++;
+    return child;
+  }
+  #readdirMaybePromoteChild(e, c) {
+    for (let p = c.provisional; p < c.length; p++) {
+      const pchild = c[p];
+      const name = this.nocase ? normalizeNocase(e.name) : normalize(e.name);
+      if (name !== pchild.#matchName) {
+        continue;
+      }
+      return this.#readdirPromoteChild(e, pchild, p, c);
+    }
+  }
+  #readdirPromoteChild(e, p, index, c) {
+    const v = p.name;
+    p.#type = p.#type & IFMT_UNKNOWN | entToType(e);
+    if (v !== e.name)
+      p.name = e.name;
+    if (index !== c.provisional) {
+      if (index === c.length - 1)
+        c.pop();
+      else
+        c.splice(index, 1);
+      c.unshift(p);
+    }
+    c.provisional++;
+    return p;
+  }
+  /**
+   * Call lstat() on this Path, and update all known information that can be
+   * determined.
+   *
+   * Note that unlike `fs.lstat()`, the returned value does not contain some
+   * information, such as `mode`, `dev`, `nlink`, and `ino`.  If that
+   * information is required, you will need to call `fs.lstat` yourself.
+   *
+   * If the Path refers to a nonexistent file, or if the lstat call fails for
+   * any reason, `undefined` is returned.  Otherwise the updated Path object is
+   * returned.
+   *
+   * Results are cached, and thus may be out of date if the filesystem is
+   * mutated.
+   */
+  async lstat() {
+    if ((this.#type & ENOENT) === 0) {
+      try {
+        this.#applyStat(await this.#fs.promises.lstat(this.fullpath()));
+        return this;
+      } catch (er) {
+        this.#lstatFail(er.code);
+      }
+    }
+  }
+  /**
+   * synchronous {@link PathBase.lstat}
+   */
+  lstatSync() {
+    if ((this.#type & ENOENT) === 0) {
+      try {
+        this.#applyStat(this.#fs.lstatSync(this.fullpath()));
+        return this;
+      } catch (er) {
+        this.#lstatFail(er.code);
+      }
+    }
+  }
+  #applyStat(st) {
+    const { atime, atimeMs, birthtime, birthtimeMs, blksize, blocks, ctime, ctimeMs, dev, gid, ino, mode, mtime, mtimeMs, nlink, rdev, size, uid } = st;
+    this.#atime = atime;
+    this.#atimeMs = atimeMs;
+    this.#birthtime = birthtime;
+    this.#birthtimeMs = birthtimeMs;
+    this.#blksize = blksize;
+    this.#blocks = blocks;
+    this.#ctime = ctime;
+    this.#ctimeMs = ctimeMs;
+    this.#dev = dev;
+    this.#gid = gid;
+    this.#ino = ino;
+    this.#mode = mode;
+    this.#mtime = mtime;
+    this.#mtimeMs = mtimeMs;
+    this.#nlink = nlink;
+    this.#rdev = rdev;
+    this.#size = size;
+    this.#uid = uid;
+    const ifmt = entToType(st);
+    this.#type = this.#type & IFMT_UNKNOWN | ifmt | LSTAT_CALLED;
+    if (ifmt !== UNKNOWN && ifmt !== IFDIR && ifmt !== IFLNK) {
+      this.#type |= ENOTDIR;
+    }
+  }
+  #onReaddirCB = [];
+  #readdirCBInFlight = false;
+  #callOnReaddirCB(children) {
+    this.#readdirCBInFlight = false;
+    const cbs = this.#onReaddirCB.slice();
+    this.#onReaddirCB.length = 0;
+    cbs.forEach((cb2) => cb2(null, children));
+  }
+  /**
+   * Standard node-style callback interface to get list of directory entries.
+   *
+   * If the Path cannot or does not contain any children, then an empty array
+   * is returned.
+   *
+   * Results are cached, and thus may be out of date if the filesystem is
+   * mutated.
+   *
+   * @param cb The callback called with (er, entries).  Note that the `er`
+   * param is somewhat extraneous, as all readdir() errors are handled and
+   * simply result in an empty set of entries being returned.
+   * @param allowZalgo Boolean indicating that immediately known results should
+   * *not* be deferred with `queueMicrotask`. Defaults to `false`. Release
+   * zalgo at your peril, the dark pony lord is devious and unforgiving.
+   */
+  readdirCB(cb2, allowZalgo = false) {
+    if (!this.canReaddir()) {
+      if (allowZalgo)
+        cb2(null, []);
+      else
+        queueMicrotask(() => cb2(null, []));
+      return;
+    }
+    const children = this.children();
+    if (this.calledReaddir()) {
+      const c = children.slice(0, children.provisional);
+      if (allowZalgo)
+        cb2(null, c);
+      else
+        queueMicrotask(() => cb2(null, c));
+      return;
+    }
+    this.#onReaddirCB.push(cb2);
+    if (this.#readdirCBInFlight) {
+      return;
+    }
+    this.#readdirCBInFlight = true;
+    const fullpath = this.fullpath();
+    this.#fs.readdir(fullpath, { withFileTypes: true }, (er, entries) => {
+      if (er) {
+        this.#readdirFail(er.code);
+        children.provisional = 0;
+      } else {
+        for (const e of entries) {
+          this.#readdirAddChild(e, children);
+        }
+        this.#readdirSuccess(children);
+      }
+      this.#callOnReaddirCB(children.slice(0, children.provisional));
+      return;
+    });
+  }
+  #asyncReaddirInFlight;
+  /**
+   * Return an array of known child entries.
+   *
+   * If the Path cannot or does not contain any children, then an empty array
+   * is returned.
+   *
+   * Results are cached, and thus may be out of date if the filesystem is
+   * mutated.
+   */
+  async readdir() {
+    if (!this.canReaddir()) {
+      return [];
+    }
+    const children = this.children();
+    if (this.calledReaddir()) {
+      return children.slice(0, children.provisional);
+    }
+    const fullpath = this.fullpath();
+    if (this.#asyncReaddirInFlight) {
+      await this.#asyncReaddirInFlight;
+    } else {
+      let resolve = /* @__PURE__ */ __name(() => {
+      }, "resolve");
+      this.#asyncReaddirInFlight = new Promise((res) => resolve = res);
+      try {
+        for (const e of await this.#fs.promises.readdir(fullpath, {
+          withFileTypes: true
+        })) {
+          this.#readdirAddChild(e, children);
+        }
+        this.#readdirSuccess(children);
+      } catch (er) {
+        this.#readdirFail(er.code);
+        children.provisional = 0;
+      }
+      this.#asyncReaddirInFlight = void 0;
+      resolve();
+    }
+    return children.slice(0, children.provisional);
+  }
+  /**
+   * synchronous {@link PathBase.readdir}
+   */
+  readdirSync() {
+    if (!this.canReaddir()) {
+      return [];
+    }
+    const children = this.children();
+    if (this.calledReaddir()) {
+      return children.slice(0, children.provisional);
+    }
+    const fullpath = this.fullpath();
+    try {
+      for (const e of this.#fs.readdirSync(fullpath, {
+        withFileTypes: true
+      })) {
+        this.#readdirAddChild(e, children);
+      }
+      this.#readdirSuccess(children);
+    } catch (er) {
+      this.#readdirFail(er.code);
+      children.provisional = 0;
+    }
+    return children.slice(0, children.provisional);
+  }
+  canReaddir() {
+    if (this.#type & ENOCHILD)
+      return false;
+    const ifmt = IFMT & this.#type;
+    if (!(ifmt === UNKNOWN || ifmt === IFDIR || ifmt === IFLNK)) {
+      return false;
+    }
+    return true;
+  }
+  shouldWalk(dirs, walkFilter) {
+    return (this.#type & IFDIR) === IFDIR && !(this.#type & ENOCHILD) && !dirs.has(this) && (!walkFilter || walkFilter(this));
+  }
+  /**
+   * Return the Path object corresponding to path as resolved
+   * by realpath(3).
+   *
+   * If the realpath call fails for any reason, `undefined` is returned.
+   *
+   * Result is cached, and thus may be outdated if the filesystem is mutated.
+   * On success, returns a Path object.
+   */
+  async realpath() {
+    if (this.#realpath)
+      return this.#realpath;
+    if ((ENOREALPATH | ENOREADLINK | ENOENT) & this.#type)
+      return void 0;
+    try {
+      const rp = await this.#fs.promises.realpath(this.fullpath());
+      return this.#realpath = this.resolve(rp);
+    } catch (_) {
+      this.#markENOREALPATH();
+    }
+  }
+  /**
+   * Synchronous {@link realpath}
+   */
+  realpathSync() {
+    if (this.#realpath)
+      return this.#realpath;
+    if ((ENOREALPATH | ENOREADLINK | ENOENT) & this.#type)
+      return void 0;
+    try {
+      const rp = this.#fs.realpathSync(this.fullpath());
+      return this.#realpath = this.resolve(rp);
+    } catch (_) {
+      this.#markENOREALPATH();
+    }
+  }
+  /**
+   * Internal method to mark this Path object as the scurry cwd,
+   * called by {@link PathScurry#chdir}
+   *
+   * @internal
+   */
+  [setAsCwd](oldCwd) {
+    if (oldCwd === this)
+      return;
+    oldCwd.isCWD = false;
+    this.isCWD = true;
+    const changed = /* @__PURE__ */ new Set([]);
+    let rp = [];
+    let p = this;
+    while (p && p.parent) {
+      changed.add(p);
+      p.#relative = rp.join(this.sep);
+      p.#relativePosix = rp.join("/");
+      p = p.parent;
+      rp.push("..");
+    }
+    p = oldCwd;
+    while (p && p.parent && !changed.has(p)) {
+      p.#relative = void 0;
+      p.#relativePosix = void 0;
+      p = p.parent;
+    }
+  }
+};
+var PathWin32 = class _PathWin32 extends PathBase {
+  static {
+    __name(this, "PathWin32");
+  }
+  /**
+   * Separator for generating path strings.
+   */
+  sep = "\\";
+  /**
+   * Separator for parsing path strings.
+   */
+  splitSep = eitherSep;
+  /**
+   * Do not create new Path objects directly.  They should always be accessed
+   * via the PathScurry class or other methods on the Path class.
+   *
+   * @internal
+   */
+  constructor(name, type = UNKNOWN, root2, roots, nocase, children, opts) {
+    super(name, type, root2, roots, nocase, children, opts);
+  }
+  /**
+   * @internal
+   */
+  newChild(name, type = UNKNOWN, opts = {}) {
+    return new _PathWin32(name, type, this.root, this.roots, this.nocase, this.childrenCache(), opts);
+  }
+  /**
+   * @internal
+   */
+  getRootString(path6) {
+    return import_node_path.win32.parse(path6).root;
+  }
+  /**
+   * @internal
+   */
+  getRoot(rootPath) {
+    rootPath = uncToDrive(rootPath.toUpperCase());
+    if (rootPath === this.root.name) {
+      return this.root;
+    }
+    for (const [compare, root2] of Object.entries(this.roots)) {
+      if (this.sameRoot(rootPath, compare)) {
+        return this.roots[rootPath] = root2;
+      }
+    }
+    return this.roots[rootPath] = new PathScurryWin32(rootPath, this).root;
+  }
+  /**
+   * @internal
+   */
+  sameRoot(rootPath, compare = this.root.name) {
+    rootPath = rootPath.toUpperCase().replace(/\//g, "\\").replace(uncDriveRegexp, "$1\\");
+    return rootPath === compare;
+  }
+};
+var PathPosix = class _PathPosix extends PathBase {
+  static {
+    __name(this, "PathPosix");
+  }
+  /**
+   * separator for parsing path strings
+   */
+  splitSep = "/";
+  /**
+   * separator for generating path strings
+   */
+  sep = "/";
+  /**
+   * Do not create new Path objects directly.  They should always be accessed
+   * via the PathScurry class or other methods on the Path class.
+   *
+   * @internal
+   */
+  constructor(name, type = UNKNOWN, root2, roots, nocase, children, opts) {
+    super(name, type, root2, roots, nocase, children, opts);
+  }
+  /**
+   * @internal
+   */
+  getRootString(path6) {
+    return path6.startsWith("/") ? "/" : "";
+  }
+  /**
+   * @internal
+   */
+  getRoot(_rootPath) {
+    return this.root;
+  }
+  /**
+   * @internal
+   */
+  newChild(name, type = UNKNOWN, opts = {}) {
+    return new _PathPosix(name, type, this.root, this.roots, this.nocase, this.childrenCache(), opts);
+  }
+};
+var PathScurryBase = class {
+  static {
+    __name(this, "PathScurryBase");
+  }
+  /**
+   * The root Path entry for the current working directory of this Scurry
+   */
+  root;
+  /**
+   * The string path for the root of this Scurry's current working directory
+   */
+  rootPath;
+  /**
+   * A collection of all roots encountered, referenced by rootPath
+   */
+  roots;
+  /**
+   * The Path entry corresponding to this PathScurry's current working directory.
+   */
+  cwd;
+  #resolveCache;
+  #resolvePosixCache;
+  #children;
+  /**
+   * Perform path comparisons case-insensitively.
+   *
+   * Defaults true on Darwin and Windows systems, false elsewhere.
+   */
+  nocase;
+  #fs;
+  /**
+   * This class should not be instantiated directly.
+   *
+   * Use PathScurryWin32, PathScurryDarwin, PathScurryPosix, or PathScurry
+   *
+   * @internal
+   */
+  constructor(cwd3 = process.cwd(), pathImpl, sep2, { nocase, childrenCacheSize = 16 * 1024, fs: fs26 = defaultFS } = {}) {
+    this.#fs = fsFromOption(fs26);
+    if (cwd3 instanceof URL || cwd3.startsWith("file://")) {
+      cwd3 = (0, import_node_url.fileURLToPath)(cwd3);
+    }
+    const cwdPath = pathImpl.resolve(cwd3);
+    this.roots = /* @__PURE__ */ Object.create(null);
+    this.rootPath = this.parseRootPath(cwdPath);
+    this.#resolveCache = new ResolveCache();
+    this.#resolvePosixCache = new ResolveCache();
+    this.#children = new ChildrenCache(childrenCacheSize);
+    const split = cwdPath.substring(this.rootPath.length).split(sep2);
+    if (split.length === 1 && !split[0]) {
+      split.pop();
+    }
+    if (nocase === void 0) {
+      throw new TypeError("must provide nocase setting to PathScurryBase ctor");
+    }
+    this.nocase = nocase;
+    this.root = this.newRoot(this.#fs);
+    this.roots[this.rootPath] = this.root;
+    let prev = this.root;
+    let len = split.length - 1;
+    const joinSep = pathImpl.sep;
+    let abs = this.rootPath;
+    let sawFirst = false;
+    for (const part of split) {
+      const l = len--;
+      prev = prev.child(part, {
+        relative: new Array(l).fill("..").join(joinSep),
+        relativePosix: new Array(l).fill("..").join("/"),
+        fullpath: abs += (sawFirst ? "" : joinSep) + part
+      });
+      sawFirst = true;
+    }
+    this.cwd = prev;
+  }
+  /**
+   * Get the depth of a provided path, string, or the cwd
+   */
+  depth(path6 = this.cwd) {
+    if (typeof path6 === "string") {
+      path6 = this.cwd.resolve(path6);
+    }
+    return path6.depth();
+  }
+  /**
+   * Return the cache of child entries.  Exposed so subclasses can create
+   * child Path objects in a platform-specific way.
+   *
+   * @internal
+   */
+  childrenCache() {
+    return this.#children;
+  }
+  /**
+   * Resolve one or more path strings to a resolved string
+   *
+   * Same interface as require('path').resolve.
+   *
+   * Much faster than path.resolve() when called multiple times for the same
+   * path, because the resolved Path objects are cached.  Much slower
+   * otherwise.
+   */
+  resolve(...paths) {
+    let r = "";
+    for (let i = paths.length - 1; i >= 0; i--) {
+      const p = paths[i];
+      if (!p || p === ".")
+        continue;
+      r = r ? `${p}/${r}` : p;
+      if (this.isAbsolute(p)) {
+        break;
+      }
+    }
+    const cached = this.#resolveCache.get(r);
+    if (cached !== void 0) {
+      return cached;
+    }
+    const result = this.cwd.resolve(r).fullpath();
+    this.#resolveCache.set(r, result);
+    return result;
+  }
+  /**
+   * Resolve one or more path strings to a resolved string, returning
+   * the posix path.  Identical to .resolve() on posix systems, but on
+   * windows will return a forward-slash separated UNC path.
+   *
+   * Same interface as require('path').resolve.
+   *
+   * Much faster than path.resolve() when called multiple times for the same
+   * path, because the resolved Path objects are cached.  Much slower
+   * otherwise.
+   */
+  resolvePosix(...paths) {
+    let r = "";
+    for (let i = paths.length - 1; i >= 0; i--) {
+      const p = paths[i];
+      if (!p || p === ".")
+        continue;
+      r = r ? `${p}/${r}` : p;
+      if (this.isAbsolute(p)) {
+        break;
+      }
+    }
+    const cached = this.#resolvePosixCache.get(r);
+    if (cached !== void 0) {
+      return cached;
+    }
+    const result = this.cwd.resolve(r).fullpathPosix();
+    this.#resolvePosixCache.set(r, result);
+    return result;
+  }
+  /**
+   * find the relative path from the cwd to the supplied path string or entry
+   */
+  relative(entry = this.cwd) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    }
+    return entry.relative();
+  }
+  /**
+   * find the relative path from the cwd to the supplied path string or
+   * entry, using / as the path delimiter, even on Windows.
+   */
+  relativePosix(entry = this.cwd) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    }
+    return entry.relativePosix();
+  }
+  /**
+   * Return the basename for the provided string or Path object
+   */
+  basename(entry = this.cwd) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    }
+    return entry.name;
+  }
+  /**
+   * Return the dirname for the provided string or Path object
+   */
+  dirname(entry = this.cwd) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    }
+    return (entry.parent || entry).fullpath();
+  }
+  async readdir(entry = this.cwd, opts = {
+    withFileTypes: true
+  }) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      opts = entry;
+      entry = this.cwd;
+    }
+    const { withFileTypes } = opts;
+    if (!entry.canReaddir()) {
+      return [];
+    } else {
+      const p = await entry.readdir();
+      return withFileTypes ? p : p.map((e) => e.name);
+    }
+  }
+  readdirSync(entry = this.cwd, opts = {
+    withFileTypes: true
+  }) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      opts = entry;
+      entry = this.cwd;
+    }
+    const { withFileTypes = true } = opts;
+    if (!entry.canReaddir()) {
+      return [];
+    } else if (withFileTypes) {
+      return entry.readdirSync();
+    } else {
+      return entry.readdirSync().map((e) => e.name);
+    }
+  }
+  /**
+   * Call lstat() on the string or Path object, and update all known
+   * information that can be determined.
+   *
+   * Note that unlike `fs.lstat()`, the returned value does not contain some
+   * information, such as `mode`, `dev`, `nlink`, and `ino`.  If that
+   * information is required, you will need to call `fs.lstat` yourself.
+   *
+   * If the Path refers to a nonexistent file, or if the lstat call fails for
+   * any reason, `undefined` is returned.  Otherwise the updated Path object is
+   * returned.
+   *
+   * Results are cached, and thus may be out of date if the filesystem is
+   * mutated.
+   */
+  async lstat(entry = this.cwd) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    }
+    return entry.lstat();
+  }
+  /**
+   * synchronous {@link PathScurryBase.lstat}
+   */
+  lstatSync(entry = this.cwd) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    }
+    return entry.lstatSync();
+  }
+  async readlink(entry = this.cwd, { withFileTypes } = {
+    withFileTypes: false
+  }) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      withFileTypes = entry.withFileTypes;
+      entry = this.cwd;
+    }
+    const e = await entry.readlink();
+    return withFileTypes ? e : e?.fullpath();
+  }
+  readlinkSync(entry = this.cwd, { withFileTypes } = {
+    withFileTypes: false
+  }) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      withFileTypes = entry.withFileTypes;
+      entry = this.cwd;
+    }
+    const e = entry.readlinkSync();
+    return withFileTypes ? e : e?.fullpath();
+  }
+  async realpath(entry = this.cwd, { withFileTypes } = {
+    withFileTypes: false
+  }) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      withFileTypes = entry.withFileTypes;
+      entry = this.cwd;
+    }
+    const e = await entry.realpath();
+    return withFileTypes ? e : e?.fullpath();
+  }
+  realpathSync(entry = this.cwd, { withFileTypes } = {
+    withFileTypes: false
+  }) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      withFileTypes = entry.withFileTypes;
+      entry = this.cwd;
+    }
+    const e = entry.realpathSync();
+    return withFileTypes ? e : e?.fullpath();
+  }
+  async walk(entry = this.cwd, opts = {}) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      opts = entry;
+      entry = this.cwd;
+    }
+    const { withFileTypes = true, follow = false, filter: filter2, walkFilter } = opts;
+    const results = [];
+    if (!filter2 || filter2(entry)) {
+      results.push(withFileTypes ? entry : entry.fullpath());
+    }
+    const dirs = /* @__PURE__ */ new Set();
+    const walk = /* @__PURE__ */ __name((dir, cb2) => {
+      dirs.add(dir);
+      dir.readdirCB((er, entries) => {
+        if (er) {
+          return cb2(er);
+        }
+        let len = entries.length;
+        if (!len)
+          return cb2();
+        const next = /* @__PURE__ */ __name(() => {
+          if (--len === 0) {
+            cb2();
+          }
+        }, "next");
+        for (const e of entries) {
+          if (!filter2 || filter2(e)) {
+            results.push(withFileTypes ? e : e.fullpath());
+          }
+          if (follow && e.isSymbolicLink()) {
+            e.realpath().then((r) => r?.isUnknown() ? r.lstat() : r).then((r) => r?.shouldWalk(dirs, walkFilter) ? walk(r, next) : next());
+          } else {
+            if (e.shouldWalk(dirs, walkFilter)) {
+              walk(e, next);
+            } else {
+              next();
+            }
+          }
+        }
+      }, true);
+    }, "walk");
+    const start = entry;
+    return new Promise((res, rej) => {
+      walk(start, (er) => {
+        if (er)
+          return rej(er);
+        res(results);
+      });
+    });
+  }
+  walkSync(entry = this.cwd, opts = {}) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      opts = entry;
+      entry = this.cwd;
+    }
+    const { withFileTypes = true, follow = false, filter: filter2, walkFilter } = opts;
+    const results = [];
+    if (!filter2 || filter2(entry)) {
+      results.push(withFileTypes ? entry : entry.fullpath());
+    }
+    const dirs = /* @__PURE__ */ new Set([entry]);
+    for (const dir of dirs) {
+      const entries = dir.readdirSync();
+      for (const e of entries) {
+        if (!filter2 || filter2(e)) {
+          results.push(withFileTypes ? e : e.fullpath());
+        }
+        let r = e;
+        if (e.isSymbolicLink()) {
+          if (!(follow && (r = e.realpathSync())))
+            continue;
+          if (r.isUnknown())
+            r.lstatSync();
+        }
+        if (r.shouldWalk(dirs, walkFilter)) {
+          dirs.add(r);
+        }
+      }
+    }
+    return results;
+  }
+  /**
+   * Support for `for await`
+   *
+   * Alias for {@link PathScurryBase.iterate}
+   *
+   * Note: As of Node 19, this is very slow, compared to other methods of
+   * walking.  Consider using {@link PathScurryBase.stream} if memory overhead
+   * and backpressure are concerns, or {@link PathScurryBase.walk} if not.
+   */
+  [Symbol.asyncIterator]() {
+    return this.iterate();
+  }
+  iterate(entry = this.cwd, options = {}) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      options = entry;
+      entry = this.cwd;
+    }
+    return this.stream(entry, options)[Symbol.asyncIterator]();
+  }
+  /**
+   * Iterating over a PathScurry performs a synchronous walk.
+   *
+   * Alias for {@link PathScurryBase.iterateSync}
+   */
+  [Symbol.iterator]() {
+    return this.iterateSync();
+  }
+  *iterateSync(entry = this.cwd, opts = {}) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      opts = entry;
+      entry = this.cwd;
+    }
+    const { withFileTypes = true, follow = false, filter: filter2, walkFilter } = opts;
+    if (!filter2 || filter2(entry)) {
+      yield withFileTypes ? entry : entry.fullpath();
+    }
+    const dirs = /* @__PURE__ */ new Set([entry]);
+    for (const dir of dirs) {
+      const entries = dir.readdirSync();
+      for (const e of entries) {
+        if (!filter2 || filter2(e)) {
+          yield withFileTypes ? e : e.fullpath();
+        }
+        let r = e;
+        if (e.isSymbolicLink()) {
+          if (!(follow && (r = e.realpathSync())))
+            continue;
+          if (r.isUnknown())
+            r.lstatSync();
+        }
+        if (r.shouldWalk(dirs, walkFilter)) {
+          dirs.add(r);
+        }
+      }
+    }
+  }
+  stream(entry = this.cwd, opts = {}) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      opts = entry;
+      entry = this.cwd;
+    }
+    const { withFileTypes = true, follow = false, filter: filter2, walkFilter } = opts;
+    const results = new Minipass({ objectMode: true });
+    if (!filter2 || filter2(entry)) {
+      results.write(withFileTypes ? entry : entry.fullpath());
+    }
+    const dirs = /* @__PURE__ */ new Set();
+    const queue = [entry];
+    let processing = 0;
+    const process2 = /* @__PURE__ */ __name(() => {
+      let paused = false;
+      while (!paused) {
+        const dir = queue.shift();
+        if (!dir) {
+          if (processing === 0)
+            results.end();
+          return;
+        }
+        processing++;
+        dirs.add(dir);
+        const onReaddir = /* @__PURE__ */ __name((er, entries, didRealpaths = false) => {
+          if (er)
+            return results.emit("error", er);
+          if (follow && !didRealpaths) {
+            const promises = [];
+            for (const e of entries) {
+              if (e.isSymbolicLink()) {
+                promises.push(e.realpath().then((r) => r?.isUnknown() ? r.lstat() : r));
+              }
+            }
+            if (promises.length) {
+              Promise.all(promises).then(() => onReaddir(null, entries, true));
+              return;
+            }
+          }
+          for (const e of entries) {
+            if (e && (!filter2 || filter2(e))) {
+              if (!results.write(withFileTypes ? e : e.fullpath())) {
+                paused = true;
+              }
+            }
+          }
+          processing--;
+          for (const e of entries) {
+            const r = e.realpathCached() || e;
+            if (r.shouldWalk(dirs, walkFilter)) {
+              queue.push(r);
+            }
+          }
+          if (paused && !results.flowing) {
+            results.once("drain", process2);
+          } else if (!sync2) {
+            process2();
+          }
+        }, "onReaddir");
+        let sync2 = true;
+        dir.readdirCB(onReaddir, true);
+        sync2 = false;
+      }
+    }, "process");
+    process2();
+    return results;
+  }
+  streamSync(entry = this.cwd, opts = {}) {
+    if (typeof entry === "string") {
+      entry = this.cwd.resolve(entry);
+    } else if (!(entry instanceof PathBase)) {
+      opts = entry;
+      entry = this.cwd;
+    }
+    const { withFileTypes = true, follow = false, filter: filter2, walkFilter } = opts;
+    const results = new Minipass({ objectMode: true });
+    const dirs = /* @__PURE__ */ new Set();
+    if (!filter2 || filter2(entry)) {
+      results.write(withFileTypes ? entry : entry.fullpath());
+    }
+    const queue = [entry];
+    let processing = 0;
+    const process2 = /* @__PURE__ */ __name(() => {
+      let paused = false;
+      while (!paused) {
+        const dir = queue.shift();
+        if (!dir) {
+          if (processing === 0)
+            results.end();
+          return;
+        }
+        processing++;
+        dirs.add(dir);
+        const entries = dir.readdirSync();
+        for (const e of entries) {
+          if (!filter2 || filter2(e)) {
+            if (!results.write(withFileTypes ? e : e.fullpath())) {
+              paused = true;
+            }
+          }
+        }
+        processing--;
+        for (const e of entries) {
+          let r = e;
+          if (e.isSymbolicLink()) {
+            if (!(follow && (r = e.realpathSync())))
+              continue;
+            if (r.isUnknown())
+              r.lstatSync();
+          }
+          if (r.shouldWalk(dirs, walkFilter)) {
+            queue.push(r);
+          }
+        }
+      }
+      if (paused && !results.flowing)
+        results.once("drain", process2);
+    }, "process");
+    process2();
+    return results;
+  }
+  chdir(path6 = this.cwd) {
+    const oldCwd = this.cwd;
+    this.cwd = typeof path6 === "string" ? this.cwd.resolve(path6) : path6;
+    this.cwd[setAsCwd](oldCwd);
+  }
+};
+var PathScurryWin32 = class extends PathScurryBase {
+  static {
+    __name(this, "PathScurryWin32");
+  }
+  /**
+   * separator for generating path strings
+   */
+  sep = "\\";
+  constructor(cwd3 = process.cwd(), opts = {}) {
+    const { nocase = true } = opts;
+    super(cwd3, import_node_path.win32, "\\", { ...opts, nocase });
+    this.nocase = nocase;
+    for (let p = this.cwd; p; p = p.parent) {
+      p.nocase = this.nocase;
+    }
+  }
+  /**
+   * @internal
+   */
+  parseRootPath(dir) {
+    return import_node_path.win32.parse(dir).root.toUpperCase();
+  }
+  /**
+   * @internal
+   */
+  newRoot(fs26) {
+    return new PathWin32(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs26 });
+  }
+  /**
+   * Return true if the provided path string is an absolute path
+   */
+  isAbsolute(p) {
+    return p.startsWith("/") || p.startsWith("\\") || /^[a-z]:(\/|\\)/i.test(p);
+  }
+};
+var PathScurryPosix = class extends PathScurryBase {
+  static {
+    __name(this, "PathScurryPosix");
+  }
+  /**
+   * separator for generating path strings
+   */
+  sep = "/";
+  constructor(cwd3 = process.cwd(), opts = {}) {
+    const { nocase = false } = opts;
+    super(cwd3, import_node_path.posix, "/", { ...opts, nocase });
+    this.nocase = nocase;
+  }
+  /**
+   * @internal
+   */
+  parseRootPath(_dir) {
+    return "/";
+  }
+  /**
+   * @internal
+   */
+  newRoot(fs26) {
+    return new PathPosix(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs26 });
+  }
+  /**
+   * Return true if the provided path string is an absolute path
+   */
+  isAbsolute(p) {
+    return p.startsWith("/");
+  }
+};
+var PathScurryDarwin = class extends PathScurryPosix {
+  static {
+    __name(this, "PathScurryDarwin");
+  }
+  constructor(cwd3 = process.cwd(), opts = {}) {
+    const { nocase = true } = opts;
+    super(cwd3, { ...opts, nocase });
+  }
+};
+var Path = process.platform === "win32" ? PathWin32 : PathPosix;
+var PathScurry = process.platform === "win32" ? PathScurryWin32 : process.platform === "darwin" ? PathScurryDarwin : PathScurryPosix;
+
+// ../../node_modules/glob/dist/esm/pattern.js
+var isPatternList = /* @__PURE__ */ __name((pl) => pl.length >= 1, "isPatternList");
+var isGlobList = /* @__PURE__ */ __name((gl) => gl.length >= 1, "isGlobList");
+var Pattern = class _Pattern {
+  static {
+    __name(this, "Pattern");
+  }
+  #patternList;
+  #globList;
+  #index;
+  length;
+  #platform;
+  #rest;
+  #globString;
+  #isDrive;
+  #isUNC;
+  #isAbsolute;
+  #followGlobstar = true;
+  constructor(patternList, globList, index, platform) {
+    if (!isPatternList(patternList)) {
+      throw new TypeError("empty pattern list");
+    }
+    if (!isGlobList(globList)) {
+      throw new TypeError("empty glob list");
+    }
+    if (globList.length !== patternList.length) {
+      throw new TypeError("mismatched pattern list and glob list lengths");
+    }
+    this.length = patternList.length;
+    if (index < 0 || index >= this.length) {
+      throw new TypeError("index out of range");
+    }
+    this.#patternList = patternList;
+    this.#globList = globList;
+    this.#index = index;
+    this.#platform = platform;
+    if (this.#index === 0) {
+      if (this.isUNC()) {
+        const [p0, p1, p2, p3, ...prest] = this.#patternList;
+        const [g0, g1, g2, g3, ...grest] = this.#globList;
+        if (prest[0] === "") {
+          prest.shift();
+          grest.shift();
+        }
+        const p = [p0, p1, p2, p3, ""].join("/");
+        const g = [g0, g1, g2, g3, ""].join("/");
+        this.#patternList = [p, ...prest];
+        this.#globList = [g, ...grest];
+        this.length = this.#patternList.length;
+      } else if (this.isDrive() || this.isAbsolute()) {
+        const [p1, ...prest] = this.#patternList;
+        const [g1, ...grest] = this.#globList;
+        if (prest[0] === "") {
+          prest.shift();
+          grest.shift();
+        }
+        const p = p1 + "/";
+        const g = g1 + "/";
+        this.#patternList = [p, ...prest];
+        this.#globList = [g, ...grest];
+        this.length = this.#patternList.length;
+      }
+    }
+  }
+  /**
+   * The first entry in the parsed list of patterns
+   */
+  pattern() {
+    return this.#patternList[this.#index];
+  }
+  /**
+   * true of if pattern() returns a string
+   */
+  isString() {
+    return typeof this.#patternList[this.#index] === "string";
+  }
+  /**
+   * true of if pattern() returns GLOBSTAR
+   */
+  isGlobstar() {
+    return this.#patternList[this.#index] === GLOBSTAR;
+  }
+  /**
+   * true if pattern() returns a regexp
+   */
+  isRegExp() {
+    return this.#patternList[this.#index] instanceof RegExp;
+  }
+  /**
+   * The /-joined set of glob parts that make up this pattern
+   */
+  globString() {
+    return this.#globString = this.#globString || (this.#index === 0 ? this.isAbsolute() ? this.#globList[0] + this.#globList.slice(1).join("/") : this.#globList.join("/") : this.#globList.slice(this.#index).join("/"));
+  }
+  /**
+   * true if there are more pattern parts after this one
+   */
+  hasMore() {
+    return this.length > this.#index + 1;
+  }
+  /**
+   * The rest of the pattern after this part, or null if this is the end
+   */
+  rest() {
+    if (this.#rest !== void 0)
+      return this.#rest;
+    if (!this.hasMore())
+      return this.#rest = null;
+    this.#rest = new _Pattern(this.#patternList, this.#globList, this.#index + 1, this.#platform);
+    this.#rest.#isAbsolute = this.#isAbsolute;
+    this.#rest.#isUNC = this.#isUNC;
+    this.#rest.#isDrive = this.#isDrive;
+    return this.#rest;
+  }
+  /**
+   * true if the pattern represents a //unc/path/ on windows
+   */
+  isUNC() {
+    const pl = this.#patternList;
+    return this.#isUNC !== void 0 ? this.#isUNC : this.#isUNC = this.#platform === "win32" && this.#index === 0 && pl[0] === "" && pl[1] === "" && typeof pl[2] === "string" && !!pl[2] && typeof pl[3] === "string" && !!pl[3];
+  }
+  // pattern like C:/...
+  // split = ['C:', ...]
+  // XXX: would be nice to handle patterns like `c:*` to test the cwd
+  // in c: for *, but I don't know of a way to even figure out what that
+  // cwd is without actually chdir'ing into it?
+  /**
+   * True if the pattern starts with a drive letter on Windows
+   */
+  isDrive() {
+    const pl = this.#patternList;
+    return this.#isDrive !== void 0 ? this.#isDrive : this.#isDrive = this.#platform === "win32" && this.#index === 0 && this.length > 1 && typeof pl[0] === "string" && /^[a-z]:$/i.test(pl[0]);
+  }
+  // pattern = '/' or '/...' or '/x/...'
+  // split = ['', ''] or ['', ...] or ['', 'x', ...]
+  // Drive and UNC both considered absolute on windows
+  /**
+   * True if the pattern is rooted on an absolute path
+   */
+  isAbsolute() {
+    const pl = this.#patternList;
+    return this.#isAbsolute !== void 0 ? this.#isAbsolute : this.#isAbsolute = pl[0] === "" && pl.length > 1 || this.isDrive() || this.isUNC();
+  }
+  /**
+   * consume the root of the pattern, and return it
+   */
+  root() {
+    const p = this.#patternList[0];
+    return typeof p === "string" && this.isAbsolute() && this.#index === 0 ? p : "";
+  }
+  /**
+   * Check to see if the current globstar pattern is allowed to follow
+   * a symbolic link.
+   */
+  checkFollowGlobstar() {
+    return !(this.#index === 0 || !this.isGlobstar() || !this.#followGlobstar);
+  }
+  /**
+   * Mark that the current globstar pattern is following a symbolic link
+   */
+  markFollowGlobstar() {
+    if (this.#index === 0 || !this.isGlobstar() || !this.#followGlobstar)
+      return false;
+    this.#followGlobstar = false;
+    return true;
+  }
+};
+
+// ../../node_modules/glob/dist/esm/ignore.js
+var defaultPlatform2 = typeof process === "object" && process && typeof process.platform === "string" ? process.platform : "linux";
+var Ignore = class {
+  static {
+    __name(this, "Ignore");
+  }
+  relative;
+  relativeChildren;
+  absolute;
+  absoluteChildren;
+  platform;
+  mmopts;
+  constructor(ignored, { nobrace, nocase, noext, noglobstar, platform = defaultPlatform2 }) {
+    this.relative = [];
+    this.absolute = [];
+    this.relativeChildren = [];
+    this.absoluteChildren = [];
+    this.platform = platform;
+    this.mmopts = {
+      dot: true,
+      nobrace,
+      nocase,
+      noext,
+      noglobstar,
+      optimizationLevel: 2,
+      platform,
+      nocomment: true,
+      nonegate: true
+    };
+    for (const ign of ignored)
+      this.add(ign);
+  }
+  add(ign) {
+    const mm = new Minimatch(ign, this.mmopts);
+    for (let i = 0; i < mm.set.length; i++) {
+      const parsed = mm.set[i];
+      const globParts = mm.globParts[i];
+      if (!parsed || !globParts) {
+        throw new Error("invalid pattern object");
+      }
+      while (parsed[0] === "." && globParts[0] === ".") {
+        parsed.shift();
+        globParts.shift();
+      }
+      const p = new Pattern(parsed, globParts, 0, this.platform);
+      const m = new Minimatch(p.globString(), this.mmopts);
+      const children = globParts[globParts.length - 1] === "**";
+      const absolute = p.isAbsolute();
+      if (absolute)
+        this.absolute.push(m);
+      else
+        this.relative.push(m);
+      if (children) {
+        if (absolute)
+          this.absoluteChildren.push(m);
+        else
+          this.relativeChildren.push(m);
+      }
+    }
+  }
+  ignored(p) {
+    const fullpath = p.fullpath();
+    const fullpaths = `${fullpath}/`;
+    const relative = p.relative() || ".";
+    const relatives = `${relative}/`;
+    for (const m of this.relative) {
+      if (m.match(relative) || m.match(relatives))
+        return true;
+    }
+    for (const m of this.absolute) {
+      if (m.match(fullpath) || m.match(fullpaths))
+        return true;
+    }
+    return false;
+  }
+  childrenIgnored(p) {
+    const fullpath = p.fullpath() + "/";
+    const relative = (p.relative() || ".") + "/";
+    for (const m of this.relativeChildren) {
+      if (m.match(relative))
+        return true;
+    }
+    for (const m of this.absoluteChildren) {
+      if (m.match(fullpath))
+        return true;
+    }
+    return false;
+  }
+};
+
+// ../../node_modules/glob/dist/esm/processor.js
+var HasWalkedCache = class _HasWalkedCache {
+  static {
+    __name(this, "HasWalkedCache");
+  }
+  store;
+  constructor(store = /* @__PURE__ */ new Map()) {
+    this.store = store;
+  }
+  copy() {
+    return new _HasWalkedCache(new Map(this.store));
+  }
+  hasWalked(target, pattern) {
+    return this.store.get(target.fullpath())?.has(pattern.globString());
+  }
+  storeWalked(target, pattern) {
+    const fullpath = target.fullpath();
+    const cached = this.store.get(fullpath);
+    if (cached)
+      cached.add(pattern.globString());
+    else
+      this.store.set(fullpath, /* @__PURE__ */ new Set([pattern.globString()]));
+  }
+};
+var MatchRecord = class {
+  static {
+    __name(this, "MatchRecord");
+  }
+  store = /* @__PURE__ */ new Map();
+  add(target, absolute, ifDir) {
+    const n = (absolute ? 2 : 0) | (ifDir ? 1 : 0);
+    const current = this.store.get(target);
+    this.store.set(target, current === void 0 ? n : n & current);
+  }
+  // match, absolute, ifdir
+  entries() {
+    return [...this.store.entries()].map(([path6, n]) => [
+      path6,
+      !!(n & 2),
+      !!(n & 1)
+    ]);
+  }
+};
+var SubWalks = class {
+  static {
+    __name(this, "SubWalks");
+  }
+  store = /* @__PURE__ */ new Map();
+  add(target, pattern) {
+    if (!target.canReaddir()) {
+      return;
+    }
+    const subs = this.store.get(target);
+    if (subs) {
+      if (!subs.find((p) => p.globString() === pattern.globString())) {
+        subs.push(pattern);
+      }
+    } else
+      this.store.set(target, [pattern]);
+  }
+  get(target) {
+    const subs = this.store.get(target);
+    if (!subs) {
+      throw new Error("attempting to walk unknown path");
+    }
+    return subs;
+  }
+  entries() {
+    return this.keys().map((k) => [k, this.store.get(k)]);
+  }
+  keys() {
+    return [...this.store.keys()].filter((t) => t.canReaddir());
+  }
+};
+var Processor = class _Processor {
+  static {
+    __name(this, "Processor");
+  }
+  hasWalkedCache;
+  matches = new MatchRecord();
+  subwalks = new SubWalks();
+  patterns;
+  follow;
+  dot;
+  opts;
+  constructor(opts, hasWalkedCache) {
+    this.opts = opts;
+    this.follow = !!opts.follow;
+    this.dot = !!opts.dot;
+    this.hasWalkedCache = hasWalkedCache ? hasWalkedCache.copy() : new HasWalkedCache();
+  }
+  processPatterns(target, patterns) {
+    this.patterns = patterns;
+    const processingSet = patterns.map((p) => [target, p]);
+    for (let [t, pattern] of processingSet) {
+      this.hasWalkedCache.storeWalked(t, pattern);
+      const root2 = pattern.root();
+      const absolute = pattern.isAbsolute() && this.opts.absolute !== false;
+      if (root2) {
+        t = t.resolve(root2 === "/" && this.opts.root !== void 0 ? this.opts.root : root2);
+        const rest2 = pattern.rest();
+        if (!rest2) {
+          this.matches.add(t, true, false);
+          continue;
+        } else {
+          pattern = rest2;
+        }
+      }
+      if (t.isENOENT())
+        continue;
+      let p;
+      let rest;
+      let changed = false;
+      while (typeof (p = pattern.pattern()) === "string" && (rest = pattern.rest())) {
+        const c = t.resolve(p);
+        t = c;
+        pattern = rest;
+        changed = true;
+      }
+      p = pattern.pattern();
+      rest = pattern.rest();
+      if (changed) {
+        if (this.hasWalkedCache.hasWalked(t, pattern))
+          continue;
+        this.hasWalkedCache.storeWalked(t, pattern);
+      }
+      if (typeof p === "string") {
+        const ifDir = p === ".." || p === "" || p === ".";
+        this.matches.add(t.resolve(p), absolute, ifDir);
+        continue;
+      } else if (p === GLOBSTAR) {
+        if (!t.isSymbolicLink() || this.follow || pattern.checkFollowGlobstar()) {
+          this.subwalks.add(t, pattern);
+        }
+        const rp = rest?.pattern();
+        const rrest = rest?.rest();
+        if (!rest || (rp === "" || rp === ".") && !rrest) {
+          this.matches.add(t, absolute, rp === "" || rp === ".");
+        } else {
+          if (rp === "..") {
+            const tp = t.parent || t;
+            if (!rrest)
+              this.matches.add(tp, absolute, true);
+            else if (!this.hasWalkedCache.hasWalked(tp, rrest)) {
+              this.subwalks.add(tp, rrest);
+            }
+          }
+        }
+      } else if (p instanceof RegExp) {
+        this.subwalks.add(t, pattern);
+      }
+    }
+    return this;
+  }
+  subwalkTargets() {
+    return this.subwalks.keys();
+  }
+  child() {
+    return new _Processor(this.opts, this.hasWalkedCache);
+  }
+  // return a new Processor containing the subwalks for each
+  // child entry, and a set of matches, and
+  // a hasWalkedCache that's a copy of this one
+  // then we're going to call
+  filterEntries(parent, entries) {
+    const patterns = this.subwalks.get(parent);
+    const results = this.child();
+    for (const e of entries) {
+      for (const pattern of patterns) {
+        const absolute = pattern.isAbsolute();
+        const p = pattern.pattern();
+        const rest = pattern.rest();
+        if (p === GLOBSTAR) {
+          results.testGlobstar(e, pattern, rest, absolute);
+        } else if (p instanceof RegExp) {
+          results.testRegExp(e, p, rest, absolute);
+        } else {
+          results.testString(e, p, rest, absolute);
+        }
+      }
+    }
+    return results;
+  }
+  testGlobstar(e, pattern, rest, absolute) {
+    if (this.dot || !e.name.startsWith(".")) {
+      if (!pattern.hasMore()) {
+        this.matches.add(e, absolute, false);
+      }
+      if (e.canReaddir()) {
+        if (this.follow || !e.isSymbolicLink()) {
+          this.subwalks.add(e, pattern);
+        } else if (e.isSymbolicLink()) {
+          if (rest && pattern.checkFollowGlobstar()) {
+            this.subwalks.add(e, rest);
+          } else if (pattern.markFollowGlobstar()) {
+            this.subwalks.add(e, pattern);
+          }
+        }
+      }
+    }
+    if (rest) {
+      const rp = rest.pattern();
+      if (typeof rp === "string" && // dots and empty were handled already
+      rp !== ".." && rp !== "" && rp !== ".") {
+        this.testString(e, rp, rest.rest(), absolute);
+      } else if (rp === "..") {
+        const ep = e.parent || e;
+        this.subwalks.add(ep, rest);
+      } else if (rp instanceof RegExp) {
+        this.testRegExp(e, rp, rest.rest(), absolute);
+      }
+    }
+  }
+  testRegExp(e, p, rest, absolute) {
+    if (!p.test(e.name))
+      return;
+    if (!rest) {
+      this.matches.add(e, absolute, false);
+    } else {
+      this.subwalks.add(e, rest);
+    }
+  }
+  testString(e, p, rest, absolute) {
+    if (!e.isNamed(p))
+      return;
+    if (!rest) {
+      this.matches.add(e, absolute, false);
+    } else {
+      this.subwalks.add(e, rest);
+    }
+  }
+};
+
+// ../../node_modules/glob/dist/esm/walker.js
+var makeIgnore = /* @__PURE__ */ __name((ignore, opts) => typeof ignore === "string" ? new Ignore([ignore], opts) : Array.isArray(ignore) ? new Ignore(ignore, opts) : ignore, "makeIgnore");
+var GlobUtil = class {
+  static {
+    __name(this, "GlobUtil");
+  }
+  path;
+  patterns;
+  opts;
+  seen = /* @__PURE__ */ new Set();
+  paused = false;
+  aborted = false;
+  #onResume = [];
+  #ignore;
+  #sep;
+  signal;
+  maxDepth;
+  includeChildMatches;
+  constructor(patterns, path6, opts) {
+    this.patterns = patterns;
+    this.path = path6;
+    this.opts = opts;
+    this.#sep = !opts.posix && opts.platform === "win32" ? "\\" : "/";
+    this.includeChildMatches = opts.includeChildMatches !== false;
+    if (opts.ignore || !this.includeChildMatches) {
+      this.#ignore = makeIgnore(opts.ignore ?? [], opts);
+      if (!this.includeChildMatches && typeof this.#ignore.add !== "function") {
+        const m = "cannot ignore child matches, ignore lacks add() method.";
+        throw new Error(m);
+      }
+    }
+    this.maxDepth = opts.maxDepth || Infinity;
+    if (opts.signal) {
+      this.signal = opts.signal;
+      this.signal.addEventListener("abort", () => {
+        this.#onResume.length = 0;
+      });
+    }
+  }
+  #ignored(path6) {
+    return this.seen.has(path6) || !!this.#ignore?.ignored?.(path6);
+  }
+  #childrenIgnored(path6) {
+    return !!this.#ignore?.childrenIgnored?.(path6);
+  }
+  // backpressure mechanism
+  pause() {
+    this.paused = true;
+  }
+  resume() {
+    if (this.signal?.aborted)
+      return;
+    this.paused = false;
+    let fn = void 0;
+    while (!this.paused && (fn = this.#onResume.shift())) {
+      fn();
+    }
+  }
+  onResume(fn) {
+    if (this.signal?.aborted)
+      return;
+    if (!this.paused) {
+      fn();
+    } else {
+      this.#onResume.push(fn);
+    }
+  }
+  // do the requisite realpath/stat checking, and return the path
+  // to add or undefined to filter it out.
+  async matchCheck(e, ifDir) {
+    if (ifDir && this.opts.nodir)
+      return void 0;
+    let rpc;
+    if (this.opts.realpath) {
+      rpc = e.realpathCached() || await e.realpath();
+      if (!rpc)
+        return void 0;
+      e = rpc;
+    }
+    const needStat = e.isUnknown() || this.opts.stat;
+    const s = needStat ? await e.lstat() : e;
+    if (this.opts.follow && this.opts.nodir && s?.isSymbolicLink()) {
+      const target = await s.realpath();
+      if (target && (target.isUnknown() || this.opts.stat)) {
+        await target.lstat();
+      }
+    }
+    return this.matchCheckTest(s, ifDir);
+  }
+  matchCheckTest(e, ifDir) {
+    return e && (this.maxDepth === Infinity || e.depth() <= this.maxDepth) && (!ifDir || e.canReaddir()) && (!this.opts.nodir || !e.isDirectory()) && (!this.opts.nodir || !this.opts.follow || !e.isSymbolicLink() || !e.realpathCached()?.isDirectory()) && !this.#ignored(e) ? e : void 0;
+  }
+  matchCheckSync(e, ifDir) {
+    if (ifDir && this.opts.nodir)
+      return void 0;
+    let rpc;
+    if (this.opts.realpath) {
+      rpc = e.realpathCached() || e.realpathSync();
+      if (!rpc)
+        return void 0;
+      e = rpc;
+    }
+    const needStat = e.isUnknown() || this.opts.stat;
+    const s = needStat ? e.lstatSync() : e;
+    if (this.opts.follow && this.opts.nodir && s?.isSymbolicLink()) {
+      const target = s.realpathSync();
+      if (target && (target?.isUnknown() || this.opts.stat)) {
+        target.lstatSync();
+      }
+    }
+    return this.matchCheckTest(s, ifDir);
+  }
+  matchFinish(e, absolute) {
+    if (this.#ignored(e))
+      return;
+    if (!this.includeChildMatches && this.#ignore?.add) {
+      const ign = `${e.relativePosix()}/**`;
+      this.#ignore.add(ign);
+    }
+    const abs = this.opts.absolute === void 0 ? absolute : this.opts.absolute;
+    this.seen.add(e);
+    const mark = this.opts.mark && e.isDirectory() ? this.#sep : "";
+    if (this.opts.withFileTypes) {
+      this.matchEmit(e);
+    } else if (abs) {
+      const abs2 = this.opts.posix ? e.fullpathPosix() : e.fullpath();
+      this.matchEmit(abs2 + mark);
+    } else {
+      const rel = this.opts.posix ? e.relativePosix() : e.relative();
+      const pre = this.opts.dotRelative && !rel.startsWith(".." + this.#sep) ? "." + this.#sep : "";
+      this.matchEmit(!rel ? "." + mark : pre + rel + mark);
+    }
+  }
+  async match(e, absolute, ifDir) {
+    const p = await this.matchCheck(e, ifDir);
+    if (p)
+      this.matchFinish(p, absolute);
+  }
+  matchSync(e, absolute, ifDir) {
+    const p = this.matchCheckSync(e, ifDir);
+    if (p)
+      this.matchFinish(p, absolute);
+  }
+  walkCB(target, patterns, cb2) {
+    if (this.signal?.aborted)
+      cb2();
+    this.walkCB2(target, patterns, new Processor(this.opts), cb2);
+  }
+  walkCB2(target, patterns, processor, cb2) {
+    if (this.#childrenIgnored(target))
+      return cb2();
+    if (this.signal?.aborted)
+      cb2();
+    if (this.paused) {
+      this.onResume(() => this.walkCB2(target, patterns, processor, cb2));
+      return;
+    }
+    processor.processPatterns(target, patterns);
+    let tasks = 1;
+    const next = /* @__PURE__ */ __name(() => {
+      if (--tasks === 0)
+        cb2();
+    }, "next");
+    for (const [m, absolute, ifDir] of processor.matches.entries()) {
+      if (this.#ignored(m))
+        continue;
+      tasks++;
+      this.match(m, absolute, ifDir).then(() => next());
+    }
+    for (const t of processor.subwalkTargets()) {
+      if (this.maxDepth !== Infinity && t.depth() >= this.maxDepth) {
+        continue;
+      }
+      tasks++;
+      const childrenCached = t.readdirCached();
+      if (t.calledReaddir())
+        this.walkCB3(t, childrenCached, processor, next);
+      else {
+        t.readdirCB((_, entries) => this.walkCB3(t, entries, processor, next), true);
+      }
+    }
+    next();
+  }
+  walkCB3(target, entries, processor, cb2) {
+    processor = processor.filterEntries(target, entries);
+    let tasks = 1;
+    const next = /* @__PURE__ */ __name(() => {
+      if (--tasks === 0)
+        cb2();
+    }, "next");
+    for (const [m, absolute, ifDir] of processor.matches.entries()) {
+      if (this.#ignored(m))
+        continue;
+      tasks++;
+      this.match(m, absolute, ifDir).then(() => next());
+    }
+    for (const [target2, patterns] of processor.subwalks.entries()) {
+      tasks++;
+      this.walkCB2(target2, patterns, processor.child(), next);
+    }
+    next();
+  }
+  walkCBSync(target, patterns, cb2) {
+    if (this.signal?.aborted)
+      cb2();
+    this.walkCB2Sync(target, patterns, new Processor(this.opts), cb2);
+  }
+  walkCB2Sync(target, patterns, processor, cb2) {
+    if (this.#childrenIgnored(target))
+      return cb2();
+    if (this.signal?.aborted)
+      cb2();
+    if (this.paused) {
+      this.onResume(() => this.walkCB2Sync(target, patterns, processor, cb2));
+      return;
+    }
+    processor.processPatterns(target, patterns);
+    let tasks = 1;
+    const next = /* @__PURE__ */ __name(() => {
+      if (--tasks === 0)
+        cb2();
+    }, "next");
+    for (const [m, absolute, ifDir] of processor.matches.entries()) {
+      if (this.#ignored(m))
+        continue;
+      this.matchSync(m, absolute, ifDir);
+    }
+    for (const t of processor.subwalkTargets()) {
+      if (this.maxDepth !== Infinity && t.depth() >= this.maxDepth) {
+        continue;
+      }
+      tasks++;
+      const children = t.readdirSync();
+      this.walkCB3Sync(t, children, processor, next);
+    }
+    next();
+  }
+  walkCB3Sync(target, entries, processor, cb2) {
+    processor = processor.filterEntries(target, entries);
+    let tasks = 1;
+    const next = /* @__PURE__ */ __name(() => {
+      if (--tasks === 0)
+        cb2();
+    }, "next");
+    for (const [m, absolute, ifDir] of processor.matches.entries()) {
+      if (this.#ignored(m))
+        continue;
+      this.matchSync(m, absolute, ifDir);
+    }
+    for (const [target2, patterns] of processor.subwalks.entries()) {
+      tasks++;
+      this.walkCB2Sync(target2, patterns, processor.child(), next);
+    }
+    next();
+  }
+};
+var GlobWalker = class extends GlobUtil {
+  static {
+    __name(this, "GlobWalker");
+  }
+  matches = /* @__PURE__ */ new Set();
+  constructor(patterns, path6, opts) {
+    super(patterns, path6, opts);
+  }
+  matchEmit(e) {
+    this.matches.add(e);
+  }
+  async walk() {
+    if (this.signal?.aborted)
+      throw this.signal.reason;
+    if (this.path.isUnknown()) {
+      await this.path.lstat();
+    }
+    await new Promise((res, rej) => {
+      this.walkCB(this.path, this.patterns, () => {
+        if (this.signal?.aborted) {
+          rej(this.signal.reason);
+        } else {
+          res(this.matches);
+        }
+      });
+    });
+    return this.matches;
+  }
+  walkSync() {
+    if (this.signal?.aborted)
+      throw this.signal.reason;
+    if (this.path.isUnknown()) {
+      this.path.lstatSync();
+    }
+    this.walkCBSync(this.path, this.patterns, () => {
+      if (this.signal?.aborted)
+        throw this.signal.reason;
+    });
+    return this.matches;
+  }
+};
+var GlobStream = class extends GlobUtil {
+  static {
+    __name(this, "GlobStream");
+  }
+  results;
+  constructor(patterns, path6, opts) {
+    super(patterns, path6, opts);
+    this.results = new Minipass({
+      signal: this.signal,
+      objectMode: true
+    });
+    this.results.on("drain", () => this.resume());
+    this.results.on("resume", () => this.resume());
+  }
+  matchEmit(e) {
+    this.results.write(e);
+    if (!this.results.flowing)
+      this.pause();
+  }
+  stream() {
+    const target = this.path;
+    if (target.isUnknown()) {
+      target.lstat().then(() => {
+        this.walkCB(target, this.patterns, () => this.results.end());
+      });
+    } else {
+      this.walkCB(target, this.patterns, () => this.results.end());
+    }
+    return this.results;
+  }
+  streamSync() {
+    if (this.path.isUnknown()) {
+      this.path.lstatSync();
+    }
+    this.walkCBSync(this.path, this.patterns, () => this.results.end());
+    return this.results;
+  }
+};
+
+// ../../node_modules/glob/dist/esm/glob.js
+var defaultPlatform3 = typeof process === "object" && process && typeof process.platform === "string" ? process.platform : "linux";
+var Glob = class {
+  static {
+    __name(this, "Glob");
+  }
+  absolute;
+  cwd;
+  root;
+  dot;
+  dotRelative;
+  follow;
+  ignore;
+  magicalBraces;
+  mark;
+  matchBase;
+  maxDepth;
+  nobrace;
+  nocase;
+  nodir;
+  noext;
+  noglobstar;
+  pattern;
+  platform;
+  realpath;
+  scurry;
+  stat;
+  signal;
+  windowsPathsNoEscape;
+  withFileTypes;
+  includeChildMatches;
+  /**
+   * The options provided to the constructor.
+   */
+  opts;
+  /**
+   * An array of parsed immutable {@link Pattern} objects.
+   */
+  patterns;
+  /**
+   * All options are stored as properties on the `Glob` object.
+   *
+   * See {@link GlobOptions} for full options descriptions.
+   *
+   * Note that a previous `Glob` object can be passed as the
+   * `GlobOptions` to another `Glob` instantiation to re-use settings
+   * and caches with a new pattern.
+   *
+   * Traversal functions can be called multiple times to run the walk
+   * again.
+   */
+  constructor(pattern, opts) {
+    if (!opts)
+      throw new TypeError("glob options required");
+    this.withFileTypes = !!opts.withFileTypes;
+    this.signal = opts.signal;
+    this.follow = !!opts.follow;
+    this.dot = !!opts.dot;
+    this.dotRelative = !!opts.dotRelative;
+    this.nodir = !!opts.nodir;
+    this.mark = !!opts.mark;
+    if (!opts.cwd) {
+      this.cwd = "";
+    } else if (opts.cwd instanceof URL || opts.cwd.startsWith("file://")) {
+      opts.cwd = (0, import_node_url2.fileURLToPath)(opts.cwd);
+    }
+    this.cwd = opts.cwd || "";
+    this.root = opts.root;
+    this.magicalBraces = !!opts.magicalBraces;
+    this.nobrace = !!opts.nobrace;
+    this.noext = !!opts.noext;
+    this.realpath = !!opts.realpath;
+    this.absolute = opts.absolute;
+    this.includeChildMatches = opts.includeChildMatches !== false;
+    this.noglobstar = !!opts.noglobstar;
+    this.matchBase = !!opts.matchBase;
+    this.maxDepth = typeof opts.maxDepth === "number" ? opts.maxDepth : Infinity;
+    this.stat = !!opts.stat;
+    this.ignore = opts.ignore;
+    if (this.withFileTypes && this.absolute !== void 0) {
+      throw new Error("cannot set absolute and withFileTypes:true");
+    }
+    if (typeof pattern === "string") {
+      pattern = [pattern];
+    }
+    this.windowsPathsNoEscape = !!opts.windowsPathsNoEscape || opts.allowWindowsEscape === false;
+    if (this.windowsPathsNoEscape) {
+      pattern = pattern.map((p) => p.replace(/\\/g, "/"));
+    }
+    if (this.matchBase) {
+      if (opts.noglobstar) {
+        throw new TypeError("base matching requires globstar");
+      }
+      pattern = pattern.map((p) => p.includes("/") ? p : `./**/${p}`);
+    }
+    this.pattern = pattern;
+    this.platform = opts.platform || defaultPlatform3;
+    this.opts = { ...opts, platform: this.platform };
+    if (opts.scurry) {
+      this.scurry = opts.scurry;
+      if (opts.nocase !== void 0 && opts.nocase !== opts.scurry.nocase) {
+        throw new Error("nocase option contradicts provided scurry option");
+      }
+    } else {
+      const Scurry = opts.platform === "win32" ? PathScurryWin32 : opts.platform === "darwin" ? PathScurryDarwin : opts.platform ? PathScurryPosix : PathScurry;
+      this.scurry = new Scurry(this.cwd, {
+        nocase: opts.nocase,
+        fs: opts.fs
+      });
+    }
+    this.nocase = this.scurry.nocase;
+    const nocaseMagicOnly = this.platform === "darwin" || this.platform === "win32";
+    const mmo = {
+      // default nocase based on platform
+      ...opts,
+      dot: this.dot,
+      matchBase: this.matchBase,
+      nobrace: this.nobrace,
+      nocase: this.nocase,
+      nocaseMagicOnly,
+      nocomment: true,
+      noext: this.noext,
+      nonegate: true,
+      optimizationLevel: 2,
+      platform: this.platform,
+      windowsPathsNoEscape: this.windowsPathsNoEscape,
+      debug: !!this.opts.debug
+    };
+    const mms = this.pattern.map((p) => new Minimatch(p, mmo));
+    const [matchSet, globParts] = mms.reduce((set, m) => {
+      set[0].push(...m.set);
+      set[1].push(...m.globParts);
+      return set;
+    }, [[], []]);
+    this.patterns = matchSet.map((set, i) => {
+      const g = globParts[i];
+      if (!g)
+        throw new Error("invalid pattern object");
+      return new Pattern(set, g, 0, this.platform);
+    });
+  }
+  async walk() {
+    return [
+      ...await new GlobWalker(this.patterns, this.scurry.cwd, {
+        ...this.opts,
+        maxDepth: this.maxDepth !== Infinity ? this.maxDepth + this.scurry.cwd.depth() : Infinity,
+        platform: this.platform,
+        nocase: this.nocase,
+        includeChildMatches: this.includeChildMatches
+      }).walk()
+    ];
+  }
+  walkSync() {
+    return [
+      ...new GlobWalker(this.patterns, this.scurry.cwd, {
+        ...this.opts,
+        maxDepth: this.maxDepth !== Infinity ? this.maxDepth + this.scurry.cwd.depth() : Infinity,
+        platform: this.platform,
+        nocase: this.nocase,
+        includeChildMatches: this.includeChildMatches
+      }).walkSync()
+    ];
+  }
+  stream() {
+    return new GlobStream(this.patterns, this.scurry.cwd, {
+      ...this.opts,
+      maxDepth: this.maxDepth !== Infinity ? this.maxDepth + this.scurry.cwd.depth() : Infinity,
+      platform: this.platform,
+      nocase: this.nocase,
+      includeChildMatches: this.includeChildMatches
+    }).stream();
+  }
+  streamSync() {
+    return new GlobStream(this.patterns, this.scurry.cwd, {
+      ...this.opts,
+      maxDepth: this.maxDepth !== Infinity ? this.maxDepth + this.scurry.cwd.depth() : Infinity,
+      platform: this.platform,
+      nocase: this.nocase,
+      includeChildMatches: this.includeChildMatches
+    }).streamSync();
+  }
+  /**
+   * Default sync iteration function. Returns a Generator that
+   * iterates over the results.
+   */
+  iterateSync() {
+    return this.streamSync()[Symbol.iterator]();
+  }
+  [Symbol.iterator]() {
+    return this.iterateSync();
+  }
+  /**
+   * Default async iteration function. Returns an AsyncGenerator that
+   * iterates over the results.
+   */
+  iterate() {
+    return this.stream()[Symbol.asyncIterator]();
+  }
+  [Symbol.asyncIterator]() {
+    return this.iterate();
+  }
+};
+
+// ../../node_modules/glob/dist/esm/has-magic.js
+var hasMagic = /* @__PURE__ */ __name((pattern, options = {}) => {
+  if (!Array.isArray(pattern)) {
+    pattern = [pattern];
+  }
+  for (const p of pattern) {
+    if (new Minimatch(p, options).hasMagic())
+      return true;
+  }
+  return false;
+}, "hasMagic");
+
+// ../../node_modules/glob/dist/esm/index.js
+function globStreamSync(pattern, options = {}) {
+  return new Glob(pattern, options).streamSync();
+}
+__name(globStreamSync, "globStreamSync");
+function globStream(pattern, options = {}) {
+  return new Glob(pattern, options).stream();
+}
+__name(globStream, "globStream");
+function globSync(pattern, options = {}) {
+  return new Glob(pattern, options).walkSync();
+}
+__name(globSync, "globSync");
+async function glob_(pattern, options = {}) {
+  return new Glob(pattern, options).walk();
+}
+__name(glob_, "glob_");
+function globIterateSync(pattern, options = {}) {
+  return new Glob(pattern, options).iterateSync();
+}
+__name(globIterateSync, "globIterateSync");
+function globIterate(pattern, options = {}) {
+  return new Glob(pattern, options).iterate();
+}
+__name(globIterate, "globIterate");
+var streamSync = globStreamSync;
+var stream = Object.assign(globStream, { sync: globStreamSync });
+var iterateSync = globIterateSync;
+var iterate = Object.assign(globIterate, {
+  sync: globIterateSync
+});
+var sync = Object.assign(globSync, {
+  stream: globStreamSync,
+  iterate: globIterateSync
+});
+var glob = Object.assign(glob_, {
+  glob: glob_,
+  globSync,
+  sync,
+  globStream,
+  stream,
+  globStreamSync,
+  streamSync,
+  globIterate,
+  iterate,
+  globIterateSync,
+  iterateSync,
+  Glob,
+  hasMagic,
+  escape,
+  unescape
+});
+glob.glob = glob;
+
+// src/lib/getLinesOfCode.ts
+var import_strip_comments = __toESM(require_strip_comments(), 1);
+async function getLinesOfCode() {
+  const ts = (await glob("{libs,apps,packages}/*/{src,examples}/**/*.ts")).filter((p) => {
+    return !/[./\\](wip|old|temp|playground)[./\\]/.test(p);
+  });
+  const source = countLines(
+    ts.filter((p) => {
+      return !/[./\\](test|examples|benchmark)[./\\]/.test(p);
+    })
+  );
+  const test = countLines(
+    ts.filter((p) => {
+      return p.endsWith(".test.ts");
+    })
+  );
+  const examples = countLines(
+    ts.filter((p) => {
+      return /[./\\](examples|benchmark)[./\\]/.test(p);
+    })
+  );
+  const total = {
+    files: source.files + test.files + examples.files,
+    lines: source.lines + test.lines + examples.lines
+  };
+  return { source, test, examples, total };
+}
+__name(getLinesOfCode, "getLinesOfCode");
+function countLines(paths) {
+  const arr = paths.flatMap((p) => {
+    const code = import_fs_extra5.default.readFileSync(p, "utf8");
+    const noComments = (0, import_strip_comments.default)(code, { block: true, line: true });
+    const compact = noComments.split("\n").map((line) => {
+      return line.trim();
+    }).filter(Boolean);
+    return compact.length;
+  });
+  const files2 = paths.length;
+  const lines = arr.reduce((a, b) => {
+    return a + b;
+  }, 0);
+  return { files: files2, lines };
+}
+__name(countLines, "countLines");
+
+// src/lib/importLibs.ts
+var import_fs_extra6 = __toESM(require_lib2(), 1);
+var import_upath8 = __toESM(require_upath(), 1);
+var import_meta3 = {};
+async function importLibs(libDirnames) {
+  if (!libDirnames) {
+    const libsDir = import_upath8.default.joinSafe(getRepoRootDirpath(), "libs");
+    libDirnames = await import_fs_extra6.default.readdir(libsDir);
+  }
+  const promises = libDirnames.map(async (ws) => {
+    const absPath = import_upath8.default.joinSafe(getRepoRootDirpath(), ".dist", "libs", `${ws}.cjs`);
+    const currentDir = typeof import_meta3 !== "undefined" && import_meta3.dirname || typeof __dirname !== "undefined" && __dirname || process.cwd();
+    let importPath = import_upath8.default.relative(currentDir, absPath);
+    if (!importPath.startsWith(".")) {
+      importPath = `./${importPath}`;
+    }
+    return [ws, await import(importPath)];
+  });
+  const entries = await Promise.all(promises);
+  return new Map(entries);
+}
+__name(importLibs, "importLibs");
+async function getLibsImportStatements() {
+  const map3 = await importLibs();
+  return [...map3.entries()].flatMap(([lib, mod]) => {
+    return Object.keys(mod).filter((name) => {
+      return name !== "default";
+    }).map((name) => {
+      return `import { ${name} } from '@mono/${lib}'`;
+    });
+  });
+}
+__name(getLibsImportStatements, "getLibsImportStatements");
+
+// src/lib/parseLibsTsDocSummaries.ts
+var import_fs_extra7 = __toESM(require_lib2(), 1);
+
+// src/lib/tsdoc.ts
+function* tsDocExtractAllComments(code) {
+  const reStart = /^\s*\/\*\*\s*$/;
+  const reEnd = /^\s*\*\/\s*$/;
+  let lines = code.split(/\r?\n/);
+  let offset = 0;
+  while (true) {
+    const indexStart = lines.findIndex((line) => {
+      return reStart.test(line);
+    });
+    const indexEnd = lines.findIndex((line) => {
+      return reEnd.test(line);
+    });
+    if (indexStart !== -1 && indexEnd !== -1) {
+      let nextLine;
+      if (indexEnd + 1 < lines.length) {
+        nextLine = lines[indexEnd + 1];
+      }
+      if (nextLine?.trim() === "" && indexEnd + 2 < lines.length) {
+        nextLine = lines[indexEnd + 2];
+      }
+      yield {
+        start: indexStart + offset,
+        end: indexEnd + offset,
+        match: lines.slice(indexStart, indexEnd + 1).join("\n"),
+        nextLine
+      };
+      lines = lines.slice(indexEnd + 1);
+      offset += indexEnd + 1;
+    } else {
+      break;
+    }
+  }
+}
+__name(tsDocExtractAllComments, "tsDocExtractAllComments");
+function getNamedExportTsDocSummary(name, code) {
+  for (const c of tsDocExtractAllComments(
+    code.split("\n").map((l) => {
+      return l.trim();
+    }).filter((l) => {
+      return l && !/^(@|\/\/)/.test(l);
+    }).join("\n")
+  )) {
+    if (c.nextLine?.startsWith("export default ")) {
+      continue;
+    }
+    if (!c.nextLine?.startsWith("export ")) {
+      continue;
+    }
+    if (!c.nextLine?.includes(` ${name}`)) {
+      continue;
+    }
+    return c.match.split("\n").slice(1, -1).map((l) => {
+      return l.substring(2).trim();
+    }).filter(Boolean).join(" ").split("@")[0].trim();
+  }
+}
+__name(getNamedExportTsDocSummary, "getNamedExportTsDocSummary");
+
+// src/lib/parseLibsTsDocSummaries.ts
+var import_upath9 = __toESM(require_upath(), 1);
+var parseLibsTsDocSummaries = onetime_default(async () => {
+  const logActions = [];
+  const printLogs = /* @__PURE__ */ __name((log = console) => {
+    logActions.forEach((f) => {
+      return f(log);
+    });
+    logActions.length = 0;
+  }, "printLogs");
+  const logError = /* @__PURE__ */ __name((...args) => {
+    return logActions.push((log) => {
+      return log.error(...args);
+    });
+  }, "logError");
+  const logInfo = /* @__PURE__ */ __name((...args) => {
+    return logActions.push((log) => {
+      return log.info(...args);
+    });
+  }, "logInfo");
+  const libsModulesMap = await importLibs();
+  const libs = Array.from(libsModulesMap.entries()).flatMap(([wsName, mod]) => {
+    return Object.keys(mod).filter((s) => {
+      return s !== "default";
+    }).map((expName) => {
+      return [`libs/${wsName}`, expName];
+    });
+  });
+  const exportsNotInDedicatedFileSet = new Set(
+    libs.map(([wsPath, expName]) => {
+      return `${wsPath} => ${expName}.ts`;
+    })
+  );
+  const repoRoot = getRepoRootDirpath();
+  const tsFiles = (await glob(["libs/*/src/**/*.ts"], { absolute: true })).map((fp) => {
+    return import_upath9.default.relative(repoRoot, fp);
+  }).filter(Boolean);
+  if (tsFiles.length === 0) {
+    logError("\u26A0\uFE0F No TypeScript files found.");
+    return { validSummaries: [], exportsNotInDedicatedFileSet, filesNotDocumented: [], printLogs };
+  }
+  const tsFilesAndContent = await Promise.all(
+    tsFiles.map(async (filepath) => {
+      const filename = import_upath9.default.trimExt(import_upath9.default.basename(filepath));
+      const code = await import_fs_extra7.default.readFile(filepath, "utf8");
+      return { filepath, filename, code };
+    })
+  );
+  const summaries = /* @__PURE__ */ new Map();
+  for (const { filepath, filename, code } of tsFilesAndContent) {
+    const fileHasExport = libs.some(([wsPath, expName]) => {
+      if (code.includes(`// @ignore missing-tsdoc-files`)) {
+        exportsNotInDedicatedFileSet.delete(`${wsPath} => ${expName}.ts`);
+      }
+      if (!(filepath.startsWith(`${wsPath}/src/`) && filepath.endsWith(`/${expName}.ts`))) {
+        return;
+      }
+      exportsNotInDedicatedFileSet.delete(`${wsPath} => ${expName}.ts`);
+      summaries.set(filepath, "???");
+      return true;
+    });
+    if (!fileHasExport) {
+      continue;
+    }
+    const summary = getNamedExportTsDocSummary(filename, code) || "???";
+    summaries.set(filepath, summary);
+  }
+  const filesNotDocumented = Array.from(summaries.entries()).map(([filepath, summary]) => {
+    return { filepath, summary };
+  }).filter((o) => {
+    return o.summary === "???";
+  }).map((o) => {
+    return o.filepath;
+  }).sort();
+  if (filesNotDocumented.length) {
+    logError(`${filesNotDocumented.length} named exports missing TSDoc in libs:`);
+    filesNotDocumented.forEach((filepath) => {
+      return logError(` ${filepath}`);
+    });
+  } else {
+    logInfo(`${filesNotDocumented.length} named exports missing TSDoc in libs.`);
+  }
+  if (exportsNotInDedicatedFileSet.size) {
+    logError(`${exportsNotInDedicatedFileSet.size} named exports without dedicated files:`);
+    Array.from(exportsNotInDedicatedFileSet).sort().forEach((s) => {
+      return logError(`  ${s}`);
+    });
+  } else {
+    logInfo(`${exportsNotInDedicatedFileSet.size} named exports without dedicated files.`);
+  }
+  const validSummaries = Array.from(summaries.entries()).map(([filepath, summary]) => {
+    return { filepath, summary };
+  }).filter((o) => {
+    return o.summary !== "???";
+  }).sort((a, b) => {
+    return a.filepath.localeCompare(b.filepath);
+  });
+  logInfo(`${validSummaries.length} TSDoc summaries parsed in libs.`);
+  return { validSummaries, exportsNotInDedicatedFileSet, filesNotDocumented, printLogs };
+});
+
+// src/lib/renderReadme.ts
+var import_upath10 = __toESM(require_upath(), 1);
+var README_TEMPLATE_PATH = "docs/readmeTemplate.md";
+async function renderReadme() {
+  import_node_child_process2.default.execSync(`yarn prettier -w --l ${README_TEMPLATE_PATH}`, { stdio: "inherit" });
+  let md = await import_fs_extra8.default.readFile(README_TEMPLATE_PATH, "utf8");
+  const [repoName, repoDescription, linesOfCodeTable, coverageSummary, libsExportedModules] = await Promise.all([
+    getRepoName(),
+    getRepoDescription(),
+    renderLinesOfCodeTable(),
+    renderCoverageSummary(),
+    renderLibsExportedModules()
+  ]);
+  md = md.replace("<!-- REPO_NAME -->", repoName);
+  md = md.replace("<!-- REPO_DESCRIPTION -->", repoDescription);
+  md = md.replace("<!-- LINES_OF_CODE_TABLE -->", linesOfCodeTable);
+  md = md.replace("<!-- LIBS_COVERAGE_SUMMARY_TABLE -->", coverageSummary);
+  md = md.replace("<!-- LIBRARY_EXPORTED_MODULES -->", libsExportedModules);
+  const toc = await renderTOC(md);
+  md = md.replace("<!-- TOC_TABLE -->", toc);
+  const descriptions = await getNpmPkgDescriptions([
+    ["<!-- ES_TOOLKIT_INFO -->", "es-toolkit"],
+    ["<!-- ITER_TOOLS_INFO -->", "iter-tools"],
+    ["<!-- TYPE_FEST_INFO -->", "type-fest"],
+    ["<!-- UPATH_INFO -->", "upath"],
+    ["<!-- FS_EXTRA_INFO -->", "fs-extra"],
+    ["<!-- ANSI_COLORS_INFO -->", "ansi-colors"]
+  ]);
+  descriptions.forEach(({ placeholder, description }) => {
+    md = md.replace(placeholder, description);
+  });
+  return md;
+}
+__name(renderReadme, "renderReadme");
+async function renderTOC(readmeMarkdown) {
+  return readmeMarkdown.replace(/\n```\w+\n[^`]+\n```\n/gs, "\n").split("\n").filter((line) => {
+    return /^#+ /.test(line);
+  }).map((line) => {
+    const level = line.match(/^#+/)[0].length;
+    const indent = "  ".repeat(level - 1);
+    const title = line.replace(/^#+ /, "").trim();
+    const id = line.replace(/^#+ /, "").toLowerCase().replace(/ /g, "-").replace(/[^a-z-0-9]/gi, "");
+    return `${indent}- [${title}](#${id})`;
+  }).join("\n");
+}
+__name(renderTOC, "renderTOC");
+async function renderLibsExportedModules() {
+  const { validSummaries } = await parseLibsTsDocSummaries();
+  const libsModulesMap = await importLibs();
+  const librarySummaries = /* @__PURE__ */ new Map();
+  for (const { filepath, summary } of validSummaries) {
+    try {
+      const regex = /^libs\/([^/]+)\/src\/(.+)\.ts$/;
+      const match2 = filepath.match(regex);
+      if (!match2) {
+        continue;
+      }
+      const [libName, fileName] = match2.slice(1);
+      if (libName === "module.exports") {
+        continue;
+      }
+      if (!librarySummaries.has(libName)) {
+        librarySummaries.set(libName, []);
+      }
+      librarySummaries.get(libName).push({
+        fileName,
+        functionName: import_upath10.default.basename(fileName),
+        summary: summary || "No description available"
+      });
+    } catch {
+      continue;
+    }
+  }
+  const sortedLibNames = Array.from(librarySummaries.keys()).sort();
+  const libExports = [];
+  for (const libName of sortedLibNames) {
+    const libModule = libsModulesMap.get(libName);
+    if (!libModule) {
+      continue;
+    }
+    const namedExports = Object.keys(libModule).filter((name) => {
+      return name !== "default";
+    }).sort();
+    if (namedExports.length === 0) {
+      continue;
+    }
+    libExports.push(`**${libName}**`);
+    const summaries = librarySummaries.get(libName) || [];
+    const summaryMap = new Map(
+      summaries.map((s) => {
+        return [s.functionName, s.summary];
+      })
+    );
+    for (const exportName of namedExports) {
+      const summary = summaryMap.get(exportName) || "?";
+      libExports.push(`- \`${exportName}\`: ${summary}`);
+    }
+    libExports.push("");
+  }
+  return libExports.join("\n");
+}
+__name(renderLibsExportedModules, "renderLibsExportedModules");
+async function getNpmPkgDescription(name) {
+  return new Promise((resolve, reject) => {
+    import_node_child_process2.default.exec(`npm view ${name} description`, (error, stdout) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(stdout.toString().split("\n")[0].trim());
+    });
+  });
+}
+__name(getNpmPkgDescription, "getNpmPkgDescription");
+async function getRepoDescription() {
+  return (await getRepoPackageJson()).description;
+}
+__name(getRepoDescription, "getRepoDescription");
+async function getRepoName() {
+  return (await getRepoPackageJson()).name;
+}
+__name(getRepoName, "getRepoName");
+async function renderCoverageSummary() {
+  const coverageJsonPath = ".coverage/html/coverage-summary.json";
+  const coverageData = await import_fs_extra8.default.readJson(coverageJsonPath);
+  const { total } = coverageData;
+  return arrayTableToMarkdown([
+    ["Metric", "Total", "Covered", "Percentage"],
+    ["Lines", total.lines.total, total.lines.covered, `${total.lines.pct}%`].map(String),
+    ["Functions", total.functions.total, total.functions.covered, `${total.functions.pct}%`].map(String),
+    ["Branches", total.branches.total, total.branches.covered, `${total.branches.pct}%`].map(String)
+  ]);
+}
+__name(renderCoverageSummary, "renderCoverageSummary");
+async function getNpmPkgDescriptions(placeholders) {
+  return await Promise.all(
+    placeholders.map(async ([placeholder, name]) => {
+      return {
+        placeholder,
+        name,
+        description: await getNpmPkgDescription(name)
+      };
+    })
+  );
+}
+__name(getNpmPkgDescriptions, "getNpmPkgDescriptions");
+async function renderLinesOfCodeTable() {
+  const counts = await getLinesOfCode();
+  return arrayTableToMarkdown([
+    ["file type", "files", "lines of code"],
+    ...Object.entries(counts).map(([k, v]) => {
+      return [k, String(v.files), String(v.lines)];
+    })
+  ]);
+}
+__name(renderLinesOfCodeTable, "renderLinesOfCodeTable");
+
+// src/commands/build_readme.ts
+async function buildReadmeAction(_opts, { logger: log }) {
+  await import_fs_extra9.default.writeFile("README.md", await renderReadme(), "utf8");
+  log.info("Writing to file:", "./README.md");
+  import_node_child_process3.default.execSync("yarn format:write", { stdio: "inherit" });
+}
+__name(buildReadmeAction, "buildReadmeAction");
+
+// src/commands/clear_node_modules.ts
+var import_node_child_process4 = require("node:child_process");
+var import_node_fs = __toESM(require("node:fs"), 1);
+var import_upath11 = __toESM(require_upath(), 1);
+async function clearNodeModulesAction(_opts, { logger: log }) {
+  const root2 = getRepoRootDirpath();
+  const paths = (await glob([
+    "{apps,libs,packages}/*/{node_modules,package-lock.json}",
+    "yarn.lock",
+    "package-lock.json",
+    "node_modules"
+  ])).map((dp) => {
+    return import_upath11.default.normalize(dp);
+  }).sort();
+  log.info("Deleting:");
+  paths.forEach((p, i) => {
+    return log.info("", i, p);
+  });
+  for (const p of paths.filter((p2) => {
+    return import_node_fs.default.existsSync(p2);
+  })) {
+    import_node_fs.default.rmSync(p, { recursive: true, force: true });
+  }
+  log.info("Clearing yarn cache...");
+  (0, import_node_child_process4.execSync)("yarn cache clear", {
+    stdio: "inherit",
+    cwd: root2
+  });
+}
+__name(clearNodeModulesAction, "clearNodeModulesAction");
+
+// ../../libs/config/src/strategies/JsonFileStrategy.ts
+var import_fs_extra10 = __toESM(require_lib2(), 1);
+var JsonFileStrategy = class {
+  constructor(filepath) {
+    this.filepath = filepath;
+  }
+  static {
+    __name(this, "JsonFileStrategy");
+  }
+  load() {
+    try {
+      return import_fs_extra10.default.readJsonSync(this.filepath);
+    } catch (_) {
+      return void 0;
+    }
+  }
+  save(config) {
+    import_fs_extra10.default.outputFileSync(this.filepath, `${JSON.stringify(config, null, 2)}
+`);
+  }
+};
 
 // ../../node_modules/@sinclair/typebox/build/esm/errors/function.mjs
 function DefaultErrorFunction(error) {
@@ -241134,6 +248647,70 @@ function assertValidSchema(schema, data, message) {
 }
 __name(assertValidSchema, "assertValidSchema");
 
+// ../../libs/config/src/strategies/SchemaConfigStrategy.ts
+var SchemaConfigStrategy = class {
+  constructor(schema) {
+    this.schema = schema;
+  }
+  static {
+    __name(this, "SchemaConfigStrategy");
+  }
+  isValid(config) {
+    return value_exports2.Check(this.schema, config);
+  }
+  assertValid(config) {
+    assertValidSchema(this.schema, config, "Invalid config.");
+  }
+  applyDefaults(config = {}) {
+    const merged = value_exports2.Default(this.schema, config);
+    this.assertValid(merged);
+    return merged;
+  }
+};
+
+// ../../libs/config/src/core/ConfigFile.ts
+var ConfigFile = class _ConfigFile {
+  static {
+    __name(this, "ConfigFile");
+  }
+  static instances = /* @__PURE__ */ new Map();
+  data;
+  validation;
+  filepath;
+  schema;
+  constructor(schema, filepath) {
+    if (_ConfigFile.instances.has(filepath)) {
+      return _ConfigFile.instances.get(filepath);
+    } else {
+      _ConfigFile.instances.set(filepath, this);
+    }
+    this.schema = schema;
+    this.filepath = filepath;
+    this.data = new JsonFileStrategy(filepath);
+    this.validation = new SchemaConfigStrategy(schema);
+  }
+  load() {
+    const config = this.data.load();
+    const merged = this.validation.applyDefaults(config);
+    this.data.save(merged);
+    return merged;
+  }
+  update(cb2) {
+    const merged = this.validation.applyDefaults(cb2(this.load()));
+    this.data.save(merged);
+    return merged;
+  }
+};
+
+// src/core/constants/paths.ts
+var import_upath12 = __toESM(require_upath(), 1);
+var repoRootPath = getRepoRootDirpath();
+var repoRootPackageJsonBasename = "package.json";
+var tsconfigBaseJsonBasename = "tsconfig.json";
+var tsconfigBasePathsJsonBasename = "tsconfig.paths.json";
+var repoRootPackageJsonPath = import_upath12.default.join(repoRootPath, repoRootPackageJsonBasename);
+var tsconfigBasePathsJsonPath = import_upath12.default.join(repoRootPath, tsconfigBasePathsJsonBasename);
+
 // ../../libs/template/src/Template/Template.ts
 var Template = class {
   static {
@@ -241304,36 +248881,8 @@ var commands = {
   openFileInIDE
 };
 
-// src/lib/getRepoRootDirpath.ts
-var import_upath2 = __toESM(require_upath(), 1);
-var import_meta = {};
-var _cached;
-function getRepoRootDirpath() {
-  if (_cached) return _cached;
-  const raw = typeof import_meta !== "undefined" && import_meta.dirname || typeof __dirname !== "undefined" && __dirname || process.cwd();
-  const path6 = import_upath2.default.normalizeSafe(raw);
-  const parts = path6.split("/");
-  const repoRootIndex = parts.findLastIndex((part) => part === "mono");
-  if (repoRootIndex === -1) {
-    _cached = import_upath2.default.normalizeSafe(process.cwd());
-    return _cached;
-  }
-  _cached = parts.slice(0, repoRootIndex + 1).join("/");
-  return _cached;
-}
-__name(getRepoRootDirpath, "getRepoRootDirpath");
-
-// src/core/constants/paths.ts
-var import_upath3 = __toESM(require_upath(), 1);
-var repoRootPath = getRepoRootDirpath();
-var repoRootPackageJsonBasename = "package.json";
-var tsconfigBaseJsonBasename = "tsconfig.json";
-var tsconfigBasePathsJsonBasename = "tsconfig.paths.json";
-var repoRootPackageJsonPath = import_upath3.default.join(repoRootPath, repoRootPackageJsonBasename);
-var tsconfigBasePathsJsonPath = import_upath3.default.join(repoRootPath, tsconfigBasePathsJsonBasename);
-
 // src/core/templates/lib/files.ts
-var import_fs_extra = __toESM(require_lib2(), 1);
+var import_fs_extra11 = __toESM(require_lib2(), 1);
 var eslintConfigJs = new Template({
   strategy: new TextFileTemplateStrategy(),
   template: [
@@ -241347,7 +248896,7 @@ var _repoRootPkg;
 function getRepoRootPkg() {
   if (!_repoRootPkg) {
     try {
-      _repoRootPkg = import_fs_extra.default.readJsonSync(repoRootPackageJsonPath);
+      _repoRootPkg = import_fs_extra11.default.readJsonSync(repoRootPackageJsonPath);
     } catch {
       _repoRootPkg = {};
     }
@@ -241394,7 +248943,7 @@ var readmeMd = new Template({
 });
 var tsconfigJson = new Template({
   strategy: new JsonFileTemplateStrategy(),
-  template: { extends: "../../" + tsconfigBaseJsonBasename }
+  template: { extends: `../../${tsconfigBaseJsonBasename}` }
 });
 var indexTs = new Template({ strategy: new TextFileTemplateStrategy(), template: [""] });
 var files = { eslintConfigJs, packageJson, esbuild, readmeMd, tsconfigJson, indexTs };
@@ -241405,83 +248954,8 @@ var templates = {
   files
 };
 
-// ../../libs/config/src/strategies/JsonFileStrategy.ts
-var import_fs_extra2 = __toESM(require_lib2(), 1);
-var JsonFileStrategy = class {
-  constructor(filepath) {
-    this.filepath = filepath;
-  }
-  static {
-    __name(this, "JsonFileStrategy");
-  }
-  load() {
-    try {
-      return import_fs_extra2.default.readJsonSync(this.filepath);
-    } catch (error) {
-      return void 0;
-    }
-  }
-  save(config) {
-    import_fs_extra2.default.outputFileSync(this.filepath, JSON.stringify(config, null, 2) + "\n");
-  }
-};
-
-// ../../libs/config/src/strategies/SchemaConfigStrategy.ts
-var SchemaConfigStrategy = class {
-  constructor(schema) {
-    this.schema = schema;
-  }
-  static {
-    __name(this, "SchemaConfigStrategy");
-  }
-  isValid(config) {
-    return value_exports2.Check(this.schema, config);
-  }
-  assertValid(config) {
-    assertValidSchema(this.schema, config, "Invalid config.");
-  }
-  applyDefaults(config = {}) {
-    const merged = value_exports2.Default(this.schema, config);
-    this.assertValid(merged);
-    return merged;
-  }
-};
-
-// ../../libs/config/src/core/ConfigFile.ts
-var ConfigFile = class _ConfigFile {
-  static {
-    __name(this, "ConfigFile");
-  }
-  static instances = /* @__PURE__ */ new Map();
-  data;
-  validation;
-  filepath;
-  schema;
-  constructor(schema, filepath) {
-    if (_ConfigFile.instances.has(filepath)) {
-      return _ConfigFile.instances.get(filepath);
-    } else {
-      _ConfigFile.instances.set(filepath, this);
-    }
-    this.schema = schema;
-    this.filepath = filepath;
-    this.data = new JsonFileStrategy(filepath);
-    this.validation = new SchemaConfigStrategy(schema);
-  }
-  load() {
-    const config = this.data.load();
-    const merged = this.validation.applyDefaults(config);
-    this.data.save(merged);
-    return merged;
-  }
-  update(cb2) {
-    const merged = this.validation.applyDefaults(cb2(this.load()));
-    this.data.save(merged);
-    return merged;
-  }
-};
-
 // src/core/config/config.ts
+var import_upath13 = __toESM(require_upath(), 1);
 var ConfigSchema = Type.Object(
   {
     templates: Type.Object(
@@ -241518,14 +248992,14 @@ var ConfigSchema = Type.Object(
     }
   }
 );
-var dataPath = import_upath4.default.join(repoRootPath, "devkit.config.json");
+var dataPath = import_upath13.default.join(repoRootPath, "devkit.config.json");
 var configFile = new ConfigFile(ConfigSchema, dataPath);
 
 // src/commands/config.ts
-var import_node_child_process = require("node:child_process");
-var import_upath5 = __toESM(require_upath(), 1);
+var import_node_child_process5 = require("node:child_process");
+var import_upath14 = __toESM(require_upath(), 1);
 function configAction() {
-  (0, import_node_child_process.execSync)(
+  (0, import_node_child_process5.execSync)(
     templates.commands.openFileInIDE.renderString({
       filepath: configFile.filepath
       //
@@ -241535,342 +249009,321 @@ function configAction() {
 __name(configAction, "configAction");
 function configFilepathHook({ cmd }) {
   console.log("config file:", configFile.filepath);
-  cmd.exit(0);
+  process.exitCode = 0;
 }
 __name(configFilepathHook, "configFilepathHook");
 function configDirpathHook({ cmd }) {
-  console.log("config dir:", import_upath5.default.dirname(configFile.filepath));
-  cmd.exit(0);
+  console.log("config dir:", import_upath14.default.dirname(configFile.filepath));
+  process.exitCode = 0;
 }
 __name(configDirpathHook, "configDirpathHook");
 
-// src/lib/buildLibsWorkspace.ts
-var import_upath10 = __toESM(require_upath(), 1);
-
-// src/lib/buildFile.ts
-var import_upath7 = __toESM(require_upath(), 1);
-var import_fs_extra3 = __toESM(require_lib2(), 1);
-var import_node_child_process2 = __toESM(require("node:child_process"), 1);
-
-// src/lib/relativeImportPath.ts
-var import_upath6 = __toESM(require_upath(), 1);
-function relativeImportPath(path6, filepathToImport) {
-  path6 = import_upath6.default.resolve(path6);
-  path6 = import_upath6.default.basename(path6).includes(".") ? import_upath6.default.dirname(path6) : path6;
-  filepathToImport = import_upath6.default.resolve(filepathToImport).replace(/([/]?index)?[.]m?tsx?$/i, "");
-  const relative = import_upath6.default.relative(path6, filepathToImport);
-  return relative.startsWith(".") ? relative : `./${relative}`;
-}
-__name(relativeImportPath, "relativeImportPath");
-
-// src/lib/buildFile.ts
-var import_meta2 = {};
-var cwd = process.cwd();
-async function buildFile(filepath, outfile, tsconfig, optionsOverride = {}) {
-  const parsed = import_upath7.default.parse(outfile);
-  const outfileTemp = import_upath7.default.joinSafe(parsed.dir, parsed.name + "-temp" + import_upath7.default.extname(outfile));
-  const esbuild2 = await import("esbuild");
-  const result = await esbuild2.build({
-    entryPoints: [filepath],
-    bundle: true,
-    outfile: outfileTemp,
-    tsconfig,
-    platform: "node",
-    format: "cjs",
-    target: ["node20", "es2022"],
-    minify: false,
-    minifyWhitespace: false,
-    minifySyntax: false,
-    minifyIdentifiers: false,
-    keepNames: true,
-    mainFields: ["module", "main"],
-    external: ["esbuild", "type-fest"],
-    sourcemap: true,
-    treeShaking: true,
-    ...optionsOverride
-  });
-  process.chdir(getRepoRootDirpath());
-  if (import_upath7.default.basename(filepath) !== "main.ts") {
-    const currentFile = typeof import_meta2 !== "undefined" && import_meta2.filename || typeof __filename !== "undefined" && __filename || "";
-    const importPath = relativeImportPath(currentFile, outfileTemp);
-    const loadedBuiltModule = await import(importPath);
-    Object.entries(loadedBuiltModule);
-  } else {
-    const stdout = import_node_child_process2.default.execSync("node " + outfileTemp + " --help").toString();
-    if (typeof stdout !== "string" || !stdout) {
-      console.error("Build did not produce a valid module: " + outfileTemp);
-      process.exit(1);
+// src/lib/cliExec.ts
+var import_node_child_process6 = require("node:child_process");
+function cliExecSync(command, options = {}) {
+  if (options.dryRun) {
+    if (!options.quiet) {
+      console.log(`dryRun. Command skipped: ${command}`);
     }
+    return;
   }
-  process.chdir(cwd);
-  await import_fs_extra3.default.remove(outfile);
-  await import_fs_extra3.default.rename(outfileTemp, outfile);
-  await import_fs_extra3.default.remove(outfile + ".map");
-  await import_fs_extra3.default.rename(outfileTemp + ".map", outfile + ".map");
-  return result;
+  (0, import_node_child_process6.execSync)(command, {
+    stdio: options.quiet ? "ignore" : "inherit",
+    cwd: options.cwd ?? process.cwd()
+  });
 }
-__name(buildFile, "buildFile");
+__name(cliExecSync, "cliExecSync");
 
-// src/lib/buildStats.ts
-var import_fs_extra4 = __toESM(require_lib2(), 1);
-async function buildStats(outfile) {
-  const code = await import_fs_extra4.default.readFile(outfile, "utf8");
-  const lines = code.split("\n").length;
-  const stats = await import_fs_extra4.default.stat(outfile);
-  const sizeKB = Math.floor(stats.size / 1024);
-  return { lines, sizeKB };
+// src/commands/create_workspace.ts
+var import_fs_extra12 = __toESM(require_lib2(), 1);
+var import_upath15 = __toESM(require_upath(), 1);
+function createLibsWorkspaceAction(workspaceName, options = {}) {
+  const CWD = import_upath15.default.normalize(process.cwd());
+  const rootPath = import_upath15.default.join(CWD, "libs", workspaceName);
+  const srcPath = import_upath15.default.join(rootPath, "src");
+  const eslintConfigJsPath = import_upath15.default.join(rootPath, "eslint.config.mjs");
+  const packageJsonPath = import_upath15.default.join(rootPath, "package.json");
+  const esbuildMjsPath = import_upath15.default.join(rootPath, "esbuild.mjs");
+  const readmeMdPath = import_upath15.default.join(rootPath, "README.md");
+  const tsconfigJsonPath = import_upath15.default.join(rootPath, "tsconfig.json");
+  const indexTsPath = import_upath15.default.join(srcPath, "index.ts");
+  const repoRootPackageJson = import_fs_extra12.default.readJsonSync(repoRootPackageJsonPath);
+  const repoScope = repoRootPackageJson.name;
+  const scopedLibraryName = `@${repoScope}/${workspaceName}`;
+  const tsconfigBasePathsJson = import_fs_extra12.default.readJsonSync(tsconfigBasePathsJsonPath);
+  tsconfigBasePathsJson.compilerOptions.paths[scopedLibraryName] = [`./libs/${workspaceName}/src/index.ts`];
+  import_fs_extra12.default.outputJsonSync(tsconfigBasePathsJsonPath, tsconfigBasePathsJson, { spaces: 2 });
+  import_fs_extra12.default.mkdirSync(srcPath, { recursive: true });
+  import_fs_extra12.default.outputFileSync(
+    eslintConfigJsPath,
+    //
+    templates.files.eslintConfigJs.renderString()
+  );
+  import_fs_extra12.default.outputFileSync(
+    packageJsonPath,
+    //
+    templates.files.packageJson.renderString({ libraryName: scopedLibraryName })
+  );
+  import_fs_extra12.default.outputFileSync(
+    esbuildMjsPath,
+    //
+    templates.files.esbuild.renderString({})
+  );
+  import_fs_extra12.default.outputFileSync(
+    readmeMdPath,
+    //
+    templates.files.readmeMd.renderString({ libraryName: scopedLibraryName })
+  );
+  import_fs_extra12.default.outputFileSync(
+    tsconfigJsonPath,
+    //
+    templates.files.tsconfigJson.renderString()
+  );
+  import_fs_extra12.default.outputFileSync(
+    indexTsPath,
+    //
+    templates.files.indexTs.renderString()
+  );
+  cliExecSync(`yarn install`, { ...options, cwd: rootPath });
+  cliExecSync(`yarn install`, { ...options, cwd: CWD });
 }
-__name(buildStats, "buildStats");
+__name(createLibsWorkspaceAction, "createLibsWorkspaceAction");
 
-// src/lib/getWsPaths.ts
-var import_upath8 = __toESM(require_upath(), 1);
-function getWsPaths(importMetaDirname) {
-  importMetaDirname = import_upath8.default.normalizeSafe(importMetaDirname);
-  const wsDirname = import_upath8.default.basename(importMetaDirname);
-  const tsconfig = import_upath8.default.joinSafe(importMetaDirname, "tsconfig.json");
-  const pkg = import_upath8.default.joinSafe(importMetaDirname, "package.json");
-  const srcDir = import_upath8.default.joinSafe(importMetaDirname, "src");
-  const repoRootDir = getRepoRootDirpath();
-  const distDir = import_upath8.default.joinSafe(repoRootDir, ".dist", "libs");
-  const indexTs2 = import_upath8.default.joinSafe(srcDir, "index.ts");
-  const indexCjs = import_upath8.default.joinSafe(distDir, wsDirname + ".cjs");
-  const indexMjs = import_upath8.default.joinSafe(distDir, wsDirname + ".mjs");
-  const toRelative = /* @__PURE__ */ __name((path6) => import_upath8.default.relative(repoRootDir, path6), "toRelative");
+// src/core/description.ts
+var description_default = `Development utilities for the monorepo.`;
+
+// ../../libs/stacktrace/src/prettyStackTrace.ts
+var import_ansi_colors7 = __toESM(require_ansi_colors(), 1);
+var import_node_util6 = require("node:util");
+
+// ../../node_modules/stacktrace-parser/dist/stack-trace-parser.esm.js
+var UNKNOWN_FUNCTION = "<unknown>";
+function parse(stackString) {
+  var lines = stackString.split("\n");
+  return lines.reduce(function(stack, line) {
+    var parseResult = parseChrome(line) || parseWinjs(line) || parseGecko(line) || parseNode(line) || parseJSC(line);
+    if (parseResult) {
+      stack.push(parseResult);
+    }
+    return stack;
+  }, []);
+}
+__name(parse, "parse");
+var chromeRe = /^\s*at (.*?) ?\(((?:file|https?|blob|chrome-extension|native|eval|webpack|rsc|<anonymous>|\/|[a-z]:\\|\\\\).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i;
+var chromeEvalRe = /\((\S*)(?::(\d+))(?::(\d+))\)/;
+function parseChrome(line) {
+  var parts = chromeRe.exec(line);
+  if (!parts) {
+    return null;
+  }
+  var isNative = parts[2] && parts[2].indexOf("native") === 0;
+  var isEval = parts[2] && parts[2].indexOf("eval") === 0;
+  var submatch = chromeEvalRe.exec(parts[2]);
+  if (isEval && submatch != null) {
+    parts[2] = submatch[1];
+    parts[3] = submatch[2];
+    parts[4] = submatch[3];
+  }
   return {
-    wsDir: importMetaDirname,
-    wsDirname,
-    distDir,
-    tsconfig,
-    pkg,
-    srcDir,
-    indexTs: indexTs2,
-    indexCjs,
-    indexMjs,
-    toRelative
+    file: !isNative ? parts[2] : null,
+    methodName: parts[1] || UNKNOWN_FUNCTION,
+    arguments: isNative ? [parts[2]] : [],
+    lineNumber: parts[3] ? +parts[3] : null,
+    column: parts[4] ? +parts[4] : null
   };
 }
-__name(getWsPaths, "getWsPaths");
-
-// src/lib/getRepoPackageJson.ts
-var import_fs_extra5 = __toESM(require_lib2(), 1);
-var import_upath9 = __toESM(require_upath(), 1);
-async function getRepoPackageJson() {
-  return await import_fs_extra5.default.readJson(getRepoPackageJsonPath());
+__name(parseChrome, "parseChrome");
+var winjsRe = /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:file|ms-appx|https?|webpack|rsc|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i;
+function parseWinjs(line) {
+  var parts = winjsRe.exec(line);
+  if (!parts) {
+    return null;
+  }
+  return {
+    file: parts[2],
+    methodName: parts[1] || UNKNOWN_FUNCTION,
+    arguments: [],
+    lineNumber: +parts[3],
+    column: parts[4] ? +parts[4] : null
+  };
 }
-__name(getRepoPackageJson, "getRepoPackageJson");
-function getRepoPackageJsonPath() {
-  return import_upath9.default.joinSafe(getRepoRootDirpath(), "package.json");
+__name(parseWinjs, "parseWinjs");
+var geckoRe = /^\s*(.*?)(?:\((.*?)\))?(?:^|@)((?:file|https?|blob|chrome|webpack|rsc|resource|\[native).*?|[^@]*bundle)(?::(\d+))?(?::(\d+))?\s*$/i;
+var geckoEvalRe = /(\S+) line (\d+)(?: > eval line \d+)* > eval/i;
+function parseGecko(line) {
+  var parts = geckoRe.exec(line);
+  if (!parts) {
+    return null;
+  }
+  var isEval = parts[3] && parts[3].indexOf(" > eval") > -1;
+  var submatch = geckoEvalRe.exec(parts[3]);
+  if (isEval && submatch != null) {
+    parts[3] = submatch[1];
+    parts[4] = submatch[2];
+    parts[5] = null;
+  }
+  return {
+    file: parts[3],
+    methodName: parts[1] || UNKNOWN_FUNCTION,
+    arguments: parts[2] ? parts[2].split(",") : [],
+    lineNumber: parts[4] ? +parts[4] : null,
+    column: parts[5] ? +parts[5] : null
+  };
 }
-__name(getRepoPackageJsonPath, "getRepoPackageJsonPath");
+__name(parseGecko, "parseGecko");
+var javaScriptCoreRe = /^\s*(?:([^@]*)(?:\((.*?)\))?@)?(\S.*?):(\d+)(?::(\d+))?\s*$/i;
+function parseJSC(line) {
+  var parts = javaScriptCoreRe.exec(line);
+  if (!parts) {
+    return null;
+  }
+  return {
+    file: parts[3],
+    methodName: parts[1] || UNKNOWN_FUNCTION,
+    arguments: [],
+    lineNumber: +parts[4],
+    column: parts[5] ? +parts[5] : null
+  };
+}
+__name(parseJSC, "parseJSC");
+var nodeRe = /^\s*at (?:((?:\[object object\])?[^\\/]+(?: \[as \S+\])?) )?\(?(.*?):(\d+)(?::(\d+))?\)?\s*$/i;
+function parseNode(line) {
+  var parts = nodeRe.exec(line);
+  if (!parts) {
+    return null;
+  }
+  return {
+    file: parts[2],
+    methodName: parts[1] || UNKNOWN_FUNCTION,
+    arguments: [],
+    lineNumber: +parts[3],
+    column: parts[4] ? +parts[4] : null
+  };
+}
+__name(parseNode, "parseNode");
 
-// src/lib/buildLibsWorkspace.ts
-async function buildLibsWorkspace(importMetaDirname, options = {}) {
-  const { debug, ...optionsOverride } = options;
-  importMetaDirname = import_upath10.default.normalizeSafe(importMetaDirname);
-  const wsPaths = getWsPaths(importMetaDirname);
-  const repoPkg = await getRepoPackageJson();
-  const external = /* @__PURE__ */ new Set([
-    ...Object.keys(repoPkg.dependencies || {}),
-    ...Object.keys(repoPkg.devDependencies || {})
-  ]);
-  external.delete("onetime");
-  await buildFile(
-    wsPaths.indexTs,
-    optionsOverride.format === "esm" ? wsPaths.indexMjs : wsPaths.indexCjs,
-    wsPaths.tsconfig,
-    {
-      external: Array.from(external),
-      ...optionsOverride
+// ../../libs/stacktrace/src/prettyStackTrace.ts
+var import_upath16 = __toESM(require_upath(), 1);
+function prettyStackTrace(error, options = {}) {
+  return [renderMessage(error), renderProps(error, options), renderStack(error, options), ""].join("\n");
+}
+__name(prettyStackTrace, "prettyStackTrace");
+function renderMessage(error) {
+  return import_ansi_colors7.default.red(`${error.name}: ${error.message}`);
+}
+__name(renderMessage, "renderMessage");
+function renderStack(error, options) {
+  if (!error.stack || options.omitStack) {
+    return "";
+  }
+  const frames = parse(error.stack);
+  const offset = frames.reduce((acc, frame) => {
+    return Math.max(acc, frame.methodName.length);
+  }, 0);
+  const stack = frames.map((frame) => {
+    if (frame.file) {
+      frame.file = import_upath16.default.relative(process.cwd(), frame.file.replace(/^file:[\\/]+/, ""));
     }
-  );
-  if (debug || process.argv.includes("--debug")) {
-    console.debug({
-      workspace: wsPaths.toRelative(importMetaDirname),
-      tsconfig: wsPaths.toRelative(wsPaths.tsconfig),
-      infile: wsPaths.toRelative(wsPaths.indexTs),
-      outfile: wsPaths.toRelative(wsPaths.indexCjs),
-      stats: await buildStats(wsPaths.indexCjs)
-    });
-  }
-}
-__name(buildLibsWorkspace, "buildLibsWorkspace");
-
-// src/commands/build_libs.ts
-var import_upath11 = __toESM(require_upath(), 1);
-var import_fs_extra6 = __toESM(require_lib2(), 1);
-async function buildLibsAction(dirnames, opts, { logger: log }) {
-  if (dirnames.length === 0) {
-    dirnames = await import_fs_extra6.default.readdir(import_upath11.default.join(getRepoRootDirpath(), "libs"));
-  }
-  for (const dirname of dirnames) {
-    if (!await import_fs_extra6.default.pathExists(import_upath11.default.join(getRepoRootDirpath(), "libs", dirname))) {
-      throw new Error(`Directory does not exist: libs/${dirname}`);
-    }
-  }
-  const failed = [];
-  for (const dirname of dirnames) {
-    const wsDir = import_upath11.default.join(getRepoRootDirpath(), "libs", dirname);
-    log.info(`Building ${dirname}...`);
-    try {
-      await buildLibsWorkspace(wsDir, { debug: opts.debug });
-    } catch (error) {
-      log.error(error);
-      failed.push(dirname);
-    }
-  }
-  if (failed.length) {
-    log.error(`Failed to build the following workspaces: ${failed.join(", ")}`);
-    process.exit(1);
-  }
-}
-__name(buildLibsAction, "buildLibsAction");
-
-// src/commands/fix_workspace_imports.ts
-var import_fs_extra9 = __toESM(require_lib2(), 1);
-var import_ansi_colors8 = __toESM(require_ansi_colors(), 1);
-
-// src/lib/confirmPrompt.ts
-var import_node_readline = __toESM(require("node:readline"), 1);
-async function confirmPrompt(message) {
-  const rl = import_node_readline.default.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  return new Promise((resolve) => {
-    rl.question(`${message} (y/n): `, (answer) => {
-      rl.close();
-      resolve(answer.toLowerCase() === "y");
-    });
-  });
-}
-__name(confirmPrompt, "confirmPrompt");
-
-// ../../libs/monorepo/src/MonoRepo.ts
-var import_node_fs2 = __toESM(require("node:fs"), 1);
-
-// ../../node_modules/fs-extra/lib/esm.mjs
-var import_copy = __toESM(require_copy2(), 1);
-var import_empty = __toESM(require_empty(), 1);
-var import_ensure = __toESM(require_ensure(), 1);
-var import_json = __toESM(require_json(), 1);
-var import_mkdirs = __toESM(require_mkdirs(), 1);
-var import_move = __toESM(require_move2(), 1);
-var import_output_file = __toESM(require_output_file(), 1);
-var import_path_exists = __toESM(require_path_exists(), 1);
-var import_remove = __toESM(require_remove(), 1);
-var copy = import_copy.default.copy;
-var copySync = import_copy.default.copySync;
-var emptyDirSync = import_empty.default.emptyDirSync;
-var emptydirSync = import_empty.default.emptydirSync;
-var emptyDir = import_empty.default.emptyDir;
-var emptydir = import_empty.default.emptydir;
-var createFile = import_ensure.default.createFile;
-var createFileSync = import_ensure.default.createFileSync;
-var ensureFile = import_ensure.default.ensureFile;
-var ensureFileSync = import_ensure.default.ensureFileSync;
-var createLink = import_ensure.default.createLink;
-var createLinkSync = import_ensure.default.createLinkSync;
-var ensureLink = import_ensure.default.ensureLink;
-var ensureLinkSync = import_ensure.default.ensureLinkSync;
-var createSymlink = import_ensure.default.createSymlink;
-var createSymlinkSync = import_ensure.default.createSymlinkSync;
-var ensureSymlink = import_ensure.default.ensureSymlink;
-var ensureSymlinkSync = import_ensure.default.ensureSymlinkSync;
-var readJson = import_json.default.readJson;
-var readJSON = import_json.default.readJSON;
-var readJsonSync = import_json.default.readJsonSync;
-var readJSONSync = import_json.default.readJSONSync;
-var writeJson = import_json.default.writeJson;
-var writeJSON = import_json.default.writeJSON;
-var writeJsonSync = import_json.default.writeJsonSync;
-var writeJSONSync = import_json.default.writeJSONSync;
-var outputJson = import_json.default.outputJson;
-var outputJSON = import_json.default.outputJSON;
-var outputJsonSync = import_json.default.outputJsonSync;
-var outputJSONSync = import_json.default.outputJSONSync;
-var mkdirs = import_mkdirs.default.mkdirs;
-var mkdirsSync = import_mkdirs.default.mkdirsSync;
-var mkdirp = import_mkdirs.default.mkdirp;
-var mkdirpSync = import_mkdirs.default.mkdirpSync;
-var ensureDir = import_mkdirs.default.ensureDir;
-var ensureDirSync = import_mkdirs.default.ensureDirSync;
-var move = import_move.default.move;
-var moveSync = import_move.default.moveSync;
-var outputFile = import_output_file.default.outputFile;
-var outputFileSync = import_output_file.default.outputFileSync;
-var pathExists = import_path_exists.default.pathExists;
-var pathExistsSync = import_path_exists.default.pathExistsSync;
-var remove = import_remove.default.remove;
-var removeSync = import_remove.default.removeSync;
-var esm_default = {
-  ...import_copy.default,
-  ...import_empty.default,
-  ...import_ensure.default,
-  ...import_json.default,
-  ...import_mkdirs.default,
-  ...import_move.default,
-  ...import_output_file.default,
-  ...import_path_exists.default,
-  ...import_remove.default
-};
-
-// ../../libs/monorepo/src/MonoRepo.ts
-var import_upath24 = __toESM(require_upath(), 1);
-
-// ../../libs/monorepo/src/common/AbstractBase.ts
-var AbstractBase = class {
-  constructor(parent) {
-    this.parenting.onInstance(parent);
-  }
-  findParentDeep(predicate) {
-    for (const parent of this.parenting.iterateAncestors()) {
-      if (predicate(parent)) {
-        return parent;
+    const { methodName, file, lineNumber, column } = frame;
+    let s = "  ";
+    let fp = "";
+    if (file) {
+      const base = import_upath16.default.basename(file);
+      if (file.startsWith("node:")) {
+        s += import_ansi_colors7.default.gray(methodName);
+        fp = import_ansi_colors7.default.gray(file);
+      } else if (file.includes("node_modules")) {
+        s += methodName;
+        fp = file.replace(base, import_ansi_colors7.default.yellow(base));
+      } else {
+        s += methodName;
+        fp = file.replace(base, import_ansi_colors7.default.red(base));
       }
     }
-    return void 0;
+    s += " ".repeat(2 + offset - methodName.length);
+    s += `${fp}:${lineNumber}:${column}`;
+    return s;
+  });
+  return [
+    import_ansi_colors7.default.magenta("stack:"),
+    //
+    ...stack
+  ].join("\n");
+}
+__name(renderStack, "renderStack");
+function renderProps(error, options) {
+  if (options.omitProps) {
+    return "";
   }
-  get parent() {
-    return this.parenting.getParent();
+  const ignore = ["name", "message", "frames", "stack"];
+  const keys = Object.getOwnPropertyNames(error).filter((key) => {
+    return !ignore.includes(key);
+  });
+  if (!keys.length) {
+    return "";
   }
-  getParentDeep(instanceOf) {
-    const parent = this.findParentDeep((p) => p instanceof instanceOf);
-    if (!parent) throw new Error(`Parent of type ${instanceOf.name} not found.`);
-    return parent;
+  const data = {};
+  for (const [k, v] of Object.entries(error)) {
+    if (keys.includes(k)) {
+      data[k] = v;
+    }
   }
-};
-__name(AbstractBase, "AbstractBase");
-__publicField(AbstractBase, "inspector", Inspector.compose(AbstractBase, {
-  keys: [],
-  autoAddBooleanKeys: true,
-  ignoreKeys: [],
-  ignoreValues: {
-    noEmptyArray: true,
-    noEmptyObject: true,
-    noNull: true,
-    noUndefined: true,
-    noFalse: true
-  },
-  inspect: {
-    customInspect: true,
-    maxStringLength: 500,
-    maxArrayLength: 5,
-    breakLength: 80,
-    colors: true,
-    depth: null,
-    compact: false,
-    numericSeparator: true
-  },
-  filters: []
-}));
-AbstractBase = __decorateClass([
-  Parenting.compose
-], AbstractBase);
+  return (0, import_node_util6.inspect)(data, { colors: true });
+}
+__name(renderProps, "renderProps");
 
-// ../../libs/monorepo/src/repo/Workspace.ts
-var import_node_child_process3 = require("node:child_process");
-var import_node_util6 = require("node:util");
-var import_upath23 = __toESM(require_upath(), 1);
+// ../../libs/stacktrace/src/enablePrettyStackTrace.ts
+function enablePrettyStackTrace() {
+  process.prependOnceListener("uncaughtException", (e) => {
+    console.error(prettyStackTrace(e));
+  });
+}
+__name(enablePrettyStackTrace, "enablePrettyStackTrace");
+
+// src/commands/fix_dash_chars.ts
+var import_fs_extra13 = __toESM(require_lib2(), 1);
+async function fixDashCharsAction(_opts, { logger: log }) {
+  const filepaths = await glob("**/*", {
+    ignore: "**/{.dist,.coverage,.yarn,node_modules}/**/*",
+    nodir: true,
+    follow: false
+  });
+  const regex = new RegExp(String.fromCharCode(8212), "g");
+  const promises = filepaths.map(async (filepath) => {
+    const src = await import_fs_extra13.default.readFile(filepath, "utf-8");
+    const res = src.replace(regex, "-");
+    if (src !== res) {
+      await import_fs_extra13.default.writeFile(filepath, res, "utf-8");
+      log.info(`Replaced bad dash char in ${filepath}`);
+    }
+  });
+  await Promise.all(promises);
+}
+__name(fixDashCharsAction, "fixDashCharsAction");
+
+// src/commands/fix_empty_files.ts
+var import_fs_extra14 = __toESM(require_lib2(), 1);
+
+// src/lib/getEmptyWsFiles.ts
+var import_upath17 = __toESM(require_upath(), 1);
+async function getEmptyWsFiles() {
+  return (await glob("{libs,apps}/**/*", { withFileTypes: true, stat: true })).filter((d) => {
+    return d.isFile() && d.size === 0;
+  }).map((d) => {
+    return import_upath17.default.relative(process.cwd(), import_upath17.default.joinSafe(d.parentPath, d.name));
+  });
+}
+__name(getEmptyWsFiles, "getEmptyWsFiles");
+
+// src/commands/fix_empty_files.ts
+async function fixEmptyFilesAction(_opts, { logger: log }) {
+  const empty = await getEmptyWsFiles();
+  for (const file of empty) {
+    log.info("Deleting empty file:", file);
+    await import_fs_extra14.default.remove(file);
+  }
+}
+__name(fixEmptyFilesAction, "fixEmptyFilesAction");
 
 // ../../node_modules/es-toolkit/dist/promise/semaphore.mjs
 var Semaphore = class {
@@ -241934,17 +249387,20 @@ function union(arr1, arr2) {
 }
 __name(union, "union");
 
-// ../../libs/monorepo/src/file/File.ts
-var import_node_fs = __toESM(require("node:fs"), 1);
+// src/commands/fix_index_ts.ts
+var import_fs_extra16 = __toESM(require_lib2(), 1);
+
+// src/lib/outputFileIfChanged.ts
+var import_fs_extra15 = __toESM(require_lib2(), 1);
 
 // ../../libs/path/src/lib/cwd.ts
 var cwd_exports = {};
 __export(cwd_exports, {
   cwd: () => cwd2
 });
-var import_upath12 = __toESM(require_upath(), 1);
+var import_upath18 = __toESM(require_upath(), 1);
 function cwd2(...p) {
-  return import_upath12.default.joinSafe(process.cwd(), ...p);
+  return import_upath18.default.joinSafe(process.cwd(), ...p);
 }
 __name(cwd2, "cwd");
 
@@ -241953,9 +249409,9 @@ var dirnameDeep_exports = {};
 __export(dirnameDeep_exports, {
   dirnameDeep: () => dirnameDeep
 });
-var import_upath13 = __toESM(require_upath(), 1);
+var import_upath19 = __toESM(require_upath(), 1);
 function dirnameDeep(p, depth) {
-  const parent = import_upath13.default.dirname(p);
+  const parent = import_upath19.default.dirname(p);
   return depth && depth > 1 ? dirnameDeep(parent, depth - 1) : parent;
 }
 __name(dirnameDeep, "dirnameDeep");
@@ -241965,9 +249421,9 @@ var hasBasename_exports = {};
 __export(hasBasename_exports, {
   hasBasename: () => hasBasename
 });
-var import_upath14 = __toESM(require_upath(), 1);
+var import_upath20 = __toESM(require_upath(), 1);
 function hasBasename(tsFilepath, basenames) {
-  return [basenames].flat(2).includes(import_upath14.default.basename(tsFilepath));
+  return [basenames].flat(2).includes(import_upath20.default.basename(tsFilepath));
 }
 __name(hasBasename, "hasBasename");
 
@@ -241977,7 +249433,7 @@ __export(hasExtname_exports, {
   hasExtname: () => hasExtname
 });
 function hasExtname(tsFilepath, extnames) {
-  return new RegExp("[.](" + [extnames].flat(2).join("|") + ")$").test(tsFilepath);
+  return new RegExp(`[.](${[extnames].flat(2).join("|")})$`).test(tsFilepath);
 }
 __name(hasExtname, "hasExtname");
 hasExtname.js = bindArg(hasExtname, 1, ["js", "mjs", "jsx", "cjs"]);
@@ -241992,7 +249448,7 @@ __export(hasParentDirname_exports, {
   hasParentDirname: () => hasParentDirname
 });
 function hasParentDirname(fspath, name) {
-  return new RegExp("(^|[/\\\\])" + name + "[/\\\\]").test(fspath);
+  return new RegExp(`(^|[/\\\\])${name}[/\\\\]`).test(fspath);
 }
 __name(hasParentDirname, "hasParentDirname");
 
@@ -242021,9 +249477,9 @@ var isRelative_exports = {};
 __export(isRelative_exports, {
   isRelative: () => isRelative
 });
-var import_node_path = __toESM(require("node:path"), 1);
+var import_node_path2 = __toESM(require("node:path"), 1);
 function isRelative(p) {
-  return !import_node_path.default.isAbsolute(p);
+  return !import_node_path2.default.isAbsolute(p);
 }
 __name(isRelative, "isRelative");
 
@@ -242043,13 +249499,23 @@ __export(isValidWin32_exports, {
   isValidWin32: () => isValidWin32
 });
 function isValidWin32(path6, options) {
-  if (path6.length === 0) return false;
-  if (path6.indexOf("/") !== -1 && path6.indexOf("\\") !== -1) return false;
+  if (path6.length === 0) {
+    return false;
+  }
+  if (path6.indexOf("/") !== -1 && path6.indexOf("\\") !== -1) {
+    return false;
+  }
   const maxLength = (options && options.extendedMaxLength ? 32767 : 260) - 12;
-  if (path6.length > maxLength) return false;
+  if (path6.length > maxLength) {
+    return false;
+  }
   const noDriveLetter = /^\w:(\\|\/)/g.test(path6) ? path6.substring(2) : path6;
-  if (/[<>"|?*:]/g.test(noDriveLetter)) return false;
-  if (/(\\|\/)(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])((\\|\/)|$)/g.test(path6)) return false;
+  if (/[<>"|?*:]/g.test(noDriveLetter)) {
+    return false;
+  }
+  if (/(\\|\/)(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])((\\|\/)|$)/g.test(path6)) {
+    return false;
+  }
   return true;
 }
 __name(isValidWin32, "isValidWin32");
@@ -242059,11 +249525,11 @@ var prefixFilename_exports = {};
 __export(prefixFilename_exports, {
   prefixFilename: () => prefixFilename
 });
-var import_upath15 = __toESM(require_upath(), 1);
+var import_upath21 = __toESM(require_upath(), 1);
 function prefixFilename(filePath, prefix) {
-  const ext2 = import_upath15.default.extname(filePath);
-  const fileNameWithoutExt = import_upath15.default.basename(filePath, ext2);
-  return import_upath15.default.joinSafe(import_upath15.default.dirname(filePath), prefix + fileNameWithoutExt + ext2);
+  const ext2 = import_upath21.default.extname(filePath);
+  const fileNameWithoutExt = import_upath21.default.basename(filePath, ext2);
+  return import_upath21.default.joinSafe(import_upath21.default.dirname(filePath), prefix + fileNameWithoutExt + ext2);
 }
 __name(prefixFilename, "prefixFilename");
 
@@ -242072,9 +249538,9 @@ var root_exports = {};
 __export(root_exports, {
   root: () => root
 });
-var import_upath16 = __toESM(require_upath(), 1);
+var import_upath22 = __toESM(require_upath(), 1);
 function root(p) {
-  return import_upath16.default.parse(p).root;
+  return import_upath22.default.parse(p).root;
 }
 __name(root, "root");
 
@@ -242083,11 +249549,11 @@ var suffixFilename_exports = {};
 __export(suffixFilename_exports, {
   suffixFilename: () => suffixFilename
 });
-var import_upath17 = __toESM(require_upath(), 1);
+var import_upath23 = __toESM(require_upath(), 1);
 function suffixFilename(filePath, suffix) {
-  const split = import_upath17.default.basename(filePath).split(".");
+  const split = import_upath23.default.basename(filePath).split(".");
   split[0] += suffix;
-  return import_upath17.default.joinSafe(import_upath17.default.dirname(filePath), split.join("."));
+  return import_upath23.default.joinSafe(import_upath23.default.dirname(filePath), split.join("."));
 }
 __name(suffixFilename, "suffixFilename");
 
@@ -242096,9 +249562,9 @@ var toCwdRelative_exports = {};
 __export(toCwdRelative_exports, {
   toCwdRelative: () => toCwdRelative
 });
-var import_upath18 = __toESM(require_upath(), 1);
+var import_upath24 = __toESM(require_upath(), 1);
 function toCwdRelative(p) {
-  return import_upath18.default.relative(process.cwd(), p);
+  return import_upath24.default.relative(process.cwd(), p);
 }
 __name(toCwdRelative, "toCwdRelative");
 
@@ -242132,8 +249598,197 @@ var src_default = {
   ...toWin32_exports
 };
 
-// ../../libs/monorepo/src/file/File.ts
-var import_upath19 = __toESM(require_upath(), 1);
+// src/lib/outputFileIfChanged.ts
+async function outputFileIfChanged(filepath, content, logger) {
+  if (await import_fs_extra15.default.pathExists(filepath)) {
+    const cur = await import_fs_extra15.default.readFile(filepath, "utf8");
+    if (cur === content) {
+      return;
+    }
+  }
+  await import_fs_extra15.default.outputFile(filepath, content);
+  logger.log(toCwdRelative(filepath));
+  return filepath;
+}
+__name(outputFileIfChanged, "outputFileIfChanged");
+
+// src/commands/fix_index_ts.ts
+var import_upath25 = __toESM(require_upath(), 1);
+async function fixIndexTsAction(dirnames, opts, { logger }) {
+  const repoRoot = getRepoRootDirpath();
+  const libWorkspacePaths = (dirnames.length ? dirnames : await import_fs_extra16.default.readdir("libs")).filter((dirname) => {
+    return !opts.ignore || !opts.ignore.includes(dirname);
+  }).map((d) => {
+    return import_upath25.default.joinSafe("libs", d);
+  });
+  await forEachAsync(
+    libWorkspacePaths,
+    async (wsPath) => {
+      const OUTFILE = "src/index.ts";
+      const TEST_OUTFILE = "src/index.test.ts";
+      const WS_ROOT = import_upath25.default.joinSafe(repoRoot, wsPath);
+      const filepaths = (await glob("src/**/*.ts", { cwd: WS_ROOT })).map((fp) => {
+        return import_upath25.default.normalizeSafe(fp);
+      }).filter((fp) => {
+        return !/[./](test|wip|old|examples?|benchmark|temp|internal)[./]/.test(fp);
+      });
+      const exportDirpaths = filepaths.filter((fp) => {
+        return fp.endsWith("/index.ts") && fp !== OUTFILE;
+      }).map((fp) => {
+        return import_upath25.default.dirname(fp);
+      }).sort();
+      const exportFilepaths = filepaths.filter((fp) => {
+        return !exportDirpaths.some((dp) => {
+          return fp.startsWith(dp);
+        });
+      }).filter((fp) => {
+        return fp !== OUTFILE;
+      }).map((fp) => {
+        return fp.replace(/\.ts$/, "");
+      }).sort();
+      const relative = [...exportDirpaths, ...exportFilepaths].map((fp) => {
+        return fp.replace(/^src/, ".");
+      });
+      const tempName = /* @__PURE__ */ __name((i) => {
+        return `MODULE_${String(i + 1).padStart(relative.length.toString().length, "0")}`;
+      }, "tempName");
+      let lines = relative.flatMap((fp) => {
+        return `export * from '${fp}'`;
+      }).concat("");
+      const tsconfig = {
+        ...await import_fs_extra16.default.readJson(import_upath25.default.joinSafe(repoRoot, "tsconfig.json"), "utf8"),
+        ...await import_fs_extra16.default.readJson(import_upath25.default.joinSafe(wsPath, "tsconfig.json"), "utf8")
+      };
+      if (!tsconfig.compilerOptions.isolatedDeclarations) {
+        lines = lines.concat(
+          relative.map((fp, i) => {
+            return `import * as ${tempName(i)} from '${fp}'`;
+          }),
+          "",
+          //
+          `export default {`,
+          ...relative.map((_, i) => {
+            return `  ...${tempName(i)},${i === 0 ? " //" : ""}`;
+          }),
+          `}`,
+          ""
+        );
+      }
+      const testLines = [
+        `import * as EXPORTS from './index'`,
+        ``,
+        `import { describe } from 'vitest'`,
+        `import { expect } from 'vitest'`,
+        `import { it } from 'vitest'`,
+        ``,
+        `describe('index.ts', () => {`,
+        `  it('should load modules', () => {`,
+        `    for (const [key, value] of Object.entries(EXPORTS)) {`,
+        `      expect(key).toBeTypeOf('string')`,
+        `      expect(value).not.toBeUndefined()`,
+        `    }`,
+        `  })`,
+        `})`,
+        ``
+      ];
+      await outputFileIfChanged(import_upath25.default.joinSafe(WS_ROOT, OUTFILE), lines.join("\n"), logger);
+      await outputFileIfChanged(import_upath25.default.joinSafe(WS_ROOT, TEST_OUTFILE), testLines.join("\n"), logger);
+    },
+    { concurrency: 10 }
+  );
+}
+__name(fixIndexTsAction, "fixIndexTsAction");
+
+// src/commands/fix_vitest_imports.ts
+var import_fs_extra17 = __toESM(require_lib2(), 1);
+var import_upath26 = __toESM(require_upath(), 1);
+async function fixVitestImportsAction(fileGlob, _opts, { logger: log }) {
+  const filepaths = globSync(fileGlob, { cwd: process.cwd() }).map((fp) => {
+    return import_upath26.default.normalizeSafe(fp);
+  });
+  log.info(`Found ${filepaths.length} files matching glob: ${fileGlob}`);
+  if (filepaths.length === 0) {
+    return;
+  }
+  const filesWithCode = filepaths.map((filepath) => {
+    const code = import_fs_extra17.default.readFileSync(filepath, "utf-8");
+    return { filepath, code };
+  }).filter((o) => {
+    const isEmpty = !o.code.trim();
+    return !(isEmpty || o.code.includes(`from 'vitest'`));
+  });
+  filesWithCode.map((o) => {
+    return o.filepath;
+  }).forEach((f) => {
+    return log.info(f);
+  });
+  log.info(`Found ${filesWithCode.length} files missing vitest import`);
+  if (filesWithCode.length === 0) {
+    return;
+  }
+  filesWithCode.forEach((o) => {
+    const importLine = `import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, test, vitest, vi } from 'vitest'`;
+    import_fs_extra17.default.outputFileSync(o.filepath, `${importLine}
+
+${o.code}`, "utf-8");
+    log.info(`Added Vitest imports to: ${o.filepath}`);
+  });
+}
+__name(fixVitestImportsAction, "fixVitestImportsAction");
+
+// ../../libs/monorepo/src/common/AbstractBase.ts
+var AbstractBase = class {
+  constructor(parent) {
+    this.parenting.onInstance(parent);
+  }
+  findParentDeep(predicate) {
+    for (const parent of this.parenting.iterateAncestors()) {
+      if (predicate(parent)) {
+        return parent;
+      }
+    }
+    return void 0;
+  }
+  get parent() {
+    return this.parenting.getParent();
+  }
+  getParentDeep(instanceOf) {
+    const parent = this.findParentDeep((p) => {
+      return p instanceof instanceOf;
+    });
+    if (!parent) {
+      throw new Error(`Parent of type ${instanceOf.name} not found.`);
+    }
+    return parent;
+  }
+};
+__name(AbstractBase, "AbstractBase");
+__publicField(AbstractBase, "inspector", Inspector.compose(AbstractBase, {
+  keys: [],
+  autoAddBooleanKeys: true,
+  ignoreKeys: [],
+  ignoreValues: {
+    noEmptyArray: true,
+    noEmptyObject: true,
+    noNull: true,
+    noUndefined: true,
+    noFalse: true
+  },
+  inspect: {
+    customInspect: true,
+    maxStringLength: 500,
+    maxArrayLength: 5,
+    breakLength: 80,
+    colors: true,
+    depth: null,
+    compact: false,
+    numericSeparator: true
+  },
+  filters: []
+}));
+AbstractBase = __decorateClass([
+  Parenting.compose
+], AbstractBase);
 
 // ../../libs/monorepo/src/util/SemanticExtnamePrefix.ts
 var SemanticExtnamePrefix = {
@@ -242145,24 +249800,28 @@ var SemanticExtnamePrefix = {
   wip: "wip"
 };
 
+// ../../libs/monorepo/src/file/File.ts
+var import_node_fs2 = __toESM(require("node:fs"), 1);
+
 // ../../libs/monorepo/src/util/SemanticExtnamePrefixes.ts
 var SemanticExtnamePrefixes_default = Object.values(SemanticExtnamePrefix);
 
 // ../../libs/monorepo/src/util/hasExtnamePrefix.ts
 function hasExtnamePrefix(tsFilepath, prefixes = SemanticExtnamePrefixes_default) {
-  return new RegExp("[.](" + [prefixes].flat(2).join("|") + ")[.][^/\\\\]+$").test(tsFilepath);
+  return new RegExp(`[.](${[prefixes].flat(2).join("|")})[.][^/\\\\]+$`).test(tsFilepath);
 }
 __name(hasExtnamePrefix, "hasExtnamePrefix");
 
 // ../../libs/monorepo/src/file/File.ts
+var import_upath27 = __toESM(require_upath(), 1);
 var File2 = class extends AbstractBase {
   path;
   constructor(parent, filepath) {
     super(parent);
-    this.path = import_upath19.default.normalize(filepath);
+    this.path = import_upath27.default.normalize(filepath);
   }
   get stats() {
-    return import_node_fs.default.statSync(this.path);
+    return import_node_fs2.default.statSync(this.path);
   }
   get isTs() {
     return src_default.hasExtname(this.path, ["ts", "mts", "tsx"]);
@@ -242183,7 +249842,7 @@ var File2 = class extends AbstractBase {
     return hasExtnamePrefix(this.path, SemanticExtnamePrefix.test);
   }
   get isIndexFile() {
-    return import_upath19.default.parse(this.path).name === "index";
+    return import_upath27.default.parse(this.path).name === "index";
   }
   get isSourceFile() {
     return src_default.hasParentDirname(this.path, "src") && !hasExtnamePrefix(this.path);
@@ -242192,10 +249851,10 @@ var File2 = class extends AbstractBase {
    * Read the file contents.
    */
   readFile() {
-    if (!import_node_fs.default.existsSync(this.path)) {
+    if (!import_node_fs2.default.existsSync(this.path)) {
       throw new Error(`File not found: ${this.path}`);
     }
-    return import_node_fs.default.readFileSync(this.path, "utf8");
+    return import_node_fs2.default.readFileSync(this.path, "utf8");
   }
 };
 __name(File2, "File");
@@ -242230,13 +249889,15 @@ var AbstractCode = class extends AbstractBase {
     const maxLines = AbstractCode.codePreviewOptions.maxLines;
     const maxLineLength = AbstractCode.codePreviewOptions.maxLineLength;
     const applyMaxLineLength = /* @__PURE__ */ __name((line) => {
-      return line.length > maxLineLength ? line.substring(0, maxLineLength - 3) + "..." : line;
+      return line.length > maxLineLength ? `${line.substring(0, maxLineLength - 3)}...` : line;
     }, "applyMaxLineLength");
     return this.isMultiLine ? this.lines.slice(0, maxLines).map(applyMaxLineLength) : applyMaxLineLength(this.code);
   }
   codeIndexRangeOf(code) {
     const index = this.code.indexOf(code);
-    if (index === -1) throw new Error(`Code not found: ${code}`);
+    if (index === -1) {
+      throw new Error(`Code not found: ${code}`);
+    }
     const lastIndex = index + code.length;
     return { index, lastIndex };
   }
@@ -242281,7 +249942,11 @@ CodeBlock = __decorateClass([
 // ../../libs/monorepo/src/code/imports/ImportKeywords.ts
 var ImportKeywords = class extends CodeBlock {
   get keywords() {
-    return this.code.split(/\s+/).map((s) => s.trim()).filter((s) => !!s);
+    return this.code.split(/\s+/).map((s) => {
+      return s.trim();
+    }).filter((s) => {
+      return !!s;
+    });
   }
   has(kw) {
     return this.keywords.includes(kw);
@@ -242304,9 +249969,15 @@ var ImportSpecifiers = class extends CodeBlock {
     return this.code.replace(/[\s]*\btype\b[\s]*/g, " ");
   }
   get type() {
-    if (this.isMixedImport) return "mixed";
-    if (this.isNamedImport) return "named";
-    if (this.isNamespaceImport) return "namespace";
+    if (this.isMixedImport) {
+      return "mixed";
+    }
+    if (this.isNamedImport) {
+      return "named";
+    }
+    if (this.isNamespaceImport) {
+      return "namespace";
+    }
     return "default";
   }
   get isDefaultImport() {
@@ -242322,7 +249993,11 @@ var ImportSpecifiers = class extends CodeBlock {
     return /\*\s+as\s+([a-zA-Z_$][\w$]*)/.test(this.codeWithoutTypeKeyword);
   }
   get namedImportsArray() {
-    return this.code.replace("\n", " ").match(/\{([^}]+)\}/)?.[1].split(",").map((specifier) => specifier.trim()).filter((s) => !!s) || [];
+    return this.code.replace("\n", " ").match(/\{([^}]+)\}/)?.[1].split(",").map((specifier) => {
+      return specifier.trim();
+    }).filter((s) => {
+      return !!s;
+    }) || [];
   }
   /**
    * Splits the import specifier into an array of specifiers as if to split into individual import statements.
@@ -242337,7 +250012,11 @@ var ImportSpecifiers = class extends CodeBlock {
    * Returns the keys added to the global namespace by this import specifier.
    */
   get importedNamesArray() {
-    return this.codeWithoutTypeKeyword.replace(/[\w*]+ as \w+/, (m) => m.split(" as ")[1]).replace(/[{}]/g, " ").split(",").map((s) => s.trim()).filter(Boolean);
+    return this.codeWithoutTypeKeyword.replace(/[\w*]+ as \w+/, (m) => {
+      return m.split(" as ")[1];
+    }).replace(/[{}]/g, " ").split(",").map((s) => {
+      return s.trim();
+    }).filter(Boolean);
   }
   get defaultImport() {
     return this.codeWithoutTypeKeyword.match(/^([a-zA-Z_$][\w$]*)\s*(,|)/)?.[1] || void 0;
@@ -242371,7 +250050,9 @@ var ModuleSpecifier = class extends CodeBlock {
     return this.code;
   }
   get dependency() {
-    if (!this.isDependency) return void 0;
+    if (!this.isDependency) {
+      return void 0;
+    }
     return this.code.split("/").slice(0, this.isScoped ? 2 : 1).join("/");
   }
   get isBuiltin() {
@@ -242381,13 +250062,19 @@ var ModuleSpecifier = class extends CodeBlock {
     return this.code.startsWith("@");
   }
   get isRepoScoped() {
-    return this.code.startsWith("@" + this.getParentDeep(MonoRepo).name + "/");
+    return this.code.startsWith(`@${this.getParentDeep(MonoRepo).name}/`);
   }
   /**
    * Returns whether import is an other, but local workspace in the monorepo.
    */
   get isOtherRepoWorkspace() {
-    return this.getParentDeep(MonoRepo).workspaces.map((ws) => ws.name).filter((name) => name !== this.getParentDeep(Workspace).name).some((name) => this.code.includes(name));
+    return this.getParentDeep(MonoRepo).workspaces.map((ws) => {
+      return ws.name;
+    }).filter((name) => {
+      return name !== this.getParentDeep(Workspace).name;
+    }).some((name) => {
+      return this.code.includes(name);
+    });
   }
   get isRelative() {
     return this.code.startsWith(".");
@@ -242443,7 +250130,9 @@ var ImportStatement = class extends CodeBlock {
   get specifiers() {
     const match2 = this.code.match(/import\s+([^'"]+)\s+from\s+/);
     const code = match2 ? match2[1].trim() : "";
-    if (!code) return void 0;
+    if (!code) {
+      return void 0;
+    }
     return new ImportSpecifiers(this, this.codeIndexRangeOf(code));
   }
   get module() {
@@ -242508,9 +250197,9 @@ function findLineColumn(content, index) {
 __name(findLineColumn, "findLineColumn");
 
 // ../../libs/tscode/src/importStatementToOneLiner.ts
-var import_strip_comments = __toESM(require_strip_comments(), 1);
+var import_strip_comments2 = __toESM(require_strip_comments(), 1);
 function importStatementToOneLiner(code) {
-  return (0, import_strip_comments.default)(code).replace(/\r*\n/g, " ").replace(/\s+/g, " ").replace(/,\s*\}/, " }").replace(/\s*,\s*/g, ", ").replace(/\s+/g, " ").trim();
+  return (0, import_strip_comments2.default)(code).replace(/\r*\n/g, " ").replace(/\s+/g, " ").replace(/,\s*\}/, " }").replace(/\s*,\s*/g, ", ").replace(/\s+/g, " ").trim();
 }
 __name(importStatementToOneLiner, "importStatementToOneLiner");
 
@@ -242590,20 +250279,34 @@ var TsCode = class extends AbstractCode {
     return this.code;
   }
   requires(format = "modules") {
-    if (format === "lines") return this.code.split(/\r*\n/).filter((line) => this.requireRegex.test(line));
-    return arrRemoveDuplicates(Array.from(this.code.matchAll(this.requireRegex)).map((o) => o[1]));
+    if (format === "lines") {
+      return this.code.split(/\r*\n/).filter((line) => {
+        return this.requireRegex.test(line);
+      });
+    }
+    return arrRemoveDuplicates(
+      Array.from(this.code.matchAll(this.requireRegex)).map((o) => {
+        return o[1];
+      })
+    );
   }
   get imports() {
-    const statements = tsExtractImports(this.code).map((o) => o.match);
+    const statements = tsExtractImports(this.code).map((o) => {
+      return o.match;
+    });
     return statements.map((line) => {
       return new ImportStatement(this, this.codeIndexRangeOf(line));
     });
   }
   get exportedClassNames() {
-    return rexec(/^export (abstract )?class (?<name>\w+)/gm, this.code).map((o) => o.groups?.name).filter(Boolean);
+    return rexec(/^export (abstract )?class (?<name>\w+)/gm, this.code).map((o) => {
+      return o.groups?.name;
+    }).filter(Boolean);
   }
   get dependencies() {
-    return this.imports.map((imp) => imp.module.dependency).filter(Boolean).sort();
+    return this.imports.map((imp) => {
+      return imp.module.dependency;
+    }).filter(Boolean).sort();
   }
   get requireRegex() {
     return /require\(['"](.+)['"]\)/g;
@@ -242637,80 +250340,108 @@ TestFile = __decorateClass([
   Parenting.compose
 ], TestFile);
 
-// ../../libs/fs/src/walkDirectory.ts
-var import_fs_extra7 = __toESM(require_lib2(), 1);
-var import_upath20 = __toESM(require_upath(), 1);
-var import_walkdir = __toESM(require_walkdir(), 1);
-function walkDirectory(dirpath, options) {
-  dirpath = import_upath20.default.normalizeSafe(dirpath);
-  if (!options.stats && !options.only) {
-    return import_walkdir.default.sync(dirpath, {
-      ...convertToWalkdirOptions(options),
-      //
-      return_object: false
-    }).map((fspath) => import_upath20.default.normalizeSafe(fspath));
-  }
-  let entries = Object.entries(import_walkdir.default.sync(dirpath, convertToWalkdirOptions(options)));
-  if (options.only === "files") {
-    entries = entries.filter(([_, stats]) => stats.isFile());
-  } else if (options.only === "directories") {
-    entries = entries.filter(([_, stats]) => stats.isDirectory());
-  }
-  entries = entries.map(([fspath, stats]) => [import_upath20.default.normalizeSafe(fspath), stats]);
-  if (options.stats) {
-    return entries;
-  } else {
-    return entries.map(([fspath]) => fspath);
-  }
-}
-__name(walkDirectory, "walkDirectory");
-function convertToWalkdirOptions(options) {
-  const result = {
-    fs: import_fs_extra7.default,
-    sync: true,
-    return_object: true
-  };
-  if (options.maxDepth !== void 0) result.max_depth = options.maxDepth;
-  if (options.followSymlinks !== void 0) result.follow_symlinks = options.followSymlinks;
-  if (options.ignoreInodes !== void 0) result.track_inodes = !options.ignoreInodes;
-  if (options.filter) {
-    const filter2 = options.filter;
-    result.filter = (dirpath, files2) => {
-      return filter2(import_upath20.default.normalizeSafe(dirpath), import_upath20.default.basename(dirpath)) ? files2 : [];
-    };
-  }
-  return result;
-}
-__name(convertToWalkdirOptions, "convertToWalkdirOptions");
+// ../../libs/monorepo/src/repo/Workspace.ts
+var import_node_child_process7 = require("node:child_process");
+var import_upath31 = __toESM(require_upath(), 1);
+var import_node_util7 = require("node:util");
+
+// ../../node_modules/fs-extra/lib/esm.mjs
+var import_copy = __toESM(require_copy2(), 1);
+var import_empty = __toESM(require_empty(), 1);
+var import_ensure = __toESM(require_ensure(), 1);
+var import_json = __toESM(require_json(), 1);
+var import_mkdirs = __toESM(require_mkdirs(), 1);
+var import_move = __toESM(require_move2(), 1);
+var import_output_file = __toESM(require_output_file(), 1);
+var import_path_exists = __toESM(require_path_exists(), 1);
+var import_remove = __toESM(require_remove(), 1);
+var copy = import_copy.default.copy;
+var copySync = import_copy.default.copySync;
+var emptyDirSync = import_empty.default.emptyDirSync;
+var emptydirSync = import_empty.default.emptydirSync;
+var emptyDir = import_empty.default.emptyDir;
+var emptydir = import_empty.default.emptydir;
+var createFile = import_ensure.default.createFile;
+var createFileSync = import_ensure.default.createFileSync;
+var ensureFile = import_ensure.default.ensureFile;
+var ensureFileSync = import_ensure.default.ensureFileSync;
+var createLink = import_ensure.default.createLink;
+var createLinkSync = import_ensure.default.createLinkSync;
+var ensureLink = import_ensure.default.ensureLink;
+var ensureLinkSync = import_ensure.default.ensureLinkSync;
+var createSymlink = import_ensure.default.createSymlink;
+var createSymlinkSync = import_ensure.default.createSymlinkSync;
+var ensureSymlink = import_ensure.default.ensureSymlink;
+var ensureSymlinkSync = import_ensure.default.ensureSymlinkSync;
+var readJson = import_json.default.readJson;
+var readJSON = import_json.default.readJSON;
+var readJsonSync = import_json.default.readJsonSync;
+var readJSONSync = import_json.default.readJSONSync;
+var writeJson = import_json.default.writeJson;
+var writeJSON = import_json.default.writeJSON;
+var writeJsonSync = import_json.default.writeJsonSync;
+var writeJSONSync = import_json.default.writeJSONSync;
+var outputJson = import_json.default.outputJson;
+var outputJSON = import_json.default.outputJSON;
+var outputJsonSync = import_json.default.outputJsonSync;
+var outputJSONSync = import_json.default.outputJSONSync;
+var mkdirs = import_mkdirs.default.mkdirs;
+var mkdirsSync = import_mkdirs.default.mkdirsSync;
+var mkdirp = import_mkdirs.default.mkdirp;
+var mkdirpSync = import_mkdirs.default.mkdirpSync;
+var ensureDir = import_mkdirs.default.ensureDir;
+var ensureDirSync = import_mkdirs.default.ensureDirSync;
+var move = import_move.default.move;
+var moveSync = import_move.default.moveSync;
+var outputFile = import_output_file.default.outputFile;
+var outputFileSync = import_output_file.default.outputFileSync;
+var pathExists = import_path_exists.default.pathExists;
+var pathExistsSync = import_path_exists.default.pathExistsSync;
+var remove = import_remove.default.remove;
+var removeSync = import_remove.default.removeSync;
+var esm_default = {
+  ...import_copy.default,
+  ...import_empty.default,
+  ...import_ensure.default,
+  ...import_json.default,
+  ...import_mkdirs.default,
+  ...import_move.default,
+  ...import_output_file.default,
+  ...import_path_exists.default,
+  ...import_remove.default
+};
 
 // ../../libs/monorepo/src/util/resolveModuleImportPath.ts
 var import_typescript = __toESM(require_typescript(), 1);
-var import_upath22 = __toESM(require_upath(), 1);
 
 // ../../libs/monorepo/src/util/getRepoRootDirpath.ts
-var import_upath21 = __toESM(require_upath(), 1);
-var import_fs_extra8 = __toESM(require_lib2(), 1);
+var import_fs_extra18 = __toESM(require_lib2(), 1);
+var import_upath28 = __toESM(require_upath(), 1);
 var getRepoRootDirpath2 = onetime_default(/* @__PURE__ */ __name(function getRepoRootDirpath3() {
   return (/* @__PURE__ */ __name(function recurse(dirpath = process.cwd()) {
-    dirpath = import_upath21.default.normalizeSafe(dirpath);
-    const pkgpath = import_upath21.default.joinSafe(dirpath, "package.json");
-    if (import_fs_extra8.default.existsSync(pkgpath) && import_fs_extra8.default.readJsonSync(pkgpath)?.workspaces) {
+    dirpath = import_upath28.default.normalizeSafe(dirpath);
+    const pkgpath = import_upath28.default.joinSafe(dirpath, "package.json");
+    if (import_fs_extra18.default.existsSync(pkgpath) && import_fs_extra18.default.readJsonSync(pkgpath)?.workspaces) {
       return dirpath;
     }
-    const parent = import_upath21.default.dirname(dirpath);
-    if (parent !== dirpath) return recurse(parent);
-    throw new Error("Could not find repo root from process.cwd(): " + process.cwd());
+    const parent = import_upath28.default.dirname(dirpath);
+    if (parent !== dirpath) {
+      return recurse(parent);
+    }
+    throw new Error(`Could not find repo root from process.cwd(): ${process.cwd()}`);
   }, "recurse"))();
 }, "getRepoRootDirpath"));
 
 // ../../libs/monorepo/src/util/resolveModuleImportPath.ts
+var import_typescript2 = __toESM(require_typescript(), 1);
+var import_upath29 = __toESM(require_upath(), 1);
 function resolveModuleImportPath(filepath, importFrom) {
   const rootdir = getRepoRootDirpath2();
-  const result = (0, import_typescript.resolveModuleName)(
+  const result = (0, import_typescript2.resolveModuleName)(
     importFrom,
     filepath,
     {
-      paths: esm_default.readJsonSync(import_upath22.default.joinSafe(rootdir, "tsconfig.paths.json")).compilerOptions.paths,
+      paths: esm_default.readJsonSync(import_upath29.default.joinSafe(rootdir, "tsconfig.paths.json")).compilerOptions.paths,
       allowJs: true,
       allowArbitraryExtensions: true,
       allowImportingTsExtensions: true,
@@ -242721,10 +250452,74 @@ function resolveModuleImportPath(filepath, importFrom) {
     (0, import_typescript.createCompilerHost)({}, true)
   );
   const f = result.resolvedModule?.resolvedFileName;
-  if (f) result.resolvedModule.resolvedFileName = import_upath22.default.relative(rootdir, f);
+  if (f) {
+    result.resolvedModule.resolvedFileName = import_upath29.default.relative(rootdir, f);
+  }
   return result.resolvedModule;
 }
 __name(resolveModuleImportPath, "resolveModuleImportPath");
+
+// ../../libs/fs/src/walkDirectory.ts
+var import_fs_extra19 = __toESM(require_lib2(), 1);
+var import_upath30 = __toESM(require_upath(), 1);
+var import_walkdir = __toESM(require_walkdir(), 1);
+function walkDirectory(dirpath, options) {
+  dirpath = import_upath30.default.normalizeSafe(dirpath);
+  if (!options.stats && !options.only) {
+    return import_walkdir.default.sync(dirpath, {
+      ...convertToWalkdirOptions(options),
+      //
+      return_object: false
+    }).map((fspath) => {
+      return import_upath30.default.normalizeSafe(fspath);
+    });
+  }
+  let entries = Object.entries(import_walkdir.default.sync(dirpath, convertToWalkdirOptions(options)));
+  if (options.only === "files") {
+    entries = entries.filter(([_, stats]) => {
+      return stats.isFile();
+    });
+  } else if (options.only === "directories") {
+    entries = entries.filter(([_, stats]) => {
+      return stats.isDirectory();
+    });
+  }
+  entries = entries.map(([fspath, stats]) => {
+    return [import_upath30.default.normalizeSafe(fspath), stats];
+  });
+  if (options.stats) {
+    return entries;
+  } else {
+    return entries.map(([fspath]) => {
+      return fspath;
+    });
+  }
+}
+__name(walkDirectory, "walkDirectory");
+function convertToWalkdirOptions(options) {
+  const result = {
+    fs: import_fs_extra19.default,
+    sync: true,
+    return_object: true
+  };
+  if (options.maxDepth !== void 0) {
+    result.max_depth = options.maxDepth;
+  }
+  if (options.followSymlinks !== void 0) {
+    result.follow_symlinks = options.followSymlinks;
+  }
+  if (options.ignoreInodes !== void 0) {
+    result.track_inodes = !options.ignoreInodes;
+  }
+  if (options.filter) {
+    const filter2 = options.filter;
+    result.filter = (dirpath, files2) => {
+      return filter2(import_upath30.default.normalizeSafe(dirpath), import_upath30.default.basename(dirpath)) ? files2 : [];
+    };
+  }
+  return result;
+}
+__name(convertToWalkdirOptions, "convertToWalkdirOptions");
 
 // ../../libs/monorepo/src/repo/Workspace.ts
 var Workspace = class extends AbstractBase {
@@ -242738,14 +250533,14 @@ var Workspace = class extends AbstractBase {
   path;
   constructor(parent, dirpath) {
     super(parent);
-    this.path = import_upath23.default.normalize(dirpath);
-    this.origin = import_upath23.default.basename(import_upath23.default.dirname(this.path));
+    this.path = import_upath31.default.normalize(dirpath);
+    this.origin = import_upath31.default.basename(import_upath31.default.dirname(this.path));
   }
   /**
    * The workspace's package.json filepath.
    */
   get packageJsonPath() {
-    return import_upath23.default.join(this.path, "package.json");
+    return import_upath31.default.join(this.path, "package.json");
   }
   get packageJson() {
     return readJsonSync(this.packageJsonPath);
@@ -242782,24 +250577,46 @@ var Workspace = class extends AbstractBase {
    */
   get importedDependenciesRecursive() {
     const repo = this.parent;
-    const wsNames = repo.workspaces.map((w) => w.name);
-    const allDeps = recurse(this.tsFiles.filter((f) => f.isSourceFile));
-    const internal = [...allDeps].filter((d) => wsNames.some((name) => name === d)).sort();
-    const external = [...allDeps].filter((d) => !wsNames.some((name) => name === d)).sort();
+    const wsNames = repo.workspaces.map((w) => {
+      return w.name;
+    });
+    const allDeps = recurse(
+      this.tsFiles.filter((f) => {
+        return f.isSourceFile;
+      })
+    );
+    const internal = [...allDeps].filter((d) => {
+      return wsNames.some((name) => {
+        return name === d;
+      });
+    }).sort();
+    const external = [...allDeps].filter((d) => {
+      return !wsNames.some((name) => {
+        return name === d;
+      });
+    }).sort();
     function recurse(files2, allDeps2 = /* @__PURE__ */ new Set(), visited2 = /* @__PURE__ */ new Set(), depth = 0) {
       for (const file of files2) {
-        if (visited2.has(file.path)) continue;
+        if (visited2.has(file.path)) {
+          continue;
+        }
         visited2.add(file.path);
         for (const dep of file.dependencies) {
           allDeps2.add(dep);
-          const depWs = repo.workspaces.find((w) => w.name === dep);
+          const depWs = repo.workspaces.find((w) => {
+            return w.name === dep;
+          });
           if (depWs) {
             recurse(
-              depWs.tsFiles.filter((f) => f.isSourceFile),
+              depWs.tsFiles.filter((f) => {
+                return f.isSourceFile;
+              }),
               allDeps2,
               visited2,
               depth + 1
-            ).forEach((d) => allDeps2.add(d));
+            ).forEach((d) => {
+              return allDeps2.add(d);
+            });
           }
         }
       }
@@ -242813,9 +250630,15 @@ var Workspace = class extends AbstractBase {
       stats: true,
       only: "files",
       filter: /* @__PURE__ */ __name((_dirpath, basename) => {
-        if (basename === "node_modules") return false;
-        if (basename === "coverage") return false;
-        if (basename.startsWith(".")) return false;
+        if (basename === "node_modules") {
+          return false;
+        }
+        if (basename === "coverage") {
+          return false;
+        }
+        if (basename.startsWith(".")) {
+          return false;
+        }
         return true;
       }, "filter")
     }).filter(([fspath]) => {
@@ -242829,9 +250652,15 @@ var Workspace = class extends AbstractBase {
       stats: true,
       only: "files",
       filter: /* @__PURE__ */ __name((_dirpath, basename) => {
-        if (basename === "node_modules") return false;
-        if (basename === "coverage") return false;
-        if (basename.startsWith(".")) return false;
+        if (basename === "node_modules") {
+          return false;
+        }
+        if (basename === "coverage") {
+          return false;
+        }
+        if (basename.startsWith(".")) {
+          return false;
+        }
         return true;
       }, "filter")
     }).filter(([fspath]) => {
@@ -242846,14 +250675,14 @@ var Workspace = class extends AbstractBase {
   get importedDependenciesByFile() {
     return new Map(
       this.tsFiles.map((file) => {
-        return [import_upath23.default.relative(process.cwd(), file.path), file.dependencies];
+        return [import_upath31.default.relative(process.cwd(), file.path), file.dependencies];
       })
     );
   }
   get importedTestDependenciesByFile() {
     return new Map(
       this.testFiles.map((file) => {
-        return [import_upath23.default.relative(process.cwd(), file.path), file.dependencies];
+        return [import_upath31.default.relative(process.cwd(), file.path), file.dependencies];
       })
     );
   }
@@ -242873,7 +250702,11 @@ var Workspace = class extends AbstractBase {
    * Get dependencies that are imported but not listed in the workspace's package.json under 'dependencies'.
    */
   get missingDependencies() {
-    return difference(this.importedDependencies, this.installedDependencies).filter((dep) => !this.parent.packageJson.dependencies?.[dep]).filter((dep) => !this.parent.tsconfigBasePaths?.[dep]);
+    return difference(this.importedDependencies, this.installedDependencies).filter((dep) => {
+      return !this.parent.packageJson.dependencies?.[dep];
+    }).filter((dep) => {
+      return !this.parent.tsconfigBasePaths?.[dep];
+    });
   }
   /**
    * Get dependencies that are imported but not listed in the workspace's package.json under 'devDependencies'.
@@ -242882,7 +250715,13 @@ var Workspace = class extends AbstractBase {
     return difference(
       this.importedTestDependencies,
       union(this.installedDependencies, this.installedDevDependencies)
-    ).filter((dep) => !this.parent.packageJson.devDependencies?.[dep]).filter((dep) => !this.parent.packageJson.dependencies?.[dep]).filter((dep) => !this.parent.tsconfigBasePaths?.[dep]);
+    ).filter((dep) => {
+      return !this.parent.packageJson.devDependencies?.[dep];
+    }).filter((dep) => {
+      return !this.parent.packageJson.dependencies?.[dep];
+    }).filter((dep) => {
+      return !this.parent.tsconfigBasePaths?.[dep];
+    });
   }
   /**
    * Get dependencies that are listed in the workspace's package.json but not imported in any source file (excl. test files).
@@ -242903,7 +250742,7 @@ var Workspace = class extends AbstractBase {
             results.push({
               filepath: file.path,
               replaceValue: imp.module.from,
-              withValue: resolvedFileName.endsWith("index.ts") ? "./" + imp.specifiers?.importedNamesArray[0] : "./" + import_upath23.default.relative(import_upath23.default.dirname(file.path), resolvedFileName)
+              withValue: resolvedFileName.endsWith("index.ts") ? `./${imp.specifiers?.importedNamesArray[0]}` : `./${import_upath31.default.relative(import_upath31.default.dirname(file.path), resolvedFileName)}`
             });
           }
         }
@@ -242940,9 +250779,9 @@ var Workspace = class extends AbstractBase {
       const dependencies = rootPkg.dependencies || {};
       const devDependencies = rootPkg.devDependencies || {};
       const ignores = Object.keys({ ...devDependencies, ...dependencies }).concat("@mono/*");
-      const ignoresFlag = '--ignores "' + ignores.join(",") + '"';
+      const ignoresFlag = `--ignores "${ignores.join(",")}"`;
       const cmd = `yarn depcheck ${this.path} ${ignoresFlag} --json`;
-      const execPromise = (0, import_node_util6.promisify)(import_node_child_process3.exec);
+      const execPromise = (0, import_node_util7.promisify)(import_node_child_process7.exec);
       const res = await execPromise(cmd);
       return JSON.parse(res.stdout.toString());
     } catch (error) {
@@ -242965,7 +250804,7 @@ var Workspace = class extends AbstractBase {
    * Returns the workspace's cwd-relative path.
    */
   toString() {
-    return import_upath23.default.relative(process.cwd(), this.path);
+    return import_upath31.default.relative(process.cwd(), this.path);
   }
 };
 __name(Workspace, "Workspace");
@@ -242992,6 +250831,8 @@ Workspace = __decorateClass([
 ], Workspace);
 
 // ../../libs/monorepo/src/MonoRepo.ts
+var import_node_fs3 = __toESM(require("node:fs"), 1);
+var import_upath32 = __toESM(require_upath(), 1);
 var MonoRepo = class extends AbstractBase {
   path;
   constructor() {
@@ -243004,25 +250845,31 @@ var MonoRepo = class extends AbstractBase {
     MonoRepo.instances.set(this.path, this);
   }
   get monoRepo() {
-    return super.findParentDeep((m) => m instanceof MonoRepo) || this;
+    return super.findParentDeep((m) => {
+      return m instanceof MonoRepo;
+    }) || this;
   }
   get packageJsonPath() {
-    return import_upath24.default.join(this.path, "package.json");
+    return import_upath32.default.join(this.path, "package.json");
   }
   get tsconfigBaseJsonPath() {
-    return import_upath24.default.join(this.path, "tsconfig.json");
+    return import_upath32.default.join(this.path, "tsconfig.json");
   }
   get tsconfigBase() {
     const o = readJsonSync(this.tsconfigBaseJsonPath);
-    if (!o.compilerOptions) o.compilerOptions = {};
+    if (!o.compilerOptions) {
+      o.compilerOptions = {};
+    }
     o.compilerOptions.paths = o.compilerOptions.paths || this.tsconfigBasePaths;
     return o;
   }
   get tsconfigBasePathsJsonPath() {
-    return import_upath24.default.join(this.path, "tsconfig.paths.json");
+    return import_upath32.default.join(this.path, "tsconfig.paths.json");
   }
   get tsconfigBasePaths() {
-    if (!import_node_fs2.default.existsSync(this.tsconfigBasePathsJsonPath)) return {};
+    if (!import_node_fs3.default.existsSync(this.tsconfigBasePathsJsonPath)) {
+      return {};
+    }
     return readJsonSync(this.tsconfigBasePathsJsonPath).compilerOptions?.paths ?? {};
   }
   get packageJson() {
@@ -243039,15 +250886,15 @@ var MonoRepo = class extends AbstractBase {
       throw new Error(`MonoRepo package.json missing 'workspaces' field: ${this.packageJsonPath}`);
     }
     return this.packageJson.workspaces.map((workspacePath) => {
-      return import_upath24.default.join(this.path, workspacePath.replace(/\*$/, ""));
+      return import_upath32.default.join(this.path, workspacePath.replace(/\*$/, ""));
     });
   }
   get workspacePaths() {
     return this.workspacesRootPaths.map((workspacePath) => {
-      return import_node_fs2.default.readdirSync(workspacePath, { withFileTypes: true }).filter((dirent) => {
+      return import_node_fs3.default.readdirSync(workspacePath, { withFileTypes: true }).filter((dirent) => {
         return dirent.isDirectory();
       }).map((dirent) => {
-        return import_upath24.default.join(workspacePath, dirent.name);
+        return import_upath32.default.join(workspacePath, dirent.name);
       });
     }).flat();
   }
@@ -243082,7 +250929,9 @@ MonoRepo = __decorateClass([
 // ../../libs/monorepo/src/methods/getAllImports.ts
 function getAllImports(repo) {
   return repo.workspaces.flatMap((ws) => {
-    return ws.tsFiles.filter((ts) => ts.isSourceFile).flatMap((ts) => {
+    return ws.tsFiles.filter((ts) => {
+      return ts.isSourceFile;
+    }).flatMap((ts) => {
       return ts.tsCode.imports.flatMap((imp) => {
         return imp;
       });
@@ -243091,6716 +250940,28 @@ function getAllImports(repo) {
 }
 __name(getAllImports, "getAllImports");
 
-// ../../node_modules/@isaacs/balanced-match/dist/esm/index.js
-var balanced = /* @__PURE__ */ __name((a, b, str) => {
-  const ma = a instanceof RegExp ? maybeMatch(a, str) : a;
-  const mb = b instanceof RegExp ? maybeMatch(b, str) : b;
-  const r = ma !== null && mb != null && range(ma, mb, str);
-  return r && {
-    start: r[0],
-    end: r[1],
-    pre: str.slice(0, r[0]),
-    body: str.slice(r[0] + ma.length, r[1]),
-    post: str.slice(r[1] + mb.length)
-  };
-}, "balanced");
-var maybeMatch = /* @__PURE__ */ __name((reg, str) => {
-  const m = str.match(reg);
-  return m ? m[0] : null;
-}, "maybeMatch");
-var range = /* @__PURE__ */ __name((a, b, str) => {
-  let begs, beg, left, right = void 0, result;
-  let ai = str.indexOf(a);
-  let bi = str.indexOf(b, ai + 1);
-  let i = ai;
-  if (ai >= 0 && bi > 0) {
-    if (a === b) {
-      return [ai, bi];
-    }
-    begs = [];
-    left = str.length;
-    while (i >= 0 && !result) {
-      if (i === ai) {
-        begs.push(i);
-        ai = str.indexOf(a, i + 1);
-      } else if (begs.length === 1) {
-        const r = begs.pop();
-        if (r !== void 0)
-          result = [r, bi];
-      } else {
-        beg = begs.pop();
-        if (beg !== void 0 && beg < left) {
-          left = beg;
-          right = bi;
-        }
-        bi = str.indexOf(b, i + 1);
-      }
-      i = ai < bi && ai >= 0 ? ai : bi;
-    }
-    if (begs.length && right !== void 0) {
-      result = [left, right];
-    }
-  }
-  return result;
-}, "range");
+// src/commands/fix_workspace_imports.ts
+var import_ansi_colors8 = __toESM(require_ansi_colors(), 1);
 
-// ../../node_modules/@isaacs/brace-expansion/dist/esm/index.js
-var escSlash = "\0SLASH" + Math.random() + "\0";
-var escOpen = "\0OPEN" + Math.random() + "\0";
-var escClose = "\0CLOSE" + Math.random() + "\0";
-var escComma = "\0COMMA" + Math.random() + "\0";
-var escPeriod = "\0PERIOD" + Math.random() + "\0";
-var escSlashPattern = new RegExp(escSlash, "g");
-var escOpenPattern = new RegExp(escOpen, "g");
-var escClosePattern = new RegExp(escClose, "g");
-var escCommaPattern = new RegExp(escComma, "g");
-var escPeriodPattern = new RegExp(escPeriod, "g");
-var slashPattern = /\\\\/g;
-var openPattern = /\\{/g;
-var closePattern = /\\}/g;
-var commaPattern = /\\,/g;
-var periodPattern = /\\./g;
-function numeric(str) {
-  return !isNaN(str) ? parseInt(str, 10) : str.charCodeAt(0);
-}
-__name(numeric, "numeric");
-function escapeBraces(str) {
-  return str.replace(slashPattern, escSlash).replace(openPattern, escOpen).replace(closePattern, escClose).replace(commaPattern, escComma).replace(periodPattern, escPeriod);
-}
-__name(escapeBraces, "escapeBraces");
-function unescapeBraces(str) {
-  return str.replace(escSlashPattern, "\\").replace(escOpenPattern, "{").replace(escClosePattern, "}").replace(escCommaPattern, ",").replace(escPeriodPattern, ".");
-}
-__name(unescapeBraces, "unescapeBraces");
-function parseCommaParts(str) {
-  if (!str) {
-    return [""];
-  }
-  const parts = [];
-  const m = balanced("{", "}", str);
-  if (!m) {
-    return str.split(",");
-  }
-  const { pre, body, post } = m;
-  const p = pre.split(",");
-  p[p.length - 1] += "{" + body + "}";
-  const postParts = parseCommaParts(post);
-  if (post.length) {
-    ;
-    p[p.length - 1] += postParts.shift();
-    p.push.apply(p, postParts);
-  }
-  parts.push.apply(parts, p);
-  return parts;
-}
-__name(parseCommaParts, "parseCommaParts");
-function expand(str) {
-  if (!str) {
-    return [];
-  }
-  if (str.slice(0, 2) === "{}") {
-    str = "\\{\\}" + str.slice(2);
-  }
-  return expand_(escapeBraces(str), true).map(unescapeBraces);
-}
-__name(expand, "expand");
-function embrace(str) {
-  return "{" + str + "}";
-}
-__name(embrace, "embrace");
-function isPadded(el) {
-  return /^-?0\d/.test(el);
-}
-__name(isPadded, "isPadded");
-function lte(i, y) {
-  return i <= y;
-}
-__name(lte, "lte");
-function gte(i, y) {
-  return i >= y;
-}
-__name(gte, "gte");
-function expand_(str, isTop) {
-  const expansions = [];
-  const m = balanced("{", "}", str);
-  if (!m)
-    return [str];
-  const pre = m.pre;
-  const post = m.post.length ? expand_(m.post, false) : [""];
-  if (/\$$/.test(m.pre)) {
-    for (let k = 0; k < post.length; k++) {
-      const expansion = pre + "{" + m.body + "}" + post[k];
-      expansions.push(expansion);
-    }
-  } else {
-    const isNumericSequence = /^-?\d+\.\.-?\d+(?:\.\.-?\d+)?$/.test(m.body);
-    const isAlphaSequence = /^[a-zA-Z]\.\.[a-zA-Z](?:\.\.-?\d+)?$/.test(m.body);
-    const isSequence = isNumericSequence || isAlphaSequence;
-    const isOptions = m.body.indexOf(",") >= 0;
-    if (!isSequence && !isOptions) {
-      if (m.post.match(/,(?!,).*\}/)) {
-        str = m.pre + "{" + m.body + escClose + m.post;
-        return expand_(str);
-      }
-      return [str];
-    }
-    let n;
-    if (isSequence) {
-      n = m.body.split(/\.\./);
-    } else {
-      n = parseCommaParts(m.body);
-      if (n.length === 1 && n[0] !== void 0) {
-        n = expand_(n[0], false).map(embrace);
-        if (n.length === 1) {
-          return post.map((p) => m.pre + n[0] + p);
-        }
-      }
-    }
-    let N;
-    if (isSequence && n[0] !== void 0 && n[1] !== void 0) {
-      const x = numeric(n[0]);
-      const y = numeric(n[1]);
-      const width = Math.max(n[0].length, n[1].length);
-      let incr = n.length === 3 && n[2] !== void 0 ? Math.abs(numeric(n[2])) : 1;
-      let test = lte;
-      const reverse = y < x;
-      if (reverse) {
-        incr *= -1;
-        test = gte;
-      }
-      const pad = n.some(isPadded);
-      N = [];
-      for (let i = x; test(i, y); i += incr) {
-        let c;
-        if (isAlphaSequence) {
-          c = String.fromCharCode(i);
-          if (c === "\\") {
-            c = "";
-          }
-        } else {
-          c = String(i);
-          if (pad) {
-            const need = width - c.length;
-            if (need > 0) {
-              const z = new Array(need + 1).join("0");
-              if (i < 0) {
-                c = "-" + z + c.slice(1);
-              } else {
-                c = z + c;
-              }
-            }
-          }
-        }
-        N.push(c);
-      }
-    } else {
-      N = [];
-      for (let j = 0; j < n.length; j++) {
-        N.push.apply(N, expand_(n[j], false));
-      }
-    }
-    for (let j = 0; j < N.length; j++) {
-      for (let k = 0; k < post.length; k++) {
-        const expansion = pre + N[j] + post[k];
-        if (!isTop || isSequence || expansion) {
-          expansions.push(expansion);
-        }
-      }
-    }
-  }
-  return expansions;
-}
-__name(expand_, "expand_");
-
-// ../../node_modules/glob/node_modules/minimatch/dist/esm/assert-valid-pattern.js
-var MAX_PATTERN_LENGTH = 1024 * 64;
-var assertValidPattern = /* @__PURE__ */ __name((pattern) => {
-  if (typeof pattern !== "string") {
-    throw new TypeError("invalid pattern");
-  }
-  if (pattern.length > MAX_PATTERN_LENGTH) {
-    throw new TypeError("pattern is too long");
-  }
-}, "assertValidPattern");
-
-// ../../node_modules/glob/node_modules/minimatch/dist/esm/brace-expressions.js
-var posixClasses = {
-  "[:alnum:]": ["\\p{L}\\p{Nl}\\p{Nd}", true],
-  "[:alpha:]": ["\\p{L}\\p{Nl}", true],
-  "[:ascii:]": ["\\x00-\\x7f", false],
-  "[:blank:]": ["\\p{Zs}\\t", true],
-  "[:cntrl:]": ["\\p{Cc}", true],
-  "[:digit:]": ["\\p{Nd}", true],
-  "[:graph:]": ["\\p{Z}\\p{C}", true, true],
-  "[:lower:]": ["\\p{Ll}", true],
-  "[:print:]": ["\\p{C}", true],
-  "[:punct:]": ["\\p{P}", true],
-  "[:space:]": ["\\p{Z}\\t\\r\\n\\v\\f", true],
-  "[:upper:]": ["\\p{Lu}", true],
-  "[:word:]": ["\\p{L}\\p{Nl}\\p{Nd}\\p{Pc}", true],
-  "[:xdigit:]": ["A-Fa-f0-9", false]
-};
-var braceEscape = /* @__PURE__ */ __name((s) => s.replace(/[[\]\\-]/g, "\\$&"), "braceEscape");
-var regexpEscape = /* @__PURE__ */ __name((s) => s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "regexpEscape");
-var rangesToString = /* @__PURE__ */ __name((ranges) => ranges.join(""), "rangesToString");
-var parseClass = /* @__PURE__ */ __name((glob2, position) => {
-  const pos = position;
-  if (glob2.charAt(pos) !== "[") {
-    throw new Error("not in a brace expression");
-  }
-  const ranges = [];
-  const negs = [];
-  let i = pos + 1;
-  let sawStart = false;
-  let uflag = false;
-  let escaping = false;
-  let negate = false;
-  let endPos = pos;
-  let rangeStart = "";
-  WHILE: while (i < glob2.length) {
-    const c = glob2.charAt(i);
-    if ((c === "!" || c === "^") && i === pos + 1) {
-      negate = true;
-      i++;
-      continue;
-    }
-    if (c === "]" && sawStart && !escaping) {
-      endPos = i + 1;
-      break;
-    }
-    sawStart = true;
-    if (c === "\\") {
-      if (!escaping) {
-        escaping = true;
-        i++;
-        continue;
-      }
-    }
-    if (c === "[" && !escaping) {
-      for (const [cls, [unip, u, neg]] of Object.entries(posixClasses)) {
-        if (glob2.startsWith(cls, i)) {
-          if (rangeStart) {
-            return ["$.", false, glob2.length - pos, true];
-          }
-          i += cls.length;
-          if (neg)
-            negs.push(unip);
-          else
-            ranges.push(unip);
-          uflag = uflag || u;
-          continue WHILE;
-        }
-      }
-    }
-    escaping = false;
-    if (rangeStart) {
-      if (c > rangeStart) {
-        ranges.push(braceEscape(rangeStart) + "-" + braceEscape(c));
-      } else if (c === rangeStart) {
-        ranges.push(braceEscape(c));
-      }
-      rangeStart = "";
-      i++;
-      continue;
-    }
-    if (glob2.startsWith("-]", i + 1)) {
-      ranges.push(braceEscape(c + "-"));
-      i += 2;
-      continue;
-    }
-    if (glob2.startsWith("-", i + 1)) {
-      rangeStart = c;
-      i += 2;
-      continue;
-    }
-    ranges.push(braceEscape(c));
-    i++;
-  }
-  if (endPos < i) {
-    return ["", false, 0, false];
-  }
-  if (!ranges.length && !negs.length) {
-    return ["$.", false, glob2.length - pos, true];
-  }
-  if (negs.length === 0 && ranges.length === 1 && /^\\?.$/.test(ranges[0]) && !negate) {
-    const r = ranges[0].length === 2 ? ranges[0].slice(-1) : ranges[0];
-    return [regexpEscape(r), false, endPos - pos, false];
-  }
-  const sranges = "[" + (negate ? "^" : "") + rangesToString(ranges) + "]";
-  const snegs = "[" + (negate ? "" : "^") + rangesToString(negs) + "]";
-  const comb = ranges.length && negs.length ? "(" + sranges + "|" + snegs + ")" : ranges.length ? sranges : snegs;
-  return [comb, uflag, endPos - pos, true];
-}, "parseClass");
-
-// ../../node_modules/glob/node_modules/minimatch/dist/esm/unescape.js
-var unescape = /* @__PURE__ */ __name((s, { windowsPathsNoEscape = false } = {}) => {
-  return windowsPathsNoEscape ? s.replace(/\[([^\/\\])\]/g, "$1") : s.replace(/((?!\\).|^)\[([^\/\\])\]/g, "$1$2").replace(/\\([^\/])/g, "$1");
-}, "unescape");
-
-// ../../node_modules/glob/node_modules/minimatch/dist/esm/ast.js
-var types = /* @__PURE__ */ new Set(["!", "?", "+", "*", "@"]);
-var isExtglobType = /* @__PURE__ */ __name((c) => types.has(c), "isExtglobType");
-var startNoTraversal = "(?!(?:^|/)\\.\\.?(?:$|/))";
-var startNoDot = "(?!\\.)";
-var addPatternStart = /* @__PURE__ */ new Set(["[", "."]);
-var justDots = /* @__PURE__ */ new Set(["..", "."]);
-var reSpecials = new Set("().*{}+?[]^$\\!");
-var regExpEscape = /* @__PURE__ */ __name((s) => s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "regExpEscape");
-var qmark = "[^/]";
-var star = qmark + "*?";
-var starNoEmpty = qmark + "+?";
-var AST = class _AST {
-  static {
-    __name(this, "AST");
-  }
-  type;
-  #root;
-  #hasMagic;
-  #uflag = false;
-  #parts = [];
-  #parent;
-  #parentIndex;
-  #negs;
-  #filledNegs = false;
-  #options;
-  #toString;
-  // set to true if it's an extglob with no children
-  // (which really means one child of '')
-  #emptyExt = false;
-  constructor(type, parent, options = {}) {
-    this.type = type;
-    if (type)
-      this.#hasMagic = true;
-    this.#parent = parent;
-    this.#root = this.#parent ? this.#parent.#root : this;
-    this.#options = this.#root === this ? options : this.#root.#options;
-    this.#negs = this.#root === this ? [] : this.#root.#negs;
-    if (type === "!" && !this.#root.#filledNegs)
-      this.#negs.push(this);
-    this.#parentIndex = this.#parent ? this.#parent.#parts.length : 0;
-  }
-  get hasMagic() {
-    if (this.#hasMagic !== void 0)
-      return this.#hasMagic;
-    for (const p of this.#parts) {
-      if (typeof p === "string")
-        continue;
-      if (p.type || p.hasMagic)
-        return this.#hasMagic = true;
-    }
-    return this.#hasMagic;
-  }
-  // reconstructs the pattern
-  toString() {
-    if (this.#toString !== void 0)
-      return this.#toString;
-    if (!this.type) {
-      return this.#toString = this.#parts.map((p) => String(p)).join("");
-    } else {
-      return this.#toString = this.type + "(" + this.#parts.map((p) => String(p)).join("|") + ")";
-    }
-  }
-  #fillNegs() {
-    if (this !== this.#root)
-      throw new Error("should only call on root");
-    if (this.#filledNegs)
-      return this;
-    this.toString();
-    this.#filledNegs = true;
-    let n;
-    while (n = this.#negs.pop()) {
-      if (n.type !== "!")
-        continue;
-      let p = n;
-      let pp = p.#parent;
-      while (pp) {
-        for (let i = p.#parentIndex + 1; !pp.type && i < pp.#parts.length; i++) {
-          for (const part of n.#parts) {
-            if (typeof part === "string") {
-              throw new Error("string part in extglob AST??");
-            }
-            part.copyIn(pp.#parts[i]);
-          }
-        }
-        p = pp;
-        pp = p.#parent;
-      }
-    }
-    return this;
-  }
-  push(...parts) {
-    for (const p of parts) {
-      if (p === "")
-        continue;
-      if (typeof p !== "string" && !(p instanceof _AST && p.#parent === this)) {
-        throw new Error("invalid part: " + p);
-      }
-      this.#parts.push(p);
-    }
-  }
-  toJSON() {
-    const ret = this.type === null ? this.#parts.slice().map((p) => typeof p === "string" ? p : p.toJSON()) : [this.type, ...this.#parts.map((p) => p.toJSON())];
-    if (this.isStart() && !this.type)
-      ret.unshift([]);
-    if (this.isEnd() && (this === this.#root || this.#root.#filledNegs && this.#parent?.type === "!")) {
-      ret.push({});
-    }
-    return ret;
-  }
-  isStart() {
-    if (this.#root === this)
-      return true;
-    if (!this.#parent?.isStart())
-      return false;
-    if (this.#parentIndex === 0)
-      return true;
-    const p = this.#parent;
-    for (let i = 0; i < this.#parentIndex; i++) {
-      const pp = p.#parts[i];
-      if (!(pp instanceof _AST && pp.type === "!")) {
-        return false;
-      }
-    }
-    return true;
-  }
-  isEnd() {
-    if (this.#root === this)
-      return true;
-    if (this.#parent?.type === "!")
-      return true;
-    if (!this.#parent?.isEnd())
-      return false;
-    if (!this.type)
-      return this.#parent?.isEnd();
-    const pl = this.#parent ? this.#parent.#parts.length : 0;
-    return this.#parentIndex === pl - 1;
-  }
-  copyIn(part) {
-    if (typeof part === "string")
-      this.push(part);
-    else
-      this.push(part.clone(this));
-  }
-  clone(parent) {
-    const c = new _AST(this.type, parent);
-    for (const p of this.#parts) {
-      c.copyIn(p);
-    }
-    return c;
-  }
-  static #parseAST(str, ast, pos, opt) {
-    let escaping = false;
-    let inBrace = false;
-    let braceStart = -1;
-    let braceNeg = false;
-    if (ast.type === null) {
-      let i2 = pos;
-      let acc2 = "";
-      while (i2 < str.length) {
-        const c = str.charAt(i2++);
-        if (escaping || c === "\\") {
-          escaping = !escaping;
-          acc2 += c;
-          continue;
-        }
-        if (inBrace) {
-          if (i2 === braceStart + 1) {
-            if (c === "^" || c === "!") {
-              braceNeg = true;
-            }
-          } else if (c === "]" && !(i2 === braceStart + 2 && braceNeg)) {
-            inBrace = false;
-          }
-          acc2 += c;
-          continue;
-        } else if (c === "[") {
-          inBrace = true;
-          braceStart = i2;
-          braceNeg = false;
-          acc2 += c;
-          continue;
-        }
-        if (!opt.noext && isExtglobType(c) && str.charAt(i2) === "(") {
-          ast.push(acc2);
-          acc2 = "";
-          const ext2 = new _AST(c, ast);
-          i2 = _AST.#parseAST(str, ext2, i2, opt);
-          ast.push(ext2);
-          continue;
-        }
-        acc2 += c;
-      }
-      ast.push(acc2);
-      return i2;
-    }
-    let i = pos + 1;
-    let part = new _AST(null, ast);
-    const parts = [];
-    let acc = "";
-    while (i < str.length) {
-      const c = str.charAt(i++);
-      if (escaping || c === "\\") {
-        escaping = !escaping;
-        acc += c;
-        continue;
-      }
-      if (inBrace) {
-        if (i === braceStart + 1) {
-          if (c === "^" || c === "!") {
-            braceNeg = true;
-          }
-        } else if (c === "]" && !(i === braceStart + 2 && braceNeg)) {
-          inBrace = false;
-        }
-        acc += c;
-        continue;
-      } else if (c === "[") {
-        inBrace = true;
-        braceStart = i;
-        braceNeg = false;
-        acc += c;
-        continue;
-      }
-      if (isExtglobType(c) && str.charAt(i) === "(") {
-        part.push(acc);
-        acc = "";
-        const ext2 = new _AST(c, part);
-        part.push(ext2);
-        i = _AST.#parseAST(str, ext2, i, opt);
-        continue;
-      }
-      if (c === "|") {
-        part.push(acc);
-        acc = "";
-        parts.push(part);
-        part = new _AST(null, ast);
-        continue;
-      }
-      if (c === ")") {
-        if (acc === "" && ast.#parts.length === 0) {
-          ast.#emptyExt = true;
-        }
-        part.push(acc);
-        acc = "";
-        ast.push(...parts, part);
-        return i;
-      }
-      acc += c;
-    }
-    ast.type = null;
-    ast.#hasMagic = void 0;
-    ast.#parts = [str.substring(pos - 1)];
-    return i;
-  }
-  static fromGlob(pattern, options = {}) {
-    const ast = new _AST(null, void 0, options);
-    _AST.#parseAST(pattern, ast, 0, options);
-    return ast;
-  }
-  // returns the regular expression if there's magic, or the unescaped
-  // string if not.
-  toMMPattern() {
-    if (this !== this.#root)
-      return this.#root.toMMPattern();
-    const glob2 = this.toString();
-    const [re, body, hasMagic2, uflag] = this.toRegExpSource();
-    const anyMagic = hasMagic2 || this.#hasMagic || this.#options.nocase && !this.#options.nocaseMagicOnly && glob2.toUpperCase() !== glob2.toLowerCase();
-    if (!anyMagic) {
-      return body;
-    }
-    const flags = (this.#options.nocase ? "i" : "") + (uflag ? "u" : "");
-    return Object.assign(new RegExp(`^${re}$`, flags), {
-      _src: re,
-      _glob: glob2
-    });
-  }
-  get options() {
-    return this.#options;
-  }
-  // returns the string match, the regexp source, whether there's magic
-  // in the regexp (so a regular expression is required) and whether or
-  // not the uflag is needed for the regular expression (for posix classes)
-  // TODO: instead of injecting the start/end at this point, just return
-  // the BODY of the regexp, along with the start/end portions suitable
-  // for binding the start/end in either a joined full-path makeRe context
-  // (where we bind to (^|/), or a standalone matchPart context (where
-  // we bind to ^, and not /).  Otherwise slashes get duped!
-  //
-  // In part-matching mode, the start is:
-  // - if not isStart: nothing
-  // - if traversal possible, but not allowed: ^(?!\.\.?$)
-  // - if dots allowed or not possible: ^
-  // - if dots possible and not allowed: ^(?!\.)
-  // end is:
-  // - if not isEnd(): nothing
-  // - else: $
-  //
-  // In full-path matching mode, we put the slash at the START of the
-  // pattern, so start is:
-  // - if first pattern: same as part-matching mode
-  // - if not isStart(): nothing
-  // - if traversal possible, but not allowed: /(?!\.\.?(?:$|/))
-  // - if dots allowed or not possible: /
-  // - if dots possible and not allowed: /(?!\.)
-  // end is:
-  // - if last pattern, same as part-matching mode
-  // - else nothing
-  //
-  // Always put the (?:$|/) on negated tails, though, because that has to be
-  // there to bind the end of the negated pattern portion, and it's easier to
-  // just stick it in now rather than try to inject it later in the middle of
-  // the pattern.
-  //
-  // We can just always return the same end, and leave it up to the caller
-  // to know whether it's going to be used joined or in parts.
-  // And, if the start is adjusted slightly, can do the same there:
-  // - if not isStart: nothing
-  // - if traversal possible, but not allowed: (?:/|^)(?!\.\.?$)
-  // - if dots allowed or not possible: (?:/|^)
-  // - if dots possible and not allowed: (?:/|^)(?!\.)
-  //
-  // But it's better to have a simpler binding without a conditional, for
-  // performance, so probably better to return both start options.
-  //
-  // Then the caller just ignores the end if it's not the first pattern,
-  // and the start always gets applied.
-  //
-  // But that's always going to be $ if it's the ending pattern, or nothing,
-  // so the caller can just attach $ at the end of the pattern when building.
-  //
-  // So the todo is:
-  // - better detect what kind of start is needed
-  // - return both flavors of starting pattern
-  // - attach $ at the end of the pattern when creating the actual RegExp
-  //
-  // Ah, but wait, no, that all only applies to the root when the first pattern
-  // is not an extglob. If the first pattern IS an extglob, then we need all
-  // that dot prevention biz to live in the extglob portions, because eg
-  // +(*|.x*) can match .xy but not .yx.
-  //
-  // So, return the two flavors if it's #root and the first child is not an
-  // AST, otherwise leave it to the child AST to handle it, and there,
-  // use the (?:^|/) style of start binding.
-  //
-  // Even simplified further:
-  // - Since the start for a join is eg /(?!\.) and the start for a part
-  // is ^(?!\.), we can just prepend (?!\.) to the pattern (either root
-  // or start or whatever) and prepend ^ or / at the Regexp construction.
-  toRegExpSource(allowDot) {
-    const dot = allowDot ?? !!this.#options.dot;
-    if (this.#root === this)
-      this.#fillNegs();
-    if (!this.type) {
-      const noEmpty = this.isStart() && this.isEnd();
-      const src = this.#parts.map((p) => {
-        const [re, _, hasMagic2, uflag] = typeof p === "string" ? _AST.#parseGlob(p, this.#hasMagic, noEmpty) : p.toRegExpSource(allowDot);
-        this.#hasMagic = this.#hasMagic || hasMagic2;
-        this.#uflag = this.#uflag || uflag;
-        return re;
-      }).join("");
-      let start2 = "";
-      if (this.isStart()) {
-        if (typeof this.#parts[0] === "string") {
-          const dotTravAllowed = this.#parts.length === 1 && justDots.has(this.#parts[0]);
-          if (!dotTravAllowed) {
-            const aps = addPatternStart;
-            const needNoTrav = (
-              // dots are allowed, and the pattern starts with [ or .
-              dot && aps.has(src.charAt(0)) || // the pattern starts with \., and then [ or .
-              src.startsWith("\\.") && aps.has(src.charAt(2)) || // the pattern starts with \.\., and then [ or .
-              src.startsWith("\\.\\.") && aps.has(src.charAt(4))
-            );
-            const needNoDot = !dot && !allowDot && aps.has(src.charAt(0));
-            start2 = needNoTrav ? startNoTraversal : needNoDot ? startNoDot : "";
-          }
-        }
-      }
-      let end = "";
-      if (this.isEnd() && this.#root.#filledNegs && this.#parent?.type === "!") {
-        end = "(?:$|\\/)";
-      }
-      const final2 = start2 + src + end;
-      return [
-        final2,
-        unescape(src),
-        this.#hasMagic = !!this.#hasMagic,
-        this.#uflag
-      ];
-    }
-    const repeated = this.type === "*" || this.type === "+";
-    const start = this.type === "!" ? "(?:(?!(?:" : "(?:";
-    let body = this.#partsToRegExp(dot);
-    if (this.isStart() && this.isEnd() && !body && this.type !== "!") {
-      const s = this.toString();
-      this.#parts = [s];
-      this.type = null;
-      this.#hasMagic = void 0;
-      return [s, unescape(this.toString()), false, false];
-    }
-    let bodyDotAllowed = !repeated || allowDot || dot || !startNoDot ? "" : this.#partsToRegExp(true);
-    if (bodyDotAllowed === body) {
-      bodyDotAllowed = "";
-    }
-    if (bodyDotAllowed) {
-      body = `(?:${body})(?:${bodyDotAllowed})*?`;
-    }
-    let final = "";
-    if (this.type === "!" && this.#emptyExt) {
-      final = (this.isStart() && !dot ? startNoDot : "") + starNoEmpty;
-    } else {
-      const close = this.type === "!" ? (
-        // !() must match something,but !(x) can match ''
-        "))" + (this.isStart() && !dot && !allowDot ? startNoDot : "") + star + ")"
-      ) : this.type === "@" ? ")" : this.type === "?" ? ")?" : this.type === "+" && bodyDotAllowed ? ")" : this.type === "*" && bodyDotAllowed ? `)?` : `)${this.type}`;
-      final = start + body + close;
-    }
-    return [
-      final,
-      unescape(body),
-      this.#hasMagic = !!this.#hasMagic,
-      this.#uflag
-    ];
-  }
-  #partsToRegExp(dot) {
-    return this.#parts.map((p) => {
-      if (typeof p === "string") {
-        throw new Error("string type in extglob ast??");
-      }
-      const [re, _, _hasMagic, uflag] = p.toRegExpSource(dot);
-      this.#uflag = this.#uflag || uflag;
-      return re;
-    }).filter((p) => !(this.isStart() && this.isEnd()) || !!p).join("|");
-  }
-  static #parseGlob(glob2, hasMagic2, noEmpty = false) {
-    let escaping = false;
-    let re = "";
-    let uflag = false;
-    for (let i = 0; i < glob2.length; i++) {
-      const c = glob2.charAt(i);
-      if (escaping) {
-        escaping = false;
-        re += (reSpecials.has(c) ? "\\" : "") + c;
-        continue;
-      }
-      if (c === "\\") {
-        if (i === glob2.length - 1) {
-          re += "\\\\";
-        } else {
-          escaping = true;
-        }
-        continue;
-      }
-      if (c === "[") {
-        const [src, needUflag, consumed, magic] = parseClass(glob2, i);
-        if (consumed) {
-          re += src;
-          uflag = uflag || needUflag;
-          i += consumed - 1;
-          hasMagic2 = hasMagic2 || magic;
-          continue;
-        }
-      }
-      if (c === "*") {
-        if (noEmpty && glob2 === "*")
-          re += starNoEmpty;
-        else
-          re += star;
-        hasMagic2 = true;
-        continue;
-      }
-      if (c === "?") {
-        re += qmark;
-        hasMagic2 = true;
-        continue;
-      }
-      re += regExpEscape(c);
-    }
-    return [re, unescape(glob2), !!hasMagic2, uflag];
-  }
-};
-
-// ../../node_modules/glob/node_modules/minimatch/dist/esm/escape.js
-var escape = /* @__PURE__ */ __name((s, { windowsPathsNoEscape = false } = {}) => {
-  return windowsPathsNoEscape ? s.replace(/[?*()[\]]/g, "[$&]") : s.replace(/[?*()[\]\\]/g, "\\$&");
-}, "escape");
-
-// ../../node_modules/glob/node_modules/minimatch/dist/esm/index.js
-var minimatch = /* @__PURE__ */ __name((p, pattern, options = {}) => {
-  assertValidPattern(pattern);
-  if (!options.nocomment && pattern.charAt(0) === "#") {
-    return false;
-  }
-  return new Minimatch(pattern, options).match(p);
-}, "minimatch");
-var starDotExtRE = /^\*+([^+@!?\*\[\(]*)$/;
-var starDotExtTest = /* @__PURE__ */ __name((ext2) => (f) => !f.startsWith(".") && f.endsWith(ext2), "starDotExtTest");
-var starDotExtTestDot = /* @__PURE__ */ __name((ext2) => (f) => f.endsWith(ext2), "starDotExtTestDot");
-var starDotExtTestNocase = /* @__PURE__ */ __name((ext2) => {
-  ext2 = ext2.toLowerCase();
-  return (f) => !f.startsWith(".") && f.toLowerCase().endsWith(ext2);
-}, "starDotExtTestNocase");
-var starDotExtTestNocaseDot = /* @__PURE__ */ __name((ext2) => {
-  ext2 = ext2.toLowerCase();
-  return (f) => f.toLowerCase().endsWith(ext2);
-}, "starDotExtTestNocaseDot");
-var starDotStarRE = /^\*+\.\*+$/;
-var starDotStarTest = /* @__PURE__ */ __name((f) => !f.startsWith(".") && f.includes("."), "starDotStarTest");
-var starDotStarTestDot = /* @__PURE__ */ __name((f) => f !== "." && f !== ".." && f.includes("."), "starDotStarTestDot");
-var dotStarRE = /^\.\*+$/;
-var dotStarTest = /* @__PURE__ */ __name((f) => f !== "." && f !== ".." && f.startsWith("."), "dotStarTest");
-var starRE = /^\*+$/;
-var starTest = /* @__PURE__ */ __name((f) => f.length !== 0 && !f.startsWith("."), "starTest");
-var starTestDot = /* @__PURE__ */ __name((f) => f.length !== 0 && f !== "." && f !== "..", "starTestDot");
-var qmarksRE = /^\?+([^+@!?\*\[\(]*)?$/;
-var qmarksTestNocase = /* @__PURE__ */ __name(([$0, ext2 = ""]) => {
-  const noext = qmarksTestNoExt([$0]);
-  if (!ext2)
-    return noext;
-  ext2 = ext2.toLowerCase();
-  return (f) => noext(f) && f.toLowerCase().endsWith(ext2);
-}, "qmarksTestNocase");
-var qmarksTestNocaseDot = /* @__PURE__ */ __name(([$0, ext2 = ""]) => {
-  const noext = qmarksTestNoExtDot([$0]);
-  if (!ext2)
-    return noext;
-  ext2 = ext2.toLowerCase();
-  return (f) => noext(f) && f.toLowerCase().endsWith(ext2);
-}, "qmarksTestNocaseDot");
-var qmarksTestDot = /* @__PURE__ */ __name(([$0, ext2 = ""]) => {
-  const noext = qmarksTestNoExtDot([$0]);
-  return !ext2 ? noext : (f) => noext(f) && f.endsWith(ext2);
-}, "qmarksTestDot");
-var qmarksTest = /* @__PURE__ */ __name(([$0, ext2 = ""]) => {
-  const noext = qmarksTestNoExt([$0]);
-  return !ext2 ? noext : (f) => noext(f) && f.endsWith(ext2);
-}, "qmarksTest");
-var qmarksTestNoExt = /* @__PURE__ */ __name(([$0]) => {
-  const len = $0.length;
-  return (f) => f.length === len && !f.startsWith(".");
-}, "qmarksTestNoExt");
-var qmarksTestNoExtDot = /* @__PURE__ */ __name(([$0]) => {
-  const len = $0.length;
-  return (f) => f.length === len && f !== "." && f !== "..";
-}, "qmarksTestNoExtDot");
-var defaultPlatform = typeof process === "object" && process ? typeof process.env === "object" && process.env && process.env.__MINIMATCH_TESTING_PLATFORM__ || process.platform : "posix";
-var path5 = {
-  win32: { sep: "\\" },
-  posix: { sep: "/" }
-};
-var sep = defaultPlatform === "win32" ? path5.win32.sep : path5.posix.sep;
-minimatch.sep = sep;
-var GLOBSTAR = Symbol("globstar **");
-minimatch.GLOBSTAR = GLOBSTAR;
-var qmark2 = "[^/]";
-var star2 = qmark2 + "*?";
-var twoStarDot = "(?:(?!(?:\\/|^)(?:\\.{1,2})($|\\/)).)*?";
-var twoStarNoDot = "(?:(?!(?:\\/|^)\\.).)*?";
-var filter = /* @__PURE__ */ __name((pattern, options = {}) => (p) => minimatch(p, pattern, options), "filter");
-minimatch.filter = filter;
-var ext = /* @__PURE__ */ __name((a, b = {}) => Object.assign({}, a, b), "ext");
-var defaults = /* @__PURE__ */ __name((def) => {
-  if (!def || typeof def !== "object" || !Object.keys(def).length) {
-    return minimatch;
-  }
-  const orig = minimatch;
-  const m = /* @__PURE__ */ __name((p, pattern, options = {}) => orig(p, pattern, ext(def, options)), "m");
-  return Object.assign(m, {
-    Minimatch: class Minimatch extends orig.Minimatch {
-      static {
-        __name(this, "Minimatch");
-      }
-      constructor(pattern, options = {}) {
-        super(pattern, ext(def, options));
-      }
-      static defaults(options) {
-        return orig.defaults(ext(def, options)).Minimatch;
-      }
-    },
-    AST: class AST extends orig.AST {
-      static {
-        __name(this, "AST");
-      }
-      /* c8 ignore start */
-      constructor(type, parent, options = {}) {
-        super(type, parent, ext(def, options));
-      }
-      /* c8 ignore stop */
-      static fromGlob(pattern, options = {}) {
-        return orig.AST.fromGlob(pattern, ext(def, options));
-      }
-    },
-    unescape: /* @__PURE__ */ __name((s, options = {}) => orig.unescape(s, ext(def, options)), "unescape"),
-    escape: /* @__PURE__ */ __name((s, options = {}) => orig.escape(s, ext(def, options)), "escape"),
-    filter: /* @__PURE__ */ __name((pattern, options = {}) => orig.filter(pattern, ext(def, options)), "filter"),
-    defaults: /* @__PURE__ */ __name((options) => orig.defaults(ext(def, options)), "defaults"),
-    makeRe: /* @__PURE__ */ __name((pattern, options = {}) => orig.makeRe(pattern, ext(def, options)), "makeRe"),
-    braceExpand: /* @__PURE__ */ __name((pattern, options = {}) => orig.braceExpand(pattern, ext(def, options)), "braceExpand"),
-    match: /* @__PURE__ */ __name((list, pattern, options = {}) => orig.match(list, pattern, ext(def, options)), "match"),
-    sep: orig.sep,
-    GLOBSTAR
+// src/lib/confirmPrompt.ts
+var import_node_readline = __toESM(require("node:readline"), 1);
+async function confirmPrompt(message) {
+  const rl = import_node_readline.default.createInterface({
+    input: process.stdin,
+    output: process.stdout
   });
-}, "defaults");
-minimatch.defaults = defaults;
-var braceExpand = /* @__PURE__ */ __name((pattern, options = {}) => {
-  assertValidPattern(pattern);
-  if (options.nobrace || !/\{(?:(?!\{).)*\}/.test(pattern)) {
-    return [pattern];
-  }
-  return expand(pattern);
-}, "braceExpand");
-minimatch.braceExpand = braceExpand;
-var makeRe = /* @__PURE__ */ __name((pattern, options = {}) => new Minimatch(pattern, options).makeRe(), "makeRe");
-minimatch.makeRe = makeRe;
-var match = /* @__PURE__ */ __name((list, pattern, options = {}) => {
-  const mm = new Minimatch(pattern, options);
-  list = list.filter((f) => mm.match(f));
-  if (mm.options.nonull && !list.length) {
-    list.push(pattern);
-  }
-  return list;
-}, "match");
-minimatch.match = match;
-var globMagic = /[?*]|[+@!]\(.*?\)|\[|\]/;
-var regExpEscape2 = /* @__PURE__ */ __name((s) => s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "regExpEscape");
-var Minimatch = class {
-  static {
-    __name(this, "Minimatch");
-  }
-  options;
-  set;
-  pattern;
-  windowsPathsNoEscape;
-  nonegate;
-  negate;
-  comment;
-  empty;
-  preserveMultipleSlashes;
-  partial;
-  globSet;
-  globParts;
-  nocase;
-  isWindows;
-  platform;
-  windowsNoMagicRoot;
-  regexp;
-  constructor(pattern, options = {}) {
-    assertValidPattern(pattern);
-    options = options || {};
-    this.options = options;
-    this.pattern = pattern;
-    this.platform = options.platform || defaultPlatform;
-    this.isWindows = this.platform === "win32";
-    this.windowsPathsNoEscape = !!options.windowsPathsNoEscape || options.allowWindowsEscape === false;
-    if (this.windowsPathsNoEscape) {
-      this.pattern = this.pattern.replace(/\\/g, "/");
-    }
-    this.preserveMultipleSlashes = !!options.preserveMultipleSlashes;
-    this.regexp = null;
-    this.negate = false;
-    this.nonegate = !!options.nonegate;
-    this.comment = false;
-    this.empty = false;
-    this.partial = !!options.partial;
-    this.nocase = !!this.options.nocase;
-    this.windowsNoMagicRoot = options.windowsNoMagicRoot !== void 0 ? options.windowsNoMagicRoot : !!(this.isWindows && this.nocase);
-    this.globSet = [];
-    this.globParts = [];
-    this.set = [];
-    this.make();
-  }
-  hasMagic() {
-    if (this.options.magicalBraces && this.set.length > 1) {
-      return true;
-    }
-    for (const pattern of this.set) {
-      for (const part of pattern) {
-        if (typeof part !== "string")
-          return true;
-      }
-    }
-    return false;
-  }
-  debug(..._) {
-  }
-  make() {
-    const pattern = this.pattern;
-    const options = this.options;
-    if (!options.nocomment && pattern.charAt(0) === "#") {
-      this.comment = true;
-      return;
-    }
-    if (!pattern) {
-      this.empty = true;
-      return;
-    }
-    this.parseNegate();
-    this.globSet = [...new Set(this.braceExpand())];
-    if (options.debug) {
-      this.debug = (...args) => console.error(...args);
-    }
-    this.debug(this.pattern, this.globSet);
-    const rawGlobParts = this.globSet.map((s) => this.slashSplit(s));
-    this.globParts = this.preprocess(rawGlobParts);
-    this.debug(this.pattern, this.globParts);
-    let set = this.globParts.map((s, _, __) => {
-      if (this.isWindows && this.windowsNoMagicRoot) {
-        const isUNC = s[0] === "" && s[1] === "" && (s[2] === "?" || !globMagic.test(s[2])) && !globMagic.test(s[3]);
-        const isDrive = /^[a-z]:/i.test(s[0]);
-        if (isUNC) {
-          return [...s.slice(0, 4), ...s.slice(4).map((ss) => this.parse(ss))];
-        } else if (isDrive) {
-          return [s[0], ...s.slice(1).map((ss) => this.parse(ss))];
-        }
-      }
-      return s.map((ss) => this.parse(ss));
+  return new Promise((resolve) => {
+    rl.question(`${message} (y/n): `, (answer) => {
+      rl.close();
+      resolve(answer.toLowerCase() === "y");
     });
-    this.debug(this.pattern, set);
-    this.set = set.filter((s) => s.indexOf(false) === -1);
-    if (this.isWindows) {
-      for (let i = 0; i < this.set.length; i++) {
-        const p = this.set[i];
-        if (p[0] === "" && p[1] === "" && this.globParts[i][2] === "?" && typeof p[3] === "string" && /^[a-z]:$/i.test(p[3])) {
-          p[2] = "?";
-        }
-      }
-    }
-    this.debug(this.pattern, this.set);
-  }
-  // various transforms to equivalent pattern sets that are
-  // faster to process in a filesystem walk.  The goal is to
-  // eliminate what we can, and push all ** patterns as far
-  // to the right as possible, even if it increases the number
-  // of patterns that we have to process.
-  preprocess(globParts) {
-    if (this.options.noglobstar) {
-      for (let i = 0; i < globParts.length; i++) {
-        for (let j = 0; j < globParts[i].length; j++) {
-          if (globParts[i][j] === "**") {
-            globParts[i][j] = "*";
-          }
-        }
-      }
-    }
-    const { optimizationLevel = 1 } = this.options;
-    if (optimizationLevel >= 2) {
-      globParts = this.firstPhasePreProcess(globParts);
-      globParts = this.secondPhasePreProcess(globParts);
-    } else if (optimizationLevel >= 1) {
-      globParts = this.levelOneOptimize(globParts);
-    } else {
-      globParts = this.adjascentGlobstarOptimize(globParts);
-    }
-    return globParts;
-  }
-  // just get rid of adjascent ** portions
-  adjascentGlobstarOptimize(globParts) {
-    return globParts.map((parts) => {
-      let gs = -1;
-      while (-1 !== (gs = parts.indexOf("**", gs + 1))) {
-        let i = gs;
-        while (parts[i + 1] === "**") {
-          i++;
-        }
-        if (i !== gs) {
-          parts.splice(gs, i - gs);
-        }
-      }
-      return parts;
-    });
-  }
-  // get rid of adjascent ** and resolve .. portions
-  levelOneOptimize(globParts) {
-    return globParts.map((parts) => {
-      parts = parts.reduce((set, part) => {
-        const prev = set[set.length - 1];
-        if (part === "**" && prev === "**") {
-          return set;
-        }
-        if (part === "..") {
-          if (prev && prev !== ".." && prev !== "." && prev !== "**") {
-            set.pop();
-            return set;
-          }
-        }
-        set.push(part);
-        return set;
-      }, []);
-      return parts.length === 0 ? [""] : parts;
-    });
-  }
-  levelTwoFileOptimize(parts) {
-    if (!Array.isArray(parts)) {
-      parts = this.slashSplit(parts);
-    }
-    let didSomething = false;
-    do {
-      didSomething = false;
-      if (!this.preserveMultipleSlashes) {
-        for (let i = 1; i < parts.length - 1; i++) {
-          const p = parts[i];
-          if (i === 1 && p === "" && parts[0] === "")
-            continue;
-          if (p === "." || p === "") {
-            didSomething = true;
-            parts.splice(i, 1);
-            i--;
-          }
-        }
-        if (parts[0] === "." && parts.length === 2 && (parts[1] === "." || parts[1] === "")) {
-          didSomething = true;
-          parts.pop();
-        }
-      }
-      let dd = 0;
-      while (-1 !== (dd = parts.indexOf("..", dd + 1))) {
-        const p = parts[dd - 1];
-        if (p && p !== "." && p !== ".." && p !== "**") {
-          didSomething = true;
-          parts.splice(dd - 1, 2);
-          dd -= 2;
-        }
-      }
-    } while (didSomething);
-    return parts.length === 0 ? [""] : parts;
-  }
-  // First phase: single-pattern processing
-  // <pre> is 1 or more portions
-  // <rest> is 1 or more portions
-  // <p> is any portion other than ., .., '', or **
-  // <e> is . or ''
-  //
-  // **/.. is *brutal* for filesystem walking performance, because
-  // it effectively resets the recursive walk each time it occurs,
-  // and ** cannot be reduced out by a .. pattern part like a regexp
-  // or most strings (other than .., ., and '') can be.
-  //
-  // <pre>/**/../<p>/<p>/<rest> -> {<pre>/../<p>/<p>/<rest>,<pre>/**/<p>/<p>/<rest>}
-  // <pre>/<e>/<rest> -> <pre>/<rest>
-  // <pre>/<p>/../<rest> -> <pre>/<rest>
-  // **/**/<rest> -> **/<rest>
-  //
-  // **/*/<rest> -> */**/<rest> <== not valid because ** doesn't follow
-  // this WOULD be allowed if ** did follow symlinks, or * didn't
-  firstPhasePreProcess(globParts) {
-    let didSomething = false;
-    do {
-      didSomething = false;
-      for (let parts of globParts) {
-        let gs = -1;
-        while (-1 !== (gs = parts.indexOf("**", gs + 1))) {
-          let gss = gs;
-          while (parts[gss + 1] === "**") {
-            gss++;
-          }
-          if (gss > gs) {
-            parts.splice(gs + 1, gss - gs);
-          }
-          let next = parts[gs + 1];
-          const p = parts[gs + 2];
-          const p2 = parts[gs + 3];
-          if (next !== "..")
-            continue;
-          if (!p || p === "." || p === ".." || !p2 || p2 === "." || p2 === "..") {
-            continue;
-          }
-          didSomething = true;
-          parts.splice(gs, 1);
-          const other = parts.slice(0);
-          other[gs] = "**";
-          globParts.push(other);
-          gs--;
-        }
-        if (!this.preserveMultipleSlashes) {
-          for (let i = 1; i < parts.length - 1; i++) {
-            const p = parts[i];
-            if (i === 1 && p === "" && parts[0] === "")
-              continue;
-            if (p === "." || p === "") {
-              didSomething = true;
-              parts.splice(i, 1);
-              i--;
-            }
-          }
-          if (parts[0] === "." && parts.length === 2 && (parts[1] === "." || parts[1] === "")) {
-            didSomething = true;
-            parts.pop();
-          }
-        }
-        let dd = 0;
-        while (-1 !== (dd = parts.indexOf("..", dd + 1))) {
-          const p = parts[dd - 1];
-          if (p && p !== "." && p !== ".." && p !== "**") {
-            didSomething = true;
-            const needDot = dd === 1 && parts[dd + 1] === "**";
-            const splin = needDot ? ["."] : [];
-            parts.splice(dd - 1, 2, ...splin);
-            if (parts.length === 0)
-              parts.push("");
-            dd -= 2;
-          }
-        }
-      }
-    } while (didSomething);
-    return globParts;
-  }
-  // second phase: multi-pattern dedupes
-  // {<pre>/*/<rest>,<pre>/<p>/<rest>} -> <pre>/*/<rest>
-  // {<pre>/<rest>,<pre>/<rest>} -> <pre>/<rest>
-  // {<pre>/**/<rest>,<pre>/<rest>} -> <pre>/**/<rest>
-  //
-  // {<pre>/**/<rest>,<pre>/**/<p>/<rest>} -> <pre>/**/<rest>
-  // ^-- not valid because ** doens't follow symlinks
-  secondPhasePreProcess(globParts) {
-    for (let i = 0; i < globParts.length - 1; i++) {
-      for (let j = i + 1; j < globParts.length; j++) {
-        const matched = this.partsMatch(globParts[i], globParts[j], !this.preserveMultipleSlashes);
-        if (matched) {
-          globParts[i] = [];
-          globParts[j] = matched;
-          break;
-        }
-      }
-    }
-    return globParts.filter((gs) => gs.length);
-  }
-  partsMatch(a, b, emptyGSMatch = false) {
-    let ai = 0;
-    let bi = 0;
-    let result = [];
-    let which = "";
-    while (ai < a.length && bi < b.length) {
-      if (a[ai] === b[bi]) {
-        result.push(which === "b" ? b[bi] : a[ai]);
-        ai++;
-        bi++;
-      } else if (emptyGSMatch && a[ai] === "**" && b[bi] === a[ai + 1]) {
-        result.push(a[ai]);
-        ai++;
-      } else if (emptyGSMatch && b[bi] === "**" && a[ai] === b[bi + 1]) {
-        result.push(b[bi]);
-        bi++;
-      } else if (a[ai] === "*" && b[bi] && (this.options.dot || !b[bi].startsWith(".")) && b[bi] !== "**") {
-        if (which === "b")
-          return false;
-        which = "a";
-        result.push(a[ai]);
-        ai++;
-        bi++;
-      } else if (b[bi] === "*" && a[ai] && (this.options.dot || !a[ai].startsWith(".")) && a[ai] !== "**") {
-        if (which === "a")
-          return false;
-        which = "b";
-        result.push(b[bi]);
-        ai++;
-        bi++;
-      } else {
-        return false;
-      }
-    }
-    return a.length === b.length && result;
-  }
-  parseNegate() {
-    if (this.nonegate)
-      return;
-    const pattern = this.pattern;
-    let negate = false;
-    let negateOffset = 0;
-    for (let i = 0; i < pattern.length && pattern.charAt(i) === "!"; i++) {
-      negate = !negate;
-      negateOffset++;
-    }
-    if (negateOffset)
-      this.pattern = pattern.slice(negateOffset);
-    this.negate = negate;
-  }
-  // set partial to true to test if, for example,
-  // "/a/b" matches the start of "/*/b/*/d"
-  // Partial means, if you run out of file before you run
-  // out of pattern, then that's fine, as long as all
-  // the parts match.
-  matchOne(file, pattern, partial = false) {
-    const options = this.options;
-    if (this.isWindows) {
-      const fileDrive = typeof file[0] === "string" && /^[a-z]:$/i.test(file[0]);
-      const fileUNC = !fileDrive && file[0] === "" && file[1] === "" && file[2] === "?" && /^[a-z]:$/i.test(file[3]);
-      const patternDrive = typeof pattern[0] === "string" && /^[a-z]:$/i.test(pattern[0]);
-      const patternUNC = !patternDrive && pattern[0] === "" && pattern[1] === "" && pattern[2] === "?" && typeof pattern[3] === "string" && /^[a-z]:$/i.test(pattern[3]);
-      const fdi = fileUNC ? 3 : fileDrive ? 0 : void 0;
-      const pdi = patternUNC ? 3 : patternDrive ? 0 : void 0;
-      if (typeof fdi === "number" && typeof pdi === "number") {
-        const [fd, pd] = [file[fdi], pattern[pdi]];
-        if (fd.toLowerCase() === pd.toLowerCase()) {
-          pattern[pdi] = fd;
-          if (pdi > fdi) {
-            pattern = pattern.slice(pdi);
-          } else if (fdi > pdi) {
-            file = file.slice(fdi);
-          }
-        }
-      }
-    }
-    const { optimizationLevel = 1 } = this.options;
-    if (optimizationLevel >= 2) {
-      file = this.levelTwoFileOptimize(file);
-    }
-    this.debug("matchOne", this, { file, pattern });
-    this.debug("matchOne", file.length, pattern.length);
-    for (var fi = 0, pi = 0, fl = file.length, pl = pattern.length; fi < fl && pi < pl; fi++, pi++) {
-      this.debug("matchOne loop");
-      var p = pattern[pi];
-      var f = file[fi];
-      this.debug(pattern, p, f);
-      if (p === false) {
-        return false;
-      }
-      if (p === GLOBSTAR) {
-        this.debug("GLOBSTAR", [pattern, p, f]);
-        var fr = fi;
-        var pr = pi + 1;
-        if (pr === pl) {
-          this.debug("** at the end");
-          for (; fi < fl; fi++) {
-            if (file[fi] === "." || file[fi] === ".." || !options.dot && file[fi].charAt(0) === ".")
-              return false;
-          }
-          return true;
-        }
-        while (fr < fl) {
-          var swallowee = file[fr];
-          this.debug("\nglobstar while", file, fr, pattern, pr, swallowee);
-          if (this.matchOne(file.slice(fr), pattern.slice(pr), partial)) {
-            this.debug("globstar found match!", fr, fl, swallowee);
-            return true;
-          } else {
-            if (swallowee === "." || swallowee === ".." || !options.dot && swallowee.charAt(0) === ".") {
-              this.debug("dot detected!", file, fr, pattern, pr);
-              break;
-            }
-            this.debug("globstar swallow a segment, and continue");
-            fr++;
-          }
-        }
-        if (partial) {
-          this.debug("\n>>> no match, partial?", file, fr, pattern, pr);
-          if (fr === fl) {
-            return true;
-          }
-        }
-        return false;
-      }
-      let hit;
-      if (typeof p === "string") {
-        hit = f === p;
-        this.debug("string match", p, f, hit);
-      } else {
-        hit = p.test(f);
-        this.debug("pattern match", p, f, hit);
-      }
-      if (!hit)
-        return false;
-    }
-    if (fi === fl && pi === pl) {
-      return true;
-    } else if (fi === fl) {
-      return partial;
-    } else if (pi === pl) {
-      return fi === fl - 1 && file[fi] === "";
-    } else {
-      throw new Error("wtf?");
-    }
-  }
-  braceExpand() {
-    return braceExpand(this.pattern, this.options);
-  }
-  parse(pattern) {
-    assertValidPattern(pattern);
-    const options = this.options;
-    if (pattern === "**")
-      return GLOBSTAR;
-    if (pattern === "")
-      return "";
-    let m;
-    let fastTest = null;
-    if (m = pattern.match(starRE)) {
-      fastTest = options.dot ? starTestDot : starTest;
-    } else if (m = pattern.match(starDotExtRE)) {
-      fastTest = (options.nocase ? options.dot ? starDotExtTestNocaseDot : starDotExtTestNocase : options.dot ? starDotExtTestDot : starDotExtTest)(m[1]);
-    } else if (m = pattern.match(qmarksRE)) {
-      fastTest = (options.nocase ? options.dot ? qmarksTestNocaseDot : qmarksTestNocase : options.dot ? qmarksTestDot : qmarksTest)(m);
-    } else if (m = pattern.match(starDotStarRE)) {
-      fastTest = options.dot ? starDotStarTestDot : starDotStarTest;
-    } else if (m = pattern.match(dotStarRE)) {
-      fastTest = dotStarTest;
-    }
-    const re = AST.fromGlob(pattern, this.options).toMMPattern();
-    if (fastTest && typeof re === "object") {
-      Reflect.defineProperty(re, "test", { value: fastTest });
-    }
-    return re;
-  }
-  makeRe() {
-    if (this.regexp || this.regexp === false)
-      return this.regexp;
-    const set = this.set;
-    if (!set.length) {
-      this.regexp = false;
-      return this.regexp;
-    }
-    const options = this.options;
-    const twoStar = options.noglobstar ? star2 : options.dot ? twoStarDot : twoStarNoDot;
-    const flags = new Set(options.nocase ? ["i"] : []);
-    let re = set.map((pattern) => {
-      const pp = pattern.map((p) => {
-        if (p instanceof RegExp) {
-          for (const f of p.flags.split(""))
-            flags.add(f);
-        }
-        return typeof p === "string" ? regExpEscape2(p) : p === GLOBSTAR ? GLOBSTAR : p._src;
-      });
-      pp.forEach((p, i) => {
-        const next = pp[i + 1];
-        const prev = pp[i - 1];
-        if (p !== GLOBSTAR || prev === GLOBSTAR) {
-          return;
-        }
-        if (prev === void 0) {
-          if (next !== void 0 && next !== GLOBSTAR) {
-            pp[i + 1] = "(?:\\/|" + twoStar + "\\/)?" + next;
-          } else {
-            pp[i] = twoStar;
-          }
-        } else if (next === void 0) {
-          pp[i - 1] = prev + "(?:\\/|" + twoStar + ")?";
-        } else if (next !== GLOBSTAR) {
-          pp[i - 1] = prev + "(?:\\/|\\/" + twoStar + "\\/)" + next;
-          pp[i + 1] = GLOBSTAR;
-        }
-      });
-      return pp.filter((p) => p !== GLOBSTAR).join("/");
-    }).join("|");
-    const [open, close] = set.length > 1 ? ["(?:", ")"] : ["", ""];
-    re = "^" + open + re + close + "$";
-    if (this.negate)
-      re = "^(?!" + re + ").+$";
-    try {
-      this.regexp = new RegExp(re, [...flags].join(""));
-    } catch (ex) {
-      this.regexp = false;
-    }
-    return this.regexp;
-  }
-  slashSplit(p) {
-    if (this.preserveMultipleSlashes) {
-      return p.split("/");
-    } else if (this.isWindows && /^\/\/[^\/]+/.test(p)) {
-      return ["", ...p.split(/\/+/)];
-    } else {
-      return p.split(/\/+/);
-    }
-  }
-  match(f, partial = this.partial) {
-    this.debug("match", f, this.pattern);
-    if (this.comment) {
-      return false;
-    }
-    if (this.empty) {
-      return f === "";
-    }
-    if (f === "/" && partial) {
-      return true;
-    }
-    const options = this.options;
-    if (this.isWindows) {
-      f = f.split("\\").join("/");
-    }
-    const ff = this.slashSplit(f);
-    this.debug(this.pattern, "split", ff);
-    const set = this.set;
-    this.debug(this.pattern, "set", set);
-    let filename = ff[ff.length - 1];
-    if (!filename) {
-      for (let i = ff.length - 2; !filename && i >= 0; i--) {
-        filename = ff[i];
-      }
-    }
-    for (let i = 0; i < set.length; i++) {
-      const pattern = set[i];
-      let file = ff;
-      if (options.matchBase && pattern.length === 1) {
-        file = [filename];
-      }
-      const hit = this.matchOne(file, pattern, partial);
-      if (hit) {
-        if (options.flipNegate) {
-          return true;
-        }
-        return !this.negate;
-      }
-    }
-    if (options.flipNegate) {
-      return false;
-    }
-    return this.negate;
-  }
-  static defaults(def) {
-    return minimatch.defaults(def).Minimatch;
-  }
-};
-minimatch.AST = AST;
-minimatch.Minimatch = Minimatch;
-minimatch.escape = escape;
-minimatch.unescape = unescape;
-
-// ../../node_modules/glob/dist/esm/glob.js
-var import_node_url2 = require("node:url");
-
-// ../../node_modules/lru-cache/dist/esm/index.js
-var perf = typeof performance === "object" && performance && typeof performance.now === "function" ? performance : Date;
-var warned = /* @__PURE__ */ new Set();
-var PROCESS = typeof process === "object" && !!process ? process : {};
-var emitWarning = /* @__PURE__ */ __name((msg, type, code, fn) => {
-  typeof PROCESS.emitWarning === "function" ? PROCESS.emitWarning(msg, type, code, fn) : console.error(`[${code}] ${type}: ${msg}`);
-}, "emitWarning");
-var AC = globalThis.AbortController;
-var AS = globalThis.AbortSignal;
-if (typeof AC === "undefined") {
-  AS = class AbortSignal {
-    static {
-      __name(this, "AbortSignal");
-    }
-    onabort;
-    _onabort = [];
-    reason;
-    aborted = false;
-    addEventListener(_, fn) {
-      this._onabort.push(fn);
-    }
-  };
-  AC = class AbortController {
-    static {
-      __name(this, "AbortController");
-    }
-    constructor() {
-      warnACPolyfill();
-    }
-    signal = new AS();
-    abort(reason) {
-      if (this.signal.aborted)
-        return;
-      this.signal.reason = reason;
-      this.signal.aborted = true;
-      for (const fn of this.signal._onabort) {
-        fn(reason);
-      }
-      this.signal.onabort?.(reason);
-    }
-  };
-  let printACPolyfillWarning = PROCESS.env?.LRU_CACHE_IGNORE_AC_WARNING !== "1";
-  const warnACPolyfill = /* @__PURE__ */ __name(() => {
-    if (!printACPolyfillWarning)
-      return;
-    printACPolyfillWarning = false;
-    emitWarning("AbortController is not defined. If using lru-cache in node 14, load an AbortController polyfill from the `node-abort-controller` package. A minimal polyfill is provided for use by LRUCache.fetch(), but it should not be relied upon in other contexts (eg, passing it to other APIs that use AbortController/AbortSignal might have undesirable effects). You may disable this with LRU_CACHE_IGNORE_AC_WARNING=1 in the env.", "NO_ABORT_CONTROLLER", "ENOTSUP", warnACPolyfill);
-  }, "warnACPolyfill");
+  });
 }
-var shouldWarn = /* @__PURE__ */ __name((code) => !warned.has(code), "shouldWarn");
-var TYPE = Symbol("type");
-var isPosInt = /* @__PURE__ */ __name((n) => n && n === Math.floor(n) && n > 0 && isFinite(n), "isPosInt");
-var getUintArray = /* @__PURE__ */ __name((max) => !isPosInt(max) ? null : max <= Math.pow(2, 8) ? Uint8Array : max <= Math.pow(2, 16) ? Uint16Array : max <= Math.pow(2, 32) ? Uint32Array : max <= Number.MAX_SAFE_INTEGER ? ZeroArray : null, "getUintArray");
-var ZeroArray = class extends Array {
-  static {
-    __name(this, "ZeroArray");
-  }
-  constructor(size) {
-    super(size);
-    this.fill(0);
-  }
-};
-var Stack = class _Stack {
-  static {
-    __name(this, "Stack");
-  }
-  heap;
-  length;
-  // private constructor
-  static #constructing = false;
-  static create(max) {
-    const HeapCls = getUintArray(max);
-    if (!HeapCls)
-      return [];
-    _Stack.#constructing = true;
-    const s = new _Stack(max, HeapCls);
-    _Stack.#constructing = false;
-    return s;
-  }
-  constructor(max, HeapCls) {
-    if (!_Stack.#constructing) {
-      throw new TypeError("instantiate Stack using Stack.create(n)");
-    }
-    this.heap = new HeapCls(max);
-    this.length = 0;
-  }
-  push(n) {
-    this.heap[this.length++] = n;
-  }
-  pop() {
-    return this.heap[--this.length];
-  }
-};
-var LRUCache = class _LRUCache {
-  static {
-    __name(this, "LRUCache");
-  }
-  // options that cannot be changed without disaster
-  #max;
-  #maxSize;
-  #dispose;
-  #onInsert;
-  #disposeAfter;
-  #fetchMethod;
-  #memoMethod;
-  /**
-   * {@link LRUCache.OptionsBase.ttl}
-   */
-  ttl;
-  /**
-   * {@link LRUCache.OptionsBase.ttlResolution}
-   */
-  ttlResolution;
-  /**
-   * {@link LRUCache.OptionsBase.ttlAutopurge}
-   */
-  ttlAutopurge;
-  /**
-   * {@link LRUCache.OptionsBase.updateAgeOnGet}
-   */
-  updateAgeOnGet;
-  /**
-   * {@link LRUCache.OptionsBase.updateAgeOnHas}
-   */
-  updateAgeOnHas;
-  /**
-   * {@link LRUCache.OptionsBase.allowStale}
-   */
-  allowStale;
-  /**
-   * {@link LRUCache.OptionsBase.noDisposeOnSet}
-   */
-  noDisposeOnSet;
-  /**
-   * {@link LRUCache.OptionsBase.noUpdateTTL}
-   */
-  noUpdateTTL;
-  /**
-   * {@link LRUCache.OptionsBase.maxEntrySize}
-   */
-  maxEntrySize;
-  /**
-   * {@link LRUCache.OptionsBase.sizeCalculation}
-   */
-  sizeCalculation;
-  /**
-   * {@link LRUCache.OptionsBase.noDeleteOnFetchRejection}
-   */
-  noDeleteOnFetchRejection;
-  /**
-   * {@link LRUCache.OptionsBase.noDeleteOnStaleGet}
-   */
-  noDeleteOnStaleGet;
-  /**
-   * {@link LRUCache.OptionsBase.allowStaleOnFetchAbort}
-   */
-  allowStaleOnFetchAbort;
-  /**
-   * {@link LRUCache.OptionsBase.allowStaleOnFetchRejection}
-   */
-  allowStaleOnFetchRejection;
-  /**
-   * {@link LRUCache.OptionsBase.ignoreFetchAbort}
-   */
-  ignoreFetchAbort;
-  // computed properties
-  #size;
-  #calculatedSize;
-  #keyMap;
-  #keyList;
-  #valList;
-  #next;
-  #prev;
-  #head;
-  #tail;
-  #free;
-  #disposed;
-  #sizes;
-  #starts;
-  #ttls;
-  #hasDispose;
-  #hasFetchMethod;
-  #hasDisposeAfter;
-  #hasOnInsert;
-  /**
-   * Do not call this method unless you need to inspect the
-   * inner workings of the cache.  If anything returned by this
-   * object is modified in any way, strange breakage may occur.
-   *
-   * These fields are private for a reason!
-   *
-   * @internal
-   */
-  static unsafeExposeInternals(c) {
-    return {
-      // properties
-      starts: c.#starts,
-      ttls: c.#ttls,
-      sizes: c.#sizes,
-      keyMap: c.#keyMap,
-      keyList: c.#keyList,
-      valList: c.#valList,
-      next: c.#next,
-      prev: c.#prev,
-      get head() {
-        return c.#head;
-      },
-      get tail() {
-        return c.#tail;
-      },
-      free: c.#free,
-      // methods
-      isBackgroundFetch: /* @__PURE__ */ __name((p) => c.#isBackgroundFetch(p), "isBackgroundFetch"),
-      backgroundFetch: /* @__PURE__ */ __name((k, index, options, context) => c.#backgroundFetch(k, index, options, context), "backgroundFetch"),
-      moveToTail: /* @__PURE__ */ __name((index) => c.#moveToTail(index), "moveToTail"),
-      indexes: /* @__PURE__ */ __name((options) => c.#indexes(options), "indexes"),
-      rindexes: /* @__PURE__ */ __name((options) => c.#rindexes(options), "rindexes"),
-      isStale: /* @__PURE__ */ __name((index) => c.#isStale(index), "isStale")
-    };
-  }
-  // Protected read-only members
-  /**
-   * {@link LRUCache.OptionsBase.max} (read-only)
-   */
-  get max() {
-    return this.#max;
-  }
-  /**
-   * {@link LRUCache.OptionsBase.maxSize} (read-only)
-   */
-  get maxSize() {
-    return this.#maxSize;
-  }
-  /**
-   * The total computed size of items in the cache (read-only)
-   */
-  get calculatedSize() {
-    return this.#calculatedSize;
-  }
-  /**
-   * The number of items stored in the cache (read-only)
-   */
-  get size() {
-    return this.#size;
-  }
-  /**
-   * {@link LRUCache.OptionsBase.fetchMethod} (read-only)
-   */
-  get fetchMethod() {
-    return this.#fetchMethod;
-  }
-  get memoMethod() {
-    return this.#memoMethod;
-  }
-  /**
-   * {@link LRUCache.OptionsBase.dispose} (read-only)
-   */
-  get dispose() {
-    return this.#dispose;
-  }
-  /**
-   * {@link LRUCache.OptionsBase.onInsert} (read-only)
-   */
-  get onInsert() {
-    return this.#onInsert;
-  }
-  /**
-   * {@link LRUCache.OptionsBase.disposeAfter} (read-only)
-   */
-  get disposeAfter() {
-    return this.#disposeAfter;
-  }
-  constructor(options) {
-    const { max = 0, ttl, ttlResolution = 1, ttlAutopurge, updateAgeOnGet, updateAgeOnHas, allowStale, dispose, onInsert, disposeAfter, noDisposeOnSet, noUpdateTTL, maxSize = 0, maxEntrySize = 0, sizeCalculation, fetchMethod, memoMethod, noDeleteOnFetchRejection, noDeleteOnStaleGet, allowStaleOnFetchRejection, allowStaleOnFetchAbort, ignoreFetchAbort } = options;
-    if (max !== 0 && !isPosInt(max)) {
-      throw new TypeError("max option must be a nonnegative integer");
-    }
-    const UintArray = max ? getUintArray(max) : Array;
-    if (!UintArray) {
-      throw new Error("invalid max value: " + max);
-    }
-    this.#max = max;
-    this.#maxSize = maxSize;
-    this.maxEntrySize = maxEntrySize || this.#maxSize;
-    this.sizeCalculation = sizeCalculation;
-    if (this.sizeCalculation) {
-      if (!this.#maxSize && !this.maxEntrySize) {
-        throw new TypeError("cannot set sizeCalculation without setting maxSize or maxEntrySize");
-      }
-      if (typeof this.sizeCalculation !== "function") {
-        throw new TypeError("sizeCalculation set to non-function");
-      }
-    }
-    if (memoMethod !== void 0 && typeof memoMethod !== "function") {
-      throw new TypeError("memoMethod must be a function if defined");
-    }
-    this.#memoMethod = memoMethod;
-    if (fetchMethod !== void 0 && typeof fetchMethod !== "function") {
-      throw new TypeError("fetchMethod must be a function if specified");
-    }
-    this.#fetchMethod = fetchMethod;
-    this.#hasFetchMethod = !!fetchMethod;
-    this.#keyMap = /* @__PURE__ */ new Map();
-    this.#keyList = new Array(max).fill(void 0);
-    this.#valList = new Array(max).fill(void 0);
-    this.#next = new UintArray(max);
-    this.#prev = new UintArray(max);
-    this.#head = 0;
-    this.#tail = 0;
-    this.#free = Stack.create(max);
-    this.#size = 0;
-    this.#calculatedSize = 0;
-    if (typeof dispose === "function") {
-      this.#dispose = dispose;
-    }
-    if (typeof onInsert === "function") {
-      this.#onInsert = onInsert;
-    }
-    if (typeof disposeAfter === "function") {
-      this.#disposeAfter = disposeAfter;
-      this.#disposed = [];
-    } else {
-      this.#disposeAfter = void 0;
-      this.#disposed = void 0;
-    }
-    this.#hasDispose = !!this.#dispose;
-    this.#hasOnInsert = !!this.#onInsert;
-    this.#hasDisposeAfter = !!this.#disposeAfter;
-    this.noDisposeOnSet = !!noDisposeOnSet;
-    this.noUpdateTTL = !!noUpdateTTL;
-    this.noDeleteOnFetchRejection = !!noDeleteOnFetchRejection;
-    this.allowStaleOnFetchRejection = !!allowStaleOnFetchRejection;
-    this.allowStaleOnFetchAbort = !!allowStaleOnFetchAbort;
-    this.ignoreFetchAbort = !!ignoreFetchAbort;
-    if (this.maxEntrySize !== 0) {
-      if (this.#maxSize !== 0) {
-        if (!isPosInt(this.#maxSize)) {
-          throw new TypeError("maxSize must be a positive integer if specified");
-        }
-      }
-      if (!isPosInt(this.maxEntrySize)) {
-        throw new TypeError("maxEntrySize must be a positive integer if specified");
-      }
-      this.#initializeSizeTracking();
-    }
-    this.allowStale = !!allowStale;
-    this.noDeleteOnStaleGet = !!noDeleteOnStaleGet;
-    this.updateAgeOnGet = !!updateAgeOnGet;
-    this.updateAgeOnHas = !!updateAgeOnHas;
-    this.ttlResolution = isPosInt(ttlResolution) || ttlResolution === 0 ? ttlResolution : 1;
-    this.ttlAutopurge = !!ttlAutopurge;
-    this.ttl = ttl || 0;
-    if (this.ttl) {
-      if (!isPosInt(this.ttl)) {
-        throw new TypeError("ttl must be a positive integer if specified");
-      }
-      this.#initializeTTLTracking();
-    }
-    if (this.#max === 0 && this.ttl === 0 && this.#maxSize === 0) {
-      throw new TypeError("At least one of max, maxSize, or ttl is required");
-    }
-    if (!this.ttlAutopurge && !this.#max && !this.#maxSize) {
-      const code = "LRU_CACHE_UNBOUNDED";
-      if (shouldWarn(code)) {
-        warned.add(code);
-        const msg = "TTL caching without ttlAutopurge, max, or maxSize can result in unbounded memory consumption.";
-        emitWarning(msg, "UnboundedCacheWarning", code, _LRUCache);
-      }
-    }
-  }
-  /**
-   * Return the number of ms left in the item's TTL. If item is not in cache,
-   * returns `0`. Returns `Infinity` if item is in cache without a defined TTL.
-   */
-  getRemainingTTL(key) {
-    return this.#keyMap.has(key) ? Infinity : 0;
-  }
-  #initializeTTLTracking() {
-    const ttls = new ZeroArray(this.#max);
-    const starts = new ZeroArray(this.#max);
-    this.#ttls = ttls;
-    this.#starts = starts;
-    this.#setItemTTL = (index, ttl, start = perf.now()) => {
-      starts[index] = ttl !== 0 ? start : 0;
-      ttls[index] = ttl;
-      if (ttl !== 0 && this.ttlAutopurge) {
-        const t = setTimeout(() => {
-          if (this.#isStale(index)) {
-            this.#delete(this.#keyList[index], "expire");
-          }
-        }, ttl + 1);
-        if (t.unref) {
-          t.unref();
-        }
-      }
-    };
-    this.#updateItemAge = (index) => {
-      starts[index] = ttls[index] !== 0 ? perf.now() : 0;
-    };
-    this.#statusTTL = (status, index) => {
-      if (ttls[index]) {
-        const ttl = ttls[index];
-        const start = starts[index];
-        if (!ttl || !start)
-          return;
-        status.ttl = ttl;
-        status.start = start;
-        status.now = cachedNow || getNow();
-        const age = status.now - start;
-        status.remainingTTL = ttl - age;
-      }
-    };
-    let cachedNow = 0;
-    const getNow = /* @__PURE__ */ __name(() => {
-      const n = perf.now();
-      if (this.ttlResolution > 0) {
-        cachedNow = n;
-        const t = setTimeout(() => cachedNow = 0, this.ttlResolution);
-        if (t.unref) {
-          t.unref();
-        }
-      }
-      return n;
-    }, "getNow");
-    this.getRemainingTTL = (key) => {
-      const index = this.#keyMap.get(key);
-      if (index === void 0) {
-        return 0;
-      }
-      const ttl = ttls[index];
-      const start = starts[index];
-      if (!ttl || !start) {
-        return Infinity;
-      }
-      const age = (cachedNow || getNow()) - start;
-      return ttl - age;
-    };
-    this.#isStale = (index) => {
-      const s = starts[index];
-      const t = ttls[index];
-      return !!t && !!s && (cachedNow || getNow()) - s > t;
-    };
-  }
-  // conditionally set private methods related to TTL
-  #updateItemAge = /* @__PURE__ */ __name(() => {
-  }, "#updateItemAge");
-  #statusTTL = /* @__PURE__ */ __name(() => {
-  }, "#statusTTL");
-  #setItemTTL = /* @__PURE__ */ __name(() => {
-  }, "#setItemTTL");
-  /* c8 ignore stop */
-  #isStale = /* @__PURE__ */ __name(() => false, "#isStale");
-  #initializeSizeTracking() {
-    const sizes = new ZeroArray(this.#max);
-    this.#calculatedSize = 0;
-    this.#sizes = sizes;
-    this.#removeItemSize = (index) => {
-      this.#calculatedSize -= sizes[index];
-      sizes[index] = 0;
-    };
-    this.#requireSize = (k, v, size, sizeCalculation) => {
-      if (this.#isBackgroundFetch(v)) {
-        return 0;
-      }
-      if (!isPosInt(size)) {
-        if (sizeCalculation) {
-          if (typeof sizeCalculation !== "function") {
-            throw new TypeError("sizeCalculation must be a function");
-          }
-          size = sizeCalculation(v, k);
-          if (!isPosInt(size)) {
-            throw new TypeError("sizeCalculation return invalid (expect positive integer)");
-          }
-        } else {
-          throw new TypeError("invalid size value (must be positive integer). When maxSize or maxEntrySize is used, sizeCalculation or size must be set.");
-        }
-      }
-      return size;
-    };
-    this.#addItemSize = (index, size, status) => {
-      sizes[index] = size;
-      if (this.#maxSize) {
-        const maxSize = this.#maxSize - sizes[index];
-        while (this.#calculatedSize > maxSize) {
-          this.#evict(true);
-        }
-      }
-      this.#calculatedSize += sizes[index];
-      if (status) {
-        status.entrySize = size;
-        status.totalCalculatedSize = this.#calculatedSize;
-      }
-    };
-  }
-  #removeItemSize = /* @__PURE__ */ __name((_i) => {
-  }, "#removeItemSize");
-  #addItemSize = /* @__PURE__ */ __name((_i, _s, _st) => {
-  }, "#addItemSize");
-  #requireSize = /* @__PURE__ */ __name((_k, _v, size, sizeCalculation) => {
-    if (size || sizeCalculation) {
-      throw new TypeError("cannot set size without setting maxSize or maxEntrySize on cache");
-    }
-    return 0;
-  }, "#requireSize");
-  *#indexes({ allowStale = this.allowStale } = {}) {
-    if (this.#size) {
-      for (let i = this.#tail; true; ) {
-        if (!this.#isValidIndex(i)) {
-          break;
-        }
-        if (allowStale || !this.#isStale(i)) {
-          yield i;
-        }
-        if (i === this.#head) {
-          break;
-        } else {
-          i = this.#prev[i];
-        }
-      }
-    }
-  }
-  *#rindexes({ allowStale = this.allowStale } = {}) {
-    if (this.#size) {
-      for (let i = this.#head; true; ) {
-        if (!this.#isValidIndex(i)) {
-          break;
-        }
-        if (allowStale || !this.#isStale(i)) {
-          yield i;
-        }
-        if (i === this.#tail) {
-          break;
-        } else {
-          i = this.#next[i];
-        }
-      }
-    }
-  }
-  #isValidIndex(index) {
-    return index !== void 0 && this.#keyMap.get(this.#keyList[index]) === index;
-  }
-  /**
-   * Return a generator yielding `[key, value]` pairs,
-   * in order from most recently used to least recently used.
-   */
-  *entries() {
-    for (const i of this.#indexes()) {
-      if (this.#valList[i] !== void 0 && this.#keyList[i] !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
-        yield [this.#keyList[i], this.#valList[i]];
-      }
-    }
-  }
-  /**
-   * Inverse order version of {@link LRUCache.entries}
-   *
-   * Return a generator yielding `[key, value]` pairs,
-   * in order from least recently used to most recently used.
-   */
-  *rentries() {
-    for (const i of this.#rindexes()) {
-      if (this.#valList[i] !== void 0 && this.#keyList[i] !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
-        yield [this.#keyList[i], this.#valList[i]];
-      }
-    }
-  }
-  /**
-   * Return a generator yielding the keys in the cache,
-   * in order from most recently used to least recently used.
-   */
-  *keys() {
-    for (const i of this.#indexes()) {
-      const k = this.#keyList[i];
-      if (k !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
-        yield k;
-      }
-    }
-  }
-  /**
-   * Inverse order version of {@link LRUCache.keys}
-   *
-   * Return a generator yielding the keys in the cache,
-   * in order from least recently used to most recently used.
-   */
-  *rkeys() {
-    for (const i of this.#rindexes()) {
-      const k = this.#keyList[i];
-      if (k !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
-        yield k;
-      }
-    }
-  }
-  /**
-   * Return a generator yielding the values in the cache,
-   * in order from most recently used to least recently used.
-   */
-  *values() {
-    for (const i of this.#indexes()) {
-      const v = this.#valList[i];
-      if (v !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
-        yield this.#valList[i];
-      }
-    }
-  }
-  /**
-   * Inverse order version of {@link LRUCache.values}
-   *
-   * Return a generator yielding the values in the cache,
-   * in order from least recently used to most recently used.
-   */
-  *rvalues() {
-    for (const i of this.#rindexes()) {
-      const v = this.#valList[i];
-      if (v !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) {
-        yield this.#valList[i];
-      }
-    }
-  }
-  /**
-   * Iterating over the cache itself yields the same results as
-   * {@link LRUCache.entries}
-   */
-  [Symbol.iterator]() {
-    return this.entries();
-  }
-  /**
-   * A String value that is used in the creation of the default string
-   * description of an object. Called by the built-in method
-   * `Object.prototype.toString`.
-   */
-  [Symbol.toStringTag] = "LRUCache";
-  /**
-   * Find a value for which the supplied fn method returns a truthy value,
-   * similar to `Array.find()`. fn is called as `fn(value, key, cache)`.
-   */
-  find(fn, getOptions = {}) {
-    for (const i of this.#indexes()) {
-      const v = this.#valList[i];
-      const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
-      if (value === void 0)
-        continue;
-      if (fn(value, this.#keyList[i], this)) {
-        return this.get(this.#keyList[i], getOptions);
-      }
-    }
-  }
-  /**
-   * Call the supplied function on each item in the cache, in order from most
-   * recently used to least recently used.
-   *
-   * `fn` is called as `fn(value, key, cache)`.
-   *
-   * If `thisp` is provided, function will be called in the `this`-context of
-   * the provided object, or the cache if no `thisp` object is provided.
-   *
-   * Does not update age or recenty of use, or iterate over stale values.
-   */
-  forEach(fn, thisp = this) {
-    for (const i of this.#indexes()) {
-      const v = this.#valList[i];
-      const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
-      if (value === void 0)
-        continue;
-      fn.call(thisp, value, this.#keyList[i], this);
-    }
-  }
-  /**
-   * The same as {@link LRUCache.forEach} but items are iterated over in
-   * reverse order.  (ie, less recently used items are iterated over first.)
-   */
-  rforEach(fn, thisp = this) {
-    for (const i of this.#rindexes()) {
-      const v = this.#valList[i];
-      const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
-      if (value === void 0)
-        continue;
-      fn.call(thisp, value, this.#keyList[i], this);
-    }
-  }
-  /**
-   * Delete any stale entries. Returns true if anything was removed,
-   * false otherwise.
-   */
-  purgeStale() {
-    let deleted = false;
-    for (const i of this.#rindexes({ allowStale: true })) {
-      if (this.#isStale(i)) {
-        this.#delete(this.#keyList[i], "expire");
-        deleted = true;
-      }
-    }
-    return deleted;
-  }
-  /**
-   * Get the extended info about a given entry, to get its value, size, and
-   * TTL info simultaneously. Returns `undefined` if the key is not present.
-   *
-   * Unlike {@link LRUCache#dump}, which is designed to be portable and survive
-   * serialization, the `start` value is always the current timestamp, and the
-   * `ttl` is a calculated remaining time to live (negative if expired).
-   *
-   * Always returns stale values, if their info is found in the cache, so be
-   * sure to check for expirations (ie, a negative {@link LRUCache.Entry#ttl})
-   * if relevant.
-   */
-  info(key) {
-    const i = this.#keyMap.get(key);
-    if (i === void 0)
-      return void 0;
-    const v = this.#valList[i];
-    const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
-    if (value === void 0)
-      return void 0;
-    const entry = { value };
-    if (this.#ttls && this.#starts) {
-      const ttl = this.#ttls[i];
-      const start = this.#starts[i];
-      if (ttl && start) {
-        const remain = ttl - (perf.now() - start);
-        entry.ttl = remain;
-        entry.start = Date.now();
-      }
-    }
-    if (this.#sizes) {
-      entry.size = this.#sizes[i];
-    }
-    return entry;
-  }
-  /**
-   * Return an array of [key, {@link LRUCache.Entry}] tuples which can be
-   * passed to {@link LRUCache#load}.
-   *
-   * The `start` fields are calculated relative to a portable `Date.now()`
-   * timestamp, even if `performance.now()` is available.
-   *
-   * Stale entries are always included in the `dump`, even if
-   * {@link LRUCache.OptionsBase.allowStale} is false.
-   *
-   * Note: this returns an actual array, not a generator, so it can be more
-   * easily passed around.
-   */
-  dump() {
-    const arr = [];
-    for (const i of this.#indexes({ allowStale: true })) {
-      const key = this.#keyList[i];
-      const v = this.#valList[i];
-      const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
-      if (value === void 0 || key === void 0)
-        continue;
-      const entry = { value };
-      if (this.#ttls && this.#starts) {
-        entry.ttl = this.#ttls[i];
-        const age = perf.now() - this.#starts[i];
-        entry.start = Math.floor(Date.now() - age);
-      }
-      if (this.#sizes) {
-        entry.size = this.#sizes[i];
-      }
-      arr.unshift([key, entry]);
-    }
-    return arr;
-  }
-  /**
-   * Reset the cache and load in the items in entries in the order listed.
-   *
-   * The shape of the resulting cache may be different if the same options are
-   * not used in both caches.
-   *
-   * The `start` fields are assumed to be calculated relative to a portable
-   * `Date.now()` timestamp, even if `performance.now()` is available.
-   */
-  load(arr) {
-    this.clear();
-    for (const [key, entry] of arr) {
-      if (entry.start) {
-        const age = Date.now() - entry.start;
-        entry.start = perf.now() - age;
-      }
-      this.set(key, entry.value, entry);
-    }
-  }
-  /**
-   * Add a value to the cache.
-   *
-   * Note: if `undefined` is specified as a value, this is an alias for
-   * {@link LRUCache#delete}
-   *
-   * Fields on the {@link LRUCache.SetOptions} options param will override
-   * their corresponding values in the constructor options for the scope
-   * of this single `set()` operation.
-   *
-   * If `start` is provided, then that will set the effective start
-   * time for the TTL calculation. Note that this must be a previous
-   * value of `performance.now()` if supported, or a previous value of
-   * `Date.now()` if not.
-   *
-   * Options object may also include `size`, which will prevent
-   * calling the `sizeCalculation` function and just use the specified
-   * number if it is a positive integer, and `noDisposeOnSet` which
-   * will prevent calling a `dispose` function in the case of
-   * overwrites.
-   *
-   * If the `size` (or return value of `sizeCalculation`) for a given
-   * entry is greater than `maxEntrySize`, then the item will not be
-   * added to the cache.
-   *
-   * Will update the recency of the entry.
-   *
-   * If the value is `undefined`, then this is an alias for
-   * `cache.delete(key)`. `undefined` is never stored in the cache.
-   */
-  set(k, v, setOptions = {}) {
-    if (v === void 0) {
-      this.delete(k);
-      return this;
-    }
-    const { ttl = this.ttl, start, noDisposeOnSet = this.noDisposeOnSet, sizeCalculation = this.sizeCalculation, status } = setOptions;
-    let { noUpdateTTL = this.noUpdateTTL } = setOptions;
-    const size = this.#requireSize(k, v, setOptions.size || 0, sizeCalculation);
-    if (this.maxEntrySize && size > this.maxEntrySize) {
-      if (status) {
-        status.set = "miss";
-        status.maxEntrySizeExceeded = true;
-      }
-      this.#delete(k, "set");
-      return this;
-    }
-    let index = this.#size === 0 ? void 0 : this.#keyMap.get(k);
-    if (index === void 0) {
-      index = this.#size === 0 ? this.#tail : this.#free.length !== 0 ? this.#free.pop() : this.#size === this.#max ? this.#evict(false) : this.#size;
-      this.#keyList[index] = k;
-      this.#valList[index] = v;
-      this.#keyMap.set(k, index);
-      this.#next[this.#tail] = index;
-      this.#prev[index] = this.#tail;
-      this.#tail = index;
-      this.#size++;
-      this.#addItemSize(index, size, status);
-      if (status)
-        status.set = "add";
-      noUpdateTTL = false;
-      if (this.#hasOnInsert) {
-        this.#onInsert?.(v, k, "add");
-      }
-    } else {
-      this.#moveToTail(index);
-      const oldVal = this.#valList[index];
-      if (v !== oldVal) {
-        if (this.#hasFetchMethod && this.#isBackgroundFetch(oldVal)) {
-          oldVal.__abortController.abort(new Error("replaced"));
-          const { __staleWhileFetching: s } = oldVal;
-          if (s !== void 0 && !noDisposeOnSet) {
-            if (this.#hasDispose) {
-              this.#dispose?.(s, k, "set");
-            }
-            if (this.#hasDisposeAfter) {
-              this.#disposed?.push([s, k, "set"]);
-            }
-          }
-        } else if (!noDisposeOnSet) {
-          if (this.#hasDispose) {
-            this.#dispose?.(oldVal, k, "set");
-          }
-          if (this.#hasDisposeAfter) {
-            this.#disposed?.push([oldVal, k, "set"]);
-          }
-        }
-        this.#removeItemSize(index);
-        this.#addItemSize(index, size, status);
-        this.#valList[index] = v;
-        if (status) {
-          status.set = "replace";
-          const oldValue = oldVal && this.#isBackgroundFetch(oldVal) ? oldVal.__staleWhileFetching : oldVal;
-          if (oldValue !== void 0)
-            status.oldValue = oldValue;
-        }
-      } else if (status) {
-        status.set = "update";
-      }
-      if (this.#hasOnInsert) {
-        this.onInsert?.(v, k, v === oldVal ? "update" : "replace");
-      }
-    }
-    if (ttl !== 0 && !this.#ttls) {
-      this.#initializeTTLTracking();
-    }
-    if (this.#ttls) {
-      if (!noUpdateTTL) {
-        this.#setItemTTL(index, ttl, start);
-      }
-      if (status)
-        this.#statusTTL(status, index);
-    }
-    if (!noDisposeOnSet && this.#hasDisposeAfter && this.#disposed) {
-      const dt = this.#disposed;
-      let task;
-      while (task = dt?.shift()) {
-        this.#disposeAfter?.(...task);
-      }
-    }
-    return this;
-  }
-  /**
-   * Evict the least recently used item, returning its value or
-   * `undefined` if cache is empty.
-   */
-  pop() {
-    try {
-      while (this.#size) {
-        const val = this.#valList[this.#head];
-        this.#evict(true);
-        if (this.#isBackgroundFetch(val)) {
-          if (val.__staleWhileFetching) {
-            return val.__staleWhileFetching;
-          }
-        } else if (val !== void 0) {
-          return val;
-        }
-      }
-    } finally {
-      if (this.#hasDisposeAfter && this.#disposed) {
-        const dt = this.#disposed;
-        let task;
-        while (task = dt?.shift()) {
-          this.#disposeAfter?.(...task);
-        }
-      }
-    }
-  }
-  #evict(free) {
-    const head = this.#head;
-    const k = this.#keyList[head];
-    const v = this.#valList[head];
-    if (this.#hasFetchMethod && this.#isBackgroundFetch(v)) {
-      v.__abortController.abort(new Error("evicted"));
-    } else if (this.#hasDispose || this.#hasDisposeAfter) {
-      if (this.#hasDispose) {
-        this.#dispose?.(v, k, "evict");
-      }
-      if (this.#hasDisposeAfter) {
-        this.#disposed?.push([v, k, "evict"]);
-      }
-    }
-    this.#removeItemSize(head);
-    if (free) {
-      this.#keyList[head] = void 0;
-      this.#valList[head] = void 0;
-      this.#free.push(head);
-    }
-    if (this.#size === 1) {
-      this.#head = this.#tail = 0;
-      this.#free.length = 0;
-    } else {
-      this.#head = this.#next[head];
-    }
-    this.#keyMap.delete(k);
-    this.#size--;
-    return head;
-  }
-  /**
-   * Check if a key is in the cache, without updating the recency of use.
-   * Will return false if the item is stale, even though it is technically
-   * in the cache.
-   *
-   * Check if a key is in the cache, without updating the recency of
-   * use. Age is updated if {@link LRUCache.OptionsBase.updateAgeOnHas} is set
-   * to `true` in either the options or the constructor.
-   *
-   * Will return `false` if the item is stale, even though it is technically in
-   * the cache. The difference can be determined (if it matters) by using a
-   * `status` argument, and inspecting the `has` field.
-   *
-   * Will not update item age unless
-   * {@link LRUCache.OptionsBase.updateAgeOnHas} is set.
-   */
-  has(k, hasOptions = {}) {
-    const { updateAgeOnHas = this.updateAgeOnHas, status } = hasOptions;
-    const index = this.#keyMap.get(k);
-    if (index !== void 0) {
-      const v = this.#valList[index];
-      if (this.#isBackgroundFetch(v) && v.__staleWhileFetching === void 0) {
-        return false;
-      }
-      if (!this.#isStale(index)) {
-        if (updateAgeOnHas) {
-          this.#updateItemAge(index);
-        }
-        if (status) {
-          status.has = "hit";
-          this.#statusTTL(status, index);
-        }
-        return true;
-      } else if (status) {
-        status.has = "stale";
-        this.#statusTTL(status, index);
-      }
-    } else if (status) {
-      status.has = "miss";
-    }
-    return false;
-  }
-  /**
-   * Like {@link LRUCache#get} but doesn't update recency or delete stale
-   * items.
-   *
-   * Returns `undefined` if the item is stale, unless
-   * {@link LRUCache.OptionsBase.allowStale} is set.
-   */
-  peek(k, peekOptions = {}) {
-    const { allowStale = this.allowStale } = peekOptions;
-    const index = this.#keyMap.get(k);
-    if (index === void 0 || !allowStale && this.#isStale(index)) {
-      return;
-    }
-    const v = this.#valList[index];
-    return this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
-  }
-  #backgroundFetch(k, index, options, context) {
-    const v = index === void 0 ? void 0 : this.#valList[index];
-    if (this.#isBackgroundFetch(v)) {
-      return v;
-    }
-    const ac = new AC();
-    const { signal } = options;
-    signal?.addEventListener("abort", () => ac.abort(signal.reason), {
-      signal: ac.signal
-    });
-    const fetchOpts = {
-      signal: ac.signal,
-      options,
-      context
-    };
-    const cb2 = /* @__PURE__ */ __name((v2, updateCache = false) => {
-      const { aborted } = ac.signal;
-      const ignoreAbort = options.ignoreFetchAbort && v2 !== void 0;
-      if (options.status) {
-        if (aborted && !updateCache) {
-          options.status.fetchAborted = true;
-          options.status.fetchError = ac.signal.reason;
-          if (ignoreAbort)
-            options.status.fetchAbortIgnored = true;
-        } else {
-          options.status.fetchResolved = true;
-        }
-      }
-      if (aborted && !ignoreAbort && !updateCache) {
-        return fetchFail(ac.signal.reason);
-      }
-      const bf2 = p;
-      if (this.#valList[index] === p) {
-        if (v2 === void 0) {
-          if (bf2.__staleWhileFetching) {
-            this.#valList[index] = bf2.__staleWhileFetching;
-          } else {
-            this.#delete(k, "fetch");
-          }
-        } else {
-          if (options.status)
-            options.status.fetchUpdated = true;
-          this.set(k, v2, fetchOpts.options);
-        }
-      }
-      return v2;
-    }, "cb");
-    const eb = /* @__PURE__ */ __name((er) => {
-      if (options.status) {
-        options.status.fetchRejected = true;
-        options.status.fetchError = er;
-      }
-      return fetchFail(er);
-    }, "eb");
-    const fetchFail = /* @__PURE__ */ __name((er) => {
-      const { aborted } = ac.signal;
-      const allowStaleAborted = aborted && options.allowStaleOnFetchAbort;
-      const allowStale = allowStaleAborted || options.allowStaleOnFetchRejection;
-      const noDelete = allowStale || options.noDeleteOnFetchRejection;
-      const bf2 = p;
-      if (this.#valList[index] === p) {
-        const del = !noDelete || bf2.__staleWhileFetching === void 0;
-        if (del) {
-          this.#delete(k, "fetch");
-        } else if (!allowStaleAborted) {
-          this.#valList[index] = bf2.__staleWhileFetching;
-        }
-      }
-      if (allowStale) {
-        if (options.status && bf2.__staleWhileFetching !== void 0) {
-          options.status.returnedStale = true;
-        }
-        return bf2.__staleWhileFetching;
-      } else if (bf2.__returned === bf2) {
-        throw er;
-      }
-    }, "fetchFail");
-    const pcall = /* @__PURE__ */ __name((res, rej) => {
-      const fmp = this.#fetchMethod?.(k, v, fetchOpts);
-      if (fmp && fmp instanceof Promise) {
-        fmp.then((v2) => res(v2 === void 0 ? void 0 : v2), rej);
-      }
-      ac.signal.addEventListener("abort", () => {
-        if (!options.ignoreFetchAbort || options.allowStaleOnFetchAbort) {
-          res(void 0);
-          if (options.allowStaleOnFetchAbort) {
-            res = /* @__PURE__ */ __name((v2) => cb2(v2, true), "res");
-          }
-        }
-      });
-    }, "pcall");
-    if (options.status)
-      options.status.fetchDispatched = true;
-    const p = new Promise(pcall).then(cb2, eb);
-    const bf = Object.assign(p, {
-      __abortController: ac,
-      __staleWhileFetching: v,
-      __returned: void 0
-    });
-    if (index === void 0) {
-      this.set(k, bf, { ...fetchOpts.options, status: void 0 });
-      index = this.#keyMap.get(k);
-    } else {
-      this.#valList[index] = bf;
-    }
-    return bf;
-  }
-  #isBackgroundFetch(p) {
-    if (!this.#hasFetchMethod)
-      return false;
-    const b = p;
-    return !!b && b instanceof Promise && b.hasOwnProperty("__staleWhileFetching") && b.__abortController instanceof AC;
-  }
-  async fetch(k, fetchOptions = {}) {
-    const {
-      // get options
-      allowStale = this.allowStale,
-      updateAgeOnGet = this.updateAgeOnGet,
-      noDeleteOnStaleGet = this.noDeleteOnStaleGet,
-      // set options
-      ttl = this.ttl,
-      noDisposeOnSet = this.noDisposeOnSet,
-      size = 0,
-      sizeCalculation = this.sizeCalculation,
-      noUpdateTTL = this.noUpdateTTL,
-      // fetch exclusive options
-      noDeleteOnFetchRejection = this.noDeleteOnFetchRejection,
-      allowStaleOnFetchRejection = this.allowStaleOnFetchRejection,
-      ignoreFetchAbort = this.ignoreFetchAbort,
-      allowStaleOnFetchAbort = this.allowStaleOnFetchAbort,
-      context,
-      forceRefresh = false,
-      status,
-      signal
-    } = fetchOptions;
-    if (!this.#hasFetchMethod) {
-      if (status)
-        status.fetch = "get";
-      return this.get(k, {
-        allowStale,
-        updateAgeOnGet,
-        noDeleteOnStaleGet,
-        status
-      });
-    }
-    const options = {
-      allowStale,
-      updateAgeOnGet,
-      noDeleteOnStaleGet,
-      ttl,
-      noDisposeOnSet,
-      size,
-      sizeCalculation,
-      noUpdateTTL,
-      noDeleteOnFetchRejection,
-      allowStaleOnFetchRejection,
-      allowStaleOnFetchAbort,
-      ignoreFetchAbort,
-      status,
-      signal
-    };
-    let index = this.#keyMap.get(k);
-    if (index === void 0) {
-      if (status)
-        status.fetch = "miss";
-      const p = this.#backgroundFetch(k, index, options, context);
-      return p.__returned = p;
-    } else {
-      const v = this.#valList[index];
-      if (this.#isBackgroundFetch(v)) {
-        const stale = allowStale && v.__staleWhileFetching !== void 0;
-        if (status) {
-          status.fetch = "inflight";
-          if (stale)
-            status.returnedStale = true;
-        }
-        return stale ? v.__staleWhileFetching : v.__returned = v;
-      }
-      const isStale = this.#isStale(index);
-      if (!forceRefresh && !isStale) {
-        if (status)
-          status.fetch = "hit";
-        this.#moveToTail(index);
-        if (updateAgeOnGet) {
-          this.#updateItemAge(index);
-        }
-        if (status)
-          this.#statusTTL(status, index);
-        return v;
-      }
-      const p = this.#backgroundFetch(k, index, options, context);
-      const hasStale = p.__staleWhileFetching !== void 0;
-      const staleVal = hasStale && allowStale;
-      if (status) {
-        status.fetch = isStale ? "stale" : "refresh";
-        if (staleVal && isStale)
-          status.returnedStale = true;
-      }
-      return staleVal ? p.__staleWhileFetching : p.__returned = p;
-    }
-  }
-  async forceFetch(k, fetchOptions = {}) {
-    const v = await this.fetch(k, fetchOptions);
-    if (v === void 0)
-      throw new Error("fetch() returned undefined");
-    return v;
-  }
-  memo(k, memoOptions = {}) {
-    const memoMethod = this.#memoMethod;
-    if (!memoMethod) {
-      throw new Error("no memoMethod provided to constructor");
-    }
-    const { context, forceRefresh, ...options } = memoOptions;
-    const v = this.get(k, options);
-    if (!forceRefresh && v !== void 0)
-      return v;
-    const vv = memoMethod(k, v, {
-      options,
-      context
-    });
-    this.set(k, vv, options);
-    return vv;
-  }
-  /**
-   * Return a value from the cache. Will update the recency of the cache
-   * entry found.
-   *
-   * If the key is not found, get() will return `undefined`.
-   */
-  get(k, getOptions = {}) {
-    const { allowStale = this.allowStale, updateAgeOnGet = this.updateAgeOnGet, noDeleteOnStaleGet = this.noDeleteOnStaleGet, status } = getOptions;
-    const index = this.#keyMap.get(k);
-    if (index !== void 0) {
-      const value = this.#valList[index];
-      const fetching = this.#isBackgroundFetch(value);
-      if (status)
-        this.#statusTTL(status, index);
-      if (this.#isStale(index)) {
-        if (status)
-          status.get = "stale";
-        if (!fetching) {
-          if (!noDeleteOnStaleGet) {
-            this.#delete(k, "expire");
-          }
-          if (status && allowStale)
-            status.returnedStale = true;
-          return allowStale ? value : void 0;
-        } else {
-          if (status && allowStale && value.__staleWhileFetching !== void 0) {
-            status.returnedStale = true;
-          }
-          return allowStale ? value.__staleWhileFetching : void 0;
-        }
-      } else {
-        if (status)
-          status.get = "hit";
-        if (fetching) {
-          return value.__staleWhileFetching;
-        }
-        this.#moveToTail(index);
-        if (updateAgeOnGet) {
-          this.#updateItemAge(index);
-        }
-        return value;
-      }
-    } else if (status) {
-      status.get = "miss";
-    }
-  }
-  #connect(p, n) {
-    this.#prev[n] = p;
-    this.#next[p] = n;
-  }
-  #moveToTail(index) {
-    if (index !== this.#tail) {
-      if (index === this.#head) {
-        this.#head = this.#next[index];
-      } else {
-        this.#connect(this.#prev[index], this.#next[index]);
-      }
-      this.#connect(this.#tail, index);
-      this.#tail = index;
-    }
-  }
-  /**
-   * Deletes a key out of the cache.
-   *
-   * Returns true if the key was deleted, false otherwise.
-   */
-  delete(k) {
-    return this.#delete(k, "delete");
-  }
-  #delete(k, reason) {
-    let deleted = false;
-    if (this.#size !== 0) {
-      const index = this.#keyMap.get(k);
-      if (index !== void 0) {
-        deleted = true;
-        if (this.#size === 1) {
-          this.#clear(reason);
-        } else {
-          this.#removeItemSize(index);
-          const v = this.#valList[index];
-          if (this.#isBackgroundFetch(v)) {
-            v.__abortController.abort(new Error("deleted"));
-          } else if (this.#hasDispose || this.#hasDisposeAfter) {
-            if (this.#hasDispose) {
-              this.#dispose?.(v, k, reason);
-            }
-            if (this.#hasDisposeAfter) {
-              this.#disposed?.push([v, k, reason]);
-            }
-          }
-          this.#keyMap.delete(k);
-          this.#keyList[index] = void 0;
-          this.#valList[index] = void 0;
-          if (index === this.#tail) {
-            this.#tail = this.#prev[index];
-          } else if (index === this.#head) {
-            this.#head = this.#next[index];
-          } else {
-            const pi = this.#prev[index];
-            this.#next[pi] = this.#next[index];
-            const ni = this.#next[index];
-            this.#prev[ni] = this.#prev[index];
-          }
-          this.#size--;
-          this.#free.push(index);
-        }
-      }
-    }
-    if (this.#hasDisposeAfter && this.#disposed?.length) {
-      const dt = this.#disposed;
-      let task;
-      while (task = dt?.shift()) {
-        this.#disposeAfter?.(...task);
-      }
-    }
-    return deleted;
-  }
-  /**
-   * Clear the cache entirely, throwing away all values.
-   */
-  clear() {
-    return this.#clear("delete");
-  }
-  #clear(reason) {
-    for (const index of this.#rindexes({ allowStale: true })) {
-      const v = this.#valList[index];
-      if (this.#isBackgroundFetch(v)) {
-        v.__abortController.abort(new Error("deleted"));
-      } else {
-        const k = this.#keyList[index];
-        if (this.#hasDispose) {
-          this.#dispose?.(v, k, reason);
-        }
-        if (this.#hasDisposeAfter) {
-          this.#disposed?.push([v, k, reason]);
-        }
-      }
-    }
-    this.#keyMap.clear();
-    this.#valList.fill(void 0);
-    this.#keyList.fill(void 0);
-    if (this.#ttls && this.#starts) {
-      this.#ttls.fill(0);
-      this.#starts.fill(0);
-    }
-    if (this.#sizes) {
-      this.#sizes.fill(0);
-    }
-    this.#head = 0;
-    this.#tail = 0;
-    this.#free.length = 0;
-    this.#calculatedSize = 0;
-    this.#size = 0;
-    if (this.#hasDisposeAfter && this.#disposed) {
-      const dt = this.#disposed;
-      let task;
-      while (task = dt?.shift()) {
-        this.#disposeAfter?.(...task);
-      }
-    }
-  }
-};
-
-// ../../node_modules/path-scurry/dist/esm/index.js
-var import_node_path2 = require("node:path");
-var import_node_url = require("node:url");
-var import_fs2 = require("fs");
-var actualFS = __toESM(require("node:fs"), 1);
-var import_promises = require("node:fs/promises");
-
-// ../../node_modules/minipass/dist/esm/index.js
-var import_node_events = require("node:events");
-var import_node_stream = __toESM(require("node:stream"), 1);
-var import_node_string_decoder = require("node:string_decoder");
-var proc = typeof process === "object" && process ? process : {
-  stdout: null,
-  stderr: null
-};
-var isStream = /* @__PURE__ */ __name((s) => !!s && typeof s === "object" && (s instanceof Minipass || s instanceof import_node_stream.default || isReadable(s) || isWritable(s)), "isStream");
-var isReadable = /* @__PURE__ */ __name((s) => !!s && typeof s === "object" && s instanceof import_node_events.EventEmitter && typeof s.pipe === "function" && // node core Writable streams have a pipe() method, but it throws
-s.pipe !== import_node_stream.default.Writable.prototype.pipe, "isReadable");
-var isWritable = /* @__PURE__ */ __name((s) => !!s && typeof s === "object" && s instanceof import_node_events.EventEmitter && typeof s.write === "function" && typeof s.end === "function", "isWritable");
-var EOF = Symbol("EOF");
-var MAYBE_EMIT_END = Symbol("maybeEmitEnd");
-var EMITTED_END = Symbol("emittedEnd");
-var EMITTING_END = Symbol("emittingEnd");
-var EMITTED_ERROR = Symbol("emittedError");
-var CLOSED = Symbol("closed");
-var READ = Symbol("read");
-var FLUSH = Symbol("flush");
-var FLUSHCHUNK = Symbol("flushChunk");
-var ENCODING = Symbol("encoding");
-var DECODER = Symbol("decoder");
-var FLOWING = Symbol("flowing");
-var PAUSED = Symbol("paused");
-var RESUME = Symbol("resume");
-var BUFFER = Symbol("buffer");
-var PIPES = Symbol("pipes");
-var BUFFERLENGTH = Symbol("bufferLength");
-var BUFFERPUSH = Symbol("bufferPush");
-var BUFFERSHIFT = Symbol("bufferShift");
-var OBJECTMODE = Symbol("objectMode");
-var DESTROYED = Symbol("destroyed");
-var ERROR = Symbol("error");
-var EMITDATA = Symbol("emitData");
-var EMITEND = Symbol("emitEnd");
-var EMITEND2 = Symbol("emitEnd2");
-var ASYNC = Symbol("async");
-var ABORT = Symbol("abort");
-var ABORTED = Symbol("aborted");
-var SIGNAL = Symbol("signal");
-var DATALISTENERS = Symbol("dataListeners");
-var DISCARDED = Symbol("discarded");
-var defer = /* @__PURE__ */ __name((fn) => Promise.resolve().then(fn), "defer");
-var nodefer = /* @__PURE__ */ __name((fn) => fn(), "nodefer");
-var isEndish = /* @__PURE__ */ __name((ev) => ev === "end" || ev === "finish" || ev === "prefinish", "isEndish");
-var isArrayBufferLike = /* @__PURE__ */ __name((b) => b instanceof ArrayBuffer || !!b && typeof b === "object" && b.constructor && b.constructor.name === "ArrayBuffer" && b.byteLength >= 0, "isArrayBufferLike");
-var isArrayBufferView = /* @__PURE__ */ __name((b) => !Buffer.isBuffer(b) && ArrayBuffer.isView(b), "isArrayBufferView");
-var Pipe = class {
-  static {
-    __name(this, "Pipe");
-  }
-  src;
-  dest;
-  opts;
-  ondrain;
-  constructor(src, dest, opts) {
-    this.src = src;
-    this.dest = dest;
-    this.opts = opts;
-    this.ondrain = () => src[RESUME]();
-    this.dest.on("drain", this.ondrain);
-  }
-  unpipe() {
-    this.dest.removeListener("drain", this.ondrain);
-  }
-  // only here for the prototype
-  /* c8 ignore start */
-  proxyErrors(_er) {
-  }
-  /* c8 ignore stop */
-  end() {
-    this.unpipe();
-    if (this.opts.end)
-      this.dest.end();
-  }
-};
-var PipeProxyErrors = class extends Pipe {
-  static {
-    __name(this, "PipeProxyErrors");
-  }
-  unpipe() {
-    this.src.removeListener("error", this.proxyErrors);
-    super.unpipe();
-  }
-  constructor(src, dest, opts) {
-    super(src, dest, opts);
-    this.proxyErrors = (er) => dest.emit("error", er);
-    src.on("error", this.proxyErrors);
-  }
-};
-var isObjectModeOptions = /* @__PURE__ */ __name((o) => !!o.objectMode, "isObjectModeOptions");
-var isEncodingOptions = /* @__PURE__ */ __name((o) => !o.objectMode && !!o.encoding && o.encoding !== "buffer", "isEncodingOptions");
-var Minipass = class extends import_node_events.EventEmitter {
-  static {
-    __name(this, "Minipass");
-  }
-  [FLOWING] = false;
-  [PAUSED] = false;
-  [PIPES] = [];
-  [BUFFER] = [];
-  [OBJECTMODE];
-  [ENCODING];
-  [ASYNC];
-  [DECODER];
-  [EOF] = false;
-  [EMITTED_END] = false;
-  [EMITTING_END] = false;
-  [CLOSED] = false;
-  [EMITTED_ERROR] = null;
-  [BUFFERLENGTH] = 0;
-  [DESTROYED] = false;
-  [SIGNAL];
-  [ABORTED] = false;
-  [DATALISTENERS] = 0;
-  [DISCARDED] = false;
-  /**
-   * true if the stream can be written
-   */
-  writable = true;
-  /**
-   * true if the stream can be read
-   */
-  readable = true;
-  /**
-   * If `RType` is Buffer, then options do not need to be provided.
-   * Otherwise, an options object must be provided to specify either
-   * {@link Minipass.SharedOptions.objectMode} or
-   * {@link Minipass.SharedOptions.encoding}, as appropriate.
-   */
-  constructor(...args) {
-    const options = args[0] || {};
-    super();
-    if (options.objectMode && typeof options.encoding === "string") {
-      throw new TypeError("Encoding and objectMode may not be used together");
-    }
-    if (isObjectModeOptions(options)) {
-      this[OBJECTMODE] = true;
-      this[ENCODING] = null;
-    } else if (isEncodingOptions(options)) {
-      this[ENCODING] = options.encoding;
-      this[OBJECTMODE] = false;
-    } else {
-      this[OBJECTMODE] = false;
-      this[ENCODING] = null;
-    }
-    this[ASYNC] = !!options.async;
-    this[DECODER] = this[ENCODING] ? new import_node_string_decoder.StringDecoder(this[ENCODING]) : null;
-    if (options && options.debugExposeBuffer === true) {
-      Object.defineProperty(this, "buffer", { get: /* @__PURE__ */ __name(() => this[BUFFER], "get") });
-    }
-    if (options && options.debugExposePipes === true) {
-      Object.defineProperty(this, "pipes", { get: /* @__PURE__ */ __name(() => this[PIPES], "get") });
-    }
-    const { signal } = options;
-    if (signal) {
-      this[SIGNAL] = signal;
-      if (signal.aborted) {
-        this[ABORT]();
-      } else {
-        signal.addEventListener("abort", () => this[ABORT]());
-      }
-    }
-  }
-  /**
-   * The amount of data stored in the buffer waiting to be read.
-   *
-   * For Buffer strings, this will be the total byte length.
-   * For string encoding streams, this will be the string character length,
-   * according to JavaScript's `string.length` logic.
-   * For objectMode streams, this is a count of the items waiting to be
-   * emitted.
-   */
-  get bufferLength() {
-    return this[BUFFERLENGTH];
-  }
-  /**
-   * The `BufferEncoding` currently in use, or `null`
-   */
-  get encoding() {
-    return this[ENCODING];
-  }
-  /**
-   * @deprecated - This is a read only property
-   */
-  set encoding(_enc) {
-    throw new Error("Encoding must be set at instantiation time");
-  }
-  /**
-   * @deprecated - Encoding may only be set at instantiation time
-   */
-  setEncoding(_enc) {
-    throw new Error("Encoding must be set at instantiation time");
-  }
-  /**
-   * True if this is an objectMode stream
-   */
-  get objectMode() {
-    return this[OBJECTMODE];
-  }
-  /**
-   * @deprecated - This is a read-only property
-   */
-  set objectMode(_om) {
-    throw new Error("objectMode must be set at instantiation time");
-  }
-  /**
-   * true if this is an async stream
-   */
-  get ["async"]() {
-    return this[ASYNC];
-  }
-  /**
-   * Set to true to make this stream async.
-   *
-   * Once set, it cannot be unset, as this would potentially cause incorrect
-   * behavior.  Ie, a sync stream can be made async, but an async stream
-   * cannot be safely made sync.
-   */
-  set ["async"](a) {
-    this[ASYNC] = this[ASYNC] || !!a;
-  }
-  // drop everything and get out of the flow completely
-  [ABORT]() {
-    this[ABORTED] = true;
-    this.emit("abort", this[SIGNAL]?.reason);
-    this.destroy(this[SIGNAL]?.reason);
-  }
-  /**
-   * True if the stream has been aborted.
-   */
-  get aborted() {
-    return this[ABORTED];
-  }
-  /**
-   * No-op setter. Stream aborted status is set via the AbortSignal provided
-   * in the constructor options.
-   */
-  set aborted(_) {
-  }
-  write(chunk, encoding, cb2) {
-    if (this[ABORTED])
-      return false;
-    if (this[EOF])
-      throw new Error("write after end");
-    if (this[DESTROYED]) {
-      this.emit("error", Object.assign(new Error("Cannot call write after a stream was destroyed"), { code: "ERR_STREAM_DESTROYED" }));
-      return true;
-    }
-    if (typeof encoding === "function") {
-      cb2 = encoding;
-      encoding = "utf8";
-    }
-    if (!encoding)
-      encoding = "utf8";
-    const fn = this[ASYNC] ? defer : nodefer;
-    if (!this[OBJECTMODE] && !Buffer.isBuffer(chunk)) {
-      if (isArrayBufferView(chunk)) {
-        chunk = Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength);
-      } else if (isArrayBufferLike(chunk)) {
-        chunk = Buffer.from(chunk);
-      } else if (typeof chunk !== "string") {
-        throw new Error("Non-contiguous data written to non-objectMode stream");
-      }
-    }
-    if (this[OBJECTMODE]) {
-      if (this[FLOWING] && this[BUFFERLENGTH] !== 0)
-        this[FLUSH](true);
-      if (this[FLOWING])
-        this.emit("data", chunk);
-      else
-        this[BUFFERPUSH](chunk);
-      if (this[BUFFERLENGTH] !== 0)
-        this.emit("readable");
-      if (cb2)
-        fn(cb2);
-      return this[FLOWING];
-    }
-    if (!chunk.length) {
-      if (this[BUFFERLENGTH] !== 0)
-        this.emit("readable");
-      if (cb2)
-        fn(cb2);
-      return this[FLOWING];
-    }
-    if (typeof chunk === "string" && // unless it is a string already ready for us to use
-    !(encoding === this[ENCODING] && !this[DECODER]?.lastNeed)) {
-      chunk = Buffer.from(chunk, encoding);
-    }
-    if (Buffer.isBuffer(chunk) && this[ENCODING]) {
-      chunk = this[DECODER].write(chunk);
-    }
-    if (this[FLOWING] && this[BUFFERLENGTH] !== 0)
-      this[FLUSH](true);
-    if (this[FLOWING])
-      this.emit("data", chunk);
-    else
-      this[BUFFERPUSH](chunk);
-    if (this[BUFFERLENGTH] !== 0)
-      this.emit("readable");
-    if (cb2)
-      fn(cb2);
-    return this[FLOWING];
-  }
-  /**
-   * Low-level explicit read method.
-   *
-   * In objectMode, the argument is ignored, and one item is returned if
-   * available.
-   *
-   * `n` is the number of bytes (or in the case of encoding streams,
-   * characters) to consume. If `n` is not provided, then the entire buffer
-   * is returned, or `null` is returned if no data is available.
-   *
-   * If `n` is greater that the amount of data in the internal buffer,
-   * then `null` is returned.
-   */
-  read(n) {
-    if (this[DESTROYED])
-      return null;
-    this[DISCARDED] = false;
-    if (this[BUFFERLENGTH] === 0 || n === 0 || n && n > this[BUFFERLENGTH]) {
-      this[MAYBE_EMIT_END]();
-      return null;
-    }
-    if (this[OBJECTMODE])
-      n = null;
-    if (this[BUFFER].length > 1 && !this[OBJECTMODE]) {
-      this[BUFFER] = [
-        this[ENCODING] ? this[BUFFER].join("") : Buffer.concat(this[BUFFER], this[BUFFERLENGTH])
-      ];
-    }
-    const ret = this[READ](n || null, this[BUFFER][0]);
-    this[MAYBE_EMIT_END]();
-    return ret;
-  }
-  [READ](n, chunk) {
-    if (this[OBJECTMODE])
-      this[BUFFERSHIFT]();
-    else {
-      const c = chunk;
-      if (n === c.length || n === null)
-        this[BUFFERSHIFT]();
-      else if (typeof c === "string") {
-        this[BUFFER][0] = c.slice(n);
-        chunk = c.slice(0, n);
-        this[BUFFERLENGTH] -= n;
-      } else {
-        this[BUFFER][0] = c.subarray(n);
-        chunk = c.subarray(0, n);
-        this[BUFFERLENGTH] -= n;
-      }
-    }
-    this.emit("data", chunk);
-    if (!this[BUFFER].length && !this[EOF])
-      this.emit("drain");
-    return chunk;
-  }
-  end(chunk, encoding, cb2) {
-    if (typeof chunk === "function") {
-      cb2 = chunk;
-      chunk = void 0;
-    }
-    if (typeof encoding === "function") {
-      cb2 = encoding;
-      encoding = "utf8";
-    }
-    if (chunk !== void 0)
-      this.write(chunk, encoding);
-    if (cb2)
-      this.once("end", cb2);
-    this[EOF] = true;
-    this.writable = false;
-    if (this[FLOWING] || !this[PAUSED])
-      this[MAYBE_EMIT_END]();
-    return this;
-  }
-  // don't let the internal resume be overwritten
-  [RESUME]() {
-    if (this[DESTROYED])
-      return;
-    if (!this[DATALISTENERS] && !this[PIPES].length) {
-      this[DISCARDED] = true;
-    }
-    this[PAUSED] = false;
-    this[FLOWING] = true;
-    this.emit("resume");
-    if (this[BUFFER].length)
-      this[FLUSH]();
-    else if (this[EOF])
-      this[MAYBE_EMIT_END]();
-    else
-      this.emit("drain");
-  }
-  /**
-   * Resume the stream if it is currently in a paused state
-   *
-   * If called when there are no pipe destinations or `data` event listeners,
-   * this will place the stream in a "discarded" state, where all data will
-   * be thrown away. The discarded state is removed if a pipe destination or
-   * data handler is added, if pause() is called, or if any synchronous or
-   * asynchronous iteration is started.
-   */
-  resume() {
-    return this[RESUME]();
-  }
-  /**
-   * Pause the stream
-   */
-  pause() {
-    this[FLOWING] = false;
-    this[PAUSED] = true;
-    this[DISCARDED] = false;
-  }
-  /**
-   * true if the stream has been forcibly destroyed
-   */
-  get destroyed() {
-    return this[DESTROYED];
-  }
-  /**
-   * true if the stream is currently in a flowing state, meaning that
-   * any writes will be immediately emitted.
-   */
-  get flowing() {
-    return this[FLOWING];
-  }
-  /**
-   * true if the stream is currently in a paused state
-   */
-  get paused() {
-    return this[PAUSED];
-  }
-  [BUFFERPUSH](chunk) {
-    if (this[OBJECTMODE])
-      this[BUFFERLENGTH] += 1;
-    else
-      this[BUFFERLENGTH] += chunk.length;
-    this[BUFFER].push(chunk);
-  }
-  [BUFFERSHIFT]() {
-    if (this[OBJECTMODE])
-      this[BUFFERLENGTH] -= 1;
-    else
-      this[BUFFERLENGTH] -= this[BUFFER][0].length;
-    return this[BUFFER].shift();
-  }
-  [FLUSH](noDrain = false) {
-    do {
-    } while (this[FLUSHCHUNK](this[BUFFERSHIFT]()) && this[BUFFER].length);
-    if (!noDrain && !this[BUFFER].length && !this[EOF])
-      this.emit("drain");
-  }
-  [FLUSHCHUNK](chunk) {
-    this.emit("data", chunk);
-    return this[FLOWING];
-  }
-  /**
-   * Pipe all data emitted by this stream into the destination provided.
-   *
-   * Triggers the flow of data.
-   */
-  pipe(dest, opts) {
-    if (this[DESTROYED])
-      return dest;
-    this[DISCARDED] = false;
-    const ended = this[EMITTED_END];
-    opts = opts || {};
-    if (dest === proc.stdout || dest === proc.stderr)
-      opts.end = false;
-    else
-      opts.end = opts.end !== false;
-    opts.proxyErrors = !!opts.proxyErrors;
-    if (ended) {
-      if (opts.end)
-        dest.end();
-    } else {
-      this[PIPES].push(!opts.proxyErrors ? new Pipe(this, dest, opts) : new PipeProxyErrors(this, dest, opts));
-      if (this[ASYNC])
-        defer(() => this[RESUME]());
-      else
-        this[RESUME]();
-    }
-    return dest;
-  }
-  /**
-   * Fully unhook a piped destination stream.
-   *
-   * If the destination stream was the only consumer of this stream (ie,
-   * there are no other piped destinations or `'data'` event listeners)
-   * then the flow of data will stop until there is another consumer or
-   * {@link Minipass#resume} is explicitly called.
-   */
-  unpipe(dest) {
-    const p = this[PIPES].find((p2) => p2.dest === dest);
-    if (p) {
-      if (this[PIPES].length === 1) {
-        if (this[FLOWING] && this[DATALISTENERS] === 0) {
-          this[FLOWING] = false;
-        }
-        this[PIPES] = [];
-      } else
-        this[PIPES].splice(this[PIPES].indexOf(p), 1);
-      p.unpipe();
-    }
-  }
-  /**
-   * Alias for {@link Minipass#on}
-   */
-  addListener(ev, handler) {
-    return this.on(ev, handler);
-  }
-  /**
-   * Mostly identical to `EventEmitter.on`, with the following
-   * behavior differences to prevent data loss and unnecessary hangs:
-   *
-   * - Adding a 'data' event handler will trigger the flow of data
-   *
-   * - Adding a 'readable' event handler when there is data waiting to be read
-   *   will cause 'readable' to be emitted immediately.
-   *
-   * - Adding an 'endish' event handler ('end', 'finish', etc.) which has
-   *   already passed will cause the event to be emitted immediately and all
-   *   handlers removed.
-   *
-   * - Adding an 'error' event handler after an error has been emitted will
-   *   cause the event to be re-emitted immediately with the error previously
-   *   raised.
-   */
-  on(ev, handler) {
-    const ret = super.on(ev, handler);
-    if (ev === "data") {
-      this[DISCARDED] = false;
-      this[DATALISTENERS]++;
-      if (!this[PIPES].length && !this[FLOWING]) {
-        this[RESUME]();
-      }
-    } else if (ev === "readable" && this[BUFFERLENGTH] !== 0) {
-      super.emit("readable");
-    } else if (isEndish(ev) && this[EMITTED_END]) {
-      super.emit(ev);
-      this.removeAllListeners(ev);
-    } else if (ev === "error" && this[EMITTED_ERROR]) {
-      const h = handler;
-      if (this[ASYNC])
-        defer(() => h.call(this, this[EMITTED_ERROR]));
-      else
-        h.call(this, this[EMITTED_ERROR]);
-    }
-    return ret;
-  }
-  /**
-   * Alias for {@link Minipass#off}
-   */
-  removeListener(ev, handler) {
-    return this.off(ev, handler);
-  }
-  /**
-   * Mostly identical to `EventEmitter.off`
-   *
-   * If a 'data' event handler is removed, and it was the last consumer
-   * (ie, there are no pipe destinations or other 'data' event listeners),
-   * then the flow of data will stop until there is another consumer or
-   * {@link Minipass#resume} is explicitly called.
-   */
-  off(ev, handler) {
-    const ret = super.off(ev, handler);
-    if (ev === "data") {
-      this[DATALISTENERS] = this.listeners("data").length;
-      if (this[DATALISTENERS] === 0 && !this[DISCARDED] && !this[PIPES].length) {
-        this[FLOWING] = false;
-      }
-    }
-    return ret;
-  }
-  /**
-   * Mostly identical to `EventEmitter.removeAllListeners`
-   *
-   * If all 'data' event handlers are removed, and they were the last consumer
-   * (ie, there are no pipe destinations), then the flow of data will stop
-   * until there is another consumer or {@link Minipass#resume} is explicitly
-   * called.
-   */
-  removeAllListeners(ev) {
-    const ret = super.removeAllListeners(ev);
-    if (ev === "data" || ev === void 0) {
-      this[DATALISTENERS] = 0;
-      if (!this[DISCARDED] && !this[PIPES].length) {
-        this[FLOWING] = false;
-      }
-    }
-    return ret;
-  }
-  /**
-   * true if the 'end' event has been emitted
-   */
-  get emittedEnd() {
-    return this[EMITTED_END];
-  }
-  [MAYBE_EMIT_END]() {
-    if (!this[EMITTING_END] && !this[EMITTED_END] && !this[DESTROYED] && this[BUFFER].length === 0 && this[EOF]) {
-      this[EMITTING_END] = true;
-      this.emit("end");
-      this.emit("prefinish");
-      this.emit("finish");
-      if (this[CLOSED])
-        this.emit("close");
-      this[EMITTING_END] = false;
-    }
-  }
-  /**
-   * Mostly identical to `EventEmitter.emit`, with the following
-   * behavior differences to prevent data loss and unnecessary hangs:
-   *
-   * If the stream has been destroyed, and the event is something other
-   * than 'close' or 'error', then `false` is returned and no handlers
-   * are called.
-   *
-   * If the event is 'end', and has already been emitted, then the event
-   * is ignored. If the stream is in a paused or non-flowing state, then
-   * the event will be deferred until data flow resumes. If the stream is
-   * async, then handlers will be called on the next tick rather than
-   * immediately.
-   *
-   * If the event is 'close', and 'end' has not yet been emitted, then
-   * the event will be deferred until after 'end' is emitted.
-   *
-   * If the event is 'error', and an AbortSignal was provided for the stream,
-   * and there are no listeners, then the event is ignored, matching the
-   * behavior of node core streams in the presense of an AbortSignal.
-   *
-   * If the event is 'finish' or 'prefinish', then all listeners will be
-   * removed after emitting the event, to prevent double-firing.
-   */
-  emit(ev, ...args) {
-    const data = args[0];
-    if (ev !== "error" && ev !== "close" && ev !== DESTROYED && this[DESTROYED]) {
-      return false;
-    } else if (ev === "data") {
-      return !this[OBJECTMODE] && !data ? false : this[ASYNC] ? (defer(() => this[EMITDATA](data)), true) : this[EMITDATA](data);
-    } else if (ev === "end") {
-      return this[EMITEND]();
-    } else if (ev === "close") {
-      this[CLOSED] = true;
-      if (!this[EMITTED_END] && !this[DESTROYED])
-        return false;
-      const ret2 = super.emit("close");
-      this.removeAllListeners("close");
-      return ret2;
-    } else if (ev === "error") {
-      this[EMITTED_ERROR] = data;
-      super.emit(ERROR, data);
-      const ret2 = !this[SIGNAL] || this.listeners("error").length ? super.emit("error", data) : false;
-      this[MAYBE_EMIT_END]();
-      return ret2;
-    } else if (ev === "resume") {
-      const ret2 = super.emit("resume");
-      this[MAYBE_EMIT_END]();
-      return ret2;
-    } else if (ev === "finish" || ev === "prefinish") {
-      const ret2 = super.emit(ev);
-      this.removeAllListeners(ev);
-      return ret2;
-    }
-    const ret = super.emit(ev, ...args);
-    this[MAYBE_EMIT_END]();
-    return ret;
-  }
-  [EMITDATA](data) {
-    for (const p of this[PIPES]) {
-      if (p.dest.write(data) === false)
-        this.pause();
-    }
-    const ret = this[DISCARDED] ? false : super.emit("data", data);
-    this[MAYBE_EMIT_END]();
-    return ret;
-  }
-  [EMITEND]() {
-    if (this[EMITTED_END])
-      return false;
-    this[EMITTED_END] = true;
-    this.readable = false;
-    return this[ASYNC] ? (defer(() => this[EMITEND2]()), true) : this[EMITEND2]();
-  }
-  [EMITEND2]() {
-    if (this[DECODER]) {
-      const data = this[DECODER].end();
-      if (data) {
-        for (const p of this[PIPES]) {
-          p.dest.write(data);
-        }
-        if (!this[DISCARDED])
-          super.emit("data", data);
-      }
-    }
-    for (const p of this[PIPES]) {
-      p.end();
-    }
-    const ret = super.emit("end");
-    this.removeAllListeners("end");
-    return ret;
-  }
-  /**
-   * Return a Promise that resolves to an array of all emitted data once
-   * the stream ends.
-   */
-  async collect() {
-    const buf = Object.assign([], {
-      dataLength: 0
-    });
-    if (!this[OBJECTMODE])
-      buf.dataLength = 0;
-    const p = this.promise();
-    this.on("data", (c) => {
-      buf.push(c);
-      if (!this[OBJECTMODE])
-        buf.dataLength += c.length;
-    });
-    await p;
-    return buf;
-  }
-  /**
-   * Return a Promise that resolves to the concatenation of all emitted data
-   * once the stream ends.
-   *
-   * Not allowed on objectMode streams.
-   */
-  async concat() {
-    if (this[OBJECTMODE]) {
-      throw new Error("cannot concat in objectMode");
-    }
-    const buf = await this.collect();
-    return this[ENCODING] ? buf.join("") : Buffer.concat(buf, buf.dataLength);
-  }
-  /**
-   * Return a void Promise that resolves once the stream ends.
-   */
-  async promise() {
-    return new Promise((resolve, reject) => {
-      this.on(DESTROYED, () => reject(new Error("stream destroyed")));
-      this.on("error", (er) => reject(er));
-      this.on("end", () => resolve());
-    });
-  }
-  /**
-   * Asynchronous `for await of` iteration.
-   *
-   * This will continue emitting all chunks until the stream terminates.
-   */
-  [Symbol.asyncIterator]() {
-    this[DISCARDED] = false;
-    let stopped = false;
-    const stop = /* @__PURE__ */ __name(async () => {
-      this.pause();
-      stopped = true;
-      return { value: void 0, done: true };
-    }, "stop");
-    const next = /* @__PURE__ */ __name(() => {
-      if (stopped)
-        return stop();
-      const res = this.read();
-      if (res !== null)
-        return Promise.resolve({ done: false, value: res });
-      if (this[EOF])
-        return stop();
-      let resolve;
-      let reject;
-      const onerr = /* @__PURE__ */ __name((er) => {
-        this.off("data", ondata);
-        this.off("end", onend);
-        this.off(DESTROYED, ondestroy);
-        stop();
-        reject(er);
-      }, "onerr");
-      const ondata = /* @__PURE__ */ __name((value) => {
-        this.off("error", onerr);
-        this.off("end", onend);
-        this.off(DESTROYED, ondestroy);
-        this.pause();
-        resolve({ value, done: !!this[EOF] });
-      }, "ondata");
-      const onend = /* @__PURE__ */ __name(() => {
-        this.off("error", onerr);
-        this.off("data", ondata);
-        this.off(DESTROYED, ondestroy);
-        stop();
-        resolve({ done: true, value: void 0 });
-      }, "onend");
-      const ondestroy = /* @__PURE__ */ __name(() => onerr(new Error("stream destroyed")), "ondestroy");
-      return new Promise((res2, rej) => {
-        reject = rej;
-        resolve = res2;
-        this.once(DESTROYED, ondestroy);
-        this.once("error", onerr);
-        this.once("end", onend);
-        this.once("data", ondata);
-      });
-    }, "next");
-    return {
-      next,
-      throw: stop,
-      return: stop,
-      [Symbol.asyncIterator]() {
-        return this;
-      }
-    };
-  }
-  /**
-   * Synchronous `for of` iteration.
-   *
-   * The iteration will terminate when the internal buffer runs out, even
-   * if the stream has not yet terminated.
-   */
-  [Symbol.iterator]() {
-    this[DISCARDED] = false;
-    let stopped = false;
-    const stop = /* @__PURE__ */ __name(() => {
-      this.pause();
-      this.off(ERROR, stop);
-      this.off(DESTROYED, stop);
-      this.off("end", stop);
-      stopped = true;
-      return { done: true, value: void 0 };
-    }, "stop");
-    const next = /* @__PURE__ */ __name(() => {
-      if (stopped)
-        return stop();
-      const value = this.read();
-      return value === null ? stop() : { done: false, value };
-    }, "next");
-    this.once("end", stop);
-    this.once(ERROR, stop);
-    this.once(DESTROYED, stop);
-    return {
-      next,
-      throw: stop,
-      return: stop,
-      [Symbol.iterator]() {
-        return this;
-      }
-    };
-  }
-  /**
-   * Destroy a stream, preventing it from being used for any further purpose.
-   *
-   * If the stream has a `close()` method, then it will be called on
-   * destruction.
-   *
-   * After destruction, any attempt to write data, read data, or emit most
-   * events will be ignored.
-   *
-   * If an error argument is provided, then it will be emitted in an
-   * 'error' event.
-   */
-  destroy(er) {
-    if (this[DESTROYED]) {
-      if (er)
-        this.emit("error", er);
-      else
-        this.emit(DESTROYED);
-      return this;
-    }
-    this[DESTROYED] = true;
-    this[DISCARDED] = true;
-    this[BUFFER].length = 0;
-    this[BUFFERLENGTH] = 0;
-    const wc = this;
-    if (typeof wc.close === "function" && !this[CLOSED])
-      wc.close();
-    if (er)
-      this.emit("error", er);
-    else
-      this.emit(DESTROYED);
-    return this;
-  }
-  /**
-   * Alias for {@link isStream}
-   *
-   * Former export location, maintained for backwards compatibility.
-   *
-   * @deprecated
-   */
-  static get isStream() {
-    return isStream;
-  }
-};
-
-// ../../node_modules/path-scurry/dist/esm/index.js
-var realpathSync = import_fs2.realpathSync.native;
-var defaultFS = {
-  lstatSync: import_fs2.lstatSync,
-  readdir: import_fs2.readdir,
-  readdirSync: import_fs2.readdirSync,
-  readlinkSync: import_fs2.readlinkSync,
-  realpathSync,
-  promises: {
-    lstat: import_promises.lstat,
-    readdir: import_promises.readdir,
-    readlink: import_promises.readlink,
-    realpath: import_promises.realpath
-  }
-};
-var fsFromOption = /* @__PURE__ */ __name((fsOption) => !fsOption || fsOption === defaultFS || fsOption === actualFS ? defaultFS : {
-  ...defaultFS,
-  ...fsOption,
-  promises: {
-    ...defaultFS.promises,
-    ...fsOption.promises || {}
-  }
-}, "fsFromOption");
-var uncDriveRegexp = /^\\\\\?\\([a-z]:)\\?$/i;
-var uncToDrive = /* @__PURE__ */ __name((rootPath) => rootPath.replace(/\//g, "\\").replace(uncDriveRegexp, "$1\\"), "uncToDrive");
-var eitherSep = /[\\\/]/;
-var UNKNOWN = 0;
-var IFIFO = 1;
-var IFCHR = 2;
-var IFDIR = 4;
-var IFBLK = 6;
-var IFREG = 8;
-var IFLNK = 10;
-var IFSOCK = 12;
-var IFMT = 15;
-var IFMT_UNKNOWN = ~IFMT;
-var READDIR_CALLED = 16;
-var LSTAT_CALLED = 32;
-var ENOTDIR = 64;
-var ENOENT = 128;
-var ENOREADLINK = 256;
-var ENOREALPATH = 512;
-var ENOCHILD = ENOTDIR | ENOENT | ENOREALPATH;
-var TYPEMASK = 1023;
-var entToType = /* @__PURE__ */ __name((s) => s.isFile() ? IFREG : s.isDirectory() ? IFDIR : s.isSymbolicLink() ? IFLNK : s.isCharacterDevice() ? IFCHR : s.isBlockDevice() ? IFBLK : s.isSocket() ? IFSOCK : s.isFIFO() ? IFIFO : UNKNOWN, "entToType");
-var normalizeCache = /* @__PURE__ */ new Map();
-var normalize = /* @__PURE__ */ __name((s) => {
-  const c = normalizeCache.get(s);
-  if (c)
-    return c;
-  const n = s.normalize("NFKD");
-  normalizeCache.set(s, n);
-  return n;
-}, "normalize");
-var normalizeNocaseCache = /* @__PURE__ */ new Map();
-var normalizeNocase = /* @__PURE__ */ __name((s) => {
-  const c = normalizeNocaseCache.get(s);
-  if (c)
-    return c;
-  const n = normalize(s.toLowerCase());
-  normalizeNocaseCache.set(s, n);
-  return n;
-}, "normalizeNocase");
-var ResolveCache = class extends LRUCache {
-  static {
-    __name(this, "ResolveCache");
-  }
-  constructor() {
-    super({ max: 256 });
-  }
-};
-var ChildrenCache = class extends LRUCache {
-  static {
-    __name(this, "ChildrenCache");
-  }
-  constructor(maxSize = 16 * 1024) {
-    super({
-      maxSize,
-      // parent + children
-      sizeCalculation: /* @__PURE__ */ __name((a) => a.length + 1, "sizeCalculation")
-    });
-  }
-};
-var setAsCwd = Symbol("PathScurry setAsCwd");
-var PathBase = class {
-  static {
-    __name(this, "PathBase");
-  }
-  /**
-   * the basename of this path
-   *
-   * **Important**: *always* test the path name against any test string
-   * usingthe {@link isNamed} method, and not by directly comparing this
-   * string. Otherwise, unicode path strings that the system sees as identical
-   * will not be properly treated as the same path, leading to incorrect
-   * behavior and possible security issues.
-   */
-  name;
-  /**
-   * the Path entry corresponding to the path root.
-   *
-   * @internal
-   */
-  root;
-  /**
-   * All roots found within the current PathScurry family
-   *
-   * @internal
-   */
-  roots;
-  /**
-   * a reference to the parent path, or undefined in the case of root entries
-   *
-   * @internal
-   */
-  parent;
-  /**
-   * boolean indicating whether paths are compared case-insensitively
-   * @internal
-   */
-  nocase;
-  /**
-   * boolean indicating that this path is the current working directory
-   * of the PathScurry collection that contains it.
-   */
-  isCWD = false;
-  // potential default fs override
-  #fs;
-  // Stats fields
-  #dev;
-  get dev() {
-    return this.#dev;
-  }
-  #mode;
-  get mode() {
-    return this.#mode;
-  }
-  #nlink;
-  get nlink() {
-    return this.#nlink;
-  }
-  #uid;
-  get uid() {
-    return this.#uid;
-  }
-  #gid;
-  get gid() {
-    return this.#gid;
-  }
-  #rdev;
-  get rdev() {
-    return this.#rdev;
-  }
-  #blksize;
-  get blksize() {
-    return this.#blksize;
-  }
-  #ino;
-  get ino() {
-    return this.#ino;
-  }
-  #size;
-  get size() {
-    return this.#size;
-  }
-  #blocks;
-  get blocks() {
-    return this.#blocks;
-  }
-  #atimeMs;
-  get atimeMs() {
-    return this.#atimeMs;
-  }
-  #mtimeMs;
-  get mtimeMs() {
-    return this.#mtimeMs;
-  }
-  #ctimeMs;
-  get ctimeMs() {
-    return this.#ctimeMs;
-  }
-  #birthtimeMs;
-  get birthtimeMs() {
-    return this.#birthtimeMs;
-  }
-  #atime;
-  get atime() {
-    return this.#atime;
-  }
-  #mtime;
-  get mtime() {
-    return this.#mtime;
-  }
-  #ctime;
-  get ctime() {
-    return this.#ctime;
-  }
-  #birthtime;
-  get birthtime() {
-    return this.#birthtime;
-  }
-  #matchName;
-  #depth;
-  #fullpath;
-  #fullpathPosix;
-  #relative;
-  #relativePosix;
-  #type;
-  #children;
-  #linkTarget;
-  #realpath;
-  /**
-   * This property is for compatibility with the Dirent class as of
-   * Node v20, where Dirent['parentPath'] refers to the path of the
-   * directory that was passed to readdir. For root entries, it's the path
-   * to the entry itself.
-   */
-  get parentPath() {
-    return (this.parent || this).fullpath();
-  }
-  /**
-   * Deprecated alias for Dirent['parentPath'] Somewhat counterintuitively,
-   * this property refers to the *parent* path, not the path object itself.
-   *
-   * @deprecated
-   */
-  get path() {
-    return this.parentPath;
-  }
-  /**
-   * Do not create new Path objects directly.  They should always be accessed
-   * via the PathScurry class or other methods on the Path class.
-   *
-   * @internal
-   */
-  constructor(name, type = UNKNOWN, root2, roots, nocase, children, opts) {
-    this.name = name;
-    this.#matchName = nocase ? normalizeNocase(name) : normalize(name);
-    this.#type = type & TYPEMASK;
-    this.nocase = nocase;
-    this.roots = roots;
-    this.root = root2 || this;
-    this.#children = children;
-    this.#fullpath = opts.fullpath;
-    this.#relative = opts.relative;
-    this.#relativePosix = opts.relativePosix;
-    this.parent = opts.parent;
-    if (this.parent) {
-      this.#fs = this.parent.#fs;
-    } else {
-      this.#fs = fsFromOption(opts.fs);
-    }
-  }
-  /**
-   * Returns the depth of the Path object from its root.
-   *
-   * For example, a path at `/foo/bar` would have a depth of 2.
-   */
-  depth() {
-    if (this.#depth !== void 0)
-      return this.#depth;
-    if (!this.parent)
-      return this.#depth = 0;
-    return this.#depth = this.parent.depth() + 1;
-  }
-  /**
-   * @internal
-   */
-  childrenCache() {
-    return this.#children;
-  }
-  /**
-   * Get the Path object referenced by the string path, resolved from this Path
-   */
-  resolve(path6) {
-    if (!path6) {
-      return this;
-    }
-    const rootPath = this.getRootString(path6);
-    const dir = path6.substring(rootPath.length);
-    const dirParts = dir.split(this.splitSep);
-    const result = rootPath ? this.getRoot(rootPath).#resolveParts(dirParts) : this.#resolveParts(dirParts);
-    return result;
-  }
-  #resolveParts(dirParts) {
-    let p = this;
-    for (const part of dirParts) {
-      p = p.child(part);
-    }
-    return p;
-  }
-  /**
-   * Returns the cached children Path objects, if still available.  If they
-   * have fallen out of the cache, then returns an empty array, and resets the
-   * READDIR_CALLED bit, so that future calls to readdir() will require an fs
-   * lookup.
-   *
-   * @internal
-   */
-  children() {
-    const cached = this.#children.get(this);
-    if (cached) {
-      return cached;
-    }
-    const children = Object.assign([], { provisional: 0 });
-    this.#children.set(this, children);
-    this.#type &= ~READDIR_CALLED;
-    return children;
-  }
-  /**
-   * Resolves a path portion and returns or creates the child Path.
-   *
-   * Returns `this` if pathPart is `''` or `'.'`, or `parent` if pathPart is
-   * `'..'`.
-   *
-   * This should not be called directly.  If `pathPart` contains any path
-   * separators, it will lead to unsafe undefined behavior.
-   *
-   * Use `Path.resolve()` instead.
-   *
-   * @internal
-   */
-  child(pathPart, opts) {
-    if (pathPart === "" || pathPart === ".") {
-      return this;
-    }
-    if (pathPart === "..") {
-      return this.parent || this;
-    }
-    const children = this.children();
-    const name = this.nocase ? normalizeNocase(pathPart) : normalize(pathPart);
-    for (const p of children) {
-      if (p.#matchName === name) {
-        return p;
-      }
-    }
-    const s = this.parent ? this.sep : "";
-    const fullpath = this.#fullpath ? this.#fullpath + s + pathPart : void 0;
-    const pchild = this.newChild(pathPart, UNKNOWN, {
-      ...opts,
-      parent: this,
-      fullpath
-    });
-    if (!this.canReaddir()) {
-      pchild.#type |= ENOENT;
-    }
-    children.push(pchild);
-    return pchild;
-  }
-  /**
-   * The relative path from the cwd. If it does not share an ancestor with
-   * the cwd, then this ends up being equivalent to the fullpath()
-   */
-  relative() {
-    if (this.isCWD)
-      return "";
-    if (this.#relative !== void 0) {
-      return this.#relative;
-    }
-    const name = this.name;
-    const p = this.parent;
-    if (!p) {
-      return this.#relative = this.name;
-    }
-    const pv = p.relative();
-    return pv + (!pv || !p.parent ? "" : this.sep) + name;
-  }
-  /**
-   * The relative path from the cwd, using / as the path separator.
-   * If it does not share an ancestor with
-   * the cwd, then this ends up being equivalent to the fullpathPosix()
-   * On posix systems, this is identical to relative().
-   */
-  relativePosix() {
-    if (this.sep === "/")
-      return this.relative();
-    if (this.isCWD)
-      return "";
-    if (this.#relativePosix !== void 0)
-      return this.#relativePosix;
-    const name = this.name;
-    const p = this.parent;
-    if (!p) {
-      return this.#relativePosix = this.fullpathPosix();
-    }
-    const pv = p.relativePosix();
-    return pv + (!pv || !p.parent ? "" : "/") + name;
-  }
-  /**
-   * The fully resolved path string for this Path entry
-   */
-  fullpath() {
-    if (this.#fullpath !== void 0) {
-      return this.#fullpath;
-    }
-    const name = this.name;
-    const p = this.parent;
-    if (!p) {
-      return this.#fullpath = this.name;
-    }
-    const pv = p.fullpath();
-    const fp = pv + (!p.parent ? "" : this.sep) + name;
-    return this.#fullpath = fp;
-  }
-  /**
-   * On platforms other than windows, this is identical to fullpath.
-   *
-   * On windows, this is overridden to return the forward-slash form of the
-   * full UNC path.
-   */
-  fullpathPosix() {
-    if (this.#fullpathPosix !== void 0)
-      return this.#fullpathPosix;
-    if (this.sep === "/")
-      return this.#fullpathPosix = this.fullpath();
-    if (!this.parent) {
-      const p2 = this.fullpath().replace(/\\/g, "/");
-      if (/^[a-z]:\//i.test(p2)) {
-        return this.#fullpathPosix = `//?/${p2}`;
-      } else {
-        return this.#fullpathPosix = p2;
-      }
-    }
-    const p = this.parent;
-    const pfpp = p.fullpathPosix();
-    const fpp = pfpp + (!pfpp || !p.parent ? "" : "/") + this.name;
-    return this.#fullpathPosix = fpp;
-  }
-  /**
-   * Is the Path of an unknown type?
-   *
-   * Note that we might know *something* about it if there has been a previous
-   * filesystem operation, for example that it does not exist, or is not a
-   * link, or whether it has child entries.
-   */
-  isUnknown() {
-    return (this.#type & IFMT) === UNKNOWN;
-  }
-  isType(type) {
-    return this[`is${type}`]();
-  }
-  getType() {
-    return this.isUnknown() ? "Unknown" : this.isDirectory() ? "Directory" : this.isFile() ? "File" : this.isSymbolicLink() ? "SymbolicLink" : this.isFIFO() ? "FIFO" : this.isCharacterDevice() ? "CharacterDevice" : this.isBlockDevice() ? "BlockDevice" : (
-      /* c8 ignore start */
-      this.isSocket() ? "Socket" : "Unknown"
-    );
-  }
-  /**
-   * Is the Path a regular file?
-   */
-  isFile() {
-    return (this.#type & IFMT) === IFREG;
-  }
-  /**
-   * Is the Path a directory?
-   */
-  isDirectory() {
-    return (this.#type & IFMT) === IFDIR;
-  }
-  /**
-   * Is the path a character device?
-   */
-  isCharacterDevice() {
-    return (this.#type & IFMT) === IFCHR;
-  }
-  /**
-   * Is the path a block device?
-   */
-  isBlockDevice() {
-    return (this.#type & IFMT) === IFBLK;
-  }
-  /**
-   * Is the path a FIFO pipe?
-   */
-  isFIFO() {
-    return (this.#type & IFMT) === IFIFO;
-  }
-  /**
-   * Is the path a socket?
-   */
-  isSocket() {
-    return (this.#type & IFMT) === IFSOCK;
-  }
-  /**
-   * Is the path a symbolic link?
-   */
-  isSymbolicLink() {
-    return (this.#type & IFLNK) === IFLNK;
-  }
-  /**
-   * Return the entry if it has been subject of a successful lstat, or
-   * undefined otherwise.
-   *
-   * Does not read the filesystem, so an undefined result *could* simply
-   * mean that we haven't called lstat on it.
-   */
-  lstatCached() {
-    return this.#type & LSTAT_CALLED ? this : void 0;
-  }
-  /**
-   * Return the cached link target if the entry has been the subject of a
-   * successful readlink, or undefined otherwise.
-   *
-   * Does not read the filesystem, so an undefined result *could* just mean we
-   * don't have any cached data. Only use it if you are very sure that a
-   * readlink() has been called at some point.
-   */
-  readlinkCached() {
-    return this.#linkTarget;
-  }
-  /**
-   * Returns the cached realpath target if the entry has been the subject
-   * of a successful realpath, or undefined otherwise.
-   *
-   * Does not read the filesystem, so an undefined result *could* just mean we
-   * don't have any cached data. Only use it if you are very sure that a
-   * realpath() has been called at some point.
-   */
-  realpathCached() {
-    return this.#realpath;
-  }
-  /**
-   * Returns the cached child Path entries array if the entry has been the
-   * subject of a successful readdir(), or [] otherwise.
-   *
-   * Does not read the filesystem, so an empty array *could* just mean we
-   * don't have any cached data. Only use it if you are very sure that a
-   * readdir() has been called recently enough to still be valid.
-   */
-  readdirCached() {
-    const children = this.children();
-    return children.slice(0, children.provisional);
-  }
-  /**
-   * Return true if it's worth trying to readlink.  Ie, we don't (yet) have
-   * any indication that readlink will definitely fail.
-   *
-   * Returns false if the path is known to not be a symlink, if a previous
-   * readlink failed, or if the entry does not exist.
-   */
-  canReadlink() {
-    if (this.#linkTarget)
-      return true;
-    if (!this.parent)
-      return false;
-    const ifmt = this.#type & IFMT;
-    return !(ifmt !== UNKNOWN && ifmt !== IFLNK || this.#type & ENOREADLINK || this.#type & ENOENT);
-  }
-  /**
-   * Return true if readdir has previously been successfully called on this
-   * path, indicating that cachedReaddir() is likely valid.
-   */
-  calledReaddir() {
-    return !!(this.#type & READDIR_CALLED);
-  }
-  /**
-   * Returns true if the path is known to not exist. That is, a previous lstat
-   * or readdir failed to verify its existence when that would have been
-   * expected, or a parent entry was marked either enoent or enotdir.
-   */
-  isENOENT() {
-    return !!(this.#type & ENOENT);
-  }
-  /**
-   * Return true if the path is a match for the given path name.  This handles
-   * case sensitivity and unicode normalization.
-   *
-   * Note: even on case-sensitive systems, it is **not** safe to test the
-   * equality of the `.name` property to determine whether a given pathname
-   * matches, due to unicode normalization mismatches.
-   *
-   * Always use this method instead of testing the `path.name` property
-   * directly.
-   */
-  isNamed(n) {
-    return !this.nocase ? this.#matchName === normalize(n) : this.#matchName === normalizeNocase(n);
-  }
-  /**
-   * Return the Path object corresponding to the target of a symbolic link.
-   *
-   * If the Path is not a symbolic link, or if the readlink call fails for any
-   * reason, `undefined` is returned.
-   *
-   * Result is cached, and thus may be outdated if the filesystem is mutated.
-   */
-  async readlink() {
-    const target = this.#linkTarget;
-    if (target) {
-      return target;
-    }
-    if (!this.canReadlink()) {
-      return void 0;
-    }
-    if (!this.parent) {
-      return void 0;
-    }
-    try {
-      const read = await this.#fs.promises.readlink(this.fullpath());
-      const linkTarget = (await this.parent.realpath())?.resolve(read);
-      if (linkTarget) {
-        return this.#linkTarget = linkTarget;
-      }
-    } catch (er) {
-      this.#readlinkFail(er.code);
-      return void 0;
-    }
-  }
-  /**
-   * Synchronous {@link PathBase.readlink}
-   */
-  readlinkSync() {
-    const target = this.#linkTarget;
-    if (target) {
-      return target;
-    }
-    if (!this.canReadlink()) {
-      return void 0;
-    }
-    if (!this.parent) {
-      return void 0;
-    }
-    try {
-      const read = this.#fs.readlinkSync(this.fullpath());
-      const linkTarget = this.parent.realpathSync()?.resolve(read);
-      if (linkTarget) {
-        return this.#linkTarget = linkTarget;
-      }
-    } catch (er) {
-      this.#readlinkFail(er.code);
-      return void 0;
-    }
-  }
-  #readdirSuccess(children) {
-    this.#type |= READDIR_CALLED;
-    for (let p = children.provisional; p < children.length; p++) {
-      const c = children[p];
-      if (c)
-        c.#markENOENT();
-    }
-  }
-  #markENOENT() {
-    if (this.#type & ENOENT)
-      return;
-    this.#type = (this.#type | ENOENT) & IFMT_UNKNOWN;
-    this.#markChildrenENOENT();
-  }
-  #markChildrenENOENT() {
-    const children = this.children();
-    children.provisional = 0;
-    for (const p of children) {
-      p.#markENOENT();
-    }
-  }
-  #markENOREALPATH() {
-    this.#type |= ENOREALPATH;
-    this.#markENOTDIR();
-  }
-  // save the information when we know the entry is not a dir
-  #markENOTDIR() {
-    if (this.#type & ENOTDIR)
-      return;
-    let t = this.#type;
-    if ((t & IFMT) === IFDIR)
-      t &= IFMT_UNKNOWN;
-    this.#type = t | ENOTDIR;
-    this.#markChildrenENOENT();
-  }
-  #readdirFail(code = "") {
-    if (code === "ENOTDIR" || code === "EPERM") {
-      this.#markENOTDIR();
-    } else if (code === "ENOENT") {
-      this.#markENOENT();
-    } else {
-      this.children().provisional = 0;
-    }
-  }
-  #lstatFail(code = "") {
-    if (code === "ENOTDIR") {
-      const p = this.parent;
-      p.#markENOTDIR();
-    } else if (code === "ENOENT") {
-      this.#markENOENT();
-    }
-  }
-  #readlinkFail(code = "") {
-    let ter = this.#type;
-    ter |= ENOREADLINK;
-    if (code === "ENOENT")
-      ter |= ENOENT;
-    if (code === "EINVAL" || code === "UNKNOWN") {
-      ter &= IFMT_UNKNOWN;
-    }
-    this.#type = ter;
-    if (code === "ENOTDIR" && this.parent) {
-      this.parent.#markENOTDIR();
-    }
-  }
-  #readdirAddChild(e, c) {
-    return this.#readdirMaybePromoteChild(e, c) || this.#readdirAddNewChild(e, c);
-  }
-  #readdirAddNewChild(e, c) {
-    const type = entToType(e);
-    const child = this.newChild(e.name, type, { parent: this });
-    const ifmt = child.#type & IFMT;
-    if (ifmt !== IFDIR && ifmt !== IFLNK && ifmt !== UNKNOWN) {
-      child.#type |= ENOTDIR;
-    }
-    c.unshift(child);
-    c.provisional++;
-    return child;
-  }
-  #readdirMaybePromoteChild(e, c) {
-    for (let p = c.provisional; p < c.length; p++) {
-      const pchild = c[p];
-      const name = this.nocase ? normalizeNocase(e.name) : normalize(e.name);
-      if (name !== pchild.#matchName) {
-        continue;
-      }
-      return this.#readdirPromoteChild(e, pchild, p, c);
-    }
-  }
-  #readdirPromoteChild(e, p, index, c) {
-    const v = p.name;
-    p.#type = p.#type & IFMT_UNKNOWN | entToType(e);
-    if (v !== e.name)
-      p.name = e.name;
-    if (index !== c.provisional) {
-      if (index === c.length - 1)
-        c.pop();
-      else
-        c.splice(index, 1);
-      c.unshift(p);
-    }
-    c.provisional++;
-    return p;
-  }
-  /**
-   * Call lstat() on this Path, and update all known information that can be
-   * determined.
-   *
-   * Note that unlike `fs.lstat()`, the returned value does not contain some
-   * information, such as `mode`, `dev`, `nlink`, and `ino`.  If that
-   * information is required, you will need to call `fs.lstat` yourself.
-   *
-   * If the Path refers to a nonexistent file, or if the lstat call fails for
-   * any reason, `undefined` is returned.  Otherwise the updated Path object is
-   * returned.
-   *
-   * Results are cached, and thus may be out of date if the filesystem is
-   * mutated.
-   */
-  async lstat() {
-    if ((this.#type & ENOENT) === 0) {
-      try {
-        this.#applyStat(await this.#fs.promises.lstat(this.fullpath()));
-        return this;
-      } catch (er) {
-        this.#lstatFail(er.code);
-      }
-    }
-  }
-  /**
-   * synchronous {@link PathBase.lstat}
-   */
-  lstatSync() {
-    if ((this.#type & ENOENT) === 0) {
-      try {
-        this.#applyStat(this.#fs.lstatSync(this.fullpath()));
-        return this;
-      } catch (er) {
-        this.#lstatFail(er.code);
-      }
-    }
-  }
-  #applyStat(st) {
-    const { atime, atimeMs, birthtime, birthtimeMs, blksize, blocks, ctime, ctimeMs, dev, gid, ino, mode, mtime, mtimeMs, nlink, rdev, size, uid } = st;
-    this.#atime = atime;
-    this.#atimeMs = atimeMs;
-    this.#birthtime = birthtime;
-    this.#birthtimeMs = birthtimeMs;
-    this.#blksize = blksize;
-    this.#blocks = blocks;
-    this.#ctime = ctime;
-    this.#ctimeMs = ctimeMs;
-    this.#dev = dev;
-    this.#gid = gid;
-    this.#ino = ino;
-    this.#mode = mode;
-    this.#mtime = mtime;
-    this.#mtimeMs = mtimeMs;
-    this.#nlink = nlink;
-    this.#rdev = rdev;
-    this.#size = size;
-    this.#uid = uid;
-    const ifmt = entToType(st);
-    this.#type = this.#type & IFMT_UNKNOWN | ifmt | LSTAT_CALLED;
-    if (ifmt !== UNKNOWN && ifmt !== IFDIR && ifmt !== IFLNK) {
-      this.#type |= ENOTDIR;
-    }
-  }
-  #onReaddirCB = [];
-  #readdirCBInFlight = false;
-  #callOnReaddirCB(children) {
-    this.#readdirCBInFlight = false;
-    const cbs = this.#onReaddirCB.slice();
-    this.#onReaddirCB.length = 0;
-    cbs.forEach((cb2) => cb2(null, children));
-  }
-  /**
-   * Standard node-style callback interface to get list of directory entries.
-   *
-   * If the Path cannot or does not contain any children, then an empty array
-   * is returned.
-   *
-   * Results are cached, and thus may be out of date if the filesystem is
-   * mutated.
-   *
-   * @param cb The callback called with (er, entries).  Note that the `er`
-   * param is somewhat extraneous, as all readdir() errors are handled and
-   * simply result in an empty set of entries being returned.
-   * @param allowZalgo Boolean indicating that immediately known results should
-   * *not* be deferred with `queueMicrotask`. Defaults to `false`. Release
-   * zalgo at your peril, the dark pony lord is devious and unforgiving.
-   */
-  readdirCB(cb2, allowZalgo = false) {
-    if (!this.canReaddir()) {
-      if (allowZalgo)
-        cb2(null, []);
-      else
-        queueMicrotask(() => cb2(null, []));
-      return;
-    }
-    const children = this.children();
-    if (this.calledReaddir()) {
-      const c = children.slice(0, children.provisional);
-      if (allowZalgo)
-        cb2(null, c);
-      else
-        queueMicrotask(() => cb2(null, c));
-      return;
-    }
-    this.#onReaddirCB.push(cb2);
-    if (this.#readdirCBInFlight) {
-      return;
-    }
-    this.#readdirCBInFlight = true;
-    const fullpath = this.fullpath();
-    this.#fs.readdir(fullpath, { withFileTypes: true }, (er, entries) => {
-      if (er) {
-        this.#readdirFail(er.code);
-        children.provisional = 0;
-      } else {
-        for (const e of entries) {
-          this.#readdirAddChild(e, children);
-        }
-        this.#readdirSuccess(children);
-      }
-      this.#callOnReaddirCB(children.slice(0, children.provisional));
-      return;
-    });
-  }
-  #asyncReaddirInFlight;
-  /**
-   * Return an array of known child entries.
-   *
-   * If the Path cannot or does not contain any children, then an empty array
-   * is returned.
-   *
-   * Results are cached, and thus may be out of date if the filesystem is
-   * mutated.
-   */
-  async readdir() {
-    if (!this.canReaddir()) {
-      return [];
-    }
-    const children = this.children();
-    if (this.calledReaddir()) {
-      return children.slice(0, children.provisional);
-    }
-    const fullpath = this.fullpath();
-    if (this.#asyncReaddirInFlight) {
-      await this.#asyncReaddirInFlight;
-    } else {
-      let resolve = /* @__PURE__ */ __name(() => {
-      }, "resolve");
-      this.#asyncReaddirInFlight = new Promise((res) => resolve = res);
-      try {
-        for (const e of await this.#fs.promises.readdir(fullpath, {
-          withFileTypes: true
-        })) {
-          this.#readdirAddChild(e, children);
-        }
-        this.#readdirSuccess(children);
-      } catch (er) {
-        this.#readdirFail(er.code);
-        children.provisional = 0;
-      }
-      this.#asyncReaddirInFlight = void 0;
-      resolve();
-    }
-    return children.slice(0, children.provisional);
-  }
-  /**
-   * synchronous {@link PathBase.readdir}
-   */
-  readdirSync() {
-    if (!this.canReaddir()) {
-      return [];
-    }
-    const children = this.children();
-    if (this.calledReaddir()) {
-      return children.slice(0, children.provisional);
-    }
-    const fullpath = this.fullpath();
-    try {
-      for (const e of this.#fs.readdirSync(fullpath, {
-        withFileTypes: true
-      })) {
-        this.#readdirAddChild(e, children);
-      }
-      this.#readdirSuccess(children);
-    } catch (er) {
-      this.#readdirFail(er.code);
-      children.provisional = 0;
-    }
-    return children.slice(0, children.provisional);
-  }
-  canReaddir() {
-    if (this.#type & ENOCHILD)
-      return false;
-    const ifmt = IFMT & this.#type;
-    if (!(ifmt === UNKNOWN || ifmt === IFDIR || ifmt === IFLNK)) {
-      return false;
-    }
-    return true;
-  }
-  shouldWalk(dirs, walkFilter) {
-    return (this.#type & IFDIR) === IFDIR && !(this.#type & ENOCHILD) && !dirs.has(this) && (!walkFilter || walkFilter(this));
-  }
-  /**
-   * Return the Path object corresponding to path as resolved
-   * by realpath(3).
-   *
-   * If the realpath call fails for any reason, `undefined` is returned.
-   *
-   * Result is cached, and thus may be outdated if the filesystem is mutated.
-   * On success, returns a Path object.
-   */
-  async realpath() {
-    if (this.#realpath)
-      return this.#realpath;
-    if ((ENOREALPATH | ENOREADLINK | ENOENT) & this.#type)
-      return void 0;
-    try {
-      const rp = await this.#fs.promises.realpath(this.fullpath());
-      return this.#realpath = this.resolve(rp);
-    } catch (_) {
-      this.#markENOREALPATH();
-    }
-  }
-  /**
-   * Synchronous {@link realpath}
-   */
-  realpathSync() {
-    if (this.#realpath)
-      return this.#realpath;
-    if ((ENOREALPATH | ENOREADLINK | ENOENT) & this.#type)
-      return void 0;
-    try {
-      const rp = this.#fs.realpathSync(this.fullpath());
-      return this.#realpath = this.resolve(rp);
-    } catch (_) {
-      this.#markENOREALPATH();
-    }
-  }
-  /**
-   * Internal method to mark this Path object as the scurry cwd,
-   * called by {@link PathScurry#chdir}
-   *
-   * @internal
-   */
-  [setAsCwd](oldCwd) {
-    if (oldCwd === this)
-      return;
-    oldCwd.isCWD = false;
-    this.isCWD = true;
-    const changed = /* @__PURE__ */ new Set([]);
-    let rp = [];
-    let p = this;
-    while (p && p.parent) {
-      changed.add(p);
-      p.#relative = rp.join(this.sep);
-      p.#relativePosix = rp.join("/");
-      p = p.parent;
-      rp.push("..");
-    }
-    p = oldCwd;
-    while (p && p.parent && !changed.has(p)) {
-      p.#relative = void 0;
-      p.#relativePosix = void 0;
-      p = p.parent;
-    }
-  }
-};
-var PathWin32 = class _PathWin32 extends PathBase {
-  static {
-    __name(this, "PathWin32");
-  }
-  /**
-   * Separator for generating path strings.
-   */
-  sep = "\\";
-  /**
-   * Separator for parsing path strings.
-   */
-  splitSep = eitherSep;
-  /**
-   * Do not create new Path objects directly.  They should always be accessed
-   * via the PathScurry class or other methods on the Path class.
-   *
-   * @internal
-   */
-  constructor(name, type = UNKNOWN, root2, roots, nocase, children, opts) {
-    super(name, type, root2, roots, nocase, children, opts);
-  }
-  /**
-   * @internal
-   */
-  newChild(name, type = UNKNOWN, opts = {}) {
-    return new _PathWin32(name, type, this.root, this.roots, this.nocase, this.childrenCache(), opts);
-  }
-  /**
-   * @internal
-   */
-  getRootString(path6) {
-    return import_node_path2.win32.parse(path6).root;
-  }
-  /**
-   * @internal
-   */
-  getRoot(rootPath) {
-    rootPath = uncToDrive(rootPath.toUpperCase());
-    if (rootPath === this.root.name) {
-      return this.root;
-    }
-    for (const [compare, root2] of Object.entries(this.roots)) {
-      if (this.sameRoot(rootPath, compare)) {
-        return this.roots[rootPath] = root2;
-      }
-    }
-    return this.roots[rootPath] = new PathScurryWin32(rootPath, this).root;
-  }
-  /**
-   * @internal
-   */
-  sameRoot(rootPath, compare = this.root.name) {
-    rootPath = rootPath.toUpperCase().replace(/\//g, "\\").replace(uncDriveRegexp, "$1\\");
-    return rootPath === compare;
-  }
-};
-var PathPosix = class _PathPosix extends PathBase {
-  static {
-    __name(this, "PathPosix");
-  }
-  /**
-   * separator for parsing path strings
-   */
-  splitSep = "/";
-  /**
-   * separator for generating path strings
-   */
-  sep = "/";
-  /**
-   * Do not create new Path objects directly.  They should always be accessed
-   * via the PathScurry class or other methods on the Path class.
-   *
-   * @internal
-   */
-  constructor(name, type = UNKNOWN, root2, roots, nocase, children, opts) {
-    super(name, type, root2, roots, nocase, children, opts);
-  }
-  /**
-   * @internal
-   */
-  getRootString(path6) {
-    return path6.startsWith("/") ? "/" : "";
-  }
-  /**
-   * @internal
-   */
-  getRoot(_rootPath) {
-    return this.root;
-  }
-  /**
-   * @internal
-   */
-  newChild(name, type = UNKNOWN, opts = {}) {
-    return new _PathPosix(name, type, this.root, this.roots, this.nocase, this.childrenCache(), opts);
-  }
-};
-var PathScurryBase = class {
-  static {
-    __name(this, "PathScurryBase");
-  }
-  /**
-   * The root Path entry for the current working directory of this Scurry
-   */
-  root;
-  /**
-   * The string path for the root of this Scurry's current working directory
-   */
-  rootPath;
-  /**
-   * A collection of all roots encountered, referenced by rootPath
-   */
-  roots;
-  /**
-   * The Path entry corresponding to this PathScurry's current working directory.
-   */
-  cwd;
-  #resolveCache;
-  #resolvePosixCache;
-  #children;
-  /**
-   * Perform path comparisons case-insensitively.
-   *
-   * Defaults true on Darwin and Windows systems, false elsewhere.
-   */
-  nocase;
-  #fs;
-  /**
-   * This class should not be instantiated directly.
-   *
-   * Use PathScurryWin32, PathScurryDarwin, PathScurryPosix, or PathScurry
-   *
-   * @internal
-   */
-  constructor(cwd3 = process.cwd(), pathImpl, sep2, { nocase, childrenCacheSize = 16 * 1024, fs: fs26 = defaultFS } = {}) {
-    this.#fs = fsFromOption(fs26);
-    if (cwd3 instanceof URL || cwd3.startsWith("file://")) {
-      cwd3 = (0, import_node_url.fileURLToPath)(cwd3);
-    }
-    const cwdPath = pathImpl.resolve(cwd3);
-    this.roots = /* @__PURE__ */ Object.create(null);
-    this.rootPath = this.parseRootPath(cwdPath);
-    this.#resolveCache = new ResolveCache();
-    this.#resolvePosixCache = new ResolveCache();
-    this.#children = new ChildrenCache(childrenCacheSize);
-    const split = cwdPath.substring(this.rootPath.length).split(sep2);
-    if (split.length === 1 && !split[0]) {
-      split.pop();
-    }
-    if (nocase === void 0) {
-      throw new TypeError("must provide nocase setting to PathScurryBase ctor");
-    }
-    this.nocase = nocase;
-    this.root = this.newRoot(this.#fs);
-    this.roots[this.rootPath] = this.root;
-    let prev = this.root;
-    let len = split.length - 1;
-    const joinSep = pathImpl.sep;
-    let abs = this.rootPath;
-    let sawFirst = false;
-    for (const part of split) {
-      const l = len--;
-      prev = prev.child(part, {
-        relative: new Array(l).fill("..").join(joinSep),
-        relativePosix: new Array(l).fill("..").join("/"),
-        fullpath: abs += (sawFirst ? "" : joinSep) + part
-      });
-      sawFirst = true;
-    }
-    this.cwd = prev;
-  }
-  /**
-   * Get the depth of a provided path, string, or the cwd
-   */
-  depth(path6 = this.cwd) {
-    if (typeof path6 === "string") {
-      path6 = this.cwd.resolve(path6);
-    }
-    return path6.depth();
-  }
-  /**
-   * Return the cache of child entries.  Exposed so subclasses can create
-   * child Path objects in a platform-specific way.
-   *
-   * @internal
-   */
-  childrenCache() {
-    return this.#children;
-  }
-  /**
-   * Resolve one or more path strings to a resolved string
-   *
-   * Same interface as require('path').resolve.
-   *
-   * Much faster than path.resolve() when called multiple times for the same
-   * path, because the resolved Path objects are cached.  Much slower
-   * otherwise.
-   */
-  resolve(...paths) {
-    let r = "";
-    for (let i = paths.length - 1; i >= 0; i--) {
-      const p = paths[i];
-      if (!p || p === ".")
-        continue;
-      r = r ? `${p}/${r}` : p;
-      if (this.isAbsolute(p)) {
-        break;
-      }
-    }
-    const cached = this.#resolveCache.get(r);
-    if (cached !== void 0) {
-      return cached;
-    }
-    const result = this.cwd.resolve(r).fullpath();
-    this.#resolveCache.set(r, result);
-    return result;
-  }
-  /**
-   * Resolve one or more path strings to a resolved string, returning
-   * the posix path.  Identical to .resolve() on posix systems, but on
-   * windows will return a forward-slash separated UNC path.
-   *
-   * Same interface as require('path').resolve.
-   *
-   * Much faster than path.resolve() when called multiple times for the same
-   * path, because the resolved Path objects are cached.  Much slower
-   * otherwise.
-   */
-  resolvePosix(...paths) {
-    let r = "";
-    for (let i = paths.length - 1; i >= 0; i--) {
-      const p = paths[i];
-      if (!p || p === ".")
-        continue;
-      r = r ? `${p}/${r}` : p;
-      if (this.isAbsolute(p)) {
-        break;
-      }
-    }
-    const cached = this.#resolvePosixCache.get(r);
-    if (cached !== void 0) {
-      return cached;
-    }
-    const result = this.cwd.resolve(r).fullpathPosix();
-    this.#resolvePosixCache.set(r, result);
-    return result;
-  }
-  /**
-   * find the relative path from the cwd to the supplied path string or entry
-   */
-  relative(entry = this.cwd) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    }
-    return entry.relative();
-  }
-  /**
-   * find the relative path from the cwd to the supplied path string or
-   * entry, using / as the path delimiter, even on Windows.
-   */
-  relativePosix(entry = this.cwd) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    }
-    return entry.relativePosix();
-  }
-  /**
-   * Return the basename for the provided string or Path object
-   */
-  basename(entry = this.cwd) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    }
-    return entry.name;
-  }
-  /**
-   * Return the dirname for the provided string or Path object
-   */
-  dirname(entry = this.cwd) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    }
-    return (entry.parent || entry).fullpath();
-  }
-  async readdir(entry = this.cwd, opts = {
-    withFileTypes: true
-  }) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      opts = entry;
-      entry = this.cwd;
-    }
-    const { withFileTypes } = opts;
-    if (!entry.canReaddir()) {
-      return [];
-    } else {
-      const p = await entry.readdir();
-      return withFileTypes ? p : p.map((e) => e.name);
-    }
-  }
-  readdirSync(entry = this.cwd, opts = {
-    withFileTypes: true
-  }) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      opts = entry;
-      entry = this.cwd;
-    }
-    const { withFileTypes = true } = opts;
-    if (!entry.canReaddir()) {
-      return [];
-    } else if (withFileTypes) {
-      return entry.readdirSync();
-    } else {
-      return entry.readdirSync().map((e) => e.name);
-    }
-  }
-  /**
-   * Call lstat() on the string or Path object, and update all known
-   * information that can be determined.
-   *
-   * Note that unlike `fs.lstat()`, the returned value does not contain some
-   * information, such as `mode`, `dev`, `nlink`, and `ino`.  If that
-   * information is required, you will need to call `fs.lstat` yourself.
-   *
-   * If the Path refers to a nonexistent file, or if the lstat call fails for
-   * any reason, `undefined` is returned.  Otherwise the updated Path object is
-   * returned.
-   *
-   * Results are cached, and thus may be out of date if the filesystem is
-   * mutated.
-   */
-  async lstat(entry = this.cwd) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    }
-    return entry.lstat();
-  }
-  /**
-   * synchronous {@link PathScurryBase.lstat}
-   */
-  lstatSync(entry = this.cwd) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    }
-    return entry.lstatSync();
-  }
-  async readlink(entry = this.cwd, { withFileTypes } = {
-    withFileTypes: false
-  }) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      withFileTypes = entry.withFileTypes;
-      entry = this.cwd;
-    }
-    const e = await entry.readlink();
-    return withFileTypes ? e : e?.fullpath();
-  }
-  readlinkSync(entry = this.cwd, { withFileTypes } = {
-    withFileTypes: false
-  }) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      withFileTypes = entry.withFileTypes;
-      entry = this.cwd;
-    }
-    const e = entry.readlinkSync();
-    return withFileTypes ? e : e?.fullpath();
-  }
-  async realpath(entry = this.cwd, { withFileTypes } = {
-    withFileTypes: false
-  }) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      withFileTypes = entry.withFileTypes;
-      entry = this.cwd;
-    }
-    const e = await entry.realpath();
-    return withFileTypes ? e : e?.fullpath();
-  }
-  realpathSync(entry = this.cwd, { withFileTypes } = {
-    withFileTypes: false
-  }) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      withFileTypes = entry.withFileTypes;
-      entry = this.cwd;
-    }
-    const e = entry.realpathSync();
-    return withFileTypes ? e : e?.fullpath();
-  }
-  async walk(entry = this.cwd, opts = {}) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      opts = entry;
-      entry = this.cwd;
-    }
-    const { withFileTypes = true, follow = false, filter: filter2, walkFilter } = opts;
-    const results = [];
-    if (!filter2 || filter2(entry)) {
-      results.push(withFileTypes ? entry : entry.fullpath());
-    }
-    const dirs = /* @__PURE__ */ new Set();
-    const walk = /* @__PURE__ */ __name((dir, cb2) => {
-      dirs.add(dir);
-      dir.readdirCB((er, entries) => {
-        if (er) {
-          return cb2(er);
-        }
-        let len = entries.length;
-        if (!len)
-          return cb2();
-        const next = /* @__PURE__ */ __name(() => {
-          if (--len === 0) {
-            cb2();
-          }
-        }, "next");
-        for (const e of entries) {
-          if (!filter2 || filter2(e)) {
-            results.push(withFileTypes ? e : e.fullpath());
-          }
-          if (follow && e.isSymbolicLink()) {
-            e.realpath().then((r) => r?.isUnknown() ? r.lstat() : r).then((r) => r?.shouldWalk(dirs, walkFilter) ? walk(r, next) : next());
-          } else {
-            if (e.shouldWalk(dirs, walkFilter)) {
-              walk(e, next);
-            } else {
-              next();
-            }
-          }
-        }
-      }, true);
-    }, "walk");
-    const start = entry;
-    return new Promise((res, rej) => {
-      walk(start, (er) => {
-        if (er)
-          return rej(er);
-        res(results);
-      });
-    });
-  }
-  walkSync(entry = this.cwd, opts = {}) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      opts = entry;
-      entry = this.cwd;
-    }
-    const { withFileTypes = true, follow = false, filter: filter2, walkFilter } = opts;
-    const results = [];
-    if (!filter2 || filter2(entry)) {
-      results.push(withFileTypes ? entry : entry.fullpath());
-    }
-    const dirs = /* @__PURE__ */ new Set([entry]);
-    for (const dir of dirs) {
-      const entries = dir.readdirSync();
-      for (const e of entries) {
-        if (!filter2 || filter2(e)) {
-          results.push(withFileTypes ? e : e.fullpath());
-        }
-        let r = e;
-        if (e.isSymbolicLink()) {
-          if (!(follow && (r = e.realpathSync())))
-            continue;
-          if (r.isUnknown())
-            r.lstatSync();
-        }
-        if (r.shouldWalk(dirs, walkFilter)) {
-          dirs.add(r);
-        }
-      }
-    }
-    return results;
-  }
-  /**
-   * Support for `for await`
-   *
-   * Alias for {@link PathScurryBase.iterate}
-   *
-   * Note: As of Node 19, this is very slow, compared to other methods of
-   * walking.  Consider using {@link PathScurryBase.stream} if memory overhead
-   * and backpressure are concerns, or {@link PathScurryBase.walk} if not.
-   */
-  [Symbol.asyncIterator]() {
-    return this.iterate();
-  }
-  iterate(entry = this.cwd, options = {}) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      options = entry;
-      entry = this.cwd;
-    }
-    return this.stream(entry, options)[Symbol.asyncIterator]();
-  }
-  /**
-   * Iterating over a PathScurry performs a synchronous walk.
-   *
-   * Alias for {@link PathScurryBase.iterateSync}
-   */
-  [Symbol.iterator]() {
-    return this.iterateSync();
-  }
-  *iterateSync(entry = this.cwd, opts = {}) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      opts = entry;
-      entry = this.cwd;
-    }
-    const { withFileTypes = true, follow = false, filter: filter2, walkFilter } = opts;
-    if (!filter2 || filter2(entry)) {
-      yield withFileTypes ? entry : entry.fullpath();
-    }
-    const dirs = /* @__PURE__ */ new Set([entry]);
-    for (const dir of dirs) {
-      const entries = dir.readdirSync();
-      for (const e of entries) {
-        if (!filter2 || filter2(e)) {
-          yield withFileTypes ? e : e.fullpath();
-        }
-        let r = e;
-        if (e.isSymbolicLink()) {
-          if (!(follow && (r = e.realpathSync())))
-            continue;
-          if (r.isUnknown())
-            r.lstatSync();
-        }
-        if (r.shouldWalk(dirs, walkFilter)) {
-          dirs.add(r);
-        }
-      }
-    }
-  }
-  stream(entry = this.cwd, opts = {}) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      opts = entry;
-      entry = this.cwd;
-    }
-    const { withFileTypes = true, follow = false, filter: filter2, walkFilter } = opts;
-    const results = new Minipass({ objectMode: true });
-    if (!filter2 || filter2(entry)) {
-      results.write(withFileTypes ? entry : entry.fullpath());
-    }
-    const dirs = /* @__PURE__ */ new Set();
-    const queue = [entry];
-    let processing = 0;
-    const process2 = /* @__PURE__ */ __name(() => {
-      let paused = false;
-      while (!paused) {
-        const dir = queue.shift();
-        if (!dir) {
-          if (processing === 0)
-            results.end();
-          return;
-        }
-        processing++;
-        dirs.add(dir);
-        const onReaddir = /* @__PURE__ */ __name((er, entries, didRealpaths = false) => {
-          if (er)
-            return results.emit("error", er);
-          if (follow && !didRealpaths) {
-            const promises = [];
-            for (const e of entries) {
-              if (e.isSymbolicLink()) {
-                promises.push(e.realpath().then((r) => r?.isUnknown() ? r.lstat() : r));
-              }
-            }
-            if (promises.length) {
-              Promise.all(promises).then(() => onReaddir(null, entries, true));
-              return;
-            }
-          }
-          for (const e of entries) {
-            if (e && (!filter2 || filter2(e))) {
-              if (!results.write(withFileTypes ? e : e.fullpath())) {
-                paused = true;
-              }
-            }
-          }
-          processing--;
-          for (const e of entries) {
-            const r = e.realpathCached() || e;
-            if (r.shouldWalk(dirs, walkFilter)) {
-              queue.push(r);
-            }
-          }
-          if (paused && !results.flowing) {
-            results.once("drain", process2);
-          } else if (!sync2) {
-            process2();
-          }
-        }, "onReaddir");
-        let sync2 = true;
-        dir.readdirCB(onReaddir, true);
-        sync2 = false;
-      }
-    }, "process");
-    process2();
-    return results;
-  }
-  streamSync(entry = this.cwd, opts = {}) {
-    if (typeof entry === "string") {
-      entry = this.cwd.resolve(entry);
-    } else if (!(entry instanceof PathBase)) {
-      opts = entry;
-      entry = this.cwd;
-    }
-    const { withFileTypes = true, follow = false, filter: filter2, walkFilter } = opts;
-    const results = new Minipass({ objectMode: true });
-    const dirs = /* @__PURE__ */ new Set();
-    if (!filter2 || filter2(entry)) {
-      results.write(withFileTypes ? entry : entry.fullpath());
-    }
-    const queue = [entry];
-    let processing = 0;
-    const process2 = /* @__PURE__ */ __name(() => {
-      let paused = false;
-      while (!paused) {
-        const dir = queue.shift();
-        if (!dir) {
-          if (processing === 0)
-            results.end();
-          return;
-        }
-        processing++;
-        dirs.add(dir);
-        const entries = dir.readdirSync();
-        for (const e of entries) {
-          if (!filter2 || filter2(e)) {
-            if (!results.write(withFileTypes ? e : e.fullpath())) {
-              paused = true;
-            }
-          }
-        }
-        processing--;
-        for (const e of entries) {
-          let r = e;
-          if (e.isSymbolicLink()) {
-            if (!(follow && (r = e.realpathSync())))
-              continue;
-            if (r.isUnknown())
-              r.lstatSync();
-          }
-          if (r.shouldWalk(dirs, walkFilter)) {
-            queue.push(r);
-          }
-        }
-      }
-      if (paused && !results.flowing)
-        results.once("drain", process2);
-    }, "process");
-    process2();
-    return results;
-  }
-  chdir(path6 = this.cwd) {
-    const oldCwd = this.cwd;
-    this.cwd = typeof path6 === "string" ? this.cwd.resolve(path6) : path6;
-    this.cwd[setAsCwd](oldCwd);
-  }
-};
-var PathScurryWin32 = class extends PathScurryBase {
-  static {
-    __name(this, "PathScurryWin32");
-  }
-  /**
-   * separator for generating path strings
-   */
-  sep = "\\";
-  constructor(cwd3 = process.cwd(), opts = {}) {
-    const { nocase = true } = opts;
-    super(cwd3, import_node_path2.win32, "\\", { ...opts, nocase });
-    this.nocase = nocase;
-    for (let p = this.cwd; p; p = p.parent) {
-      p.nocase = this.nocase;
-    }
-  }
-  /**
-   * @internal
-   */
-  parseRootPath(dir) {
-    return import_node_path2.win32.parse(dir).root.toUpperCase();
-  }
-  /**
-   * @internal
-   */
-  newRoot(fs26) {
-    return new PathWin32(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs26 });
-  }
-  /**
-   * Return true if the provided path string is an absolute path
-   */
-  isAbsolute(p) {
-    return p.startsWith("/") || p.startsWith("\\") || /^[a-z]:(\/|\\)/i.test(p);
-  }
-};
-var PathScurryPosix = class extends PathScurryBase {
-  static {
-    __name(this, "PathScurryPosix");
-  }
-  /**
-   * separator for generating path strings
-   */
-  sep = "/";
-  constructor(cwd3 = process.cwd(), opts = {}) {
-    const { nocase = false } = opts;
-    super(cwd3, import_node_path2.posix, "/", { ...opts, nocase });
-    this.nocase = nocase;
-  }
-  /**
-   * @internal
-   */
-  parseRootPath(_dir) {
-    return "/";
-  }
-  /**
-   * @internal
-   */
-  newRoot(fs26) {
-    return new PathPosix(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs26 });
-  }
-  /**
-   * Return true if the provided path string is an absolute path
-   */
-  isAbsolute(p) {
-    return p.startsWith("/");
-  }
-};
-var PathScurryDarwin = class extends PathScurryPosix {
-  static {
-    __name(this, "PathScurryDarwin");
-  }
-  constructor(cwd3 = process.cwd(), opts = {}) {
-    const { nocase = true } = opts;
-    super(cwd3, { ...opts, nocase });
-  }
-};
-var Path = process.platform === "win32" ? PathWin32 : PathPosix;
-var PathScurry = process.platform === "win32" ? PathScurryWin32 : process.platform === "darwin" ? PathScurryDarwin : PathScurryPosix;
-
-// ../../node_modules/glob/dist/esm/pattern.js
-var isPatternList = /* @__PURE__ */ __name((pl) => pl.length >= 1, "isPatternList");
-var isGlobList = /* @__PURE__ */ __name((gl) => gl.length >= 1, "isGlobList");
-var Pattern = class _Pattern {
-  static {
-    __name(this, "Pattern");
-  }
-  #patternList;
-  #globList;
-  #index;
-  length;
-  #platform;
-  #rest;
-  #globString;
-  #isDrive;
-  #isUNC;
-  #isAbsolute;
-  #followGlobstar = true;
-  constructor(patternList, globList, index, platform) {
-    if (!isPatternList(patternList)) {
-      throw new TypeError("empty pattern list");
-    }
-    if (!isGlobList(globList)) {
-      throw new TypeError("empty glob list");
-    }
-    if (globList.length !== patternList.length) {
-      throw new TypeError("mismatched pattern list and glob list lengths");
-    }
-    this.length = patternList.length;
-    if (index < 0 || index >= this.length) {
-      throw new TypeError("index out of range");
-    }
-    this.#patternList = patternList;
-    this.#globList = globList;
-    this.#index = index;
-    this.#platform = platform;
-    if (this.#index === 0) {
-      if (this.isUNC()) {
-        const [p0, p1, p2, p3, ...prest] = this.#patternList;
-        const [g0, g1, g2, g3, ...grest] = this.#globList;
-        if (prest[0] === "") {
-          prest.shift();
-          grest.shift();
-        }
-        const p = [p0, p1, p2, p3, ""].join("/");
-        const g = [g0, g1, g2, g3, ""].join("/");
-        this.#patternList = [p, ...prest];
-        this.#globList = [g, ...grest];
-        this.length = this.#patternList.length;
-      } else if (this.isDrive() || this.isAbsolute()) {
-        const [p1, ...prest] = this.#patternList;
-        const [g1, ...grest] = this.#globList;
-        if (prest[0] === "") {
-          prest.shift();
-          grest.shift();
-        }
-        const p = p1 + "/";
-        const g = g1 + "/";
-        this.#patternList = [p, ...prest];
-        this.#globList = [g, ...grest];
-        this.length = this.#patternList.length;
-      }
-    }
-  }
-  /**
-   * The first entry in the parsed list of patterns
-   */
-  pattern() {
-    return this.#patternList[this.#index];
-  }
-  /**
-   * true of if pattern() returns a string
-   */
-  isString() {
-    return typeof this.#patternList[this.#index] === "string";
-  }
-  /**
-   * true of if pattern() returns GLOBSTAR
-   */
-  isGlobstar() {
-    return this.#patternList[this.#index] === GLOBSTAR;
-  }
-  /**
-   * true if pattern() returns a regexp
-   */
-  isRegExp() {
-    return this.#patternList[this.#index] instanceof RegExp;
-  }
-  /**
-   * The /-joined set of glob parts that make up this pattern
-   */
-  globString() {
-    return this.#globString = this.#globString || (this.#index === 0 ? this.isAbsolute() ? this.#globList[0] + this.#globList.slice(1).join("/") : this.#globList.join("/") : this.#globList.slice(this.#index).join("/"));
-  }
-  /**
-   * true if there are more pattern parts after this one
-   */
-  hasMore() {
-    return this.length > this.#index + 1;
-  }
-  /**
-   * The rest of the pattern after this part, or null if this is the end
-   */
-  rest() {
-    if (this.#rest !== void 0)
-      return this.#rest;
-    if (!this.hasMore())
-      return this.#rest = null;
-    this.#rest = new _Pattern(this.#patternList, this.#globList, this.#index + 1, this.#platform);
-    this.#rest.#isAbsolute = this.#isAbsolute;
-    this.#rest.#isUNC = this.#isUNC;
-    this.#rest.#isDrive = this.#isDrive;
-    return this.#rest;
-  }
-  /**
-   * true if the pattern represents a //unc/path/ on windows
-   */
-  isUNC() {
-    const pl = this.#patternList;
-    return this.#isUNC !== void 0 ? this.#isUNC : this.#isUNC = this.#platform === "win32" && this.#index === 0 && pl[0] === "" && pl[1] === "" && typeof pl[2] === "string" && !!pl[2] && typeof pl[3] === "string" && !!pl[3];
-  }
-  // pattern like C:/...
-  // split = ['C:', ...]
-  // XXX: would be nice to handle patterns like `c:*` to test the cwd
-  // in c: for *, but I don't know of a way to even figure out what that
-  // cwd is without actually chdir'ing into it?
-  /**
-   * True if the pattern starts with a drive letter on Windows
-   */
-  isDrive() {
-    const pl = this.#patternList;
-    return this.#isDrive !== void 0 ? this.#isDrive : this.#isDrive = this.#platform === "win32" && this.#index === 0 && this.length > 1 && typeof pl[0] === "string" && /^[a-z]:$/i.test(pl[0]);
-  }
-  // pattern = '/' or '/...' or '/x/...'
-  // split = ['', ''] or ['', ...] or ['', 'x', ...]
-  // Drive and UNC both considered absolute on windows
-  /**
-   * True if the pattern is rooted on an absolute path
-   */
-  isAbsolute() {
-    const pl = this.#patternList;
-    return this.#isAbsolute !== void 0 ? this.#isAbsolute : this.#isAbsolute = pl[0] === "" && pl.length > 1 || this.isDrive() || this.isUNC();
-  }
-  /**
-   * consume the root of the pattern, and return it
-   */
-  root() {
-    const p = this.#patternList[0];
-    return typeof p === "string" && this.isAbsolute() && this.#index === 0 ? p : "";
-  }
-  /**
-   * Check to see if the current globstar pattern is allowed to follow
-   * a symbolic link.
-   */
-  checkFollowGlobstar() {
-    return !(this.#index === 0 || !this.isGlobstar() || !this.#followGlobstar);
-  }
-  /**
-   * Mark that the current globstar pattern is following a symbolic link
-   */
-  markFollowGlobstar() {
-    if (this.#index === 0 || !this.isGlobstar() || !this.#followGlobstar)
-      return false;
-    this.#followGlobstar = false;
-    return true;
-  }
-};
-
-// ../../node_modules/glob/dist/esm/ignore.js
-var defaultPlatform2 = typeof process === "object" && process && typeof process.platform === "string" ? process.platform : "linux";
-var Ignore = class {
-  static {
-    __name(this, "Ignore");
-  }
-  relative;
-  relativeChildren;
-  absolute;
-  absoluteChildren;
-  platform;
-  mmopts;
-  constructor(ignored, { nobrace, nocase, noext, noglobstar, platform = defaultPlatform2 }) {
-    this.relative = [];
-    this.absolute = [];
-    this.relativeChildren = [];
-    this.absoluteChildren = [];
-    this.platform = platform;
-    this.mmopts = {
-      dot: true,
-      nobrace,
-      nocase,
-      noext,
-      noglobstar,
-      optimizationLevel: 2,
-      platform,
-      nocomment: true,
-      nonegate: true
-    };
-    for (const ign of ignored)
-      this.add(ign);
-  }
-  add(ign) {
-    const mm = new Minimatch(ign, this.mmopts);
-    for (let i = 0; i < mm.set.length; i++) {
-      const parsed = mm.set[i];
-      const globParts = mm.globParts[i];
-      if (!parsed || !globParts) {
-        throw new Error("invalid pattern object");
-      }
-      while (parsed[0] === "." && globParts[0] === ".") {
-        parsed.shift();
-        globParts.shift();
-      }
-      const p = new Pattern(parsed, globParts, 0, this.platform);
-      const m = new Minimatch(p.globString(), this.mmopts);
-      const children = globParts[globParts.length - 1] === "**";
-      const absolute = p.isAbsolute();
-      if (absolute)
-        this.absolute.push(m);
-      else
-        this.relative.push(m);
-      if (children) {
-        if (absolute)
-          this.absoluteChildren.push(m);
-        else
-          this.relativeChildren.push(m);
-      }
-    }
-  }
-  ignored(p) {
-    const fullpath = p.fullpath();
-    const fullpaths = `${fullpath}/`;
-    const relative = p.relative() || ".";
-    const relatives = `${relative}/`;
-    for (const m of this.relative) {
-      if (m.match(relative) || m.match(relatives))
-        return true;
-    }
-    for (const m of this.absolute) {
-      if (m.match(fullpath) || m.match(fullpaths))
-        return true;
-    }
-    return false;
-  }
-  childrenIgnored(p) {
-    const fullpath = p.fullpath() + "/";
-    const relative = (p.relative() || ".") + "/";
-    for (const m of this.relativeChildren) {
-      if (m.match(relative))
-        return true;
-    }
-    for (const m of this.absoluteChildren) {
-      if (m.match(fullpath))
-        return true;
-    }
-    return false;
-  }
-};
-
-// ../../node_modules/glob/dist/esm/processor.js
-var HasWalkedCache = class _HasWalkedCache {
-  static {
-    __name(this, "HasWalkedCache");
-  }
-  store;
-  constructor(store = /* @__PURE__ */ new Map()) {
-    this.store = store;
-  }
-  copy() {
-    return new _HasWalkedCache(new Map(this.store));
-  }
-  hasWalked(target, pattern) {
-    return this.store.get(target.fullpath())?.has(pattern.globString());
-  }
-  storeWalked(target, pattern) {
-    const fullpath = target.fullpath();
-    const cached = this.store.get(fullpath);
-    if (cached)
-      cached.add(pattern.globString());
-    else
-      this.store.set(fullpath, /* @__PURE__ */ new Set([pattern.globString()]));
-  }
-};
-var MatchRecord = class {
-  static {
-    __name(this, "MatchRecord");
-  }
-  store = /* @__PURE__ */ new Map();
-  add(target, absolute, ifDir) {
-    const n = (absolute ? 2 : 0) | (ifDir ? 1 : 0);
-    const current = this.store.get(target);
-    this.store.set(target, current === void 0 ? n : n & current);
-  }
-  // match, absolute, ifdir
-  entries() {
-    return [...this.store.entries()].map(([path6, n]) => [
-      path6,
-      !!(n & 2),
-      !!(n & 1)
-    ]);
-  }
-};
-var SubWalks = class {
-  static {
-    __name(this, "SubWalks");
-  }
-  store = /* @__PURE__ */ new Map();
-  add(target, pattern) {
-    if (!target.canReaddir()) {
-      return;
-    }
-    const subs = this.store.get(target);
-    if (subs) {
-      if (!subs.find((p) => p.globString() === pattern.globString())) {
-        subs.push(pattern);
-      }
-    } else
-      this.store.set(target, [pattern]);
-  }
-  get(target) {
-    const subs = this.store.get(target);
-    if (!subs) {
-      throw new Error("attempting to walk unknown path");
-    }
-    return subs;
-  }
-  entries() {
-    return this.keys().map((k) => [k, this.store.get(k)]);
-  }
-  keys() {
-    return [...this.store.keys()].filter((t) => t.canReaddir());
-  }
-};
-var Processor = class _Processor {
-  static {
-    __name(this, "Processor");
-  }
-  hasWalkedCache;
-  matches = new MatchRecord();
-  subwalks = new SubWalks();
-  patterns;
-  follow;
-  dot;
-  opts;
-  constructor(opts, hasWalkedCache) {
-    this.opts = opts;
-    this.follow = !!opts.follow;
-    this.dot = !!opts.dot;
-    this.hasWalkedCache = hasWalkedCache ? hasWalkedCache.copy() : new HasWalkedCache();
-  }
-  processPatterns(target, patterns) {
-    this.patterns = patterns;
-    const processingSet = patterns.map((p) => [target, p]);
-    for (let [t, pattern] of processingSet) {
-      this.hasWalkedCache.storeWalked(t, pattern);
-      const root2 = pattern.root();
-      const absolute = pattern.isAbsolute() && this.opts.absolute !== false;
-      if (root2) {
-        t = t.resolve(root2 === "/" && this.opts.root !== void 0 ? this.opts.root : root2);
-        const rest2 = pattern.rest();
-        if (!rest2) {
-          this.matches.add(t, true, false);
-          continue;
-        } else {
-          pattern = rest2;
-        }
-      }
-      if (t.isENOENT())
-        continue;
-      let p;
-      let rest;
-      let changed = false;
-      while (typeof (p = pattern.pattern()) === "string" && (rest = pattern.rest())) {
-        const c = t.resolve(p);
-        t = c;
-        pattern = rest;
-        changed = true;
-      }
-      p = pattern.pattern();
-      rest = pattern.rest();
-      if (changed) {
-        if (this.hasWalkedCache.hasWalked(t, pattern))
-          continue;
-        this.hasWalkedCache.storeWalked(t, pattern);
-      }
-      if (typeof p === "string") {
-        const ifDir = p === ".." || p === "" || p === ".";
-        this.matches.add(t.resolve(p), absolute, ifDir);
-        continue;
-      } else if (p === GLOBSTAR) {
-        if (!t.isSymbolicLink() || this.follow || pattern.checkFollowGlobstar()) {
-          this.subwalks.add(t, pattern);
-        }
-        const rp = rest?.pattern();
-        const rrest = rest?.rest();
-        if (!rest || (rp === "" || rp === ".") && !rrest) {
-          this.matches.add(t, absolute, rp === "" || rp === ".");
-        } else {
-          if (rp === "..") {
-            const tp = t.parent || t;
-            if (!rrest)
-              this.matches.add(tp, absolute, true);
-            else if (!this.hasWalkedCache.hasWalked(tp, rrest)) {
-              this.subwalks.add(tp, rrest);
-            }
-          }
-        }
-      } else if (p instanceof RegExp) {
-        this.subwalks.add(t, pattern);
-      }
-    }
-    return this;
-  }
-  subwalkTargets() {
-    return this.subwalks.keys();
-  }
-  child() {
-    return new _Processor(this.opts, this.hasWalkedCache);
-  }
-  // return a new Processor containing the subwalks for each
-  // child entry, and a set of matches, and
-  // a hasWalkedCache that's a copy of this one
-  // then we're going to call
-  filterEntries(parent, entries) {
-    const patterns = this.subwalks.get(parent);
-    const results = this.child();
-    for (const e of entries) {
-      for (const pattern of patterns) {
-        const absolute = pattern.isAbsolute();
-        const p = pattern.pattern();
-        const rest = pattern.rest();
-        if (p === GLOBSTAR) {
-          results.testGlobstar(e, pattern, rest, absolute);
-        } else if (p instanceof RegExp) {
-          results.testRegExp(e, p, rest, absolute);
-        } else {
-          results.testString(e, p, rest, absolute);
-        }
-      }
-    }
-    return results;
-  }
-  testGlobstar(e, pattern, rest, absolute) {
-    if (this.dot || !e.name.startsWith(".")) {
-      if (!pattern.hasMore()) {
-        this.matches.add(e, absolute, false);
-      }
-      if (e.canReaddir()) {
-        if (this.follow || !e.isSymbolicLink()) {
-          this.subwalks.add(e, pattern);
-        } else if (e.isSymbolicLink()) {
-          if (rest && pattern.checkFollowGlobstar()) {
-            this.subwalks.add(e, rest);
-          } else if (pattern.markFollowGlobstar()) {
-            this.subwalks.add(e, pattern);
-          }
-        }
-      }
-    }
-    if (rest) {
-      const rp = rest.pattern();
-      if (typeof rp === "string" && // dots and empty were handled already
-      rp !== ".." && rp !== "" && rp !== ".") {
-        this.testString(e, rp, rest.rest(), absolute);
-      } else if (rp === "..") {
-        const ep = e.parent || e;
-        this.subwalks.add(ep, rest);
-      } else if (rp instanceof RegExp) {
-        this.testRegExp(e, rp, rest.rest(), absolute);
-      }
-    }
-  }
-  testRegExp(e, p, rest, absolute) {
-    if (!p.test(e.name))
-      return;
-    if (!rest) {
-      this.matches.add(e, absolute, false);
-    } else {
-      this.subwalks.add(e, rest);
-    }
-  }
-  testString(e, p, rest, absolute) {
-    if (!e.isNamed(p))
-      return;
-    if (!rest) {
-      this.matches.add(e, absolute, false);
-    } else {
-      this.subwalks.add(e, rest);
-    }
-  }
-};
-
-// ../../node_modules/glob/dist/esm/walker.js
-var makeIgnore = /* @__PURE__ */ __name((ignore, opts) => typeof ignore === "string" ? new Ignore([ignore], opts) : Array.isArray(ignore) ? new Ignore(ignore, opts) : ignore, "makeIgnore");
-var GlobUtil = class {
-  static {
-    __name(this, "GlobUtil");
-  }
-  path;
-  patterns;
-  opts;
-  seen = /* @__PURE__ */ new Set();
-  paused = false;
-  aborted = false;
-  #onResume = [];
-  #ignore;
-  #sep;
-  signal;
-  maxDepth;
-  includeChildMatches;
-  constructor(patterns, path6, opts) {
-    this.patterns = patterns;
-    this.path = path6;
-    this.opts = opts;
-    this.#sep = !opts.posix && opts.platform === "win32" ? "\\" : "/";
-    this.includeChildMatches = opts.includeChildMatches !== false;
-    if (opts.ignore || !this.includeChildMatches) {
-      this.#ignore = makeIgnore(opts.ignore ?? [], opts);
-      if (!this.includeChildMatches && typeof this.#ignore.add !== "function") {
-        const m = "cannot ignore child matches, ignore lacks add() method.";
-        throw new Error(m);
-      }
-    }
-    this.maxDepth = opts.maxDepth || Infinity;
-    if (opts.signal) {
-      this.signal = opts.signal;
-      this.signal.addEventListener("abort", () => {
-        this.#onResume.length = 0;
-      });
-    }
-  }
-  #ignored(path6) {
-    return this.seen.has(path6) || !!this.#ignore?.ignored?.(path6);
-  }
-  #childrenIgnored(path6) {
-    return !!this.#ignore?.childrenIgnored?.(path6);
-  }
-  // backpressure mechanism
-  pause() {
-    this.paused = true;
-  }
-  resume() {
-    if (this.signal?.aborted)
-      return;
-    this.paused = false;
-    let fn = void 0;
-    while (!this.paused && (fn = this.#onResume.shift())) {
-      fn();
-    }
-  }
-  onResume(fn) {
-    if (this.signal?.aborted)
-      return;
-    if (!this.paused) {
-      fn();
-    } else {
-      this.#onResume.push(fn);
-    }
-  }
-  // do the requisite realpath/stat checking, and return the path
-  // to add or undefined to filter it out.
-  async matchCheck(e, ifDir) {
-    if (ifDir && this.opts.nodir)
-      return void 0;
-    let rpc;
-    if (this.opts.realpath) {
-      rpc = e.realpathCached() || await e.realpath();
-      if (!rpc)
-        return void 0;
-      e = rpc;
-    }
-    const needStat = e.isUnknown() || this.opts.stat;
-    const s = needStat ? await e.lstat() : e;
-    if (this.opts.follow && this.opts.nodir && s?.isSymbolicLink()) {
-      const target = await s.realpath();
-      if (target && (target.isUnknown() || this.opts.stat)) {
-        await target.lstat();
-      }
-    }
-    return this.matchCheckTest(s, ifDir);
-  }
-  matchCheckTest(e, ifDir) {
-    return e && (this.maxDepth === Infinity || e.depth() <= this.maxDepth) && (!ifDir || e.canReaddir()) && (!this.opts.nodir || !e.isDirectory()) && (!this.opts.nodir || !this.opts.follow || !e.isSymbolicLink() || !e.realpathCached()?.isDirectory()) && !this.#ignored(e) ? e : void 0;
-  }
-  matchCheckSync(e, ifDir) {
-    if (ifDir && this.opts.nodir)
-      return void 0;
-    let rpc;
-    if (this.opts.realpath) {
-      rpc = e.realpathCached() || e.realpathSync();
-      if (!rpc)
-        return void 0;
-      e = rpc;
-    }
-    const needStat = e.isUnknown() || this.opts.stat;
-    const s = needStat ? e.lstatSync() : e;
-    if (this.opts.follow && this.opts.nodir && s?.isSymbolicLink()) {
-      const target = s.realpathSync();
-      if (target && (target?.isUnknown() || this.opts.stat)) {
-        target.lstatSync();
-      }
-    }
-    return this.matchCheckTest(s, ifDir);
-  }
-  matchFinish(e, absolute) {
-    if (this.#ignored(e))
-      return;
-    if (!this.includeChildMatches && this.#ignore?.add) {
-      const ign = `${e.relativePosix()}/**`;
-      this.#ignore.add(ign);
-    }
-    const abs = this.opts.absolute === void 0 ? absolute : this.opts.absolute;
-    this.seen.add(e);
-    const mark = this.opts.mark && e.isDirectory() ? this.#sep : "";
-    if (this.opts.withFileTypes) {
-      this.matchEmit(e);
-    } else if (abs) {
-      const abs2 = this.opts.posix ? e.fullpathPosix() : e.fullpath();
-      this.matchEmit(abs2 + mark);
-    } else {
-      const rel = this.opts.posix ? e.relativePosix() : e.relative();
-      const pre = this.opts.dotRelative && !rel.startsWith(".." + this.#sep) ? "." + this.#sep : "";
-      this.matchEmit(!rel ? "." + mark : pre + rel + mark);
-    }
-  }
-  async match(e, absolute, ifDir) {
-    const p = await this.matchCheck(e, ifDir);
-    if (p)
-      this.matchFinish(p, absolute);
-  }
-  matchSync(e, absolute, ifDir) {
-    const p = this.matchCheckSync(e, ifDir);
-    if (p)
-      this.matchFinish(p, absolute);
-  }
-  walkCB(target, patterns, cb2) {
-    if (this.signal?.aborted)
-      cb2();
-    this.walkCB2(target, patterns, new Processor(this.opts), cb2);
-  }
-  walkCB2(target, patterns, processor, cb2) {
-    if (this.#childrenIgnored(target))
-      return cb2();
-    if (this.signal?.aborted)
-      cb2();
-    if (this.paused) {
-      this.onResume(() => this.walkCB2(target, patterns, processor, cb2));
-      return;
-    }
-    processor.processPatterns(target, patterns);
-    let tasks = 1;
-    const next = /* @__PURE__ */ __name(() => {
-      if (--tasks === 0)
-        cb2();
-    }, "next");
-    for (const [m, absolute, ifDir] of processor.matches.entries()) {
-      if (this.#ignored(m))
-        continue;
-      tasks++;
-      this.match(m, absolute, ifDir).then(() => next());
-    }
-    for (const t of processor.subwalkTargets()) {
-      if (this.maxDepth !== Infinity && t.depth() >= this.maxDepth) {
-        continue;
-      }
-      tasks++;
-      const childrenCached = t.readdirCached();
-      if (t.calledReaddir())
-        this.walkCB3(t, childrenCached, processor, next);
-      else {
-        t.readdirCB((_, entries) => this.walkCB3(t, entries, processor, next), true);
-      }
-    }
-    next();
-  }
-  walkCB3(target, entries, processor, cb2) {
-    processor = processor.filterEntries(target, entries);
-    let tasks = 1;
-    const next = /* @__PURE__ */ __name(() => {
-      if (--tasks === 0)
-        cb2();
-    }, "next");
-    for (const [m, absolute, ifDir] of processor.matches.entries()) {
-      if (this.#ignored(m))
-        continue;
-      tasks++;
-      this.match(m, absolute, ifDir).then(() => next());
-    }
-    for (const [target2, patterns] of processor.subwalks.entries()) {
-      tasks++;
-      this.walkCB2(target2, patterns, processor.child(), next);
-    }
-    next();
-  }
-  walkCBSync(target, patterns, cb2) {
-    if (this.signal?.aborted)
-      cb2();
-    this.walkCB2Sync(target, patterns, new Processor(this.opts), cb2);
-  }
-  walkCB2Sync(target, patterns, processor, cb2) {
-    if (this.#childrenIgnored(target))
-      return cb2();
-    if (this.signal?.aborted)
-      cb2();
-    if (this.paused) {
-      this.onResume(() => this.walkCB2Sync(target, patterns, processor, cb2));
-      return;
-    }
-    processor.processPatterns(target, patterns);
-    let tasks = 1;
-    const next = /* @__PURE__ */ __name(() => {
-      if (--tasks === 0)
-        cb2();
-    }, "next");
-    for (const [m, absolute, ifDir] of processor.matches.entries()) {
-      if (this.#ignored(m))
-        continue;
-      this.matchSync(m, absolute, ifDir);
-    }
-    for (const t of processor.subwalkTargets()) {
-      if (this.maxDepth !== Infinity && t.depth() >= this.maxDepth) {
-        continue;
-      }
-      tasks++;
-      const children = t.readdirSync();
-      this.walkCB3Sync(t, children, processor, next);
-    }
-    next();
-  }
-  walkCB3Sync(target, entries, processor, cb2) {
-    processor = processor.filterEntries(target, entries);
-    let tasks = 1;
-    const next = /* @__PURE__ */ __name(() => {
-      if (--tasks === 0)
-        cb2();
-    }, "next");
-    for (const [m, absolute, ifDir] of processor.matches.entries()) {
-      if (this.#ignored(m))
-        continue;
-      this.matchSync(m, absolute, ifDir);
-    }
-    for (const [target2, patterns] of processor.subwalks.entries()) {
-      tasks++;
-      this.walkCB2Sync(target2, patterns, processor.child(), next);
-    }
-    next();
-  }
-};
-var GlobWalker = class extends GlobUtil {
-  static {
-    __name(this, "GlobWalker");
-  }
-  matches = /* @__PURE__ */ new Set();
-  constructor(patterns, path6, opts) {
-    super(patterns, path6, opts);
-  }
-  matchEmit(e) {
-    this.matches.add(e);
-  }
-  async walk() {
-    if (this.signal?.aborted)
-      throw this.signal.reason;
-    if (this.path.isUnknown()) {
-      await this.path.lstat();
-    }
-    await new Promise((res, rej) => {
-      this.walkCB(this.path, this.patterns, () => {
-        if (this.signal?.aborted) {
-          rej(this.signal.reason);
-        } else {
-          res(this.matches);
-        }
-      });
-    });
-    return this.matches;
-  }
-  walkSync() {
-    if (this.signal?.aborted)
-      throw this.signal.reason;
-    if (this.path.isUnknown()) {
-      this.path.lstatSync();
-    }
-    this.walkCBSync(this.path, this.patterns, () => {
-      if (this.signal?.aborted)
-        throw this.signal.reason;
-    });
-    return this.matches;
-  }
-};
-var GlobStream = class extends GlobUtil {
-  static {
-    __name(this, "GlobStream");
-  }
-  results;
-  constructor(patterns, path6, opts) {
-    super(patterns, path6, opts);
-    this.results = new Minipass({
-      signal: this.signal,
-      objectMode: true
-    });
-    this.results.on("drain", () => this.resume());
-    this.results.on("resume", () => this.resume());
-  }
-  matchEmit(e) {
-    this.results.write(e);
-    if (!this.results.flowing)
-      this.pause();
-  }
-  stream() {
-    const target = this.path;
-    if (target.isUnknown()) {
-      target.lstat().then(() => {
-        this.walkCB(target, this.patterns, () => this.results.end());
-      });
-    } else {
-      this.walkCB(target, this.patterns, () => this.results.end());
-    }
-    return this.results;
-  }
-  streamSync() {
-    if (this.path.isUnknown()) {
-      this.path.lstatSync();
-    }
-    this.walkCBSync(this.path, this.patterns, () => this.results.end());
-    return this.results;
-  }
-};
-
-// ../../node_modules/glob/dist/esm/glob.js
-var defaultPlatform3 = typeof process === "object" && process && typeof process.platform === "string" ? process.platform : "linux";
-var Glob = class {
-  static {
-    __name(this, "Glob");
-  }
-  absolute;
-  cwd;
-  root;
-  dot;
-  dotRelative;
-  follow;
-  ignore;
-  magicalBraces;
-  mark;
-  matchBase;
-  maxDepth;
-  nobrace;
-  nocase;
-  nodir;
-  noext;
-  noglobstar;
-  pattern;
-  platform;
-  realpath;
-  scurry;
-  stat;
-  signal;
-  windowsPathsNoEscape;
-  withFileTypes;
-  includeChildMatches;
-  /**
-   * The options provided to the constructor.
-   */
-  opts;
-  /**
-   * An array of parsed immutable {@link Pattern} objects.
-   */
-  patterns;
-  /**
-   * All options are stored as properties on the `Glob` object.
-   *
-   * See {@link GlobOptions} for full options descriptions.
-   *
-   * Note that a previous `Glob` object can be passed as the
-   * `GlobOptions` to another `Glob` instantiation to re-use settings
-   * and caches with a new pattern.
-   *
-   * Traversal functions can be called multiple times to run the walk
-   * again.
-   */
-  constructor(pattern, opts) {
-    if (!opts)
-      throw new TypeError("glob options required");
-    this.withFileTypes = !!opts.withFileTypes;
-    this.signal = opts.signal;
-    this.follow = !!opts.follow;
-    this.dot = !!opts.dot;
-    this.dotRelative = !!opts.dotRelative;
-    this.nodir = !!opts.nodir;
-    this.mark = !!opts.mark;
-    if (!opts.cwd) {
-      this.cwd = "";
-    } else if (opts.cwd instanceof URL || opts.cwd.startsWith("file://")) {
-      opts.cwd = (0, import_node_url2.fileURLToPath)(opts.cwd);
-    }
-    this.cwd = opts.cwd || "";
-    this.root = opts.root;
-    this.magicalBraces = !!opts.magicalBraces;
-    this.nobrace = !!opts.nobrace;
-    this.noext = !!opts.noext;
-    this.realpath = !!opts.realpath;
-    this.absolute = opts.absolute;
-    this.includeChildMatches = opts.includeChildMatches !== false;
-    this.noglobstar = !!opts.noglobstar;
-    this.matchBase = !!opts.matchBase;
-    this.maxDepth = typeof opts.maxDepth === "number" ? opts.maxDepth : Infinity;
-    this.stat = !!opts.stat;
-    this.ignore = opts.ignore;
-    if (this.withFileTypes && this.absolute !== void 0) {
-      throw new Error("cannot set absolute and withFileTypes:true");
-    }
-    if (typeof pattern === "string") {
-      pattern = [pattern];
-    }
-    this.windowsPathsNoEscape = !!opts.windowsPathsNoEscape || opts.allowWindowsEscape === false;
-    if (this.windowsPathsNoEscape) {
-      pattern = pattern.map((p) => p.replace(/\\/g, "/"));
-    }
-    if (this.matchBase) {
-      if (opts.noglobstar) {
-        throw new TypeError("base matching requires globstar");
-      }
-      pattern = pattern.map((p) => p.includes("/") ? p : `./**/${p}`);
-    }
-    this.pattern = pattern;
-    this.platform = opts.platform || defaultPlatform3;
-    this.opts = { ...opts, platform: this.platform };
-    if (opts.scurry) {
-      this.scurry = opts.scurry;
-      if (opts.nocase !== void 0 && opts.nocase !== opts.scurry.nocase) {
-        throw new Error("nocase option contradicts provided scurry option");
-      }
-    } else {
-      const Scurry = opts.platform === "win32" ? PathScurryWin32 : opts.platform === "darwin" ? PathScurryDarwin : opts.platform ? PathScurryPosix : PathScurry;
-      this.scurry = new Scurry(this.cwd, {
-        nocase: opts.nocase,
-        fs: opts.fs
-      });
-    }
-    this.nocase = this.scurry.nocase;
-    const nocaseMagicOnly = this.platform === "darwin" || this.platform === "win32";
-    const mmo = {
-      // default nocase based on platform
-      ...opts,
-      dot: this.dot,
-      matchBase: this.matchBase,
-      nobrace: this.nobrace,
-      nocase: this.nocase,
-      nocaseMagicOnly,
-      nocomment: true,
-      noext: this.noext,
-      nonegate: true,
-      optimizationLevel: 2,
-      platform: this.platform,
-      windowsPathsNoEscape: this.windowsPathsNoEscape,
-      debug: !!this.opts.debug
-    };
-    const mms = this.pattern.map((p) => new Minimatch(p, mmo));
-    const [matchSet, globParts] = mms.reduce((set, m) => {
-      set[0].push(...m.set);
-      set[1].push(...m.globParts);
-      return set;
-    }, [[], []]);
-    this.patterns = matchSet.map((set, i) => {
-      const g = globParts[i];
-      if (!g)
-        throw new Error("invalid pattern object");
-      return new Pattern(set, g, 0, this.platform);
-    });
-  }
-  async walk() {
-    return [
-      ...await new GlobWalker(this.patterns, this.scurry.cwd, {
-        ...this.opts,
-        maxDepth: this.maxDepth !== Infinity ? this.maxDepth + this.scurry.cwd.depth() : Infinity,
-        platform: this.platform,
-        nocase: this.nocase,
-        includeChildMatches: this.includeChildMatches
-      }).walk()
-    ];
-  }
-  walkSync() {
-    return [
-      ...new GlobWalker(this.patterns, this.scurry.cwd, {
-        ...this.opts,
-        maxDepth: this.maxDepth !== Infinity ? this.maxDepth + this.scurry.cwd.depth() : Infinity,
-        platform: this.platform,
-        nocase: this.nocase,
-        includeChildMatches: this.includeChildMatches
-      }).walkSync()
-    ];
-  }
-  stream() {
-    return new GlobStream(this.patterns, this.scurry.cwd, {
-      ...this.opts,
-      maxDepth: this.maxDepth !== Infinity ? this.maxDepth + this.scurry.cwd.depth() : Infinity,
-      platform: this.platform,
-      nocase: this.nocase,
-      includeChildMatches: this.includeChildMatches
-    }).stream();
-  }
-  streamSync() {
-    return new GlobStream(this.patterns, this.scurry.cwd, {
-      ...this.opts,
-      maxDepth: this.maxDepth !== Infinity ? this.maxDepth + this.scurry.cwd.depth() : Infinity,
-      platform: this.platform,
-      nocase: this.nocase,
-      includeChildMatches: this.includeChildMatches
-    }).streamSync();
-  }
-  /**
-   * Default sync iteration function. Returns a Generator that
-   * iterates over the results.
-   */
-  iterateSync() {
-    return this.streamSync()[Symbol.iterator]();
-  }
-  [Symbol.iterator]() {
-    return this.iterateSync();
-  }
-  /**
-   * Default async iteration function. Returns an AsyncGenerator that
-   * iterates over the results.
-   */
-  iterate() {
-    return this.stream()[Symbol.asyncIterator]();
-  }
-  [Symbol.asyncIterator]() {
-    return this.iterate();
-  }
-};
-
-// ../../node_modules/glob/dist/esm/has-magic.js
-var hasMagic = /* @__PURE__ */ __name((pattern, options = {}) => {
-  if (!Array.isArray(pattern)) {
-    pattern = [pattern];
-  }
-  for (const p of pattern) {
-    if (new Minimatch(p, options).hasMagic())
-      return true;
-  }
-  return false;
-}, "hasMagic");
-
-// ../../node_modules/glob/dist/esm/index.js
-function globStreamSync(pattern, options = {}) {
-  return new Glob(pattern, options).streamSync();
-}
-__name(globStreamSync, "globStreamSync");
-function globStream(pattern, options = {}) {
-  return new Glob(pattern, options).stream();
-}
-__name(globStream, "globStream");
-function globSync(pattern, options = {}) {
-  return new Glob(pattern, options).walkSync();
-}
-__name(globSync, "globSync");
-async function glob_(pattern, options = {}) {
-  return new Glob(pattern, options).walk();
-}
-__name(glob_, "glob_");
-function globIterateSync(pattern, options = {}) {
-  return new Glob(pattern, options).iterateSync();
-}
-__name(globIterateSync, "globIterateSync");
-function globIterate(pattern, options = {}) {
-  return new Glob(pattern, options).iterate();
-}
-__name(globIterate, "globIterate");
-var streamSync = globStreamSync;
-var stream = Object.assign(globStream, { sync: globStreamSync });
-var iterateSync = globIterateSync;
-var iterate = Object.assign(globIterate, {
-  sync: globIterateSync
-});
-var sync = Object.assign(globSync, {
-  stream: globStreamSync,
-  iterate: globIterateSync
-});
-var glob = Object.assign(glob_, {
-  glob: glob_,
-  globSync,
-  sync,
-  globStream,
-  stream,
-  globStreamSync,
-  streamSync,
-  globIterate,
-  iterate,
-  globIterateSync,
-  iterateSync,
-  Glob,
-  hasMagic,
-  escape,
-  unescape
-});
-glob.glob = glob;
+__name(confirmPrompt, "confirmPrompt");
 
 // src/commands/fix_workspace_imports.ts
-var import_upath25 = __toESM(require_upath(), 1);
+var import_fs_extra20 = __toESM(require_lib2(), 1);
+var import_upath33 = __toESM(require_upath(), 1);
 async function fixWorkspaceImportsAction(options, { logger: log }) {
   if (options.debug) {
     log.debug({ options });
@@ -249808,7 +250969,7 @@ async function fixWorkspaceImportsAction(options, { logger: log }) {
   const fixed = { count: 0 };
   const workspaces = options.workspaces ? Array.isArray(options.workspaces) ? options.workspaces : [options.workspaces] : void 0;
   for (const ws of new MonoRepo().workspaces) {
-    if (workspaces && !workspaces.includes(import_upath25.default.basename(ws.path))) {
+    if (workspaces && !workspaces.includes(import_upath33.default.basename(ws.path))) {
       continue;
     }
     if (options.fixes && !options.fixes.includes("imports")) {
@@ -249829,8 +250990,8 @@ Incorrect import in ${import_ansi_colors8.default.magenta(filepath)}. Replace '$
         continue;
       }
       try {
-        const code = await import_fs_extra9.default.readFile(filepath, "utf8");
-        await import_fs_extra9.default.writeFile(filepath, code.replace(RegExp(replaceValue, "g"), withValue));
+        const code = await import_fs_extra20.default.readFile(filepath, "utf8");
+        await import_fs_extra20.default.writeFile(filepath, code.replace(RegExp(replaceValue, "g"), withValue));
         fixed.count++;
       } catch (error) {
         log.error(error);
@@ -249841,67 +251002,50 @@ Incorrect import in ${import_ansi_colors8.default.magenta(filepath)}. Replace '$
 }
 __name(fixWorkspaceImportsAction, "fixWorkspaceImportsAction");
 
-// src/lib/topImports.ts
-var import_upath26 = __toESM(require_upath(), 1);
-function topImports(repo, n = 50, normalize2 = (line) => line) {
-  const imports = getAllImports(repo);
-  const counters = imports.filter((imp) => import_upath26.default.parse(imp.path).name !== "index").filter((imp) => imp.module.isDependency).flatMap((imp) => {
-    return imp.split().map((s) => {
-      return normalize2(s.replace(/^import type /, "import ").replace("import * as ", "import "));
-    });
-  }).filter(Boolean).reduce((acc, line) => {
-    return acc.add(line);
-  }, new import_multi_set.default());
-  return Array.from(counters.multiplicities()).sort((a, b) => b[1] - a[1]).slice(0, n).map(([code, count]) => ({ count, code }));
-}
-__name(topImports, "topImports");
-
-// src/commands/list_top_import_statements.ts
-async function listTopImportStatementsAction(n = "5000", _opts, { logger: log }) {
-  const res = topImports(new MonoRepo(), Number(n)).reverse();
-  res.forEach((e) => log.info(e.count, e.code));
-}
-__name(listTopImportStatementsAction, "listTopImportStatementsAction");
-
-// src/commands/list_imported_files.ts
-async function listImportedFilesAction(n = "5000", _opts, { logger: log }) {
-  const imports = getAllImports(new MonoRepo());
-  const resolved = imports.flatMap((i) => {
-    const resolvedFileName = resolveModuleImportPath(i.parent.parent.path, i.module.from)?.resolvedFileName;
-    return i.split().map(() => resolvedFileName);
-  }).filter((s) => !!s);
-  const res = countUniques(resolved).reverse().entriesArray().slice(0, Number(n));
-  res.forEach(([v, c]) => log.info(c, v));
-}
-__name(listImportedFilesAction, "listImportedFilesAction");
-
-// src/lib/importLibs.ts
-var import_fs_extra10 = __toESM(require_lib2(), 1);
-var import_upath27 = __toESM(require_upath(), 1);
-var import_meta3 = {};
-async function importLibs(libDirnames) {
-  if (!libDirnames) {
-    const libsDir = import_upath27.default.joinSafe(getRepoRootDirpath(), "libs");
-    libDirnames = await import_fs_extra10.default.readdir(libsDir);
+// src/lib/formatTableForTerminal.ts
+var import_cli_table = __toESM(require_lib(), 1);
+var import_ansi_colors9 = __toESM(require_ansi_colors(), 1);
+function formatTableForTerminal(rows, headers, options = {}) {
+  if (!rows.length || !rows[0].length) {
+    return "";
   }
-  const promises = libDirnames.map(async (ws) => {
-    const absPath = import_upath27.default.joinSafe(getRepoRootDirpath(), ".dist", "libs", ws + ".cjs");
-    const currentDir = typeof import_meta3 !== "undefined" && import_meta3.dirname || typeof __dirname !== "undefined" && __dirname || process.cwd();
-    let importPath = import_upath27.default.relative(currentDir, absPath);
-    if (!importPath.startsWith(".")) importPath = "./" + importPath;
-    return [ws, await import(importPath)];
-  });
-  const entries = await Promise.all(promises);
-  return new Map(entries);
+  const table = new import_cli_table.default();
+  if (headers && headers.length) {
+    table.push(
+      headers.map((s) => {
+        return import_ansi_colors9.default.yellow(s);
+      })
+    );
+  }
+  for (const row of rows) {
+    table.push(row);
+  }
+  if (options?.noBorders) {
+    return table.toString().replace(/[├┼┤┐┘└┌┬┴│─]/g, "").split("\n").map((line) => {
+      return line.trim();
+    }).filter((line) => {
+      return line !== "\x1B[90m\x1B[39m";
+    }).join("\n");
+  } else {
+    return table.toString();
+  }
 }
-__name(importLibs, "importLibs");
-async function getLibsImportStatements() {
-  const map3 = await importLibs();
-  return [...map3.entries()].flatMap(([lib, mod]) => {
-    return Object.keys(mod).filter((name) => name !== "default").map((name) => `import { ${name} } from '@mono/${lib}'`);
-  });
+__name(formatTableForTerminal, "formatTableForTerminal");
+
+// src/commands/lines_of_code.ts
+async function linesOfCodeAction(_opts, { logger: log }) {
+  const counts = await getLinesOfCode();
+  log.info(
+    `
+${formatTableForTerminal(
+      Object.entries(counts).map(([k, v]) => {
+        return [k, String(v.files), String(v.lines)];
+      }),
+      ["file type", "files", "lines of code"]
+    )}`
+  );
 }
-__name(getLibsImportStatements, "getLibsImportStatements");
+__name(linesOfCodeAction, "linesOfCodeAction");
 
 // src/commands/list_import_statements.ts
 async function listImportStatementsAction() {
@@ -249912,51 +251056,150 @@ async function listImportStatementsAction() {
 }
 __name(listImportStatementsAction, "listImportStatementsAction");
 
-// src/commands/fix_dash_chars.ts
-var import_fs_extra11 = __toESM(require_lib2(), 1);
-async function fixDashCharsAction(_opts, { logger: log }) {
-  const filepaths = await glob("**/*", {
-    ignore: "**/{.dist,.coverage,.yarn,node_modules}/**/*",
-    nodir: true,
-    follow: false
-  });
-  const regex = new RegExp(String.fromCharCode(8212), "g");
-  const promises = filepaths.map(async (filepath) => {
-    const src = await import_fs_extra11.default.readFile(filepath, "utf-8");
-    const res = src.replace(regex, "-");
-    if (src !== res) {
-      await import_fs_extra11.default.writeFile(filepath, res, "utf-8");
-      log.info(`Replaced bad dash char in ${filepath}`);
+// src/commands/listImportedBuiltinNodeDependencies.ts
+async function listImportedBuiltinNodeDependencies(_opts, { logger: log }) {
+  const withNodeDeps = [];
+  const withoutNodeDeps = [];
+  new MonoRepo().workspaces.forEach((ws) => {
+    const deps = Array.from(
+      new Set(
+        ws.tsFiles.filter((f) => {
+          return f.isSourceFile;
+        }).map((f) => {
+          return f.tsCode.imports.filter((i) => {
+            return i.module.isBuiltin;
+          }).map((i) => {
+            return i.module.from;
+          });
+        }).flat(3)
+      )
+    );
+    if (deps.length) {
+      withNodeDeps.push([ws.name, deps]);
+    } else {
+      withoutNodeDeps.push([ws.name, deps]);
     }
   });
-  await Promise.all(promises);
+  log.info("Native built-in node dependencies:");
+  withNodeDeps.forEach(([name, deps]) => {
+    log.log(`${name}:`, deps);
+  });
+  withoutNodeDeps.forEach(([name, deps]) => {
+    log.log(`${name}:`, deps);
+  });
 }
-__name(fixDashCharsAction, "fixDashCharsAction");
+__name(listImportedBuiltinNodeDependencies, "listImportedBuiltinNodeDependencies");
+
+// src/commands/list_imported_dependencies.ts
+async function listImportedDependenciesAction(_opts, { logger: log }) {
+  const repo = new MonoRepo();
+  const res = repo.workspaces.map((ws) => {
+    return [ws.name, ws.importedDependenciesRecursive];
+  });
+  res.forEach(([v, c]) => {
+    return log.info(`
+${v}:`, c);
+  });
+}
+__name(listImportedDependenciesAction, "listImportedDependenciesAction");
+
+// src/commands/list_imported_files.ts
+async function listImportedFilesAction(n = "5000", _opts, { logger: log }) {
+  const imports = getAllImports(new MonoRepo());
+  const resolved = imports.flatMap((i) => {
+    const resolvedFileName = resolveModuleImportPath(i.parent.parent.path, i.module.from)?.resolvedFileName;
+    return i.split().map(() => {
+      return resolvedFileName;
+    });
+  }).filter((s) => {
+    return !!s;
+  });
+  const res = countUniques(resolved).reverse().entriesArray().slice(0, Number(n));
+  res.forEach(([v, c]) => {
+    return log.info(c, v);
+  });
+}
+__name(listImportedFilesAction, "listImportedFilesAction");
+
+// src/commands/list_lib_module_exports.ts
+var import_ansi_colors10 = __toESM(require_ansi_colors(), 1);
+var import_node_util8 = require("node:util");
+async function listLibModuleExportsAction(_opts, { logger: log }) {
+  const libs = Array.from((await importLibs()).entries());
+  log.log(
+    libs.map(([lib, modules]) => {
+      return `${import_ansi_colors10.default.magenta(lib)}: ${(0, import_node_util8.inspect)(modules, { colors: false, depth: 0, breakLength: 1 }).replace(/\[Module: null prototype\] /g, "").replace(/\[Function: (\w+)\]/g, "[Function]").replace(/\[AsyncFunction: (\w+)\]/g, "[AsyncFunction]").replace(/\[GeneratorFunction: (\w+)\]/g, "[GeneratorFunction]").replace(/\[class [\w ]+\]/g, "[Class]").replace(/: \[([\w ]+)\]/g, (m, type) => {
+        return `: ${import_ansi_colors10.default.yellow.dim(`[${type}]`)}`;
+      })}`;
+    }).join("\n\n")
+  );
+}
+__name(listLibModuleExportsAction, "listLibModuleExportsAction");
+
+// src/lib/topImports.ts
+var import_upath34 = __toESM(require_upath(), 1);
+function topImports(repo, n = 50, normalize2 = (line) => {
+  return line;
+}) {
+  const imports = getAllImports(repo);
+  const counters = imports.filter((imp) => {
+    return import_upath34.default.parse(imp.path).name !== "index";
+  }).filter((imp) => {
+    return imp.module.isDependency;
+  }).flatMap((imp) => {
+    return imp.split().map((s) => {
+      return normalize2(s.replace(/^import type /, "import ").replace("import * as ", "import "));
+    });
+  }).filter(Boolean).reduce((acc, line) => {
+    return acc.add(line);
+  }, new import_multi_set.default());
+  return Array.from(counters.multiplicities()).sort((a, b) => {
+    return b[1] - a[1];
+  }).slice(0, n).map(([code, count]) => {
+    return { count, code };
+  });
+}
+__name(topImports, "topImports");
+
+// src/commands/list_top_import_statements.ts
+async function listTopImportStatementsAction(n = "5000", _opts, { logger: log }) {
+  const res = topImports(new MonoRepo(), Number(n)).reverse();
+  res.forEach((e) => {
+    return log.info(e.count, e.code);
+  });
+}
+__name(listTopImportStatementsAction, "listTopImportStatementsAction");
 
 // src/commands/missing_coverage_files.ts
-var import_fs_extra12 = __toESM(require_lib2(), 1);
-var import_upath28 = __toESM(require_upath(), 1);
+var import_fs_extra21 = __toESM(require_lib2(), 1);
+var import_upath35 = __toESM(require_upath(), 1);
 async function missingCoverageFilesAction(opts, { logger: log }) {
   const repoRoot = getRepoRootDirpath();
-  const vitestConfigFilepath = import_upath28.default.join(repoRoot, "vitest.config.js");
-  if (!import_fs_extra12.default.existsSync(vitestConfigFilepath)) {
+  const vitestConfigFilepath = import_upath35.default.join(repoRoot, "vitest.config.js");
+  if (!import_fs_extra21.default.existsSync(vitestConfigFilepath)) {
     log.error(`Vitest config file not found at ${vitestConfigFilepath}`);
     process.exit(1);
   }
-  const coverageDirectory = import_fs_extra12.default.readFileSync(vitestConfigFilepath, "utf-8").split("\n").find((line) => line.includes("reportsDirectory:"))?.match(/reportsDirectory:\s*['"`](.+?)['"`]/)?.[1]?.trim();
+  const coverageDirectory = import_fs_extra21.default.readFileSync(vitestConfigFilepath, "utf-8").split("\n").find((line) => {
+    return line.includes("reportsDirectory:");
+  })?.match(/reportsDirectory:\s*['"`](.+?)['"`]/)?.[1]?.trim();
   if (!coverageDirectory) {
     log.error(`Could not find reportsDirectory in Vitest config at ${vitestConfigFilepath}`);
     process.exit(1);
   }
-  const coverageSummaryJsonFilepath = import_upath28.default.join(coverageDirectory, "coverage-summary.json");
-  if (!import_fs_extra12.default.existsSync(coverageSummaryJsonFilepath)) {
+  const coverageSummaryJsonFilepath = import_upath35.default.join(coverageDirectory, "coverage-summary.json");
+  if (!import_fs_extra21.default.existsSync(coverageSummaryJsonFilepath)) {
     log.error(`Coverage summary file not found at ${coverageSummaryJsonFilepath}`);
     process.exit(1);
   }
   const coverageSummary = JSON.parse(
-    import_fs_extra12.default.readFileSync(coverageSummaryJsonFilepath, "utf-8")
+    import_fs_extra21.default.readFileSync(coverageSummaryJsonFilepath, "utf-8")
   );
-  const result = Object.entries(coverageSummary).filter(([filepath]) => filepath !== "total").filter(([_, metrics]) => metrics.lines.total > 0).filter(([_, metrics]) => {
+  const result = Object.entries(coverageSummary).filter(([filepath]) => {
+    return filepath !== "total";
+  }).filter(([_, metrics]) => {
+    return metrics.lines.total > 0;
+  }).filter(([_, metrics]) => {
     return Object.values(metrics).some((metric) => {
       return metric.pct < 100 && metric.total > 0;
     });
@@ -249974,496 +251217,44 @@ Error: ${result.length} files with missing coverage found.`);
 }
 __name(missingCoverageFilesAction, "missingCoverageFilesAction");
 
-// src/commands/list_lib_module_exports.ts
-var import_node_util7 = require("node:util");
-var import_ansi_colors9 = __toESM(require_ansi_colors(), 1);
-async function listLibModuleExportsAction(_opts, { logger: log }) {
-  const libs = Array.from((await importLibs()).entries());
-  log.log(
-    libs.map(([lib, modules]) => {
-      return `${import_ansi_colors9.default.magenta(lib)}: ` + (0, import_node_util7.inspect)(modules, { colors: false, depth: 0, breakLength: 1 }).replace(/\[Module: null prototype\] /g, "").replace(/\[Function: (\w+)\]/g, "[Function]").replace(/\[AsyncFunction: (\w+)\]/g, "[AsyncFunction]").replace(/\[GeneratorFunction: (\w+)\]/g, "[GeneratorFunction]").replace(/\[class [\w ]+\]/g, "[Class]").replace(/: \[([\w ]+)\]/g, (m, type) => ": " + import_ansi_colors9.default.yellow.dim("[" + type + "]"));
-    }).join("\n\n")
-  );
-}
-__name(listLibModuleExportsAction, "listLibModuleExportsAction");
-
-// src/lib/formatTableForTerminal.ts
-var import_ansi_colors10 = __toESM(require_ansi_colors(), 1);
-var import_cli_table = __toESM(require_lib(), 1);
-function formatTableForTerminal(rows, headers, options = {}) {
-  if (!rows.length || !rows[0].length) return "";
-  const table = new import_cli_table.default();
-  if (headers && headers.length) {
-    table.push(headers.map((s) => import_ansi_colors10.default.yellow(s)));
-  }
-  for (const row of rows) table.push(row);
-  if (options?.noBorders) {
-    return table.toString().replace(/[├┼┤┐┘└┌┬┴│─]/g, "").split("\n").map((line) => line.trim()).filter((line) => line !== "\x1B[90m\x1B[39m").join("\n");
-  } else {
-    return table.toString();
+// src/commands/missing_tsdoc_files.ts
+async function missingTsdocFilesAction(_opts, { logger: log }) {
+  const { printLogs, exportsNotInDedicatedFileSet, filesNotDocumented } = await parseLibsTsDocSummaries();
+  printLogs(log);
+  if (filesNotDocumented.length || exportsNotInDedicatedFileSet.size) {
+    log.error("Exiting with code 1.");
+    process.exit(1);
   }
 }
-__name(formatTableForTerminal, "formatTableForTerminal");
-
-// src/lib/getLinesOfCode.ts
-var import_fs_extra13 = __toESM(require_lib2(), 1);
-var import_strip_comments2 = __toESM(require_strip_comments(), 1);
-async function getLinesOfCode() {
-  const ts = (await glob("{libs,apps,packages}/*/{src,examples}/**/*.ts")).filter(
-    (p) => !/[./\\](wip|old|temp|playground)[./\\]/.test(p)
-  );
-  const source = countLines(ts.filter((p) => !/[./\\](test|examples|benchmark)[./\\]/.test(p)));
-  const test = countLines(ts.filter((p) => p.endsWith(".test.ts")));
-  const examples = countLines(ts.filter((p) => /[./\\](examples|benchmark)[./\\]/.test(p)));
-  const total = {
-    files: source.files + test.files + examples.files,
-    lines: source.lines + test.lines + examples.lines
-  };
-  return { source, test, examples, total };
-}
-__name(getLinesOfCode, "getLinesOfCode");
-function countLines(paths) {
-  const arr = paths.flatMap((p) => {
-    const code = import_fs_extra13.default.readFileSync(p, "utf8");
-    const noComments = (0, import_strip_comments2.default)(code, { block: true, line: true });
-    const compact = noComments.split("\n").map((line) => line.trim()).filter(Boolean);
-    return compact.length;
-  });
-  const files2 = paths.length;
-  const lines = arr.reduce((a, b) => a + b, 0);
-  return { files: files2, lines };
-}
-__name(countLines, "countLines");
-
-// src/commands/lines_of_code.ts
-async function linesOfCodeAction(_opts, { logger: log }) {
-  const counts = await getLinesOfCode();
-  log.info(
-    "\n" + formatTableForTerminal(
-      Object.entries(counts).map(([k, v]) => [k, String(v.files), String(v.lines)]),
-      ["file type", "files", "lines of code"]
-    )
-  );
-}
-__name(linesOfCodeAction, "linesOfCodeAction");
-
-// src/commands/build_readme.ts
-var import_fs_extra16 = __toESM(require_lib2(), 1);
-var import_node_child_process5 = __toESM(require("node:child_process"), 1);
-
-// src/lib/renderReadme.ts
-var import_fs_extra15 = __toESM(require_lib2(), 1);
-var import_node_child_process4 = __toESM(require("node:child_process"), 1);
-var import_upath30 = __toESM(require_upath(), 1);
-
-// src/lib/arrayTableToMarkdown.ts
-function arrayTableToMarkdown(table) {
-  if (table.length === 0 || table.some((row) => row.length !== table[0].length)) {
-    throw new Error("Invalid table: all rows must have the same number of columns and cannot be empty");
-  }
-  const columnLengths = table[0].map((_, columnIndex) => Math.max(...table.map((row) => row[columnIndex].length)));
-  const padCell = /* @__PURE__ */ __name((cell, index) => cell.padEnd(columnLengths[index], " "), "padCell");
-  let md = "";
-  md += "| " + table[0].map(padCell).join(" | ") + " |\n";
-  md += "| " + columnLengths.map((length) => "-".repeat(length)).join(" | ") + " |\n";
-  for (let i = 1; i < table.length; i++) {
-    md += "| " + table[i].map(padCell).join(" | ") + " |\n";
-  }
-  return md.trim();
-}
-__name(arrayTableToMarkdown, "arrayTableToMarkdown");
-
-// src/lib/parseLibsTsDocSummaries.ts
-var import_fs_extra14 = __toESM(require_lib2(), 1);
-var import_upath29 = __toESM(require_upath(), 1);
-
-// src/lib/tsdoc.ts
-function* tsDocExtractAllComments(code) {
-  const reStart = /^\s*\/\*\*\s*$/;
-  const reEnd = /^\s*\*\/\s*$/;
-  let lines = code.split(/\r?\n/);
-  let offset = 0;
-  while (true) {
-    const indexStart = lines.findIndex((line) => reStart.test(line));
-    const indexEnd = lines.findIndex((line) => reEnd.test(line));
-    if (indexStart !== -1 && indexEnd !== -1) {
-      let nextLine;
-      if (indexEnd + 1 < lines.length) nextLine = lines[indexEnd + 1];
-      if (nextLine?.trim() === "" && indexEnd + 2 < lines.length) nextLine = lines[indexEnd + 2];
-      yield {
-        start: indexStart + offset,
-        end: indexEnd + offset,
-        match: lines.slice(indexStart, indexEnd + 1).join("\n"),
-        nextLine
-      };
-      lines = lines.slice(indexEnd + 1);
-      offset += indexEnd + 1;
-    } else {
-      break;
-    }
-  }
-}
-__name(tsDocExtractAllComments, "tsDocExtractAllComments");
-function getNamedExportTsDocSummary(name, code) {
-  for (const c of tsDocExtractAllComments(
-    code.split("\n").map((l) => l.trim()).filter((l) => l && !/^(@|\/\/)/.test(l)).join("\n")
-  )) {
-    if (c.nextLine?.startsWith("export default ")) continue;
-    if (!c.nextLine?.startsWith("export ")) continue;
-    if (!c.nextLine?.includes(` ${name}`)) continue;
-    return c.match.split("\n").slice(1, -1).map((l) => l.substring(2).trim()).filter(Boolean).join(" ").split("@")[0].trim();
-  }
-}
-__name(getNamedExportTsDocSummary, "getNamedExportTsDocSummary");
-
-// src/lib/parseLibsTsDocSummaries.ts
-var parseLibsTsDocSummaries = onetime_default(async () => {
-  const logActions = [];
-  const printLogs = /* @__PURE__ */ __name((log = console) => {
-    logActions.forEach((f) => f(log));
-    logActions.length = 0;
-  }, "printLogs");
-  const logError = /* @__PURE__ */ __name((...args) => logActions.push((log) => log.error(...args)), "logError");
-  const logInfo = /* @__PURE__ */ __name((...args) => logActions.push((log) => log.info(...args)), "logInfo");
-  const libsModulesMap = await importLibs();
-  const libs = Array.from(libsModulesMap.entries()).flatMap(
-    ([wsName, mod]) => Object.keys(mod).filter((s) => s !== "default").map((expName) => ["libs/" + wsName, expName])
-  );
-  const exportsNotInDedicatedFileSet = new Set(libs.map(([wsPath, expName]) => wsPath + " => " + expName + ".ts"));
-  const repoRoot = getRepoRootDirpath();
-  const tsFiles = (await glob(["libs/*/src/**/*.ts"], { absolute: true })).map((fp) => import_upath29.default.relative(repoRoot, fp)).filter(Boolean);
-  if (tsFiles.length === 0) {
-    logError("\u26A0\uFE0F No TypeScript files found.");
-    return { validSummaries: [], exportsNotInDedicatedFileSet, filesNotDocumented: [], printLogs };
-  }
-  const tsFilesAndContent = await Promise.all(
-    tsFiles.map(async (filepath) => {
-      const filename = import_upath29.default.trimExt(import_upath29.default.basename(filepath));
-      const code = await import_fs_extra14.default.readFile(filepath, "utf8");
-      return { filepath, filename, code };
-    })
-  );
-  const summaries = /* @__PURE__ */ new Map();
-  for (const { filepath, filename, code } of tsFilesAndContent) {
-    const fileHasExport = libs.some(([wsPath, expName]) => {
-      if (!(filepath.startsWith(wsPath + "/src/") && filepath.endsWith("/" + expName + ".ts"))) return;
-      exportsNotInDedicatedFileSet.delete(wsPath + " => " + expName + ".ts");
-      summaries.set(filepath, "???");
-      return true;
-    });
-    if (!fileHasExport) continue;
-    const summary = getNamedExportTsDocSummary(filename, code) || "???";
-    summaries.set(filepath, summary);
-  }
-  const filesNotDocumented = Array.from(summaries.entries()).map(([filepath, summary]) => ({ filepath, summary })).filter((o) => o.summary === "???").map((o) => o.filepath).sort();
-  if (filesNotDocumented.length) {
-    logError(filesNotDocumented.length + " named exports missing TSDoc in libs:");
-    filesNotDocumented.forEach((filepath) => logError(" " + filepath));
-  } else {
-    logInfo(filesNotDocumented.length + " named exports missing TSDoc in libs.");
-  }
-  if (exportsNotInDedicatedFileSet.size) {
-    logError(exportsNotInDedicatedFileSet.size + " named exports without dedicated files:");
-    Array.from(exportsNotInDedicatedFileSet).sort().forEach((s) => logError("  " + s));
-  } else {
-    logInfo(exportsNotInDedicatedFileSet.size + " named exports without dedicated files.");
-  }
-  const validSummaries = Array.from(summaries.entries()).map(([filepath, summary]) => ({ filepath, summary })).filter((o) => o.summary !== "???").sort((a, b) => a.filepath.localeCompare(b.filepath));
-  logInfo(validSummaries.length + ` TSDoc summaries parsed in libs.`);
-  return { validSummaries, exportsNotInDedicatedFileSet, filesNotDocumented, printLogs };
-});
-
-// src/lib/renderReadme.ts
-var README_TEMPLATE_PATH = "docs/readmeTemplate.md";
-async function renderReadme() {
-  import_node_child_process4.default.execSync("yarn prettier -w --l " + README_TEMPLATE_PATH, { stdio: "inherit" });
-  let md = await import_fs_extra15.default.readFile(README_TEMPLATE_PATH, "utf8");
-  md = md.replace("<!-- REPO_NAME -->", await getRepoName());
-  md = md.replace("<!-- REPO_DESCRIPTION -->", await getRepoDescription());
-  md = md.replace("<!-- LINES_OF_CODE_TABLE -->", await renderLinesOfCodeTable());
-  md = md.replace("<!-- LIBS_COVERAGE_SUMMARY_TABLE -->", await renderCoverageSummary());
-  md = md.replace("<!-- LIBRARY_EXPORTED_MODULES -->", await renderLibsExportedModules());
-  md = md.replace("<!-- TOC_TABLE -->", await renderTOC(md));
-  const descriptions = await getNpmPkgDescriptions([
-    ["<!-- ES_TOOLKIT_INFO -->", "es-toolkit"],
-    ["<!-- ITER_TOOLS_INFO -->", "iter-tools"],
-    ["<!-- TYPE_FEST_INFO -->", "type-fest"],
-    ["<!-- UPATH_INFO -->", "upath"],
-    ["<!-- FS_EXTRA_INFO -->", "fs-extra"],
-    ["<!-- ANSI_COLORS_INFO -->", "ansi-colors"]
-  ]);
-  descriptions.forEach(({ placeholder, description }) => {
-    md = md.replace(placeholder, description);
-  });
-  return md;
-}
-__name(renderReadme, "renderReadme");
-async function renderTOC(readmeMarkdown) {
-  return readmeMarkdown.replace(/\n```\w+\n[^`]+\n```\n/gs, "\n").split("\n").filter((line) => /^#+ /.test(line)).map((line) => {
-    const level = line.match(/^#+/)[0].length;
-    const indent = "  ".repeat(level - 1);
-    const title = line.replace(/^#+ /, "").trim();
-    const id = line.replace(/^#+ /, "").toLowerCase().replace(/ /g, "-").replace(/[^a-z-0-9]/gi, "");
-    return `${indent}- [${title}](#${id})`;
-  }).join("\n");
-}
-__name(renderTOC, "renderTOC");
-async function renderLibsExportedModules() {
-  const { validSummaries } = await parseLibsTsDocSummaries();
-  const libsModulesMap = await importLibs();
-  const librarySummaries = /* @__PURE__ */ new Map();
-  for (const { filepath, summary } of validSummaries) {
-    try {
-      const regex = /^libs\/([^/]+)\/src\/(.+)\.ts$/;
-      const match2 = filepath.match(regex);
-      if (!match2) continue;
-      const [libName, fileName] = match2.slice(1);
-      if (libName === "module.exports") continue;
-      if (!librarySummaries.has(libName)) {
-        librarySummaries.set(libName, []);
-      }
-      librarySummaries.get(libName).push({
-        fileName,
-        functionName: import_upath30.default.basename(fileName),
-        summary: summary || "No description available"
-      });
-    } catch {
-      continue;
-    }
-  }
-  const sortedLibNames = Array.from(librarySummaries.keys()).sort();
-  const libExports = [];
-  for (const libName of sortedLibNames) {
-    const libModule = libsModulesMap.get(libName);
-    if (!libModule) continue;
-    const namedExports = Object.keys(libModule).filter((name) => name !== "default").sort();
-    if (namedExports.length === 0) continue;
-    libExports.push(`**${libName}**`);
-    const summaries = librarySummaries.get(libName) || [];
-    const summaryMap = new Map(summaries.map((s) => [s.functionName, s.summary]));
-    for (const exportName of namedExports) {
-      const summary = summaryMap.get(exportName) || "?";
-      libExports.push(`- \`${exportName}\`: ${summary}`);
-    }
-    libExports.push("");
-  }
-  return libExports.join("\n");
-}
-__name(renderLibsExportedModules, "renderLibsExportedModules");
-async function getNpmPkgDescription(name) {
-  return new Promise((resolve, reject) => {
-    import_node_child_process4.default.exec(`npm view ${name} description`, (error, stdout) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve(stdout.toString().split("\n")[0].trim());
-    });
-  });
-}
-__name(getNpmPkgDescription, "getNpmPkgDescription");
-async function getRepoDescription() {
-  return (await getRepoPackageJson()).description;
-}
-__name(getRepoDescription, "getRepoDescription");
-async function getRepoName() {
-  return (await getRepoPackageJson()).name;
-}
-__name(getRepoName, "getRepoName");
-async function renderCoverageSummary() {
-  const coverageJsonPath = ".coverage/html/coverage-summary.json";
-  const coverageData = await import_fs_extra15.default.readJson(coverageJsonPath);
-  const { total } = coverageData;
-  return arrayTableToMarkdown([
-    ["Metric", "Total", "Covered", "Percentage"],
-    ["Lines", total.lines.total, total.lines.covered, `${total.lines.pct}%`].map(String),
-    ["Functions", total.functions.total, total.functions.covered, `${total.functions.pct}%`].map(String),
-    ["Branches", total.branches.total, total.branches.covered, `${total.branches.pct}%`].map(String)
-  ]);
-}
-__name(renderCoverageSummary, "renderCoverageSummary");
-async function getNpmPkgDescriptions(placeholders) {
-  return await Promise.all(
-    placeholders.map(async ([placeholder, name]) => ({
-      placeholder,
-      name,
-      description: await getNpmPkgDescription(name)
-    }))
-  );
-}
-__name(getNpmPkgDescriptions, "getNpmPkgDescriptions");
-async function renderLinesOfCodeTable() {
-  const counts = await getLinesOfCode();
-  return arrayTableToMarkdown([
-    ["file type", "files", "lines of code"],
-    ...Object.entries(counts).map(([k, v]) => [k, String(v.files), String(v.lines)])
-  ]);
-}
-__name(renderLinesOfCodeTable, "renderLinesOfCodeTable");
-
-// src/commands/build_readme.ts
-async function buildReadmeAction(_opts, { logger: log }) {
-  await import_fs_extra16.default.writeFile("README.md", await renderReadme(), "utf8");
-  log.info("Writing to file:", "./README.md");
-  import_node_child_process5.default.execSync("yarn format:write", { stdio: "inherit" });
-}
-__name(buildReadmeAction, "buildReadmeAction");
-
-// src/commands/clear_node_modules.ts
-var import_node_fs3 = __toESM(require("node:fs"), 1);
-var import_upath31 = __toESM(require_upath(), 1);
-var import_node_child_process6 = require("node:child_process");
-async function clearNodeModulesAction(_opts, { logger: log }) {
-  const root2 = getRepoRootDirpath();
-  const paths = (await glob([
-    "{apps,libs,packages}/*/{node_modules,package-lock.json}",
-    "yarn.lock",
-    "package-lock.json",
-    "node_modules"
-  ])).map((dp) => import_upath31.default.normalize(dp)).sort();
-  log.info("Deleting:");
-  paths.forEach((p, i) => log.info("", i, p));
-  for (const p of paths.filter((p2) => import_node_fs3.default.existsSync(p2))) {
-    import_node_fs3.default.rmSync(p, { recursive: true, force: true });
-  }
-  log.info("Clearing yarn cache...");
-  (0, import_node_child_process6.execSync)("yarn cache clear", {
-    stdio: "inherit",
-    cwd: root2
-  });
-}
-__name(clearNodeModulesAction, "clearNodeModulesAction");
-
-// src/commands/fix_vitest_imports.ts
-var import_fs_extra17 = __toESM(require_lib2(), 1);
-var import_upath32 = __toESM(require_upath(), 1);
-async function fixVitestImportsAction(fileGlob, _opts, { logger: log }) {
-  const filepaths = globSync(fileGlob, { cwd: process.cwd() }).map((fp) => import_upath32.default.normalizeSafe(fp));
-  log.info(`Found ${filepaths.length} files matching glob: ${fileGlob}`);
-  if (filepaths.length === 0) return;
-  const filesWithCode = filepaths.map((filepath) => {
-    const code = import_fs_extra17.default.readFileSync(filepath, "utf-8");
-    return { filepath, code };
-  }).filter((o) => {
-    const isEmpty = !o.code.trim();
-    return !(isEmpty || o.code.includes(`from 'vitest'`));
-  });
-  filesWithCode.map((o) => o.filepath).forEach((f) => log.info(f));
-  log.info(`Found ${filesWithCode.length} files missing vitest import`);
-  if (filesWithCode.length === 0) return;
-  filesWithCode.forEach((o) => {
-    const importLine = `import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, test, vitest, vi } from 'vitest'`;
-    import_fs_extra17.default.outputFileSync(o.filepath, `${importLine}
-
-${o.code}`, "utf-8");
-    log.info(`Added Vitest imports to: ${o.filepath}`);
-  });
-}
-__name(fixVitestImportsAction, "fixVitestImportsAction");
-
-// src/commands/fix_index_ts.ts
-var import_upath33 = __toESM(require_upath(), 1);
-
-// src/lib/outputFileIfChanged.ts
-var import_fs_extra18 = __toESM(require_lib2(), 1);
-async function outputFileIfChanged(filepath, content, logger) {
-  if (await import_fs_extra18.default.pathExists(filepath)) {
-    const cur = await import_fs_extra18.default.readFile(filepath, "utf8");
-    if (cur === content) {
-      return;
-    }
-  }
-  await import_fs_extra18.default.outputFile(filepath, content);
-  logger.log(toCwdRelative(filepath));
-  return filepath;
-}
-__name(outputFileIfChanged, "outputFileIfChanged");
-
-// src/commands/fix_index_ts.ts
-var import_fs_extra19 = __toESM(require_lib2(), 1);
-async function fixIndexTsAction(dirnames, opts, { logger }) {
-  const repoRoot = getRepoRootDirpath();
-  const libWorkspacePaths = (dirnames.length ? dirnames : await import_fs_extra19.default.readdir("libs")).filter((dirname) => !opts.ignore || !opts.ignore.includes(dirname)).map((d) => import_upath33.default.joinSafe("libs", d));
-  await forEachAsync(
-    libWorkspacePaths,
-    async (wsPath) => {
-      const OUTFILE = "src/index.ts";
-      const TEST_OUTFILE = "src/index.test.ts";
-      const WS_ROOT = import_upath33.default.joinSafe(repoRoot, wsPath);
-      const filepaths = (await glob("src/**/*.ts", { cwd: WS_ROOT })).map((fp) => import_upath33.default.normalizeSafe(fp)).filter((fp) => !/[./](test|wip|old|examples?|benchmark|temp|internal)[./]/.test(fp));
-      const exportDirpaths = filepaths.filter((fp) => fp.endsWith("/index.ts") && fp !== OUTFILE).map((fp) => import_upath33.default.dirname(fp)).sort();
-      const exportFilepaths = filepaths.filter((fp) => !exportDirpaths.some((dp) => fp.startsWith(dp))).filter((fp) => fp !== OUTFILE).map((fp) => fp.replace(/\.ts$/, "")).sort();
-      const relative = [...exportDirpaths, ...exportFilepaths].map((fp) => fp.replace(/^src/, "."));
-      const tempName = /* @__PURE__ */ __name((i) => {
-        return "MODULE_" + String(i + 1).padStart(relative.length.toString().length, "0");
-      }, "tempName");
-      let lines = relative.flatMap((fp) => `export * from '${fp}'`).concat("");
-      const tsconfig = {
-        ...await import_fs_extra19.default.readJson(import_upath33.default.joinSafe(repoRoot, "tsconfig.json"), "utf8"),
-        ...await import_fs_extra19.default.readJson(import_upath33.default.joinSafe(wsPath, "tsconfig.json"), "utf8")
-      };
-      if (!tsconfig.compilerOptions.isolatedDeclarations) {
-        lines = lines.concat(
-          relative.map((fp, i) => {
-            return `import * as ${tempName(i)} from '${fp}'`;
-          }),
-          "",
-          //
-          `export default {`,
-          ...relative.map((_, i) => `  ...${tempName(i)},` + (i === 0 ? " //" : "")),
-          `}`,
-          ""
-        );
-      }
-      const testLines = [
-        `import { describe, expect, it } from 'vitest'`,
-        `import * as EXPORTS from './index'`,
-        ``,
-        `describe('index.ts', () => {`,
-        `  it('should load modules', () => {`,
-        `    for (const [key, value] of Object.entries(EXPORTS)) {`,
-        `      expect(key).toBeTypeOf('string')`,
-        `      expect(value).not.toBeUndefined()`,
-        `    }`,
-        `  })`,
-        `})`,
-        ``
-      ];
-      await outputFileIfChanged(import_upath33.default.joinSafe(WS_ROOT, OUTFILE), lines.join("\n"), logger);
-      await outputFileIfChanged(import_upath33.default.joinSafe(WS_ROOT, TEST_OUTFILE), testLines.join("\n"), logger);
-    },
-    { concurrency: 10 }
-  );
-}
-__name(fixIndexTsAction, "fixIndexTsAction");
+__name(missingTsdocFilesAction, "missingTsdocFilesAction");
 
 // src/commands/run.ts
-var import_node_child_process7 = __toESM(require("node:child_process"), 1);
-var import_fs_extra20 = __toESM(require_lib2(), 1);
-var import_upath34 = __toESM(require_upath(), 1);
+var import_node_child_process8 = __toESM(require("node:child_process"), 1);
+var import_fs_extra22 = __toESM(require_lib2(), 1);
+var import_upath36 = __toESM(require_upath(), 1);
 async function runAction(filepath, args) {
   const root2 = getRepoRootDirpath();
-  const relative = import_upath34.default.isAbsolute(filepath) ? import_upath34.default.relative(root2, filepath) : import_upath34.default.normalizeSafe(filepath);
+  const relative = import_upath36.default.isAbsolute(filepath) ? import_upath36.default.relative(root2, filepath) : import_upath36.default.normalizeSafe(filepath);
   if (!filepath) {
     console.error("no filepath argument provided");
     process.exit(1);
   }
   if (filepath.endsWith(".test.ts")) {
-    import_node_child_process7.default.execSync(`yarn vitest --config vitest.config.js --run ${relative}`, {
+    import_node_child_process8.default.execSync(`yarn vitest --config vitest.config.js --run ${relative}`, {
       stdio: "inherit",
       cwd: root2
     });
     process.exit(0);
   }
   if (filepath.endsWith(".mjs") || filepath.endsWith(".cjs") || filepath.endsWith(".js")) {
-    import_node_child_process7.default.execSync(`node ${relative}`, {
+    import_node_child_process8.default.execSync(`node ${relative}`, {
       stdio: "inherit",
       cwd: root2
     });
     process.exit(0);
   }
   if (filepath.endsWith(".ps1")) {
-    import_node_child_process7.default.execSync(`./${relative}`, {
+    import_node_child_process8.default.execSync(`./${relative}`, {
       stdio: "inherit",
       cwd: root2
     });
@@ -250476,17 +251267,19 @@ async function runAction(filepath, args) {
   const importSourceMapLine = `import 'source-map-support/register'`;
   const importPrettyStackTraceLine = `import { enablePrettyStackTrace } from '@mono/stacktrace';
 enablePrettyStackTrace()`;
-  const tscodeOriginal = import_fs_extra20.default.readFileSync(relative, "utf8");
+  const tscodeOriginal = import_fs_extra22.default.readFileSync(relative, "utf8");
   let tscode = tscodeOriginal;
   let changedSourceFile = false;
   try {
     if (!tscode.includes(importSourceMapLine)) {
       changedSourceFile = true;
-      tscode = importSourceMapLine + "\n" + tscode;
+      tscode = `${importSourceMapLine}
+${tscode}`;
     }
     if (!tscode.includes(importPrettyStackTraceLine)) {
       changedSourceFile = true;
-      tscode = importPrettyStackTraceLine + "\n" + tscode;
+      tscode = `${importPrettyStackTraceLine}
+${tscode}`;
     }
     if (changedSourceFile) {
     }
@@ -250495,8 +251288,10 @@ enablePrettyStackTrace()`;
       "dotenv/config",
       "source-map-support/register",
       `./scripts/enablePrettyStackTrace.cjs`
-    ].map((r) => `-r ${r}`).join(" ");
-    import_node_child_process7.default.execSync(`tsx ${requires} ${relative} ${args.join(" ")}`, {
+    ].map((r) => {
+      return `-r ${r}`;
+    }).join(" ");
+    import_node_child_process8.default.execSync(`tsx ${requires} ${relative} ${args.join(" ")}`, {
       stdio: "inherit",
       cwd: root2
     });
@@ -250507,149 +251302,8 @@ enablePrettyStackTrace()`;
 }
 __name(runAction, "runAction");
 
-// src/commands/create_workspace.ts
-var import_fs_extra21 = __toESM(require_lib2(), 1);
-var import_upath35 = __toESM(require_upath(), 1);
-
-// src/lib/cliExec.ts
-var import_node_child_process8 = require("node:child_process");
-function cliExecSync(command, options = {}) {
-  if (options.dryRun) {
-    if (!options.quiet) {
-      console.log("dryRun. Command skipped: " + command);
-    }
-    return;
-  }
-  (0, import_node_child_process8.execSync)(command, {
-    stdio: options.quiet ? "ignore" : "inherit",
-    cwd: options.cwd ?? process.cwd()
-  });
-}
-__name(cliExecSync, "cliExecSync");
-
-// src/commands/create_workspace.ts
-function createLibsWorkspaceAction(workspaceName, options = {}) {
-  const CWD = import_upath35.default.normalize(process.cwd());
-  const rootPath = import_upath35.default.join(CWD, "libs", workspaceName);
-  const srcPath = import_upath35.default.join(rootPath, "src");
-  const eslintConfigJsPath = import_upath35.default.join(rootPath, "eslint.config.mjs");
-  const packageJsonPath = import_upath35.default.join(rootPath, "package.json");
-  const esbuildMjsPath = import_upath35.default.join(rootPath, "esbuild.mjs");
-  const readmeMdPath = import_upath35.default.join(rootPath, "README.md");
-  const tsconfigJsonPath = import_upath35.default.join(rootPath, "tsconfig.json");
-  const indexTsPath = import_upath35.default.join(srcPath, "index.ts");
-  const repoRootPackageJson = import_fs_extra21.default.readJsonSync(repoRootPackageJsonPath);
-  const repoScope = repoRootPackageJson.name;
-  const scopedLibraryName = `@${repoScope}/${workspaceName}`;
-  const tsconfigBasePathsJson = import_fs_extra21.default.readJsonSync(tsconfigBasePathsJsonPath);
-  tsconfigBasePathsJson.compilerOptions.paths[scopedLibraryName] = [`./libs/${workspaceName}/src/index.ts`];
-  import_fs_extra21.default.outputJsonSync(tsconfigBasePathsJsonPath, tsconfigBasePathsJson, { spaces: 2 });
-  import_fs_extra21.default.mkdirSync(srcPath, { recursive: true });
-  import_fs_extra21.default.outputFileSync(
-    eslintConfigJsPath,
-    //
-    templates.files.eslintConfigJs.renderString()
-  );
-  import_fs_extra21.default.outputFileSync(
-    packageJsonPath,
-    //
-    templates.files.packageJson.renderString({ libraryName: scopedLibraryName })
-  );
-  import_fs_extra21.default.outputFileSync(
-    esbuildMjsPath,
-    //
-    templates.files.esbuild.renderString({})
-  );
-  import_fs_extra21.default.outputFileSync(
-    readmeMdPath,
-    //
-    templates.files.readmeMd.renderString({ libraryName: scopedLibraryName })
-  );
-  import_fs_extra21.default.outputFileSync(
-    tsconfigJsonPath,
-    //
-    templates.files.tsconfigJson.renderString()
-  );
-  import_fs_extra21.default.outputFileSync(
-    indexTsPath,
-    //
-    templates.files.indexTs.renderString()
-  );
-  cliExecSync(`yarn install`, { ...options, cwd: rootPath });
-  cliExecSync(`yarn install`, { ...options, cwd: CWD });
-}
-__name(createLibsWorkspaceAction, "createLibsWorkspaceAction");
-
-// src/commands/missing_tsdoc_files.ts
-async function missingTsdocFilesAction(_opts, { logger: log }) {
-  const { printLogs, exportsNotInDedicatedFileSet, filesNotDocumented } = await parseLibsTsDocSummaries();
-  printLogs(log);
-  if (filesNotDocumented.length || exportsNotInDedicatedFileSet.size) {
-    log.error("Exiting with code 1.");
-    process.exit(1);
-  }
-}
-__name(missingTsdocFilesAction, "missingTsdocFilesAction");
-
-// src/commands/fix_empty_files.ts
-var import_fs_extra22 = __toESM(require_lib2(), 1);
-
-// src/lib/getEmptyWsFiles.ts
-var import_upath36 = __toESM(require_upath(), 1);
-async function getEmptyWsFiles() {
-  return (await glob("{libs,apps}/**/*", { withFileTypes: true, stat: true })).filter((d) => {
-    return d.isFile() && d.size === 0;
-  }).map((d) => {
-    return import_upath36.default.relative(process.cwd(), import_upath36.default.joinSafe(d.parentPath, d.name));
-  });
-}
-__name(getEmptyWsFiles, "getEmptyWsFiles");
-
-// src/commands/fix_empty_files.ts
-async function fixEmptyFilesAction(_opts, { logger: log }) {
-  const empty = await getEmptyWsFiles();
-  for (const file of empty) {
-    log.info("Deleting empty file:", file);
-    await import_fs_extra22.default.remove(file);
-  }
-}
-__name(fixEmptyFilesAction, "fixEmptyFilesAction");
-
-// src/commands/list_imported_dependencies.ts
-async function listImportedDependenciesAction(_opts, { logger: log }) {
-  const repo = new MonoRepo();
-  const res = repo.workspaces.map((ws) => [ws.name, ws.importedDependenciesRecursive]);
-  res.forEach(([v, c]) => log.info("\n" + v + ":", c));
-}
-__name(listImportedDependenciesAction, "listImportedDependenciesAction");
-
-// src/commands/listImportedBuiltinNodeDependencies.ts
-async function listImportedBuiltinNodeDependencies(_opts, { logger: log }) {
-  const withNodeDeps = [];
-  const withoutNodeDeps = [];
-  new MonoRepo().workspaces.forEach((ws) => {
-    const deps = Array.from(
-      new Set(
-        ws.tsFiles.filter((f) => f.isSourceFile).map((f) => {
-          return f.tsCode.imports.filter((i) => i.module.isBuiltin).map((i) => i.module.from);
-        }).flat(3)
-      )
-    );
-    if (deps.length) {
-      withNodeDeps.push([ws.name, deps]);
-    } else {
-      withoutNodeDeps.push([ws.name, deps]);
-    }
-  });
-  log.info("Native built-in node dependencies:");
-  withNodeDeps.forEach(([name, deps]) => {
-    log.log(name + ":", deps);
-  });
-  withoutNodeDeps.forEach(([name, deps]) => {
-    log.log(name + ":", deps);
-  });
-}
-__name(listImportedBuiltinNodeDependencies, "listImportedBuiltinNodeDependencies");
+// src/core/version.ts
+var version_default = `1.1.3`;
 
 // src/main.ts
 enablePrettyStackTrace();

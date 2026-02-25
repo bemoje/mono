@@ -4,5 +4,7 @@
  * Unresolved variables are replaced with an empty string.
  */
 export function expandEnvVars(filepath: string): string {
-  return filepath.replace(/\$\{(\w+)\}|\$(\w+)/g, (_, a, b) => process.env[a || b] ?? '')
+  return filepath.replace(/\$\{(\w+)\}|\$(\w+)/g, (_, a, b) => {
+    return process.env[a || b] ?? ''
+  })
 }

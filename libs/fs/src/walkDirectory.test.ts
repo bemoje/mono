@@ -1,28 +1,34 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import assert from 'node:assert'
 import { Stats } from 'fs-extra'
-
-// Mock walkdir
-vi.mock('walkdir', () => ({
-  default: {
-    sync: vi.fn(),
-  },
-}))
-
-// Mock upath
-vi.mock('upath', () => ({
-  default: {
-    normalizeSafe: vi.fn((p: string) => p.replace(/\\/g, '/')),
-    basename: vi.fn((p: string) => p.split('/').pop() || ''),
-  },
-}))
-
+import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 import { walkDirectory } from './walkDirectory'
 import walkdir from 'walkdir'
+
+// Mock walkdir
+vi.mock('walkdir', () => {
+  return {
+    default: {
+      sync: vi.fn(),
+    },
+  }
+})
+// Mock upath
+vi.mock('upath', () => {
+  return {
+    default: {
+      normalizeSafe: vi.fn((p: string) => {
+        return p.replace(/\\/g, '/')
+      }),
+      basename: vi.fn((p: string) => {
+        return p.split('/').pop() || ''
+      }),
+    },
+  }
+})
 
 const mockSync = walkdir.sync as any
 
@@ -68,8 +74,22 @@ describe(walkDirectory.name, () => {
   })
 
   describe('with stats option', () => {
-    const mockFileStats = { isFile: () => true, isDirectory: () => false } as Stats
-    const mockDirStats = { isFile: () => false, isDirectory: () => true } as Stats
+    const mockFileStats = {
+      isFile: () => {
+        return true
+      },
+      isDirectory: () => {
+        return false
+      },
+    } as Stats
+    const mockDirStats = {
+      isFile: () => {
+        return false
+      },
+      isDirectory: () => {
+        return true
+      },
+    } as Stats
 
     it('should return array of [path, stats] tuples when stats is true', () => {
       mockSync.mockReturnValue({
@@ -93,8 +113,22 @@ describe(walkDirectory.name, () => {
   })
 
   describe('with only option', () => {
-    const mockFileStats = { isFile: () => true, isDirectory: () => false } as Stats
-    const mockDirStats = { isFile: () => false, isDirectory: () => true } as Stats
+    const mockFileStats = {
+      isFile: () => {
+        return true
+      },
+      isDirectory: () => {
+        return false
+      },
+    } as Stats
+    const mockDirStats = {
+      isFile: () => {
+        return false
+      },
+      isDirectory: () => {
+        return true
+      },
+    } as Stats
 
     it('should filter to only files when only="files"', () => {
       mockSync.mockReturnValue({
@@ -174,7 +208,9 @@ describe(walkDirectory.name, () => {
 
     it('should convert filter option', () => {
       mockSync.mockReturnValue([])
-      const filterFn = vi.fn(() => true)
+      const filterFn = vi.fn(() => {
+        return true
+      })
 
       walkDirectory('/test', { filter: filterFn })
 
@@ -189,7 +225,9 @@ describe(walkDirectory.name, () => {
 
     it('should return empty array when filter returns false', () => {
       mockSync.mockReturnValue([])
-      const filterFn = vi.fn(() => false)
+      const filterFn = vi.fn(() => {
+        return false
+      })
 
       walkDirectory('/test', { filter: filterFn })
 
@@ -217,8 +255,22 @@ describe(walkDirectory.name, () => {
     })
 
     it('should handle mixed file types with filtering', () => {
-      const mockFileStats = { isFile: () => true, isDirectory: () => false } as Stats
-      const mockDirStats = { isFile: () => false, isDirectory: () => true } as Stats
+      const mockFileStats = {
+        isFile: () => {
+          return true
+        },
+        isDirectory: () => {
+          return false
+        },
+      } as Stats
+      const mockDirStats = {
+        isFile: () => {
+          return false
+        },
+        isDirectory: () => {
+          return true
+        },
+      } as Stats
 
       mockSync.mockReturnValue({
         '/test/file.txt': mockFileStats,

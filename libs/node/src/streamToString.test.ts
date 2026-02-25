@@ -1,8 +1,8 @@
 import { Readable } from 'node:stream'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { streamToString } from './streamToString'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('streamToString', () => {
   it('should return an empty string for an empty stream', async () => {

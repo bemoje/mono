@@ -1,7 +1,7 @@
 import { arrayToString } from './arrayToString'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(arrayToString.name, () => {
   it('string array', () => {

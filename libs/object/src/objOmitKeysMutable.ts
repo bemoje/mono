@@ -14,7 +14,9 @@ import { Any } from '@mono/types'
  */
 export function objOmitKeysMutable<O extends Record<PropertyKey, Any>>(obj: O, ...keys: PropertyKey[]) {
   for (const key of keys) {
-    if (!Object.hasOwn(obj, key)) continue
+    if (!Object.hasOwn(obj, key)) {
+      continue
+    }
     Reflect.deleteProperty(obj, key)
   }
   return obj

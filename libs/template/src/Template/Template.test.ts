@@ -1,12 +1,12 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import assert from 'node:assert'
-import { Type } from '@sinclair/typebox'
-import { Template } from './Template'
-import { StringTemplateStrategy } from '../strategies/StringTemplateStrategy'
 import { JsonFileTemplateStrategy } from '../strategies/JsonFileTemplateStrategy'
+import { StringTemplateStrategy } from '../strategies/StringTemplateStrategy'
+import { Template } from './Template'
 import { TextFileTemplateStrategy } from '../strategies/TextFileTemplateStrategy'
+import { Type } from '@sinclair/typebox'
+import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(Template.name, () => {
   it('examples', () => {

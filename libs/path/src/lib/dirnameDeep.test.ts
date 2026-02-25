@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
+import { describe } from 'vitest'
 import { dirnameDeep } from './dirnameDeep'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(dirnameDeep.name, () => {
   it('should return the immediate parent directory', () => {

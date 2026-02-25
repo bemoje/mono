@@ -1,8 +1,8 @@
-import { isNegativeNumber } from './isNegativeNumber'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { isNegativeNumber } from './isNegativeNumber'
+import { it } from 'vitest'
 
 describe(isNegativeNumber.name, () => {
   it('examples', () => {

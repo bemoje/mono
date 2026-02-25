@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strToCharCodes } from './strToCharCodes'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('strToCharCodes', () => {
   it('should convert a string to an array of char codes', () => {

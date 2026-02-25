@@ -1,5 +1,5 @@
-import { createInterface } from 'node:readline/promises'
 import { UserConfig } from './types/UserConfig'
+import { createInterface } from 'node:readline/promises'
 import { userConfigFile } from './userConfigFile'
 
 export async function loadUserConfig(): Promise<UserConfig> {
@@ -18,5 +18,7 @@ export async function loadUserConfig(): Promise<UserConfig> {
     process.exit(1)
   }
 
-  return userConfigFile.update((config) => ({ ...config, username }))
+  return userConfigFile.update((config) => {
+    return { ...config, username }
+  })
 }

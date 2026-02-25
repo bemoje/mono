@@ -1,11 +1,11 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import type { Argument } from './types'
 import { Help } from './Help'
-import type { Argument } from "./types";
-import type { ICommand } from "./types";
-import type { IHelp } from "./types";
-import type { Option } from "./types";
+import type { ICommand } from './types'
+import type { IHelp } from './types'
+import type { Option } from './types'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 function mockOption(overrides: Partial<Option> = {}): Option {
   return {
@@ -436,7 +436,9 @@ describe(Help.name, () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
       const items = [mockOption({ name: 'a', group: 'A' }), mockOption({ name: 'b', group: 'B' })]
-      const result = help.groupItems(items, items, (o) => o.group ?? 'default')
+      const result = help.groupItems(items, items, (o) => {
+        return o.group ?? 'default'
+      })
       expect(result.size).toBe(2)
       expect(result.get('A')).toHaveLength(1)
     })
@@ -446,7 +448,9 @@ describe(Help.name, () => {
       const help = new Help(cmd)
       const unsorted = [mockOption({ name: 'a', group: 'A' })]
       const visible = [mockOption({ name: 'a', group: 'A' }), mockOption({ name: 'c', group: 'C' })]
-      const result = help.groupItems(unsorted, visible, (o) => o.group ?? 'default')
+      const result = help.groupItems(unsorted, visible, (o) => {
+        return o.group ?? 'default'
+      })
       expect(result.has('C')).toBe(true)
       expect(result.get('C')).toHaveLength(1)
     })

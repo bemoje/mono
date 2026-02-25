@@ -9,6 +9,8 @@
 export function strRemoveEmptyLines(string: string): string {
   return string
     .split(/\r?\n/)
-    .filter((l) => !!l.trim())
+    .filter((l) => {
+      return !!l.trim()
+    })
     .join('\n')
 }

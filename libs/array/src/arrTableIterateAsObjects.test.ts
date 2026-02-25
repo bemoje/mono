@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { arrTableIterateAsObjects } from './arrTableIterateAsObjects'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(arrTableIterateAsObjects.name, () => {
   const headers = ['name', 'sex', 'age']
@@ -29,27 +29,35 @@ describe(arrTableIterateAsObjects.name, () => {
 
   it('should throw if ignoreHeaders contains a non-existent header', async () => {
     const ignoreHeaders = new Set(['nonexistent'])
-    expect(() => [...arrTableIterateAsObjects(rows, headers, ignoreHeaders)]).toThrow()
+    expect(() => {
+      return [...arrTableIterateAsObjects(rows, headers, ignoreHeaders)]
+    }).toThrow()
   })
 
   it('should throw if headers is empty', async () => {
-    expect(() => [...arrTableIterateAsObjects(rows, [])]).toThrow()
+    expect(() => {
+      return [...arrTableIterateAsObjects(rows, [])]
+    }).toThrow()
   })
 
   it('should throw if all headers are ignored', async () => {
     const ignoreHeaders = new Set(headers)
-    expect(() => [...arrTableIterateAsObjects(rows, headers, ignoreHeaders)]).toThrow()
+    expect(() => {
+      return [...arrTableIterateAsObjects(rows, headers, ignoreHeaders)]
+    }).toThrow()
   })
 
   it('should throw if not all rows are same length as headers', async () => {
-    expect(() => [
-      ...arrTableIterateAsObjects(
-        [
-          ['Mark', 'M', '2'],
-          ['Anna', 'F'],
-        ],
-        headers,
-      ),
-    ]).toThrow()
+    expect(() => {
+      return [
+        ...arrTableIterateAsObjects(
+          [
+            ['Mark', 'M', '2'],
+            ['Anna', 'F'],
+          ],
+          headers,
+        ),
+      ]
+    }).toThrow()
   })
 })

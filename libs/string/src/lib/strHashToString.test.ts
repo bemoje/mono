@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strHashToString } from './strHashToString'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('strHashToString', () => {
   it('should hash a string into a buffer with a given algorithm and encoding', () => {

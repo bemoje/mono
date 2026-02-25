@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { formatTableForTerminal } from './formatTableForTerminal'
+import { it } from 'vitest'
 
 describe(formatTableForTerminal.name, () => {
   it('should return empty string for empty rows', () => {

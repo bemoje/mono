@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { hasBasename } from './hasBasename'
+import { it } from 'vitest'
 
 describe(hasBasename.name, () => {
   it('examples', () => {

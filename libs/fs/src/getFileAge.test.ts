@@ -1,15 +1,23 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getFileAge } from './getFileAge'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 const mockStat = vi.fn()
 
-vi.mock('fs-extra', () => ({
-  default: { stat: (...args: any[]) => mockStat(...args) },
-  stat: (...args: any[]) => mockStat(...args),
-}))
+vi.mock('fs-extra', () => {
+  return {
+    default: {
+      stat: (...args: any[]) => {
+        return mockStat(...args)
+      },
+    },
+    stat: (...args: any[]) => {
+      return mockStat(...args)
+    },
+  }
+})
 
 describe(getFileAge.name, () => {
   it('should return the age of a file in milliseconds using ctimeMs', async () => {

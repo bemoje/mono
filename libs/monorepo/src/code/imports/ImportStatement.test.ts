@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { ImportStatement } from './ImportStatement'
 import { TsCode } from '../TsCode'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 function getImportStatement(code: string) {
   const tsCode = new TsCode({} as any, code)
@@ -72,7 +72,9 @@ describe(ImportStatement.name, () => {
   describe('filepath', () => {
     it('should throw when no TsFile ancestor exists', () => {
       const stmt = getImportStatement("import { Foo } from 'bar'")
-      expect(() => stmt.filepath).toThrow()
+      expect(() => {
+        return stmt.filepath
+      }).toThrow()
     })
   })
 

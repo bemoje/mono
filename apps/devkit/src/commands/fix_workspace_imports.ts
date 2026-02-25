@@ -1,8 +1,8 @@
 import type { Logger } from '@mono/node'
-import fs from 'fs-extra'
+import { MonoRepo } from '@mono/monorepo'
 import colors from 'ansi-colors'
 import { confirmPrompt } from '../lib/confirmPrompt'
-import { MonoRepo } from '@mono/monorepo'
+import fs from 'fs-extra'
 import upath from 'upath'
 
 export interface FixWorkspaceImportsOptions {

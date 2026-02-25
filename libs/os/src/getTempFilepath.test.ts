@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getTempFilepath } from './getTempFilepath'
+import { it } from 'vitest'
 
 describe(getTempFilepath.name, () => {
   it('should return a temp filepath with default subpath', () => {

@@ -1,9 +1,9 @@
-import { beforeEach } from "vitest";
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
 import { Command } from './Command'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 describe(Command.name, () => {
   beforeEach(() => {

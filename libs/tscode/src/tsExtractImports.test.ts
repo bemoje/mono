@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { tsExtractImports } from "./tsExtractImports";
-import { TsExtractImportsResult } from "./tsExtractImports";
+import { TsExtractImportsResult } from './tsExtractImports'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { tsExtractImports } from './tsExtractImports'
 
 describe(tsExtractImports.name, () => {
   it('should return an empty array for an empty code string', () => {

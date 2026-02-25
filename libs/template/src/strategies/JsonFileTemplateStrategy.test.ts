@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import assert from 'node:assert'
-import { Type } from '@sinclair/typebox'
 import { JsonFileTemplateStrategy } from './JsonFileTemplateStrategy'
+import { Type } from '@sinclair/typebox'
+import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(JsonFileTemplateStrategy.name, () => {
   it('examples', () => {

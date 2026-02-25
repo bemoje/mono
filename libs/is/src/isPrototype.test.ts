@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isPrototype } from './isPrototype'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { it } from 'vitest'
 
 describe('isPrototype', () => {
   it('should return true for native class prototypes', () => {

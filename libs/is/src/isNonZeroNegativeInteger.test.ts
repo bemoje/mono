@@ -1,8 +1,8 @@
-import { isNonZeroNegativeInteger } from './isNonZeroNegativeInteger'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { isNonZeroNegativeInteger } from './isNonZeroNegativeInteger'
+import { it } from 'vitest'
 
 describe(isNonZeroNegativeInteger.name, () => {
   it('examples', () => {

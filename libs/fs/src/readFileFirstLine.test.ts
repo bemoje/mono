@@ -1,10 +1,10 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { readFileFirstLine } from './readFileFirstLine'
-import path from 'node:path'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import fs from 'fs-extra'
+import { it } from 'vitest'
 import os from 'node:os'
+import path from 'node:path'
+import { readFileFirstLine } from './readFileFirstLine'
 
 describe(readFileFirstLine.name, () => {
   it('should read first line of a file', async () => {

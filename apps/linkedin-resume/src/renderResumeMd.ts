@@ -1,11 +1,11 @@
-import fs from 'fs-extra'
 import { DIST_PATH } from './constants'
-import upath from 'upath'
-import type { Resume } from "./types/Resume";
-import type { ResumeWork } from "./types/Resume";
-import { loadResumeJson } from './LoadResumeJson'
-import { userConfigFile } from './userConfigFile'
 import { Logger } from '@mono/node'
+import type { Resume } from './types/Resume'
+import type { ResumeWork } from './types/Resume'
+import fs from 'fs-extra'
+import { loadResumeJson } from './LoadResumeJson'
+import upath from 'upath'
+import { userConfigFile } from './userConfigFile'
 
 export async function renderResumeMd(logger: Logger): Promise<void> {
   const resume = await loadResumeJson({ applyIgnoreRules: false })
@@ -20,7 +20,7 @@ export async function renderResumeMd(logger: Logger): Promise<void> {
   sections.push(renderRecommendations(resume))
   sections.push(renderSkills(resume))
 
-  const md = sections.filter(Boolean).join('\n\n---\n\n') + '\n'
+  const md = `${sections.filter(Boolean).join('\n\n---\n\n')}\n`
 
   const outPath = upath.join(DIST_PATH, 'resume.md')
   await fs.outputFile(outPath, md)
@@ -45,15 +45,25 @@ function renderProfile(resume: Resume): string {
   lines.push('')
 
   const contact: string[] = []
-  if (b.email) contact.push(`[${b.email}](mailto:${b.email})`)
-  if (b.phone) contact.push(`[${b.phone}](tel:${b.phone})`)
+  if (b.email) {
+    contact.push(`[${b.email}](mailto:${b.email})`)
+  }
+  if (b.phone) {
+    contact.push(`[${b.phone}](tel:${b.phone})`)
+  }
   if (contact.length) {
     lines.push(contact.join(' | '))
     lines.push('')
   }
 
   if (b.social?.length) {
-    lines.push(b.social.map((p) => `[${p.network}](${p.url})`).join(' | '))
+    lines.push(
+      b.social
+        .map((p) => {
+          return `[${p.network}](${p.url})`
+        })
+        .join(' | '),
+    )
     lines.push('')
   }
 
@@ -61,14 +71,22 @@ function renderProfile(resume: Resume): string {
 }
 
 function renderAbout(resume: Resume): string {
-  if (!resume.basics.summary) return ''
+  if (!resume.basics.summary) {
+    return ''
+  }
   const lines: string[] = []
   lines.push(`## About`)
   lines.push('')
   lines.push(resume.basics.summary)
   if (resume.basics.topSkills?.length) {
     lines.push('')
-    lines.push(resume.basics.topSkills.map((s) => `\`${s}\``).join(' - '))
+    lines.push(
+      resume.basics.topSkills
+        .map((s) => {
+          return `\`${s}\``
+        })
+        .join(' - '),
+    )
   }
   return lines.join('\n').trimEnd()
 }
@@ -79,7 +97,9 @@ interface ExperienceGroup {
 }
 
 function renderExperience(resume: Resume): string {
-  if (!resume.work?.length) return ''
+  if (!resume.work?.length) {
+    return ''
+  }
 
   // Group consecutive entries by company
   const groups: ExperienceGroup[] = []
@@ -95,7 +115,13 @@ function renderExperience(resume: Resume): string {
   const lines: string[] = []
   lines.push(`## Experience`)
   lines.push('')
-  lines.push(groups.map((g) => renderExperienceGroup(g)).join('\n\n'))
+  lines.push(
+    groups
+      .map((g) => {
+        return renderExperienceGroup(g)
+      })
+      .join('\n\n'),
+  )
   return lines.join('\n').trimEnd()
 }
 
@@ -120,7 +146,13 @@ function renderExperienceGroup(group: ExperienceGroup): string {
   lines.push('')
   lines.push(`${formatDateRange(last.startDate, first.endDate)}`)
   lines.push('')
-  lines.push(group.roles.map((job) => renderSubRole(job)).join('\n\n'))
+  lines.push(
+    group.roles
+      .map((job) => {
+        return renderSubRole(job)
+      })
+      .join('\n\n'),
+  )
   return lines.join('\n').trimEnd()
 }
 
@@ -150,15 +182,25 @@ function renderJobBody(job: ResumeWork): string {
     }
   }
   if (job.skills?.length) {
-    const names = job.skills.map((s) => (typeof s === 'string' ? s : (s as { name: string }).name))
+    const names = job.skills.map((s) => {
+      return typeof s === 'string' ? s : (s as { name: string }).name
+    })
     lines.push('')
-    lines.push(names.map((s) => `\`${s}\``).join(' - '))
+    lines.push(
+      names
+        .map((s) => {
+          return `\`${s}\``
+        })
+        .join(' - '),
+    )
   }
   return lines.join('\n')
 }
 
 function renderEducation(resume: Resume): string {
-  if (!resume.education?.length) return ''
+  if (!resume.education?.length) {
+    return ''
+  }
   const lines: string[] = []
   lines.push(`## Education`)
   lines.push('')
@@ -181,7 +223,13 @@ function renderEducation(resume: Resume): string {
     }
     if (edu.skills?.length) {
       parts.push('')
-      parts.push(edu.skills.map((s) => `\`${s}\``).join(' - '))
+      parts.push(
+        edu.skills
+          .map((s) => {
+            return `\`${s}\``
+          })
+          .join(' - '),
+      )
     }
     return parts.join('\n').trimEnd()
   })
@@ -190,16 +238,26 @@ function renderEducation(resume: Resume): string {
 }
 
 function renderSkills(resume: Resume): string {
-  if (!resume.skills?.length) return ''
+  if (!resume.skills?.length) {
+    return ''
+  }
   const lines: string[] = []
   lines.push(`## Skills`)
   lines.push('')
-  lines.push(resume.skills.map((skill) => `\`${skill.name}\``).join(' - '))
+  lines.push(
+    resume.skills
+      .map((skill) => {
+        return `\`${skill.name}\``
+      })
+      .join(' - '),
+  )
   return lines.join('\n').trimEnd()
 }
 
 function renderProjects(resume: Resume): string {
-  if (!resume.projects?.length) return ''
+  if (!resume.projects?.length) {
+    return ''
+  }
   const lines: string[] = []
   lines.push(`## Projects`)
   lines.push('')
@@ -224,11 +282,23 @@ function renderProjects(resume: Resume): string {
     }
     if (proj.skills?.length) {
       parts.push('')
-      parts.push(proj.skills.map((s) => `\`${s}\``).join(' - '))
+      parts.push(
+        proj.skills
+          .map((s) => {
+            return `\`${s}\``
+          })
+          .join(' - '),
+      )
     }
     if (proj.mediaLinks?.length) {
       parts.push('')
-      parts.push(proj.mediaLinks.map((m) => `[${m.title}](${m.url})`).join(' | '))
+      parts.push(
+        proj.mediaLinks
+          .map((m) => {
+            return `[${m.title}](${m.url})`
+          })
+          .join(' | '),
+      )
     }
     return parts.join('\n').trimEnd()
   })
@@ -237,7 +307,9 @@ function renderProjects(resume: Resume): string {
 }
 
 function renderLanguages(resume: Resume): string {
-  if (!resume.languages?.length) return ''
+  if (!resume.languages?.length) {
+    return ''
+  }
   const lines: string[] = []
   lines.push(`## Languages`)
   lines.push('')
@@ -251,7 +323,9 @@ function renderRecommendations(resume: Resume): string {
   const username = userConfigFile.load().username
   const href = `https://www.linkedin.com/in/${username}/details/recommendations/?locale=en_US`
 
-  if (!resume.recommendations?.length) return ''
+  if (!resume.recommendations?.length) {
+    return ''
+  }
   const lines: string[] = []
   lines.push(`## Recommendations`)
   lines.push('')
@@ -281,8 +355,10 @@ function renderRecommendations(resume: Resume): string {
 // --- Utils ---
 
 function formatDate(d: string | undefined): string {
-  if (!d) return 'Present'
-  const date = new Date(d.length <= 7 ? d + '-01' : d)
+  if (!d) {
+    return 'Present'
+  }
+  const date = new Date(d.length <= 7 ? `${d}-01` : d)
   return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 

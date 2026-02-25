@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { sortByValues } from './sortByValues'
 import { ExtMap } from './ExtMap'
+import { describe } from 'vitest'
 import { entriesArray } from './entriesArray'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { sortByValues } from './sortByValues'
 
 describe(sortByValues.name, () => {
   it('should sort entries by values', () => {
@@ -13,7 +13,9 @@ describe(sortByValues.name, () => {
       ['b', 2],
     ])
 
-    const result = sortByValues(map, (a, b) => (a as number) - (b as number))
+    const result = sortByValues(map, (a, b) => {
+      return (a as number) - (b as number)
+    })
 
     expect(result).toBe(map) // Should return the same instance
     expect(entriesArray(map)).toEqual([
@@ -30,7 +32,9 @@ describe(sortByValues.name, () => {
       ['m', 13],
     ])
 
-    sortByValues(map, (a, b) => (a as number) - (b as number))
+    sortByValues(map, (a, b) => {
+      return (a as number) - (b as number)
+    })
 
     expect(entriesArray(map)).toEqual([
       ['a', 1],
@@ -42,7 +46,9 @@ describe(sortByValues.name, () => {
   it('should handle empty map', () => {
     const map = new ExtMap<string, number>()
 
-    const result = sortByValues(map, (a, b) => (a as number) - (b as number))
+    const result = sortByValues(map, (a, b) => {
+      return (a as number) - (b as number)
+    })
 
     expect(result).toBe(map)
     expect(entriesArray(map)).toEqual([])
@@ -55,7 +61,9 @@ describe(sortByValues.name, () => {
       [2, 'bob'],
     ])
 
-    sortByValues(map, (a, b) => (a as string).localeCompare(b as string))
+    sortByValues(map, (a, b) => {
+      return (a as string).localeCompare(b as string)
+    })
 
     expect(entriesArray(map)).toEqual([
       [1, 'alice'],
@@ -71,7 +79,9 @@ describe(sortByValues.name, () => {
       ['c', 3],
     ])
 
-    sortByValues(map, (a, b) => (b as number) - (a as number))
+    sortByValues(map, (a, b) => {
+      return (b as number) - (a as number)
+    })
 
     expect(entriesArray(map)).toEqual([
       ['c', 3],
@@ -83,7 +93,9 @@ describe(sortByValues.name, () => {
   it('should handle single entry', () => {
     const map = new ExtMap<string, number>([['a', 1]])
 
-    sortByValues(map, (a, b) => (a as number) - (b as number))
+    sortByValues(map, (a, b) => {
+      return (a as number) - (b as number)
+    })
 
     expect(entriesArray(map)).toEqual([['a', 1]])
   })
@@ -95,7 +107,9 @@ describe(sortByValues.name, () => {
       ['player3', { score: 200, name: 'Charlie' }],
     ])
 
-    sortByValues(map, (a, b) => (a as { score: number }).score - (b as { score: number }).score)
+    sortByValues(map, (a, b) => {
+      return (a as { score: number }).score - (b as { score: number }).score
+    })
 
     expect(entriesArray(map)).toEqual([
       ['player2', { score: 100, name: 'Bob' }],
@@ -112,13 +126,17 @@ describe(sortByValues.name, () => {
       ['d', 1],
     ])
 
-    sortByValues(map, (a, b) => (a as number) - (b as number))
+    sortByValues(map, (a, b) => {
+      return (a as number) - (b as number)
+    })
 
     const result = entriesArray(map)
     expect(result).toHaveLength(4)
 
     // Check that all values are sorted (allow for stable sort of duplicate values)
-    const values = result.map(([, v]) => v)
+    const values = result.map(([, v]) => {
+      return v
+    })
     expect(values).toEqual([1, 1, 2, 2])
   })
 })

@@ -1,12 +1,12 @@
+import { getOS } from './getOS'
 import os from 'node:os'
 import upath from 'upath'
-import { getOS } from './getOS'
 
 /**
  * Get the app data path, depending on the current OS (win, osx, linux).
  */
 export function getAppDataPath(...paths: string[]) {
-  let result = process.env['APPDATA']
+  let result = process.env.APPDATA
   if (!result) {
     const OS = getOS()
     if (OS === 'windows') {
@@ -19,7 +19,11 @@ export function getAppDataPath(...paths: string[]) {
       throw new Error('Could not find an appropriate app data path')
     }
   }
-  if (!paths.length) return result
-  if (paths[0] === os.homedir()) paths[0] = '.' + paths[0]
+  if (!paths.length) {
+    return result
+  }
+  if (paths[0] === os.homedir()) {
+    paths[0] = `.${paths[0]}`
+  }
   return upath.join(result, ...paths)
 }

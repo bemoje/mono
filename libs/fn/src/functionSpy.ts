@@ -1,6 +1,6 @@
+import type { Any } from '@mono/types'
 import type { AnyAsyncFunction } from '@mono/types'
 import type { TFunction } from '@mono/types'
-import type { Any } from '@mono/types'
 import { isAsyncFunction } from 'node:util/types'
 import { preserveNameAndLength } from './preserveNameAndLength'
 
@@ -64,7 +64,9 @@ function wrapMaybeAsync<T, Data>(
   options: { ignore?: IgnorePredicate<T, Data> } = {},
 ) {
   const ignore = options.ignore
-  if (ignore && ignore(func, spy)) return func
+  if (ignore && ignore(func, spy)) {
+    return func
+  }
   return preserveNameAndLength(func, function (this: T, ...args: any[]) {
     if (ignore && ignore(func, spy, this)) {
       return func.apply(this, args)
@@ -87,7 +89,9 @@ function wrapSync<T, Data>(
   options: { ignore?: IgnorePredicate<T, Data> } = {},
 ) {
   const ignore = options.ignore
-  if (ignore && ignore(func, spy)) return func
+  if (ignore && ignore(func, spy)) {
+    return func
+  }
   return preserveNameAndLength(func, function (this: T, ...args: any[]) {
     if (ignore && ignore(func, spy, this)) {
       return func.apply(this, args)
@@ -104,7 +108,9 @@ function wrapAsync<T, Data>(
   options: { ignore?: IgnorePredicate<T, Data> } = {},
 ) {
   const ignore = options.ignore
-  if (ignore && ignore(func, spy)) return func
+  if (ignore && ignore(func, spy)) {
+    return func
+  }
   return preserveNameAndLength(func, async function (this: T, ...args: any[]) {
     if (ignore && ignore(func, spy, this)) {
       return await func.apply(this, args)

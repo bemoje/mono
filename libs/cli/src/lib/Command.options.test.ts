@@ -1,10 +1,10 @@
-import { afterEach } from "vitest";
-import { beforeEach } from "vitest";
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
 import { Command } from './Command'
+import { afterEach } from 'vitest'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 describe(Command.name, () => {
   beforeEach(() => {
@@ -261,14 +261,18 @@ describe(Command.name, () => {
     it('should set boolean defaultValue from env when truthy', () => {
       process.env.TEST_BOOL = 'true'
       const cmd = new Command('test').addOption('-b, --bflag', { description: 'bool', env: 'TEST_BOOL' })
-      const opt = cmd.options.find((o) => o.name === 'bflag')!
+      const opt = cmd.options.find((o) => {
+        return o.name === 'bflag'
+      })!
       expect(opt.defaultValue).toBe(true)
     })
 
     it('should set boolean defaultValue from env when falsy', () => {
       process.env.TEST_BOOL = 'no'
       const cmd = new Command('test').addOption('-b, --bflag', { description: 'bool', env: 'TEST_BOOL' })
-      const opt = cmd.options.find((o) => o.name === 'bflag')!
+      const opt = cmd.options.find((o) => {
+        return o.name === 'bflag'
+      })!
       expect(opt.defaultValue).toBe(false)
     })
 
@@ -278,7 +282,9 @@ describe(Command.name, () => {
         description: 'tags',
         env: 'TEST_VAR',
       })
-      const opt = cmd.options.find((o) => o.name === 'tags')!
+      const opt = cmd.options.find((o) => {
+        return o.name === 'tags'
+      })!
       expect(opt.defaultValue).toEqual(['a', 'b', 'c'])
     })
 
@@ -288,7 +294,9 @@ describe(Command.name, () => {
         description: 'output',
         env: 'TEST_STR',
       })
-      const opt = cmd.options.find((o) => o.name === 'output')!
+      const opt = cmd.options.find((o) => {
+        return o.name === 'output'
+      })!
       expect(opt.defaultValue).toBe('/tmp/output')
     })
 
@@ -299,7 +307,9 @@ describe(Command.name, () => {
         env: 'TEST_STR',
         defaultValue: 'explicit',
       })
-      const opt = cmd.options.find((o) => o.name === 'output')!
+      const opt = cmd.options.find((o) => {
+        return o.name === 'output'
+      })!
       expect(opt.defaultValue).toBe('explicit')
     })
   })

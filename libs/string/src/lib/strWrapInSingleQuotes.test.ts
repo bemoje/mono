@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strWrapInSingleQuotes } from './strWrapInSingleQuotes'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('strWrapInSingleQuotes', () => {
   it('example', () => {

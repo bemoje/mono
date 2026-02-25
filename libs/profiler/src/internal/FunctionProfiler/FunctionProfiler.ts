@@ -20,7 +20,9 @@ export class FunctionProfiler<T extends object> implements IFunctionSpyStrategy<
    * Average execution time in nanoseconds
    */
   get avgTimeNs(): number | undefined {
-    if (!this.calls || !this.totalTimeNs) return undefined
+    if (!this.calls || !this.totalTimeNs) {
+      return undefined
+    }
     return Math.floor(this.totalTimeNs / this.calls)
   }
 

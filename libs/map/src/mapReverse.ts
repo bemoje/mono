@@ -1,5 +1,5 @@
-import { mapLoad } from './mapLoad'
 import { GenericMap } from './types'
+import { mapLoad } from './mapLoad'
 
 /**
  * Reverses the order of entries in a Map.

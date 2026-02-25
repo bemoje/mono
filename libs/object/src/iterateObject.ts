@@ -44,7 +44,9 @@ export function* iterateObject<T extends object = object, V = unknown>(
     const { value: current, propertyPathArray, object } = stack.pop()!
 
     if (typeof current === 'object' && current !== null) {
-      if (seen.has(current)) continue
+      if (seen.has(current)) {
+        continue
+      }
       seen.add(current)
 
       // yield the object/array itself before traversing into it
@@ -56,7 +58,9 @@ export function* iterateObject<T extends object = object, V = unknown>(
           root,
           propertyPathArray,
           propertyPath: propertyPathArray
-            .map((s) => (typeof s === 'string' ? s : '[' + s + ']'))
+            .map((s) => {
+              return typeof s === 'string' ? s : `[${s}]`
+            })
             .join('.')
             .replace(/\.\[/g, '['),
           isLeaf: false,
@@ -94,7 +98,9 @@ export function* iterateObject<T extends object = object, V = unknown>(
         root,
         propertyPathArray,
         propertyPath: propertyPathArray
-          .map((s) => (typeof s === 'string' ? s : '[' + s + ']'))
+          .map((s) => {
+            return typeof s === 'string' ? s : `[${s}]`
+          })
           .join('.')
           .replace(/\.\[/g, '['),
         isLeaf: true,

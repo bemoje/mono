@@ -1,10 +1,10 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
 import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { startPowerShellScript } from './startPowerShellScript'
+import { vi } from 'vitest'
 
 const startPowerShellScriptEmitter = startPowerShellScript.emitterSync
 
@@ -24,7 +24,9 @@ vi.mock('node:child_process', async () => {
 
 vi.mock('node:util', async () => {
   return {
-    promisify: vi.fn(() => mockExecAsync),
+    promisify: vi.fn(() => {
+      return mockExecAsync
+    }),
   }
 })
 

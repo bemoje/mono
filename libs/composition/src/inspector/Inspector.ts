@@ -1,22 +1,22 @@
+import { ClassInspectorMixin } from './types'
+import { IgnoreValuesOptions } from './types'
+import { InspectorOptions } from './types'
+import { InspectOptions as NativeInspectOptions } from 'node:util'
+import { View } from '../View'
+import { cloneDeep } from 'es-toolkit/object'
 import colors from 'ansi-colors'
+import { defineLazyProperty } from '@mono/object'
+import { defineMethod } from '@mono/object'
+import { defineValue } from '@mono/object'
+import { getClassChain } from '@mono/object'
+import { hasOwnProperty } from '@mono/object'
+import { hasProperty } from '@mono/object'
+import { ignoreValuesFilterDefaults } from './defaults/ignoreValuesFilterDefaults'
+import { inspect } from 'node:util'
+import { inspectorDefaults } from './defaults/inspectorDefaults'
 import { isObjectLike } from 'es-toolkit/compat'
 import { mapValues } from 'es-toolkit/object'
-import { cloneDeep } from 'es-toolkit/object'
 import { omit } from 'es-toolkit/compat'
-import { ClassInspectorMixin } from "./types";
-import { IgnoreValuesOptions } from "./types";
-import { InspectorOptions } from "./types";
-import { defineLazyProperty } from "@mono/object";
-import { defineMethod } from "@mono/object";
-import { defineValue } from "@mono/object";
-import { hasOwnProperty } from "@mono/object";
-import { hasProperty } from "@mono/object";
-import { ignoreValuesFilterDefaults } from './defaults/ignoreValuesFilterDefaults'
-import { inspectorDefaults } from './defaults/inspectorDefaults'
-import { inspect } from "node:util";
-import { InspectOptions as NativeInspectOptions } from "node:util";
-import { getClassChain } from '@mono/object'
-import { View } from '../View'
 
 /**
  * Interface that target objects must implement to be inspectable.
@@ -68,8 +68,12 @@ export class Inspector extends View<InspectorTarget> {
    */
   toObject(depth = 0): Partial<InspectorTarget> {
     const result = mapValues(this.compile(depth).output, (value: unknown) => {
-      if (!value) return value
-      if (typeof value !== 'object') return value
+      if (!value) {
+        return value
+      }
+      if (typeof value !== 'object') {
+        return value
+      }
       if (Array.isArray(value)) {
         return value.map((v) => {
           if ((v as InspectorTarget).inspector && (v as InspectorTarget).inspector instanceof Inspector) {
@@ -114,8 +118,12 @@ export class Inspector extends View<InspectorTarget> {
     const keys = new Set(options.keys)
     if (options.autoAddBooleanKeys) {
       const insBooleanValueKeys = Object.entries(this.target)
-        .filter(([_key, value]) => typeof value === 'boolean')
-        .map(([key]) => key)
+        .filter(([_key, value]) => {
+          return typeof value === 'boolean'
+        })
+        .map(([key]) => {
+          return key
+        })
 
       const protoGetterKeys = getClassChain(this.target, { includeSelf: false })
         .map((cls) => {
@@ -125,29 +133,59 @@ export class Inspector extends View<InspectorTarget> {
         })
         .flat(2)
 
-      const booleanKeys = insBooleanValueKeys
-        .concat(protoGetterKeys)
-        .filter((key) => /^(is|was|has|should)[A-Z]/.test(key))
+      const booleanKeys = insBooleanValueKeys.concat(protoGetterKeys).filter((key) => {
+        return /^(is|was|has|should)[A-Z]/.test(key)
+      })
 
-      booleanKeys.forEach((key) => keys.add(key))
+      booleanKeys.forEach((key) => {
+        return keys.add(key)
+      })
     }
 
     const ignoreFilters = Object.entries(options.ignoreValues)
-      .filter(([_name, enabled]) => enabled)
-      .map(([name]) => ignoreValuesFilterDefaults[name as keyof IgnoreValuesOptions])
+      .filter(([_name, enabled]) => {
+        return enabled
+      })
+      .map(([name]) => {
+        return ignoreValuesFilterDefaults[name as keyof IgnoreValuesOptions]
+      })
 
     const objectValues: (() => void)[] = []
     const arrayValues: (() => void)[] = []
     for (const key of keys) {
       const value = this.target[key as keyof InspectorTarget]
-      if (!ignoreFilters.every((filter) => filter(value))) continue
-      if (!options.filters.every((filter) => filter.call(this.target, value, key, depth, output))) continue
-      if (Array.isArray(value)) arrayValues.push(() => defineValue(output, key, value))
-      else if (isObjectLike(value)) objectValues.push(() => defineValue(output, key, value))
-      else defineValue(output, key, value)
+      if (
+        !ignoreFilters.every((filter) => {
+          return filter(value)
+        })
+      ) {
+        continue
+      }
+      if (
+        !options.filters.every((filter) => {
+          return filter.call(this.target, value, key, depth, output)
+        })
+      ) {
+        continue
+      }
+      if (Array.isArray(value)) {
+        arrayValues.push(() => {
+          return defineValue(output, key, value)
+        })
+      } else if (isObjectLike(value)) {
+        objectValues.push(() => {
+          return defineValue(output, key, value)
+        })
+      } else {
+        defineValue(output, key, value)
+      }
     }
-    objectValues.forEach((fn) => fn())
-    arrayValues.forEach((fn) => fn())
+    objectValues.forEach((fn) => {
+      return fn()
+    })
+    arrayValues.forEach((fn) => {
+      return fn()
+    })
 
     return { output, inspectOptions: options.inspect }
   }
@@ -168,18 +206,36 @@ export class Inspector extends View<InspectorTarget> {
     // walk prototype chain and collect options where defined
     const prototypeChainOptions = getClassChain(this.target.constructor, { includeSelf: true })
       .reverse()
-      .map((cls) => (cls as unknown as ClassInspectorMixin).inspector ?? {}) as InspectorOptions[]
+      .map((cls) => {
+        return (cls as unknown as ClassInspectorMixin).inspector ?? {}
+      }) as InspectorOptions[]
 
     // iterate prototype and let the next subclass' options override its superclasses
     for (const options of prototypeChainOptions) {
-      if (options.inspect) inspectOptions = { ...inspectOptions, ...options.inspect }
-      options.keys?.forEach((elem) => keys.add(elem))
-      if (options.autoAddBooleanKeys != null) autoAddBooleanKeys = options.autoAddBooleanKeys
-      keys.forEach((elem) => ignoreKeys.delete(elem))
-      options.ignoreKeys?.forEach((elem) => ignoreKeys.add(elem))
-      ignoreKeys.forEach((elem) => keys.delete(elem))
-      if (options.ignoreValues) Object.assign(ignoreValues, options.ignoreValues)
-      options.filters?.forEach((filter) => customFilters.push(filter))
+      if (options.inspect) {
+        inspectOptions = { ...inspectOptions, ...options.inspect }
+      }
+      options.keys?.forEach((elem) => {
+        return keys.add(elem)
+      })
+      if (options.autoAddBooleanKeys != null) {
+        autoAddBooleanKeys = options.autoAddBooleanKeys
+      }
+      keys.forEach((elem) => {
+        return ignoreKeys.delete(elem)
+      })
+      options.ignoreKeys?.forEach((elem) => {
+        return ignoreKeys.add(elem)
+      })
+      ignoreKeys.forEach((elem) => {
+        return keys.delete(elem)
+      })
+      if (options.ignoreValues) {
+        Object.assign(ignoreValues, options.ignoreValues)
+      }
+      options.filters?.forEach((filter) => {
+        return customFilters.push(filter)
+      })
     }
 
     return {

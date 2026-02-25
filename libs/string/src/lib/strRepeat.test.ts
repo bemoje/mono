@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strRepeat } from './strRepeat'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('strRepeat', () => {
   it('zero', () => {
@@ -37,10 +37,14 @@ describe('strRepeat', () => {
   })
 
   it('should throw an error if n is negative', () => {
-    expect(() => strRepeat('abc', -1)).toThrow()
+    expect(() => {
+      return strRepeat('abc', -1)
+    }).toThrow()
   })
 
   it('should throw an error if n is not an integer', () => {
-    expect(() => strRepeat('abc', 1.5)).toThrow()
+    expect(() => {
+      return strRepeat('abc', 1.5)
+    }).toThrow()
   })
 })

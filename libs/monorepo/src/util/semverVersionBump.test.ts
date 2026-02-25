@@ -1,6 +1,6 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { semverVersionBump } from './semverVersionBump'
 
 describe('semverVersionBump', () => {

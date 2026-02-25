@@ -4,10 +4,20 @@
  * @returns A boolean indicating whether the value is a prototype object.
  */
 export function isPrototype<T>(value: T): boolean {
-  if (value === Function.prototype) return true
-  if (value == null) return false
-  if (typeof value !== 'object') return false
-  if (!('constructor' in value)) return false
-  if (value.constructor?.prototype !== value) return false
+  if (value === Function.prototype) {
+    return true
+  }
+  if (value == null) {
+    return false
+  }
+  if (typeof value !== 'object') {
+    return false
+  }
+  if (!('constructor' in value)) {
+    return false
+  }
+  if (value.constructor?.prototype !== value) {
+    return false
+  }
   return true
 }

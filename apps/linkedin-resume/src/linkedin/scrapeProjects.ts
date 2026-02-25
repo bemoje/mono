@@ -1,15 +1,16 @@
+/* eslint-disable max-lines-per-function */
 import type { Browser } from 'puppeteer'
-import { autoScroll } from './utils/autoScroll'
-import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
-import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { CliOptions } from '../types/CliOptions'
-import { parseDate } from './utils/parseDate'
+import { Logger } from '@mono/node'
+import { ResumeProject } from '../types/Resume'
+import { autoScroll } from './utils/autoScroll'
+import { getPageUrl } from './utils/getPageUrl'
+import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { onScrapeError } from './utils/onScrapeError'
+import { parseDate } from './utils/parseDate'
+import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { scrapeOutputJson } from './utils/scrapeOutputJson'
 import { userConfigFile } from '../userConfigFile'
-import { ResumeProject } from '../types/Resume'
-import { getPageUrl } from './utils/getPageUrl'
-import { Logger } from '@mono/node'
 
 export async function scrapeProjects(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const page = await browser.newPage()
@@ -27,6 +28,7 @@ export async function scrapeProjects(browser: Browser, options: CliOptions, logg
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
     } catch {
       logger.warn('No projects section found or it took too long to load.')
+      // eslint-disable-next-line no-throw-literal
       throw 'ignore'
     }
     await autoScroll(page)
@@ -35,7 +37,9 @@ export async function scrapeProjects(browser: Browser, options: CliOptions, logg
 
     const rawEntries = await page.evaluate(() => {
       const container = document.querySelector('.scaffold-finite-scroll__content')
-      if (!container) return []
+      if (!container) {
+        return []
+      }
       const topLevelItems = Array.from(container.querySelector('ul')?.children ?? [])
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,7 +53,9 @@ export async function scrapeProjects(browser: Browser, options: CliOptions, logg
       return topLevelItems.map((li) => {
         const { mediaLinks, mediaTexts } = extractMedia(li)
         const mediaTextSet = new Set(mediaTexts)
-        const spans = getVisibleSpans(li).filter((text) => !mediaTextSet.has(text))
+        const spans = getVisibleSpans(li).filter((text) => {
+          return !mediaTextSet.has(text)
+        })
 
         return {
           spans,
@@ -64,7 +70,9 @@ export async function scrapeProjects(browser: Browser, options: CliOptions, logg
     const ASSOC_RE = /^Associated with\s+/
 
     for (const { spans, logoUrl, mediaLinks } of rawEntries) {
-      if (spans.length < 2) continue
+      if (spans.length < 2) {
+        continue
+      }
 
       const name = spans[0]
       let dateStr = ''
@@ -104,7 +112,9 @@ export async function scrapeProjects(browser: Browser, options: CliOptions, logg
         ? skillsStr
             .replace(/^Skills:\s*/, '')
             .split(' · ')
-            .map((s) => s.trim())
+            .map((s) => {
+              return s.trim()
+            })
             .filter(Boolean)
         : []
 
@@ -123,7 +133,9 @@ export async function scrapeProjects(browser: Browser, options: CliOptions, logg
         const startsWithDesc = allText.length > 0 && !fullText.trimStart().startsWith('-')
         const parts = fullText
           .split(/(?:^|\n)\s*-\s*/)
-          .map((s) => s.trim())
+          .map((s) => {
+            return s.trim()
+          })
           .filter(Boolean)
         description = startsWithDesc ? (parts.shift() ?? '') : ''
         highlights = parts

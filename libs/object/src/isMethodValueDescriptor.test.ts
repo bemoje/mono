@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isMethodValueDescriptor } from './isMethodValueDescriptor'
+import { it } from 'vitest'
 
 describe(isMethodValueDescriptor.name, () => {
   it('examples', () => {
@@ -19,7 +19,9 @@ describe(isMethodValueDescriptor.name, () => {
 
       // A getter descriptor
       const getterDescriptor = {
-        get: () => 42,
+        get: () => {
+          return 42
+        },
         enumerable: true,
         configurable: true,
       }
@@ -69,14 +71,18 @@ describe(isMethodValueDescriptor.name, () => {
 
   it('should return false for accessor descriptors', () => {
     const getterDescriptor = {
-      get: () => 42,
+      get: () => {
+        return 42
+      },
       enumerable: true,
       configurable: true,
     }
     expect(isMethodValueDescriptor(getterDescriptor)).toBe(false)
 
     const accessorDescriptor = {
-      get: () => 42,
+      get: () => {
+        return 42
+      },
       set: (v: number) => {},
       enumerable: true,
       configurable: true,
@@ -96,7 +102,9 @@ describe(isMethodValueDescriptor.name, () => {
 
   it('should return true for arrow functions and class methods', () => {
     const arrowFuncDescriptor = {
-      value: () => 'arrow',
+      value: () => {
+        return 'arrow'
+      },
       writable: true,
       enumerable: true,
       configurable: true,

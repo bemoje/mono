@@ -34,7 +34,7 @@ export default [
 
       // PLUGIN: split imports
       'split-and-sort-imports/split-imports': ['warn'],
-      'split-and-sort-imports/sort-imports': ['off', { separateGroups: true }],
+      'split-and-sort-imports/sort-imports': ['warn', { separateGroups: true }],
 
       '@typescript-eslint/no-unused-vars': [
         'warn',
@@ -54,15 +54,37 @@ export default [
 
       'no-empty': ['error', { allowEmptyCatch: true }],
 
-      // any
       '@typescript-eslint/no-explicit-any': ['warn', { ignoreRestArgs: true }],
 
       'no-useless-assignment': 'off',
+
+      'require-atomic-updates': 'error',
+      'arrow-body-style': ['error', 'always'],
+      'complexity': ['warn', 15],
+      'curly': 'error',
+      'dot-notation': 'error',
+      'max-classes-per-file': ['warn', 1],
+      'max-depth': ['warn', 4],
+      'max-lines': ['warn', { max: 500, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': ['warn', { max: 50, skipBlankLines: true, skipComments: true }],
+      'no-extra-bind': 'error',
+      'no-extra-boolean-cast': 'error',
+      'no-throw-literal': 'error',
+      'no-unneeded-ternary': 'error',
+      'no-useless-computed-key': 'error',
+      'prefer-promise-reject-errors': 'error',
+      'prefer-template': 'error',
+      'preserve-caught-error': [
+        'error',
+        {
+          requireCatchParameter: false,
+        },
+      ],
     },
   },
 
   {
-    files: ['**/*.test.ts'],
+    files: ['**/*.test.ts', 'apps/playground/src/**/*.{ts,tsx,js,mjs}'],
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
@@ -71,6 +93,12 @@ export default [
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
+      'arrow-body-style': ['error', 'always'],
+      'complexity': 'off',
+      'max-classes-per-file': 'off',
+      'max-depth': 'off',
+      'max-lines': ['warn', { max: 500, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': 'off',
     },
   },
 ]

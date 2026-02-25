@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
-import upath from 'upath'
 import { getAppDataPath } from '@mono/os'
+import upath from 'upath'
 
 export const APPDATA_PATH = getAppDataPath('bemoje', 'linkedin-resume')
 export const CONFIG_PATH = upath.joinSafe(APPDATA_PATH, 'config.json')

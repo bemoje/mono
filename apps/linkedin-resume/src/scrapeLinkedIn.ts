@@ -1,14 +1,14 @@
-import puppeteer from 'puppeteer'
-import { scrapeProfile } from './linkedin/scrapeProfile'
-import { scrapeSkills } from './linkedin/scrapeSkills'
-import { scrapeRecommendations } from './linkedin/scrapeRecommendations'
-import { scrapeProjects } from './linkedin/scrapeProjects'
-import { scrapeEducation } from './linkedin/scrapeEducation'
-import { scrapeExperience } from './linkedin/scrapeExperience'
-import { CliOptions } from './types/CliOptions'
 import { CHROME_PROFILE_PATH } from './constants'
+import { CliOptions } from './types/CliOptions'
 import { Logger } from '@mono/node'
 import { closeBrowserPages } from './utils/closeBrowserPages'
+import puppeteer from 'puppeteer'
+import { scrapeEducation } from './linkedin/scrapeEducation'
+import { scrapeExperience } from './linkedin/scrapeExperience'
+import { scrapeProfile } from './linkedin/scrapeProfile'
+import { scrapeProjects } from './linkedin/scrapeProjects'
+import { scrapeRecommendations } from './linkedin/scrapeRecommendations'
+import { scrapeSkills } from './linkedin/scrapeSkills'
 
 export async function scrapeLinkedIn(options: CliOptions, logger: Logger): Promise<void> {
   const browser = await puppeteer.launch({
@@ -28,7 +28,11 @@ export async function scrapeLinkedIn(options: CliOptions, logger: Logger): Promi
   ]
 
   try {
-    await Promise.all(scrapers.map((fn) => fn(browser, options, logger)))
+    await Promise.all(
+      scrapers.map((fn) => {
+        return fn(browser, options, logger)
+      }),
+    )
   } finally {
     if (!options.keepOpen) {
       await closeBrowserPages(browser)

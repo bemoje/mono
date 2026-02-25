@@ -1,10 +1,10 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import assert from 'node:assert'
-import { Type } from "@sinclair/typebox";
-import { Static } from "@sinclair/typebox";
 import { SchemaConfigStrategy } from './SchemaConfigStrategy'
+import { Static } from '@sinclair/typebox'
+import { Type } from '@sinclair/typebox'
+import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(SchemaConfigStrategy.name, () => {
   const userSchema = Type.Object({
@@ -163,7 +163,9 @@ describe(SchemaConfigStrategy.name, () => {
         },
       }
 
-      expect(() => strategy.assertValid(validConfig)).not.toThrow()
+      expect(() => {
+        return strategy.assertValid(validConfig)
+      }).not.toThrow()
     })
 
     it('should throw for invalid config', () => {
@@ -177,26 +179,34 @@ describe(SchemaConfigStrategy.name, () => {
         },
       }
 
-      expect(() => strategy.assertValid(invalidConfig)).toThrow('Invalid config.')
+      expect(() => {
+        return strategy.assertValid(invalidConfig)
+      }).toThrow('Invalid config.')
     })
 
     it('should throw for config with missing required fields', () => {
       const strategy = new SchemaConfigStrategy(userSchema)
       const incompleteConfig = { name: 'John' }
 
-      expect(() => strategy.assertValid(incompleteConfig)).toThrow('Invalid config.')
+      expect(() => {
+        return strategy.assertValid(incompleteConfig)
+      }).toThrow('Invalid config.')
     })
 
     it('should throw for null input', () => {
       const strategy = new SchemaConfigStrategy(userSchema)
 
-      expect(() => strategy.assertValid(null)).toThrow('Invalid config.')
+      expect(() => {
+        return strategy.assertValid(null)
+      }).toThrow('Invalid config.')
     })
 
     it('should throw for undefined input', () => {
       const strategy = new SchemaConfigStrategy(userSchema)
 
-      expect(() => strategy.assertValid(undefined)).toThrow('Invalid config.')
+      expect(() => {
+        return strategy.assertValid(undefined)
+      }).toThrow('Invalid config.')
     })
   })
 
@@ -301,7 +311,9 @@ describe(SchemaConfigStrategy.name, () => {
         },
       } as Partial<UserConfig>
 
-      expect(() => strategy.applyDefaults(invalidConfig)).toThrow('Invalid config.')
+      expect(() => {
+        return strategy.applyDefaults(invalidConfig)
+      }).toThrow('Invalid config.')
     })
   })
 })

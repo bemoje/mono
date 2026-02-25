@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { filterIterable } from './filterIterable'
+import { it } from 'vitest'
 
 describe(filterIterable.name, () => {
   it('examples', () => {
@@ -13,7 +13,11 @@ describe(filterIterable.name, () => {
         ['b', 2],
         ['c', 3],
       ]
-      const filtered = [...filterIterable(entries, (value) => value > 1)]
+      const filtered = [
+        ...filterIterable(entries, (value) => {
+          return value > 1
+        }),
+      ]
       assert.deepStrictEqual(
         filtered,
         [
@@ -24,7 +28,11 @@ describe(filterIterable.name, () => {
       )
 
       // filter by key
-      const filtered2 = [...filterIterable(entries, (value, key) => key !== 'b')]
+      const filtered2 = [
+        ...filterIterable(entries, (value, key) => {
+          return key !== 'b'
+        }),
+      ]
       assert.deepStrictEqual(
         filtered2,
         [
@@ -35,7 +43,11 @@ describe(filterIterable.name, () => {
       )
 
       // empty result
-      const empty = [...filterIterable(entries, () => false)]
+      const empty = [
+        ...filterIterable(entries, () => {
+          return false
+        }),
+      ]
       assert.deepStrictEqual(empty, [], 'empty result')
     }).not.toThrow()
   })
@@ -47,7 +59,11 @@ describe(filterIterable.name, () => {
       ['c', 3],
       ['d', 4],
     ]
-    const result = [...filterIterable(entries, (value) => value % 2 === 0)]
+    const result = [
+      ...filterIterable(entries, (value) => {
+        return value % 2 === 0
+      }),
+    ]
     expect(result).toEqual([
       ['b', 2],
       ['d', 4],
@@ -60,7 +76,11 @@ describe(filterIterable.name, () => {
       ['banana', 2],
       ['cherry', 3],
     ]
-    const result = [...filterIterable(entries, (value, key) => key.startsWith('a'))]
+    const result = [
+      ...filterIterable(entries, (value, key) => {
+        return key.startsWith('a')
+      }),
+    ]
     expect(result).toEqual([['apple', 1]])
   })
 
@@ -70,12 +90,20 @@ describe(filterIterable.name, () => {
       ['b', 20],
       ['c', 30],
     ]
-    const result = [...filterIterable(entries, (value, key) => value > 15 && key !== 'c')]
+    const result = [
+      ...filterIterable(entries, (value, key) => {
+        return value > 15 && key !== 'c'
+      }),
+    ]
     expect(result).toEqual([['b', 20]])
   })
 
   it('should handle empty iterable', () => {
-    const result = [...filterIterable([], () => true)]
+    const result = [
+      ...filterIterable([], () => {
+        return true
+      }),
+    ]
     expect(result).toEqual([])
   })
 
@@ -84,7 +112,11 @@ describe(filterIterable.name, () => {
       ['a', 1],
       ['b', 2],
     ]
-    const result = [...filterIterable(entries, (value) => value > 10)]
+    const result = [
+      ...filterIterable(entries, (value) => {
+        return value > 10
+      }),
+    ]
     expect(result).toEqual([])
   })
 
@@ -94,7 +126,11 @@ describe(filterIterable.name, () => {
       ['y', 200],
       ['z', 300],
     ])
-    const result = [...filterIterable(map, (value) => value >= 200)]
+    const result = [
+      ...filterIterable(map, (value) => {
+        return value >= 200
+      }),
+    ]
     expect(result).toEqual([
       ['y', 200],
       ['z', 300],

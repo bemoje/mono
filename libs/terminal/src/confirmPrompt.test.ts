@@ -1,19 +1,21 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import { afterEach } from "vitest";
+import { afterEach } from 'vitest'
 import assert from 'node:assert'
-import readline from 'node:readline'
+import { beforeEach } from 'vitest'
 import { confirmPrompt } from './confirmPrompt'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import readline from 'node:readline'
+import { vi } from 'vitest'
 
 // Mock readline module
-vi.mock('node:readline', () => ({
-  default: {
-    createInterface: vi.fn(),
-  },
-}))
+vi.mock('node:readline', () => {
+  return {
+    default: {
+      createInterface: vi.fn(),
+    },
+  }
+})
 
 const mockedReadline = vi.mocked(readline)
 
@@ -195,9 +197,15 @@ describe(confirmPrompt.name, () => {
   describe('edge cases', () => {
     it('should handle multiple consecutive prompts', async () => {
       mockRl.question
-        .mockImplementationOnce((message, callback) => callback('y'))
-        .mockImplementationOnce((message, callback) => callback('n'))
-        .mockImplementationOnce((message, callback) => callback('Y'))
+        .mockImplementationOnce((message, callback) => {
+          return callback('y')
+        })
+        .mockImplementationOnce((message, callback) => {
+          return callback('n')
+        })
+        .mockImplementationOnce((message, callback) => {
+          return callback('Y')
+        })
 
       const result1 = await confirmPrompt('First question?')
       const result2 = await confirmPrompt('Second question?')

@@ -1,8 +1,8 @@
-import colors from 'ansi-colors'
-import upath from 'upath'
-import { parse } from 'stacktrace-parser'
 import { StackFrame } from 'stacktrace-parser'
+import colors from 'ansi-colors'
 import { inspect } from 'node:util'
+import { parse } from 'stacktrace-parser'
+import upath from 'upath'
 
 /**
  * Formats stack traces with colors and improved readability for debugging.
@@ -12,11 +12,13 @@ export function prettyStackTrace(error: Error, options: { omitStack?: boolean; o
 }
 
 function renderMessage(error: Error) {
-  return colors.red(error.name + ': ' + error.message)
+  return colors.red(`${error.name}: ${error.message}`)
 }
 
 function renderStack(error: Error, options: { omitStack?: boolean; omitProps?: boolean }) {
-  if (!error.stack || options.omitStack) return ''
+  if (!error.stack || options.omitStack) {
+    return ''
+  }
 
   const frames: StackFrame[] = parse(error.stack)
 
@@ -26,7 +28,9 @@ function renderStack(error: Error, options: { omitStack?: boolean; omitProps?: b
   }, 0)
 
   const stack = frames.map((frame) => {
-    if (frame.file) frame.file = upath.relative(process.cwd(), frame.file.replace(/^file:[\\/]+/, ''))
+    if (frame.file) {
+      frame.file = upath.relative(process.cwd(), frame.file.replace(/^file:[\\/]+/, ''))
+    }
     const { methodName, file, lineNumber, column } = frame
     let s = '  '
     let fp: string = ''
@@ -44,7 +48,7 @@ function renderStack(error: Error, options: { omitStack?: boolean; omitProps?: b
       }
     }
     s += ' '.repeat(2 + offset - methodName.length)
-    s += fp + ':' + lineNumber + ':' + column
+    s += `${fp}:${lineNumber}:${column}`
     return s
   })
 
@@ -55,15 +59,20 @@ function renderStack(error: Error, options: { omitStack?: boolean; omitProps?: b
 }
 
 function renderProps(error: Error, options: { omitStack?: boolean; omitProps?: boolean }) {
-  if (options.omitProps) return ''
+  if (options.omitProps) {
+    return ''
+  }
   const ignore = ['name', 'message', 'frames', 'stack']
-  const keys = Object.getOwnPropertyNames(error).filter((key) => !ignore.includes(key))
-  if (!keys.length) return ''
+  const keys = Object.getOwnPropertyNames(error).filter((key) => {
+    return !ignore.includes(key)
+  })
+  if (!keys.length) {
+    return ''
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = {} as any
   for (const [k, v] of Object.entries(error)) {
     if (keys.includes(k)) {
-       
       data[k] = v
     }
   }

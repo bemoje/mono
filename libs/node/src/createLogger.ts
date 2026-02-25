@@ -1,6 +1,6 @@
 import colors from 'ansi-colors'
-import { isPrimitive } from "es-toolkit/predicate";
-import { isString } from "es-toolkit/predicate";
+import { isPrimitive } from 'es-toolkit/predicate'
+import { isString } from 'es-toolkit/predicate'
 
 /**
  * Logger interface defining methods for different log levels.
@@ -33,13 +33,29 @@ export function createLogger(name: string): Logger {
   const yellowArgs = createColoredArgs(colors.yellow)
 
   return {
-    start: (...args: unknown[]) => console.info(...START, ...args),
-    done: (...args: unknown[]) => console.info(...DONE, ...args),
-    info: (...args: unknown[]) => console.info(...INFO, ...grayArgs(args)),
-    log: (...args: unknown[]) => console.log(...(NAME ? [NAME, ...args] : args)),
-    warn: (...args: unknown[]) => console.warn(...WARN, ...yellowArgs(args)),
-    debug: (...args: unknown[]) => console.debug(...DEBUG, ...cyanArgs(args)),
-    error: (...args: unknown[]) => args.forEach((arg) => console.error(...ERROR, arg)),
+    start: (...args: unknown[]) => {
+      return console.info(...START, ...args)
+    },
+    done: (...args: unknown[]) => {
+      return console.info(...DONE, ...args)
+    },
+    info: (...args: unknown[]) => {
+      return console.info(...INFO, ...grayArgs(args))
+    },
+    log: (...args: unknown[]) => {
+      return console.log(...(NAME ? [NAME, ...args] : args))
+    },
+    warn: (...args: unknown[]) => {
+      return console.warn(...WARN, ...yellowArgs(args))
+    },
+    debug: (...args: unknown[]) => {
+      return console.debug(...DEBUG, ...cyanArgs(args))
+    },
+    error: (...args: unknown[]) => {
+      return args.forEach((arg) => {
+        return console.error(...ERROR, arg)
+      })
+    },
   }
 }
 

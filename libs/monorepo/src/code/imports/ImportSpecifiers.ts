@@ -1,7 +1,7 @@
 import { CodeBlock } from '../CodeBlock'
 import { ImportStatement } from './ImportStatement'
-import { Inspector } from "@mono/composition";
-import { Parenting } from "@mono/composition";
+import { Inspector } from '@mono/composition'
+import { Parenting } from '@mono/composition'
 
 @Parenting.compose
 /**
@@ -24,9 +24,15 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
   }
 
   get type(): 'default' | 'named' | 'mixed' | 'namespace' {
-    if (this.isMixedImport) return 'mixed'
-    if (this.isNamedImport) return 'named'
-    if (this.isNamespaceImport) return 'namespace'
+    if (this.isMixedImport) {
+      return 'mixed'
+    }
+    if (this.isNamedImport) {
+      return 'named'
+    }
+    if (this.isNamespaceImport) {
+      return 'namespace'
+    }
     return 'default'
   }
 
@@ -52,8 +58,12 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
         .replace('\n', ' ')
         .match(/\{([^}]+)\}/)?.[1]
         .split(',')
-        .map((specifier) => specifier.trim())
-        .filter((s) => !!s) || []
+        .map((specifier) => {
+          return specifier.trim()
+        })
+        .filter((s) => {
+          return !!s
+        }) || []
     )
   }
 
@@ -74,10 +84,14 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
    */
   get importedNamesArray() {
     return this.codeWithoutTypeKeyword
-      .replace(/[\w*]+ as \w+/, (m) => m.split(' as ')[1])
+      .replace(/[\w*]+ as \w+/, (m) => {
+        return m.split(' as ')[1]
+      })
       .replace(/[{}]/g, ' ')
       .split(',')
-      .map((s) => s.trim())
+      .map((s) => {
+        return s.trim()
+      })
       .filter(Boolean)
   }
 

@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { importStatementHasTypeKeyword } from './importStatementHasTypeKeyword'
+import { it } from 'vitest'
 
 describe(importStatementHasTypeKeyword.name, () => {
   it('examples', () => {

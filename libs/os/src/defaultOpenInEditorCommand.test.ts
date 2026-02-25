@@ -1,21 +1,27 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import { afterEach } from "vitest";
+import { afterEach } from 'vitest'
 import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Mock dependencies first
-vi.mock('./isOSX', () => ({
-  isOSX: vi.fn(),
-}))
-vi.mock('./isVsCodeInstalled', () => ({
-  isVsCodeInstalled: vi.fn(),
-}))
-vi.mock('./isWindows', () => ({
-  isWindows: vi.fn(),
-}))
+vi.mock('./isOSX', () => {
+  return {
+    isOSX: vi.fn(),
+  }
+})
+vi.mock('./isVsCodeInstalled', () => {
+  return {
+    isVsCodeInstalled: vi.fn(),
+  }
+})
+vi.mock('./isWindows', () => {
+  return {
+    isWindows: vi.fn(),
+  }
+})
 
 describe('defaultOpenInEditorCommand', () => {
   let mockIsOSX: any

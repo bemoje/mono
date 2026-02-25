@@ -9,48 +9,93 @@ export function getKeysPreset<K extends OptsKeysVariants, KT extends OptsKeyType
   const ignore = new Set(options?.ignore ?? [])
   if (options?.ignoreSymbols) {
     if (options?.ignoreEnumerable) {
-      return (o: object) =>
-        Object.getOwnPropertyNames(o)
-          .filter((k) => !isEnumerable(o, k))
-          .filter((k) => !ignore.has(k)) as KeysPrimitiveTypeFrom<KT>[]
+      return (o: object) => {
+        return Object.getOwnPropertyNames(o)
+          .filter((k) => {
+            return !isEnumerable(o, k)
+          })
+          .filter((k) => {
+            return !ignore.has(k)
+          }) as KeysPrimitiveTypeFrom<KT>[]
+      }
     } else if (options?.ignoreNonEnumerable) {
-      return (o: object) => Object.keys(o).filter((k) => !ignore.has(k)) as KeysPrimitiveTypeFrom<KT>[]
+      return (o: object) => {
+        return Object.keys(o).filter((k) => {
+          return !ignore.has(k)
+        }) as KeysPrimitiveTypeFrom<KT>[]
+      }
     } else {
-      return (o: object) =>
-        Object.getOwnPropertyNames(o).filter((k) => !ignore.has(k)) as KeysPrimitiveTypeFrom<KT>[]
+      return (o: object) => {
+        return Object.getOwnPropertyNames(o).filter((k) => {
+          return !ignore.has(k)
+        }) as KeysPrimitiveTypeFrom<KT>[]
+      }
     }
   } else if (options?.ignoreStrings) {
     if (options?.ignoreEnumerable) {
-      return (o: object) =>
-        Reflect.ownKeys(o)
-          .filter((k) => typeof k !== 'string')
-          .filter((k) => !isEnumerable(o, k))
-          .filter((k) => !ignore.has(k)) as KeysPrimitiveTypeFrom<KT>[]
+      return (o: object) => {
+        return Reflect.ownKeys(o)
+          .filter((k) => {
+            return typeof k !== 'string'
+          })
+          .filter((k) => {
+            return !isEnumerable(o, k)
+          })
+          .filter((k) => {
+            return !ignore.has(k)
+          }) as KeysPrimitiveTypeFrom<KT>[]
+      }
     } else if (options?.ignoreNonEnumerable) {
-      return (o: object) =>
-        Reflect.ownKeys(o)
-          .filter((k) => typeof k !== 'string')
-          .filter((k) => isEnumerable(o, k))
-          .filter((k) => !ignore.has(k)) as KeysPrimitiveTypeFrom<KT>[]
+      return (o: object) => {
+        return Reflect.ownKeys(o)
+          .filter((k) => {
+            return typeof k !== 'string'
+          })
+          .filter((k) => {
+            return isEnumerable(o, k)
+          })
+          .filter((k) => {
+            return !ignore.has(k)
+          }) as KeysPrimitiveTypeFrom<KT>[]
+      }
     } else {
-      return (o: object) =>
-        Reflect.ownKeys(o)
-          .filter((k) => typeof k !== 'string')
-          .filter((k) => !ignore.has(k)) as KeysPrimitiveTypeFrom<KT>[]
+      return (o: object) => {
+        return Reflect.ownKeys(o)
+          .filter((k) => {
+            return typeof k !== 'string'
+          })
+          .filter((k) => {
+            return !ignore.has(k)
+          }) as KeysPrimitiveTypeFrom<KT>[]
+      }
     }
   } else {
     if (options?.ignoreEnumerable) {
-      return (o: object) =>
-        Reflect.ownKeys(o)
-          .filter((k) => !isEnumerable(o, k))
-          .filter((k) => !ignore.has(k)) as KeysPrimitiveTypeFrom<KT>[]
+      return (o: object) => {
+        return Reflect.ownKeys(o)
+          .filter((k) => {
+            return !isEnumerable(o, k)
+          })
+          .filter((k) => {
+            return !ignore.has(k)
+          }) as KeysPrimitiveTypeFrom<KT>[]
+      }
     } else if (options?.ignoreNonEnumerable) {
-      return (o: object) =>
-        Reflect.ownKeys(o)
-          .filter((k) => isEnumerable(o, k))
-          .filter((k) => !ignore.has(k)) as KeysPrimitiveTypeFrom<KT>[]
+      return (o: object) => {
+        return Reflect.ownKeys(o)
+          .filter((k) => {
+            return isEnumerable(o, k)
+          })
+          .filter((k) => {
+            return !ignore.has(k)
+          }) as KeysPrimitiveTypeFrom<KT>[]
+      }
     } else {
-      return (o: object) => Reflect.ownKeys(o).filter((k) => !ignore.has(k)) as KeysPrimitiveTypeFrom<KT>[]
+      return (o: object) => {
+        return Reflect.ownKeys(o).filter((k) => {
+          return !ignore.has(k)
+        }) as KeysPrimitiveTypeFrom<KT>[]
+      }
     }
   }
 }

@@ -1,9 +1,9 @@
-import { GenericMap } from "@mono/map";
-import { mapGetOrDefault } from "@mono/map";
-import { TimeoutWeakMap } from "@mono/map";
+import { GenericMap } from '@mono/map'
+import { TimeoutWeakMap } from '@mono/map'
 import { isFunction } from 'es-toolkit/predicate'
-import { ms } from 'enhanced-ms'
+import { mapGetOrDefault } from '@mono/map'
 import { memoizeSync } from './memoizeSync'
+import { ms } from 'enhanced-ms'
 
 /**
  * Decorator to memoize a method or getter accessor property.
@@ -39,7 +39,9 @@ function createLazyPropDecorator<K extends object, V>(map: GenericMap<K, V, 'get
 
     if (isFunction(get)) {
       descriptor.get = function () {
-        return mapGetOrDefault(map, this as K, () => get.call(this))
+        return mapGetOrDefault(map, this as K, () => {
+          return get.call(this)
+        })
       }
       return descriptor
     }

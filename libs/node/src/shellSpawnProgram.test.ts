@@ -1,16 +1,18 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
 import assert from 'node:assert'
-import { spawn } from 'node:child_process'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { shellSpawnProgram } from './shellSpawnProgram'
+import { spawn } from 'node:child_process'
+import { vi } from 'vitest'
 
 // Mock child_process
-vi.mock('node:child_process', () => ({
-  spawn: vi.fn(),
-}))
+vi.mock('node:child_process', () => {
+  return {
+    spawn: vi.fn(),
+  }
+})
 
 const mockSpawn = vi.mocked(spawn)
 
@@ -50,7 +52,9 @@ describe(shellSpawnProgram.name, () => {
       const promise = shellSpawnProgram('node', '--version')
 
       // Simulate successful close
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -61,7 +65,9 @@ describe(shellSpawnProgram.name, () => {
     it('should spawn program with multiple arguments', async () => {
       const promise = shellSpawnProgram('npm', 'install', 'express', '--save')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -75,7 +81,9 @@ describe(shellSpawnProgram.name, () => {
     it('should spawn program with no arguments', async () => {
       const promise = shellSpawnProgram('pwd')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -88,7 +96,9 @@ describe(shellSpawnProgram.name, () => {
     it('should handle --no-inherit flag and spawn without stdio inherit', async () => {
       const promise = shellSpawnProgram('git', 'status', '--no-inherit')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -99,7 +109,9 @@ describe(shellSpawnProgram.name, () => {
     it('should handle --no-inherit flag at the beginning', async () => {
       const promise = shellSpawnProgram('ls', '--no-inherit', '-la')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -110,7 +122,9 @@ describe(shellSpawnProgram.name, () => {
     it('should handle --no-inherit flag in the middle', async () => {
       const promise = shellSpawnProgram('docker', 'run', '--no-inherit', '-it', 'ubuntu')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -121,7 +135,9 @@ describe(shellSpawnProgram.name, () => {
     it('should handle multiple --no-inherit flags', async () => {
       const promise = shellSpawnProgram('test', '--no-inherit', 'arg1', '--no-inherit', 'arg2')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -132,7 +148,9 @@ describe(shellSpawnProgram.name, () => {
     it('should not affect arguments that contain --no-inherit as substring', async () => {
       const promise = shellSpawnProgram('program', '--config=--no-inherit-value')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -150,7 +168,9 @@ describe(shellSpawnProgram.name, () => {
       const promise = shellSpawnProgram('nonexistent-program')
 
       // Simulate error
-      const errorHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'error')[1]
+      const errorHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'error'
+      })[1]
       errorHandler(error)
 
       await expect(promise).rejects.toThrow('Program not found')
@@ -169,7 +189,9 @@ describe(shellSpawnProgram.name, () => {
     it('should always use shell option', async () => {
       const promise = shellSpawnProgram('echo', 'hello world')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       await promise
@@ -179,7 +201,9 @@ describe(shellSpawnProgram.name, () => {
     it('should handle shell-specific commands', async () => {
       const promise = shellSpawnProgram('ls', '-la', '|', 'grep', 'test')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -192,7 +216,9 @@ describe(shellSpawnProgram.name, () => {
     it('should return command string with arguments', async () => {
       const promise = shellSpawnProgram('git', 'commit', '-m', 'test message')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -202,7 +228,9 @@ describe(shellSpawnProgram.name, () => {
     it('should return just command when no arguments', async () => {
       const promise = shellSpawnProgram('pwd')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -212,7 +240,9 @@ describe(shellSpawnProgram.name, () => {
     it('should handle commands with special characters', async () => {
       const promise = shellSpawnProgram('echo', 'hello & world', '&&', 'echo', 'done')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -233,8 +263,12 @@ describe(shellSpawnProgram.name, () => {
 
       // Verify event listeners are set up
       const calls = mockChild.on.mock.calls
-      const errorCall = calls.find((call: string[]) => call[0] === 'error')
-      const closeCall = calls.find((call: string[]) => call[0] === 'close')
+      const errorCall = calls.find((call: string[]) => {
+        return call[0] === 'error'
+      })
+      const closeCall = calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })
 
       expect(errorCall).toBeDefined()
       expect(closeCall).toBeDefined()
@@ -252,7 +286,9 @@ describe(shellSpawnProgram.name, () => {
     it('should handle empty command', async () => {
       const promise = shellSpawnProgram('')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -263,7 +299,9 @@ describe(shellSpawnProgram.name, () => {
     it('should handle commands with only --no-inherit flag', async () => {
       const promise = shellSpawnProgram('command', '--no-inherit')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -274,7 +312,9 @@ describe(shellSpawnProgram.name, () => {
     it('should handle arguments with spaces', async () => {
       const promise = shellSpawnProgram('echo', 'hello world', 'second arg')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -282,10 +322,14 @@ describe(shellSpawnProgram.name, () => {
     })
 
     it('should handle very long argument lists', async () => {
-      const longArgs = Array.from({ length: 50 }, (_, i) => `arg${i}`)
+      const longArgs = Array.from({ length: 50 }, (_, i) => {
+        return `arg${i}`
+      })
       const promise = shellSpawnProgram('command', ...longArgs)
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(0)
 
       const result = await promise
@@ -295,7 +339,9 @@ describe(shellSpawnProgram.name, () => {
     it('should handle close with non-zero exit code', async () => {
       const promise = shellSpawnProgram('failing-command')
 
-      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'close')[1]
+      const closeHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'close'
+      })[1]
       closeHandler(1) // Non-zero exit code
 
       // Should still resolve with command string

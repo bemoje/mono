@@ -13,7 +13,9 @@ const cmd = new Command('myapp')
     group: 'Output Options',
   })
 cmd.helpConfiguration((help) => {
-  help.styleUsage = (str) => `>>> ${str} <<<`
+  help.styleUsage = (str) => {
+    return `>>> ${str} <<<`
+  }
 })
 
 cmd.command('licka').setGroup('CAT B')

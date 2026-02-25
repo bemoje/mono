@@ -1,7 +1,7 @@
-import { Inspector } from "@mono/composition";
-import { InspectorTarget } from "@mono/composition";
-import { Parenting } from "@mono/composition";
-import { ParentingTarget } from "@mono/composition";
+import { Inspector } from '@mono/composition'
+import { InspectorTarget } from '@mono/composition'
+import { Parenting } from '@mono/composition'
+import { ParentingTarget } from '@mono/composition'
 
 declare module './AbstractBase' {
   export interface AbstractBase extends InspectorTarget {}
@@ -55,8 +55,12 @@ export abstract class AbstractBase<P extends object | null = object | null> impl
   }
 
   getParentDeep<T extends AbstractBase>(instanceOf: new (...args: any[]) => T): T {
-    const parent = this.findParentDeep((p) => p instanceof instanceOf)
-    if (!parent) throw new Error(`Parent of type ${instanceOf.name} not found.`)
+    const parent = this.findParentDeep((p) => {
+      return p instanceof instanceOf
+    })
+    if (!parent) {
+      throw new Error(`Parent of type ${instanceOf.name} not found.`)
+    }
     return parent as T
   }
 }

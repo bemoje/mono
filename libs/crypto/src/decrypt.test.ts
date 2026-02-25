@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
 import { decrypt } from './decrypt'
+import { describe } from 'vitest'
 import { encrypt } from './encrypt'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(decrypt.name, () => {
   it('examples', () => {
@@ -35,23 +35,33 @@ describe(decrypt.name, () => {
   it('should throw on incorrect key', () => {
     const message = 'secret message'
     const encrypted = encrypt('correct-key', message)
-    expect(() => decrypt('wrong-key', encrypted)).toThrow()
+    expect(() => {
+      return decrypt('wrong-key', encrypted)
+    }).toThrow()
   })
 
   it('should throw on malformed encrypted data', () => {
     const key = 'test-key'
 
     // Too short (IV requires 32 hex chars)
-    expect(() => decrypt(key, '0'.repeat(31))).toThrow()
+    expect(() => {
+      return decrypt(key, '0'.repeat(31))
+    }).toThrow()
 
     // Invalid hex characters
-    expect(() => decrypt(key, 'g'.repeat(32) + 'abcd')).toThrow()
+    expect(() => {
+      return decrypt(key, `${'g'.repeat(32)}abcd`)
+    }).toThrow()
 
     // Valid IV but invalid encrypted data
-    expect(() => decrypt(key, '0'.repeat(32) + 'invalid-hex')).toThrow()
+    expect(() => {
+      return decrypt(key, `${'0'.repeat(32)}invalid-hex`)
+    }).toThrow()
 
     // Empty string
-    expect(() => decrypt(key, '')).toThrow()
+    expect(() => {
+      return decrypt(key, '')
+    }).toThrow()
   })
 
   it('should handle different key types', () => {

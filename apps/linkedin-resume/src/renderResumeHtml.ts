@@ -1,12 +1,12 @@
-import fs from 'fs-extra'
 import { DIST_PATH } from './constants'
-import upath from 'upath'
-import css from './renderResumeHtml.css'
-import type { Resume } from "./types/Resume";
-import type { ResumeWork } from "./types/Resume";
-import { loadResumeJson } from './LoadResumeJson'
-import { userConfigFile } from './userConfigFile'
 import { Logger } from '@mono/node'
+import type { Resume } from './types/Resume'
+import type { ResumeWork } from './types/Resume'
+import css from './renderResumeHtml.css'
+import fs from 'fs-extra'
+import { loadResumeJson } from './LoadResumeJson'
+import upath from 'upath'
+import { userConfigFile } from './userConfigFile'
 
 export async function renderResumeHtml(logger: Logger): Promise<void> {
   const resume = await loadResumeJson()
@@ -38,7 +38,9 @@ export async function renderResumeHtml(logger: Logger): Promise<void> {
     .join('\n')
     .replace(/[>] *[<]/g, '>\n<')
     .split('\n')
-    .map((line) => line.trimStart())
+    .map((line) => {
+      return line.trimStart()
+    })
     .filter(Boolean)
     .join('\n')
 
@@ -69,7 +71,11 @@ function renderProfile(resume: Resume): string {
           ${b.phone ? `<a href="tel:${esc(b.phone)}">${esc(b.phone)}</a>` : ''}
         </div>
         <div class="profile-links">
-          ${(b.social ?? []).map((p) => `<a href="${esc(p.url)}" class="profile-link">${esc(p.network)}</a>`).join(' ')}
+          ${(b.social ?? [])
+            .map((p) => {
+              return `<a href="${esc(p.url)}" class="profile-link">${esc(p.network)}</a>`
+            })
+            .join(' ')}
         </div>
       </div>
     </div>
@@ -77,7 +83,9 @@ function renderProfile(resume: Resume): string {
 }
 
 function renderAbout(resume: Resume): string {
-  if (!resume.basics.summary) return ''
+  if (!resume.basics.summary) {
+    return ''
+  }
   const lines = ['']
   lines.push(`<div class="card">`)
   lines.push(`<h2>About</h2>`)
@@ -105,7 +113,9 @@ interface ExperienceGroup {
 }
 
 function renderExperience(resume: Resume): string {
-  if (!resume.work?.length) return ''
+  if (!resume.work?.length) {
+    return ''
+  }
 
   // Group consecutive entries by company
   const groups: ExperienceGroup[] = []
@@ -122,7 +132,11 @@ function renderExperience(resume: Resume): string {
   <div class="card">
     <h2>Experience</h2>
     <div class="entries">
-      ${groups.map((g) => renderExperienceGroup(g)).join('\n')}
+      ${groups
+        .map((g) => {
+          return renderExperienceGroup(g)
+        })
+        .join('\n')}
     </div>
   </div>`
 }
@@ -152,7 +166,11 @@ function renderExperienceGroup(group: ExperienceGroup): string {
         <h3 class="entry-title">${esc(group.company)}</h3>
         <p class="entry-meta">${formatDateRange(last.startDate, first.endDate)}</p>
         <div class="sub-roles">
-          ${group.roles.map((job) => renderSubRole(job)).join('\n')}
+          ${group.roles
+            .map((job) => {
+              return renderSubRole(job)
+            })
+            .join('\n')}
         </div>
       </div>
     </div>`
@@ -178,24 +196,36 @@ function renderJobBody(job: ResumeWork): string {
     html += `<p class="entry-description">${esc(job.summary)}</p>`
   }
   if (job.highlights?.length) {
-    html += `<ul class="entry-highlights">${job.highlights.map((h) => `<li>${esc(h)}</li>`).join('\n')}</ul>`
+    html += `<ul class="entry-highlights">${job.highlights
+      .map((h) => {
+        return `<li>${esc(h)}</li>`
+      })
+      .join('\n')}</ul>`
   }
   if (job.skills?.length) {
-    const names = job.skills.map((s) => (typeof s === 'string' ? s : (s as { name: string }).name))
-    html += `<div class="skill-pills">${names.map((s) => `<span class="pill">${esc(s)}</span>`).join('\n')}</div>`
+    const names = job.skills.map((s) => {
+      return typeof s === 'string' ? s : (s as { name: string }).name
+    })
+    html += `<div class="skill-pills">${names
+      .map((s) => {
+        return `<span class="pill">${esc(s)}</span>`
+      })
+      .join('\n')}</div>`
   }
   return html
 }
 
 function renderEducation(resume: Resume): string {
-  if (!resume.education?.length) return ''
+  if (!resume.education?.length) {
+    return ''
+  }
   return `
   <div class="card">
     <h2>Education</h2>
     <div class="entries">
       ${resume.education
-        .map(
-          (edu) => `
+        .map((edu) => {
+          return `
         <div class="entry">
           <div class="entry-logo">${entryLogo(edu)}</div>
           <div class="entry-content">
@@ -204,24 +234,38 @@ function renderEducation(resume: Resume): string {
             ${edu.studyType ? `<p class="entry-meta">${esc(edu.studyType)}</p>` : ''}
             <p class="entry-meta">${formatDateRange(edu.startDate, edu.endDate)}</p>
             ${edu.courses?.length ? `<p class="entry-description"><strong>Courses:</strong> ${edu.courses.map(esc).join(', ')}</p>` : ''}
-            ${edu.skills?.length ? `<div class="skill-pills">${edu.skills.map((s) => `<span class="pill">${esc(s)}</span>`).join('\n')}</div>` : ''}
+            ${
+              edu.skills?.length
+                ? `<div class="skill-pills">${edu.skills
+                    .map((s) => {
+                      return `<span class="pill">${esc(s)}</span>`
+                    })
+                    .join('\n')}</div>`
+                : ''
+            }
           </div>
-        </div>`,
-        )
+        </div>`
+        })
         .join('\n')}
     </div>
   </div>`
 }
 
 function renderSkills(resume: Resume): string {
-  if (!resume.skills?.length) return ''
+  if (!resume.skills?.length) {
+    return ''
+  }
   return `
   <div class="card">
     <h2>Skills</h2>
     <div class="skills-sections">
       <div class="skill-category">
         <div class="skill-pills">
-          ${resume.skills.map((skill) => `<span class="pill">${esc(skill.name)}</span>`).join('\n')}
+          ${resume.skills
+            .map((skill) => {
+              return `<span class="pill">${esc(skill.name)}</span>`
+            })
+            .join('\n')}
         </div>
       </div>
     </div>
@@ -229,14 +273,16 @@ function renderSkills(resume: Resume): string {
 }
 
 function renderProjects(resume: Resume): string {
-  if (!resume.projects?.length) return ''
+  if (!resume.projects?.length) {
+    return ''
+  }
   return `
   <div class="card">
     <h2>Projects</h2>
     <div class="entries">
       ${resume.projects
-        .map(
-          (proj) => `
+        .map((proj) => {
+          return `
         <div class="entry">
           <div class="entry-logo">${entryLogo(proj)}</div>
           <div class="entry-content">
@@ -244,24 +290,54 @@ function renderProjects(resume: Resume): string {
             ${proj.entity ? `<p class="entry-subtitle">Associated with ${esc(proj.entity)}</p>` : ''}
             <p class="entry-meta">${formatDateRange(proj.startDate, proj.endDate)}</p>
             ${proj.description ? `<p class="entry-description">${esc(proj.description)}</p>` : ''}
-            ${proj.highlights?.length ? `<ul class="entry-highlights">${proj.highlights.map((h) => `<li>${esc(h)}</li>`).join('\n')}</ul>` : ''}
-            ${proj.skills?.length ? `<div class="skill-pills">${proj.skills.map((s) => `<span class="pill">${esc(s)}</span>`).join('\n')}</div>` : ''}
-            ${proj.mediaLinks?.length ? `<div class="media-links">${proj.mediaLinks.map((m) => `<a href="${esc(m.url)}" class="media-link" target="_blank" rel="noopener">${esc(m.title)} ↗</a>`).join('\n')}</div>` : ''}
+            ${
+              proj.highlights?.length
+                ? `<ul class="entry-highlights">${proj.highlights
+                    .map((h) => {
+                      return `<li>${esc(h)}</li>`
+                    })
+                    .join('\n')}</ul>`
+                : ''
+            }
+            ${
+              proj.skills?.length
+                ? `<div class="skill-pills">${proj.skills
+                    .map((s) => {
+                      return `<span class="pill">${esc(s)}</span>`
+                    })
+                    .join('\n')}</div>`
+                : ''
+            }
+            ${
+              proj.mediaLinks?.length
+                ? `<div class="media-links">${proj.mediaLinks
+                    .map((m) => {
+                      return `<a href="${esc(m.url)}" class="media-link" target="_blank" rel="noopener">${esc(m.title)} ↗</a>`
+                    })
+                    .join('\n')}</div>`
+                : ''
+            }
           </div>
-        </div>`,
-        )
+        </div>`
+        })
         .join('\n')}
     </div>
   </div>`
 }
 
 function renderLanguages(resume: Resume): string {
-  if (!resume.languages?.length) return ''
+  if (!resume.languages?.length) {
+    return ''
+  }
   return `
   <div class="card">
     <h2>Languages</h2>
     <div class="languages-list">
-      ${resume.languages.map((l) => `<div class="language-item"><span class="language-name">${esc(l.language)}</span><span class="language-fluency">${esc(l.fluency)}</span></div>`).join('\n')}
+      ${resume.languages
+        .map((l) => {
+          return `<div class="language-item"><span class="language-name">${esc(l.language)}</span><span class="language-fluency">${esc(l.fluency)}</span></div>`
+        })
+        .join('\n')}
     </div>
   </div>`
 }
@@ -270,14 +346,16 @@ function renderRecommendations(resume: Resume): string {
   const username = userConfigFile.load().username
   const href = `https://www.linkedin.com/in/${username}/details/recommendations/?locale=en_US`
 
-  if (!resume.recommendations?.length) return ''
+  if (!resume.recommendations?.length) {
+    return ''
+  }
   return `
   <div class="card">
     <h2 class="recommendations-heading">Recommendations <a href="${esc(href)}" class="recommendations-link">View on LinkedIn ↗</a></h2>
     <div class="entries">
       ${resume.recommendations
-        .map(
-          (rec) => `
+        .map((rec) => {
+          return `
         <div class="entry">
           <div class="entry-logo">${rec.logoUrl ? `<img class="entry-logo-img recommendation-photo" src="${esc(rec.logoUrl)}" alt="${esc(rec.name)}" />` : companyInitial(rec.name)}</div>
           <div class="entry-content">
@@ -286,8 +364,8 @@ function renderRecommendations(resume: Resume): string {
             ${rec.date ? `<p class="entry-meta">${esc(rec.date)}</p>` : ''}
             ${rec.relationship ? `<p class="entry-meta recommendation-relationship">${esc(rec.relationship)}</p>` : ''}
           </div>
-        </div>`,
-        )
+        </div>`
+        })
         .join('\n')}
     </div>
   </div>`
@@ -305,8 +383,10 @@ function esc(s: string): string {
 }
 
 function formatDate(d: string | undefined): string {
-  if (!d) return 'Present'
-  const date = new Date(d.length <= 7 ? d + '-01' : d)
+  if (!d) {
+    return 'Present'
+  }
+  const date = new Date(d.length <= 7 ? `${d}-01` : d)
   return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
@@ -317,7 +397,9 @@ function formatDateRange(start: string, end: string | undefined): string {
 function nl2p(text: string): string {
   return text
     .split(/\n+/)
-    .map((p) => `<p>${esc(p)}</p>`)
+    .map((p) => {
+      return `<p>${esc(p)}</p>`
+    })
     .join('\n')
 }
 

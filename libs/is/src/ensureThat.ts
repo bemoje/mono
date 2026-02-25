@@ -1,8 +1,8 @@
-import { isPromise } from "es-toolkit/predicate";
-import { isString } from "es-toolkit/predicate";
-import type { Validator } from "@mono/types";
-import type { ValidatorResult } from "@mono/types";
+import type { Validator } from '@mono/types'
 import { ValidatorError } from './ValidatorError'
+import type { ValidatorResult } from '@mono/types'
+import { isPromise } from 'es-toolkit/predicate'
+import { isString } from 'es-toolkit/predicate'
 
 /**
  * Validates a value using the provided sync or async validator function(s).
@@ -30,11 +30,17 @@ export function ensureThat<T extends Validator, V extends Parameters<T>[0]>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> extends ReturnType<T> ? Promise<V> : V {
   const validators = [validator].flat(2) as T[]
-  const retvals = validators.map((v) => v(value))
+  const retvals = validators.map((v) => {
+    return v(value)
+  })
   const isAsync = retvals.some(isPromise)
 
   if (isAsync) {
-    return Promise.all(retvals.map(async (r) => await r)).then((awaited) => {
+    return Promise.all(
+      retvals.map(async (r) => {
+        return await r
+      }),
+    ).then((awaited) => {
       return handleResult(validators, awaited, value, options)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as Promise<any> extends ReturnType<T> ? Promise<V> : V
@@ -59,10 +65,12 @@ function handleResult<T extends Validator, V extends Parameters<T>[0]>(
       if (!valid) {
         const res = isString(retval) ? retval.trim() : actual
         const name = validator.name
-        return [name || '[' + i + ']', res]
+        return [name || `[${i}]`, res]
       }
     })
-    .filter((v): v is [string, string] => !!v)
+    .filter((v): v is [string, string] => {
+      return !!v
+    })
 
   if (!causeEntries.length) {
     return value as Parameters<T>[0]
@@ -71,7 +79,11 @@ function handleResult<T extends Validator, V extends Parameters<T>[0]>(
   const message =
     opts?.message?.trim() ||
     [
-      `Expected [${validators.map((o, i) => o.name || `[${i}]`).join(', ')}]`,
+      `Expected [${validators
+        .map((o, i) => {
+          return o.name || `[${i}]`
+        })
+        .join(', ')}]`,
       `to return '${expected}'`,
       `for input: '${String(value).slice(0, 30)}'`,
     ]

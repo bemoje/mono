@@ -1,20 +1,22 @@
-import fs from 'fs-extra'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
 import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import fs from 'fs-extra'
+import { it } from 'vitest'
 import { updateFile } from './updateFile'
+import { vi } from 'vitest'
 
 // Mock fs-extra
-vi.mock('fs-extra', () => ({
-  default: {
-    ensureFile: vi.fn(),
-    readFile: vi.fn(),
-    outputFile: vi.fn(),
-  },
-}))
+vi.mock('fs-extra', () => {
+  return {
+    default: {
+      ensureFile: vi.fn(),
+      readFile: vi.fn(),
+      outputFile: vi.fn(),
+    },
+  }
+})
 
 const mockFs = fs as any
 
@@ -31,13 +33,17 @@ describe(updateFile.name, () => {
       mockFs.readFile.mockResolvedValue('Hello, World!')
 
       // Create and update a file
-      await updateFile(testFile, () => 'Hello, World!')
+      await updateFile(testFile, () => {
+        return 'Hello, World!'
+      })
       let content = await fs.readFile(testFile, 'utf8')
       assert.deepStrictEqual(content, 'Hello, World!')
 
       // Update existing content - mock different return value
       mockFs.readFile.mockResolvedValue('HELLO, WORLD!')
-      await updateFile(testFile, (content) => content.toUpperCase())
+      await updateFile(testFile, (content) => {
+        return content.toUpperCase()
+      })
       content = await fs.readFile(testFile, 'utf8')
       assert.deepStrictEqual(content, 'HELLO, WORLD!')
     }).not.toThrow()
@@ -48,7 +54,9 @@ describe(updateFile.name, () => {
 
     mockFs.readFile.mockResolvedValue('')
 
-    await updateFile(testFile, () => 'test content')
+    await updateFile(testFile, () => {
+      return 'test content'
+    })
 
     expect(mockFs.ensureFile).toHaveBeenCalledWith(testFile)
     expect(mockFs.outputFile).toHaveBeenCalledWith(testFile, 'test content')
@@ -59,13 +67,17 @@ describe(updateFile.name, () => {
 
     mockFs.readFile.mockResolvedValueOnce('')
 
-    await updateFile(testFile, () => 'initial')
+    await updateFile(testFile, () => {
+      return 'initial'
+    })
 
     mockFs.readFile.mockResolvedValueOnce('initial')
 
     await updateFile(testFile, async (content) => {
-      await new Promise((resolve) => setTimeout(resolve, 10))
-      return content + ' async'
+      await new Promise((resolve) => {
+        return setTimeout(resolve, 10)
+      })
+      return `${content} async`
     })
 
     expect(mockFs.outputFile).toHaveBeenCalledWith(testFile, 'initial async')

@@ -1,24 +1,26 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import assert from 'node:assert'
-import colors from 'ansi-colors'
 import Table from 'cli-table'
+import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import colors from 'ansi-colors'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { formatTableForTerminal } from './formatTableForTerminal'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Mock cli-table
 vi.mock('cli-table', () => {
   return {
-    default: vi.fn().mockImplementation(() => ({
-      push: vi.fn(),
-      toString: vi
-        .fn()
-        .mockReturnValue(
-          '│ Header 1 │ Header 2 │\n├──────────┼──────────┤\n│ Row 1    │ Data 1   │\n│ Row 2    │ Data 2   │',
-        ),
-    })),
+    default: vi.fn().mockImplementation(() => {
+      return {
+        push: vi.fn(),
+        toString: vi
+          .fn()
+          .mockReturnValue(
+            '│ Header 1 │ Header 2 │\n├──────────┼──────────┤\n│ Row 1    │ Data 1   │\n│ Row 2    │ Data 2   │',
+          ),
+      }
+    }),
   }
 })
 
@@ -209,7 +211,9 @@ describe(formatTableForTerminal.name, () => {
 
       expect(result).not.toContain('\x1B[90m\x1B[39m')
       // Should reduce empty lines, but might not eliminate all of them
-      const emptyLineCount = result.split('\n').filter((line) => line.trim() === '').length
+      const emptyLineCount = result.split('\n').filter((line) => {
+        return line.trim() === ''
+      }).length
       expect(emptyLineCount).toBeLessThanOrEqual(2)
     })
 

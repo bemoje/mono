@@ -1,7 +1,7 @@
 import { classPrototype } from './classPrototype'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(classPrototype.name, () => {
   it('should return the class prototype object for a class constructor', () => {
@@ -31,7 +31,11 @@ describe(classPrototype.name, () => {
   })
 
   it('should throw a TypeError for null or undefined', () => {
-    expect(() => classPrototype(null as unknown as object)).toThrow(TypeError)
-    expect(() => classPrototype(undefined as unknown as object)).toThrow(TypeError)
+    expect(() => {
+      return classPrototype(null as unknown as object)
+    }).toThrow(TypeError)
+    expect(() => {
+      return classPrototype(undefined as unknown as object)
+    }).toThrow(TypeError)
   })
 })

@@ -1,7 +1,8 @@
-import upath from 'upath'
-import fs from 'fs-extra'
 import * as esbuild from 'esbuild'
+
 import cp from 'node:child_process'
+import fs from 'fs-extra'
+import upath from 'upath'
 
 const wsDirpath = upath.normalizeSafe(import.meta.dirname)
 const tsconfigFilepath = upath.joinSafe(wsDirpath, 'tsconfig.json')
@@ -115,4 +116,4 @@ await fs.writeJson(
   { spaces: 2 },
 )
 
-console.info('Build complete: ' + distDir)
+console.info(`Build complete: ${distDir}`)

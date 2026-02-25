@@ -1,16 +1,16 @@
-import fs from 'node:fs'
-import { readJsonSync } from 'fs-extra/esm'
-import path from 'upath'
 import { AbstractBase } from './common/AbstractBase'
-import { Inspector } from "@mono/composition";
-import { Parenting } from "@mono/composition";
-import { lazyProp } from '@mono/decorators'
-import { type PackageJson } from '@mono/types'
-import { Workspace } from './repo/Workspace'
-import { TsConfigJson } from "type-fest";
-import { SetFieldType } from "type-fest";
 import { CompilerOptions } from 'typescript'
+import { Inspector } from '@mono/composition'
+import { type PackageJson } from '@mono/types'
+import { Parenting } from '@mono/composition'
+import { SetFieldType } from 'type-fest'
+import { TsConfigJson } from 'type-fest'
+import { Workspace } from './repo/Workspace'
+import fs from 'node:fs'
 import { getRepoRootDirpath } from './util/getRepoRootDirpath'
+import { lazyProp } from '@mono/decorators'
+import path from 'upath'
+import { readJsonSync } from 'fs-extra/esm'
 
 /**
  * Represents a monorepo with workspace management, TypeScript configuration, and dependency analysis capabilities.
@@ -33,7 +33,11 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
   }
 
   get monoRepo(): MonoRepo {
-    return super.findParentDeep<MonoRepo>((m) => m instanceof MonoRepo) || this
+    return (
+      super.findParentDeep<MonoRepo>((m) => {
+        return m instanceof MonoRepo
+      }) || this
+    )
   }
 
   get packageJsonPath(): string {
@@ -47,7 +51,9 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
   @lazyProp(5000)
   get tsconfigBase() {
     const o = readJsonSync(this.tsconfigBaseJsonPath) as TsConfigJson
-    if (!o.compilerOptions) o.compilerOptions = {}
+    if (!o.compilerOptions) {
+      o.compilerOptions = {}
+    }
     o.compilerOptions.paths = o.compilerOptions.paths || this.tsconfigBasePaths
 
     return o as SetFieldType<
@@ -63,7 +69,9 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
 
   @lazyProp(5000)
   get tsconfigBasePaths(): Record<string, string[]> {
-    if (!fs.existsSync(this.tsconfigBasePathsJsonPath)) return {}
+    if (!fs.existsSync(this.tsconfigBasePathsJsonPath)) {
+      return {}
+    }
     return readJsonSync(this.tsconfigBasePathsJsonPath).compilerOptions?.paths ?? {}
   }
 

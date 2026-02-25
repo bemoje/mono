@@ -1,11 +1,11 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import { afterEach } from "vitest";
+import { afterEach } from 'vitest'
 import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { prompt } from './prompt'
+import { vi } from 'vitest'
 
 const { mockCreateInterface } = vi.hoisted(() => {
   return {
@@ -324,7 +324,9 @@ describe(prompt.name, () => {
     it('should handle numeric validation', async () => {
       const numberValidator = (input: string) => {
         const num = parseInt(input)
-        if (isNaN(num) || num <= 0) return ''
+        if (isNaN(num) || num <= 0) {
+          return ''
+        }
         return num.toString()
       }
 
@@ -363,7 +365,9 @@ describe(prompt.name, () => {
 
   describe('async callback behavior', () => {
     it('should handle synchronous callback correctly', async () => {
-      const syncCallback = (input: string) => input.trim().toLowerCase()
+      const syncCallback = (input: string) => {
+        return input.trim().toLowerCase()
+      }
 
       mockRl.question.mockImplementation((question: string, callback: (answer: string) => void) => {
         callback('  HELLO WORLD  ')
@@ -375,7 +379,9 @@ describe(prompt.name, () => {
     })
 
     it('should work with callback that always returns empty (infinite loop protection)', async () => {
-      const alwaysFailCallback = () => ''
+      const alwaysFailCallback = () => {
+        return ''
+      }
 
       let callCount = 0
       mockRl.question.mockImplementation((question: string, callback: (answer: string) => void) => {
@@ -390,7 +396,9 @@ describe(prompt.name, () => {
 
       // Override the callback after many calls to prevent infinite loop in test
       const wrappedCallback = (input: string) => {
-        if (input === 'break') return 'success'
+        if (input === 'break') {
+          return 'success'
+        }
         return alwaysFailCallback()
       }
 

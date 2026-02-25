@@ -1,13 +1,14 @@
+/* eslint-disable max-lines-per-function */
 import type { Browser } from 'puppeteer'
-import { autoScroll } from './utils/autoScroll'
-import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { CliOptions } from '../types/CliOptions'
-import { onScrapeError } from './utils/onScrapeError'
+import { Logger } from '@mono/node'
 import { ResumeRecommendation } from '../types/Resume'
+import { autoScroll } from './utils/autoScroll'
+import { getPageUrl } from './utils/getPageUrl'
+import { onScrapeError } from './utils/onScrapeError'
+import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { scrapeOutputJson } from './utils/scrapeOutputJson'
 import { userConfigFile } from '../userConfigFile'
-import { getPageUrl } from './utils/getPageUrl'
-import { Logger } from '@mono/node'
 
 export async function scrapeRecommendations(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const page = await browser.newPage()
@@ -25,6 +26,7 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
     } catch {
       logger.warn('No recommendations section found or it took too long to load.')
+      // eslint-disable-next-line no-throw-literal
       throw 'ignore'
     }
 
@@ -33,19 +35,27 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
 
     const rawEntries = await page.evaluate(() => {
       const container = document.querySelector('.scaffold-finite-scroll__content')
-      if (!container) return []
+      if (!container) {
+        return []
+      }
       const topLevelItems = Array.from(container.querySelector('ul')?.children ?? [])
 
       const getVisibleSpans = (el: Element): string[] => {
         return Array.from(el.querySelectorAll('span'))
-          .filter((span) => !span.className.includes('visually-hidden') && span.hasAttribute('aria-hidden'))
-          .map((span) => span.textContent!.trim())
+          .filter((span) => {
+            return !span.className.includes('visually-hidden') && span.hasAttribute('aria-hidden')
+          })
+          .map((span) => {
+            return span.textContent!.trim()
+          })
       }
 
-      return topLevelItems.map((li) => ({
-        spans: getVisibleSpans(li),
-        logoUrl: li.querySelector('img')?.src ?? '',
-      }))
+      return topLevelItems.map((li) => {
+        return {
+          spans: getVisibleSpans(li),
+          logoUrl: li.querySelector('img')?.src ?? '',
+        }
+      })
     })
 
     // Each recommendation entry spans:
@@ -60,18 +70,26 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
     const NOISE_RE = /^(· \d|All LinkedIn members$|^On$|^Off$)/
 
     for (const { spans, logoUrl } of rawEntries) {
-      if (spans.length < 3) continue
+      if (spans.length < 3) {
+        continue
+      }
 
       // Check visibility toggle: find "All LinkedIn members" and check the next span
       const visIdx = spans.indexOf('All LinkedIn members')
-      if (visIdx !== -1 && spans[visIdx + 1] === 'Off') continue
+      if (visIdx !== -1 && spans[visIdx + 1] === 'Off') {
+        continue
+      }
 
       const name = spans[0]
-      if (!name) continue
+      if (!name) {
+        continue
+      }
 
       // Skip connection degree indicator (e.g. "· 1st")
       let idx = 1
-      if (spans[idx]?.startsWith('·')) idx++
+      if (spans[idx]?.startsWith('·')) {
+        idx++
+      }
 
       const headline = spans[idx++] ?? ''
 
@@ -81,7 +99,9 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
       // Look for the date + relationship span
       for (let i = idx; i < spans.length; i++) {
         const s = spans[i]
-        if (NOISE_RE.test(s)) continue
+        if (NOISE_RE.test(s)) {
+          continue
+        }
 
         const dateMatch = s.match(DATE_RE)
         if (dateMatch && !date) {
@@ -90,7 +110,9 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
             .slice(dateMatch[0].length)
             .replace(/^[,\s]+/, '')
             .trim()
-          if (after) relationship = after
+          if (after) {
+            relationship = after
+          }
           break
         }
       }

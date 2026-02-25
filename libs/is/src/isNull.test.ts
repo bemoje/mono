@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isNull } from './isNull'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { it } from 'vitest'
 
 describe(isNull.name, () => {
   describe('valid', () => {

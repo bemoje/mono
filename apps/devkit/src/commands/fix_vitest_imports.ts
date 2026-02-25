@@ -8,10 +8,14 @@ export async function fixVitestImportsAction(
   _opts: unknown,
   { logger: log }: { logger: Logger },
 ) {
-  const filepaths = globSync(fileGlob, { cwd: process.cwd() }).map((fp) => upath.normalizeSafe(fp))
+  const filepaths = globSync(fileGlob, { cwd: process.cwd() }).map((fp) => {
+    return upath.normalizeSafe(fp)
+  })
 
   log.info(`Found ${filepaths.length} files matching glob: ${fileGlob}`)
-  if (filepaths.length === 0) return
+  if (filepaths.length === 0) {
+    return
+  }
 
   const filesWithCode = filepaths
     .map((filepath) => {
@@ -23,10 +27,18 @@ export async function fixVitestImportsAction(
       return !(isEmpty || o.code.includes(`from 'vitest'`))
     })
 
-  filesWithCode.map((o) => o.filepath).forEach((f) => log.info(f))
+  filesWithCode
+    .map((o) => {
+      return o.filepath
+    })
+    .forEach((f) => {
+      return log.info(f)
+    })
   log.info(`Found ${filesWithCode.length} files missing vitest import`)
 
-  if (filesWithCode.length === 0) return
+  if (filesWithCode.length === 0) {
+    return
+  }
 
   filesWithCode.forEach((o) => {
     const importLine = `import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, test, vitest, vi } from 'vitest'`

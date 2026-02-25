@@ -1,5 +1,5 @@
-import upath from 'upath'
 import { getRepoRootDirpath } from './getRepoRootDirpath'
+import upath from 'upath'
 
 /**
  * Gets workspace-related paths for build operations.
@@ -14,9 +14,11 @@ export function getWsPaths(importMetaDirname: string) {
   const repoRootDir = getRepoRootDirpath()
   const distDir = upath.joinSafe(repoRootDir, '.dist', 'libs')
   const indexTs = upath.joinSafe(srcDir, 'index.ts')
-  const indexCjs = upath.joinSafe(distDir, wsDirname + '.cjs')
-  const indexMjs = upath.joinSafe(distDir, wsDirname + '.mjs')
-  const toRelative = (path: string) => upath.relative(repoRootDir, path)
+  const indexCjs = upath.joinSafe(distDir, `${wsDirname}.cjs`)
+  const indexMjs = upath.joinSafe(distDir, `${wsDirname}.mjs`)
+  const toRelative = (path: string) => {
+    return upath.relative(repoRootDir, path)
+  }
   return {
     wsDir: importMetaDirname,
     wsDirname,

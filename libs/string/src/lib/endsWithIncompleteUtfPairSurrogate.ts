@@ -3,7 +3,9 @@
  * This is useful for determining if a string can be safely concatenated with another string.
  */
 export function endsWithIncompleteUtfPairSurrogate(string: string): boolean {
-  if (string.length === 0) return false
+  if (string.length === 0) {
+    return false
+  }
   const HIGH_SURROGATE_START = 55_296
   const HIGH_SURROGATE_END = 56_319
   // Check if the last character is a high surrogate

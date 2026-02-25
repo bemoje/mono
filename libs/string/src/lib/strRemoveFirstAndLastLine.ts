@@ -8,6 +8,8 @@
  */
 export function strRemoveFirstAndLastLine(string: string): string {
   const lines = string.split(/\r?\n/)
-  if (lines.length <= 2) return ''
+  if (lines.length <= 2) {
+    return ''
+  }
   return lines.slice(1, lines.length - 1).join('\n')
 }

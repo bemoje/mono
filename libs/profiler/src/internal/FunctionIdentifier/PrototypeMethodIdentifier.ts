@@ -13,6 +13,6 @@ export class PrototypeMethodIdentifier extends AbstractMethodIdentifier<{
     return 'prototype'
   }
   override get parentName(): string {
-    return this.target.constructor.name + '.' + this.targetType
+    return `${this.target.constructor.name}.${this.targetType}`
   }
 }

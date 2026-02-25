@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { FunctionProfiler } from '../FunctionProfiler/FunctionProfiler'
 import { PrototypeMethodIdentifier } from '../FunctionIdentifier/PrototypeMethodIdentifier'
 import { PrototypeMethodProfilerFactory } from './PrototypeMethodProfilerFactory'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(PrototypeMethodProfilerFactory.name, () => {
   const target = class Target {}

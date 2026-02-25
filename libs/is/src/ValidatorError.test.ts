@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { it } from "vitest";
 import { ValidatorError } from './ValidatorError'
 import { strict as assert } from 'node:assert'
+import { describe } from 'vitest'
+import { it } from 'vitest'
 
 describe(ValidatorError.name, () => {
   it('examples', () => {

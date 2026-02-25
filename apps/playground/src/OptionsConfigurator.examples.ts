@@ -13,7 +13,13 @@ function example1() {
     name: Type.String(),
     age: Type.Integer(),
     city: Type.String(),
-    state: Type.Optional(Type.String({ default: () => 'WA' })),
+    state: Type.Optional(
+      Type.String({
+        default: () => {
+          return 'WA'
+        },
+      }),
+    ),
     disabled: Type.Optional(Type.Boolean()),
   }
 
@@ -43,7 +49,13 @@ function example2() {
     name: Type.String(),
     age: Type.Integer(),
     city: Type.String(),
-    state: Type.Optional(Type.String({ default: () => 'WA' })),
+    state: Type.Optional(
+      Type.String({
+        default: () => {
+          return 'WA'
+        },
+      }),
+    ),
     disabled: Type.Optional(Type.Boolean()),
   })
 

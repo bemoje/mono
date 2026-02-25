@@ -1,10 +1,10 @@
-import { builtinModules } from 'node:module'
 import { CodeBlock } from '../CodeBlock'
 import { ImportStatement } from './ImportStatement'
-import { Inspector } from "@mono/composition";
-import { Parenting } from "@mono/composition";
+import { Inspector } from '@mono/composition'
 import { MonoRepo } from '../../MonoRepo'
+import { Parenting } from '@mono/composition'
 import { Workspace } from '../../repo/Workspace'
+import { builtinModules } from 'node:module'
 
 @Parenting.compose
 /**
@@ -26,7 +26,9 @@ export class ModuleSpecifier<P extends ImportStatement = ImportStatement> extend
   }
 
   get dependency(): string | undefined {
-    if (!this.isDependency) return undefined
+    if (!this.isDependency) {
+      return undefined
+    }
     return this.code
       .split('/')
       .slice(0, this.isScoped ? 2 : 1)
@@ -42,7 +44,7 @@ export class ModuleSpecifier<P extends ImportStatement = ImportStatement> extend
   }
 
   get isRepoScoped() {
-    return this.code.startsWith('@' + this.getParentDeep(MonoRepo).name + '/')
+    return this.code.startsWith(`@${this.getParentDeep(MonoRepo).name}/`)
   }
 
   /**
@@ -50,9 +52,15 @@ export class ModuleSpecifier<P extends ImportStatement = ImportStatement> extend
    */
   get isOtherRepoWorkspace() {
     return this.getParentDeep(MonoRepo)
-      .workspaces.map((ws) => ws.name)
-      .filter((name) => name !== this.getParentDeep(Workspace).name)
-      .some((name) => this.code.includes(name))
+      .workspaces.map((ws) => {
+        return ws.name
+      })
+      .filter((name) => {
+        return name !== this.getParentDeep(Workspace).name
+      })
+      .some((name) => {
+        return this.code.includes(name)
+      })
   }
 
   get isRelative() {

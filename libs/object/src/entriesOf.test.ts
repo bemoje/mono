@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
+import { describe } from 'vitest'
 import { entriesOf } from './entriesOf'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(entriesOf.name, () => {
   it('should behave identically to Object.entries()', () => {

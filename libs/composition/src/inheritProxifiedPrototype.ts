@@ -1,6 +1,6 @@
 import { Class } from 'type-fest'
-import { inheritProxifiedPrototypeProperty } from './inheritProxifiedPrototypeProperty'
 import { IView } from './IView'
+import { inheritProxifiedPrototypeProperty } from './inheritProxifiedPrototypeProperty'
 
 /**
  * Inherits prototype properties from a target class to a viewer class with proxification, excluding specified keys.
@@ -11,8 +11,14 @@ export function inheritProxifiedPrototype<
   Omitted extends PropertyKey[] = [],
 >(ViewerClass: Class<Viewer>, TargetClass: Class<Target>, omitKeys: Omitted) {
   Reflect.ownKeys(TargetClass.prototype)
-    .filter((k) => k !== 'constructor' && k !== Symbol.toStringTag)
-    .filter((k) => (omitKeys ? !omitKeys.includes(k) : true))
-    .forEach((k) => inheritProxifiedPrototypeProperty(ViewerClass, TargetClass, k as keyof Target))
+    .filter((k) => {
+      return k !== 'constructor' && k !== Symbol.toStringTag
+    })
+    .filter((k) => {
+      return omitKeys ? !omitKeys.includes(k) : true
+    })
+    .forEach((k) => {
+      return inheritProxifiedPrototypeProperty(ViewerClass, TargetClass, k as keyof Target)
+    })
   return ViewerClass as typeof ViewerClass & { prototype: Viewer & Omit<Target, Omitted[number]> }
 }

@@ -1,8 +1,8 @@
-import upath from 'upath'
 import { buildFile } from './buildFile'
 import { buildStats } from './buildStats'
-import { getWsPaths } from './getWsPaths'
 import { getRepoPackageJson } from './getRepoPackageJson'
+import { getWsPaths } from './getWsPaths'
+import upath from 'upath'
 
 /**
  * Builds a library workspace from its directory path.

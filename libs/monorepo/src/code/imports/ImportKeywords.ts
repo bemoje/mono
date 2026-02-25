@@ -1,7 +1,7 @@
 import { CodeBlock } from '../CodeBlock'
 import { ImportStatement } from './ImportStatement'
-import { Inspector } from "@mono/composition";
-import { Parenting } from "@mono/composition";
+import { Inspector } from '@mono/composition'
+import { Parenting } from '@mono/composition'
 
 /**
  * Represents the imported keywords/specifiers in an import statement.
@@ -15,8 +15,12 @@ export class ImportKeywords<P extends ImportStatement = ImportStatement> extends
   get keywords() {
     return this.code
       .split(/\s+/)
-      .map((s) => s.trim())
-      .filter((s) => !!s)
+      .map((s) => {
+        return s.trim()
+      })
+      .filter((s) => {
+        return !!s
+      })
   }
 
   has(kw: string) {

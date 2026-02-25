@@ -28,7 +28,13 @@ Profiler.class(TsFile)
 Profiler.class(Workspace)
 Profiler.class(MonoRepo)
 
-console.log(Object.fromEntries(new MonoRepo().workspaces.map((ws) => [ws.name, ws.importedDependenciesRecursive])))
+console.log(
+  Object.fromEntries(
+    new MonoRepo().workspaces.map((ws) => {
+      return [ws.name, ws.importedDependenciesRecursive]
+    }),
+  ),
+)
 
 // console.log(repo.inspector.inspect())
 

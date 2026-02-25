@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import assert from 'node:assert'
-import { inheritProxifiedPrototypeProperty } from './inheritProxifiedPrototypeProperty'
 import { IView } from './IView'
+import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { inheritProxifiedPrototypeProperty } from './inheritProxifiedPrototypeProperty'
+import { it } from 'vitest'
 
 // Mock target classes for testing
 class TargetClass {

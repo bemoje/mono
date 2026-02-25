@@ -14,9 +14,13 @@ export function camelCase(string: string, overrides?: Map<string, string>) {
       string
         .trim()
         .split(' ')
-        .map((w) => _camelCase(w))
+        .map((w) => {
+          return _camelCase(w)
+        })
         .join(' '),
     )
-  if (!cc) throw new Error(`camelCase resolved to an empty string: "${string}"`)
+  if (!cc) {
+    throw new Error(`camelCase resolved to an empty string: "${string}"`)
+  }
   return cc
 }

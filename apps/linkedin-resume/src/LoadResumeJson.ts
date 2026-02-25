@@ -1,8 +1,8 @@
-import fs from 'fs-extra'
 import { DIST_PATH } from './constants'
-import upath from 'upath'
 import type { Resume } from './types/Resume'
 import { entriesOf } from '@mono/object'
+import fs from 'fs-extra'
+import upath from 'upath'
 import { userConfigFile } from './userConfigFile'
 
 /**

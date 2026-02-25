@@ -1,6 +1,6 @@
 import { Any } from '@mono/types'
-import { ValueDescriptorAttributes } from "./isValueDescriptor";
-import { DescriptorValue } from "./isValueDescriptor";
+import { DescriptorValue } from './isValueDescriptor'
+import { ValueDescriptorAttributes } from './isValueDescriptor'
 
 /**
  * Checks if a property descriptor represents a method (function value descriptor).

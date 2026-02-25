@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { numRange } from './numRange'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe(numRange.name, () => {
   it('should return an array of numbers from start to end, inclusive', () => {
@@ -11,6 +11,8 @@ describe(numRange.name, () => {
   })
 
   it('should throw when start is greater than end', () => {
-    expect(() => numRange(5, 1)).toThrow('Expected start to be less than or equal to end')
+    expect(() => {
+      return numRange(5, 1)
+    }).toThrow('Expected start to be less than or equal to end')
   })
 })

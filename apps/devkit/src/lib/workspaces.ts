@@ -1,16 +1,24 @@
-import { glob } from 'glob'
 import fs from 'fs-extra'
-import upath from 'upath'
 import { getRepoPackageJson } from './getRepoPackageJson'
+import { glob } from 'glob'
+import upath from 'upath'
 
 /**
  * Returns an array of all workspace directory paths.
  */
 export async function getAllWorkspacePaths(): Promise<string[]> {
   const pkg = await getRepoPackageJson()
-  return (await Promise.all(pkg.workspaces.map((pattern: string) => glob(pattern))))
+  return (
+    await Promise.all(
+      pkg.workspaces.map((pattern: string) => {
+        return glob(pattern)
+      }),
+    )
+  )
     .flat()
-    .map((fp) => upath.normalizeSafe(fp))
+    .map((fp) => {
+      return upath.normalizeSafe(fp)
+    })
 }
 
 /**
@@ -18,7 +26,9 @@ export async function getAllWorkspacePaths(): Promise<string[]> {
  */
 export async function getAllWorkspacePackageJsonPaths(): Promise<string[]> {
   const paths = await getAllWorkspacePaths()
-  return paths.map((p) => upath.join(p, 'package.json'))
+  return paths.map((p) => {
+    return upath.join(p, 'package.json')
+  })
 }
 
 /**
@@ -26,7 +36,9 @@ export async function getAllWorkspacePackageJsonPaths(): Promise<string[]> {
  */
 export async function getAllWorkspacePackageJsons() {
   const paths = await getAllWorkspacePackageJsonPaths()
-  return paths.map((p) => fs.readJsonSync(p))
+  return paths.map((p) => {
+    return fs.readJsonSync(p)
+  })
 }
 
 /**
@@ -34,7 +46,9 @@ export async function getAllWorkspacePackageJsons() {
  */
 export async function getAllWorkspacePackageNames(): Promise<string[]> {
   const pkgs = await getAllWorkspacePackageJsons()
-  return pkgs.map((p) => p.name)
+  return pkgs.map((p) => {
+    return p.name
+  })
 }
 
 /**
@@ -42,5 +56,12 @@ export async function getAllWorkspacePackageNames(): Promise<string[]> {
  */
 export async function findWorkspacePackageName(name: string): Promise<string | undefined> {
   const wsPkgNames = await getAllWorkspacePackageNames()
-  return wsPkgNames.find((n) => n === name) || wsPkgNames.find((n) => n === `@mono/${name}`)
+  return (
+    wsPkgNames.find((n) => {
+      return n === name
+    }) ||
+    wsPkgNames.find((n) => {
+      return n === `@mono/${name}`
+    })
+  )
 }

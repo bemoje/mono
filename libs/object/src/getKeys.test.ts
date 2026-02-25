@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { getKeysPreset } from './getKeysPreset'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getKeys } from './getKeys'
+import { getKeysPreset } from './getKeysPreset'
+import { it } from 'vitest'
 
 describe(getKeys.name, () => {
   it('GetKeys', () => {

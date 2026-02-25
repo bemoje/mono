@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getRepoRootDirpath } from './getRepoRootDirpath'
+import { it } from 'vitest'
 
 describe(getRepoRootDirpath.name, () => {
   it('should return a string', () => {

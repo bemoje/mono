@@ -1,6 +1,6 @@
 import { Logger } from '@mono/node'
-import { toCwdRelative } from '@mono/path'
 import fs from 'fs-extra'
+import { toCwdRelative } from '@mono/path'
 
 /**
  * Writes content to a file only if the file doesn't exist or if the content has changed.

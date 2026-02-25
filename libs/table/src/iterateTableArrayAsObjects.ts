@@ -6,7 +6,9 @@ export function* iterateTableArrayAsObjects<T>(rows: T[][], headers: string[], i
   for (let r = 0; r < rows.length; r++) {
     const o: Record<string, T> = {}
     for (let c = 0; c < headers.length; c++) {
-      if (ignoreHeadersSet.has(headers[c])) continue
+      if (ignoreHeadersSet.has(headers[c])) {
+        continue
+      }
       o[headers[c]] = rows[r][c]
     }
     yield o

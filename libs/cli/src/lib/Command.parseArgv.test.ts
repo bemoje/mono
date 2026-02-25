@@ -1,10 +1,10 @@
-import { afterEach } from "vitest";
-import { beforeEach } from "vitest";
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
 import { Command } from './Command'
+import { afterEach } from 'vitest'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 describe(Command.name, () => {
   beforeEach(() => {
@@ -470,14 +470,22 @@ describe(Command.name, () => {
       const cmd = new Command('test').addArgument('<input>')
       const result = cmd.parseArgv([])
       expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Missing argument'))).toBe(true)
+      expect(
+        result.errors!.some((e) => {
+          return e.includes('Missing argument')
+        }),
+      ).toBe(true)
     })
 
     it('should report error for missing required variadic argument', () => {
       const cmd = new Command('test').addArgument('<files...>')
       const result = cmd.parseArgv([])
       expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Missing argument'))).toBe(true)
+      expect(
+        result.errors!.some((e) => {
+          return e.includes('Missing argument')
+        }),
+      ).toBe(true)
     })
 
     it('should report error for invalid argument choices', () => {
@@ -487,7 +495,11 @@ describe(Command.name, () => {
       })
       const result = cmd.parseArgv(['staging'])
       expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Invalid argument'))).toBe(true)
+      expect(
+        result.errors!.some((e) => {
+          return e.includes('Invalid argument')
+        }),
+      ).toBe(true)
     })
 
     it('should not report error when required option flag is not used at all', () => {
@@ -503,7 +515,11 @@ describe(Command.name, () => {
       })
       const result = cmd.parseArgv(['-f', 'csv'])
       expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Invalid option value'))).toBe(true)
+      expect(
+        result.errors!.some((e) => {
+          return e.includes('Invalid option value')
+        }),
+      ).toBe(true)
     })
 
     it('should not report errors when all validations pass', () => {
@@ -521,14 +537,22 @@ describe(Command.name, () => {
       })
       const result = cmd.parseArgv(['-t', 'a', 'x'])
       expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Invalid option value'))).toBe(true)
+      expect(
+        result.errors!.some((e) => {
+          return e.includes('Invalid option value')
+        }),
+      ).toBe(true)
     })
 
     it('should report error for unknown option', () => {
       const cmd = new Command('test')
       const result = cmd.parseArgv(['--unknown-flag'])
       expect(result.errors).toBeDefined()
-      expect(result.errors!.some((e) => e.includes('Unknown option'))).toBe(true)
+      expect(
+        result.errors!.some((e) => {
+          return e.includes('Unknown option')
+        }),
+      ).toBe(true)
     })
   })
 })

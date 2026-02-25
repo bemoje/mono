@@ -9,9 +9,17 @@ export async function listImportedBuiltinNodeDependencies(_opts: object, { logge
     const deps = Array.from(
       new Set(
         ws.tsFiles
-          .filter((f) => f.isSourceFile)
+          .filter((f) => {
+            return f.isSourceFile
+          })
           .map((f) => {
-            return f.tsCode.imports.filter((i) => i.module.isBuiltin).map((i) => i.module.from)
+            return f.tsCode.imports
+              .filter((i) => {
+                return i.module.isBuiltin
+              })
+              .map((i) => {
+                return i.module.from
+              })
           })
           .flat(3),
       ),
@@ -26,9 +34,9 @@ export async function listImportedBuiltinNodeDependencies(_opts: object, { logge
 
   log.info('Native built-in node dependencies:')
   withNodeDeps.forEach(([name, deps]) => {
-    log.log(name + ':', deps)
+    log.log(`${name}:`, deps)
   })
   withoutNodeDeps.forEach(([name, deps]) => {
-    log.log(name + ':', deps)
+    log.log(`${name}:`, deps)
   })
 }

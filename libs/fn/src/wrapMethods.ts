@@ -1,9 +1,9 @@
-import type { AnyGetter } from '@mono/types'
 import type { AnyFunction } from '@mono/types'
+import type { AnyGetter } from '@mono/types'
 import type { AnySetter } from '@mono/types'
-import { defineGetter } from "@mono/object";
-import { defineMethod } from "@mono/object";
-import { defineSetter } from "@mono/object";
+import { defineGetter } from '@mono/object'
+import { defineMethod } from '@mono/object'
+import { defineSetter } from '@mono/object'
 import { isFunction } from 'es-toolkit/predicate'
 import { preserveNameAndLength } from './preserveNameAndLength'
 
@@ -16,22 +16,34 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
       continue
     }
     if (type === 'method') {
-      if (!strat.onMethod) continue
+      if (!strat.onMethod) {
+        continue
+      }
       const orig = des.value!
       const wrapped = strat.onMethod(target, key, orig)
-      if (!wrapped) continue
+      if (!wrapped) {
+        continue
+      }
       defineMethod(target, key, preserveNameAndLength(orig, wrapped))
     } else if (type === 'get') {
-      if (!strat.onGetter) continue
+      if (!strat.onGetter) {
+        continue
+      }
       const orig = des.get!
       const wrapped = strat.onGetter(target, key, orig)
-      if (!wrapped) continue
+      if (!wrapped) {
+        continue
+      }
       defineGetter(target, key, preserveNameAndLength(orig, wrapped))
     } else if (type === 'set') {
-      if (!strat.onSetter) continue
+      if (!strat.onSetter) {
+        continue
+      }
       const orig = des.set!
       const wrapped = strat.onSetter(target, key, orig)
-      if (!wrapped) continue
+      if (!wrapped) {
+        continue
+      }
       defineSetter(target, key, preserveNameAndLength(orig, wrapped))
     }
   }
@@ -43,12 +55,18 @@ function* iterateMethods<T extends object>(
 ): Generator<[string | symbol, DescriptorMethodType, PropertyDescriptor]> {
   for (const key of Reflect.ownKeys(target)) {
     const des = Object.getOwnPropertyDescriptor(target, key)
-    if (!des || des.configurable === false) continue
+    if (!des || des.configurable === false) {
+      continue
+    }
     if (isFunction(des.value)) {
       yield [key, 'method', des]
     } else {
-      if (isFunction(des.get)) yield [key, 'get', des]
-      if (isFunction(des.set)) yield [key, 'set', des]
+      if (isFunction(des.get)) {
+        yield [key, 'get', des]
+      }
+      if (isFunction(des.set)) {
+        yield [key, 'set', des]
+      }
     }
   }
 }

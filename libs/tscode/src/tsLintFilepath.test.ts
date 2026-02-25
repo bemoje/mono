@@ -1,15 +1,17 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
 import { execSync } from 'node:child_process'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { tsLintFilepath } from './tsLintFilepath'
+import { vi } from 'vitest'
 
 // Mock execSync to avoid actual command execution in tests
-vi.mock('node:child_process', () => ({
-  execSync: vi.fn(),
-}))
+vi.mock('node:child_process', () => {
+  return {
+    execSync: vi.fn(),
+  }
+})
 
 const mockExecSync = vi.mocked(execSync)
 
@@ -24,7 +26,9 @@ describe(tsLintFilepath.name, () => {
       tsLintFilepath('test.ts')
 
       // Should execute without errors
-      mockExecSync.mockImplementationOnce(() => 'success')
+      mockExecSync.mockImplementationOnce(() => {
+        return 'success'
+      })
       tsLintFilepath('test.ts')
 
       assert(true, 'Function should handle both success and error cases')
@@ -33,7 +37,9 @@ describe(tsLintFilepath.name, () => {
 
   describe('successful execution', () => {
     it('should call eslint with correct parameters', () => {
-      mockExecSync.mockImplementationOnce(() => 'success')
+      mockExecSync.mockImplementationOnce(() => {
+        return 'success'
+      })
 
       tsLintFilepath('/path/to/file.ts')
 
@@ -41,7 +47,9 @@ describe(tsLintFilepath.name, () => {
     })
 
     it('should handle relative paths', () => {
-      mockExecSync.mockImplementationOnce(() => 'success')
+      mockExecSync.mockImplementationOnce(() => {
+        return 'success'
+      })
 
       tsLintFilepath('src/test.ts')
 
@@ -55,7 +63,9 @@ describe(tsLintFilepath.name, () => {
         throw new Error('ESLint failed')
       })
 
-      expect(() => tsLintFilepath('test.ts')).not.toThrow()
+      expect(() => {
+        return tsLintFilepath('test.ts')
+      }).not.toThrow()
     })
 
     it('should suppress all errors silently', () => {
@@ -74,7 +84,9 @@ describe(tsLintFilepath.name, () => {
 
   describe('file path handling', () => {
     it('should handle paths with spaces', () => {
-      mockExecSync.mockImplementationOnce(() => 'success')
+      mockExecSync.mockImplementationOnce(() => {
+        return 'success'
+      })
 
       tsLintFilepath('path with spaces/file.ts')
 
@@ -84,9 +96,13 @@ describe(tsLintFilepath.name, () => {
     })
 
     it('should handle empty string path', () => {
-      mockExecSync.mockImplementationOnce(() => 'success')
+      mockExecSync.mockImplementationOnce(() => {
+        return 'success'
+      })
 
-      expect(() => tsLintFilepath('')).not.toThrow()
+      expect(() => {
+        return tsLintFilepath('')
+      }).not.toThrow()
 
       expect(mockExecSync).toHaveBeenCalledWith('yarn run eslint --fix ', { stdio: 'ignore' })
     })

@@ -1,5 +1,5 @@
-import type { Parenting } from './Parenting'
 import type { ParentRelationTypes } from './ParentRelationTypes'
+import type { Parenting } from './Parenting'
 
 export interface ParentingTarget<P extends object | null = object | null> {
   get parenting(): Parenting<P>

@@ -1,5 +1,5 @@
-import fs from 'fs-extra'
 import { ConfigDataStrategy } from '../interfaces/ConfigDataStrategy'
+import fs from 'fs-extra'
 
 /**
  * Strategy for loading and saving configuration data as JSON files.
@@ -16,6 +16,6 @@ export class JsonFileStrategy<T> implements ConfigDataStrategy<T> {
   }
 
   save(config: T): void {
-    fs.outputFileSync(this.filepath, JSON.stringify(config, null, 2) + '\n')
+    fs.outputFileSync(this.filepath, `${JSON.stringify(config, null, 2)}\n`)
   }
 }

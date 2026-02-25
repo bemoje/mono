@@ -1,5 +1,5 @@
-import type { InspectOptions as NativeInspectOptions } from 'node:util'
 import type { InspectorTarget } from './Inspector'
+import type { InspectOptions as NativeInspectOptions } from 'node:util'
 
 export interface InspectorOptions {
   inspect?: NativeInspectOptions

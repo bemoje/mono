@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
-import { Type } from '@sinclair/typebox'
 import { OptionsConfigurator } from './OptionsConfigurator'
+import { Type } from '@sinclair/typebox'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(OptionsConfigurator.name, () => {
   it('should configure options with required and optional fields', () => {
@@ -10,7 +10,13 @@ describe(OptionsConfigurator.name, () => {
       name: Type.String(),
       age: Type.Integer(),
       city: Type.String(),
-      state: Type.Optional(Type.String({ default: () => 'WA' })),
+      state: Type.Optional(
+        Type.String({
+          default: () => {
+            return 'WA'
+          },
+        }),
+      ),
       disabled: Type.Optional(Type.Boolean()),
     }
 
@@ -31,7 +37,13 @@ describe(OptionsConfigurator.name, () => {
   it('should apply default values for optional fields', () => {
     const props = {
       name: Type.String(),
-      state: Type.Optional(Type.String({ default: () => 'CA' })),
+      state: Type.Optional(
+        Type.String({
+          default: () => {
+            return 'CA'
+          },
+        }),
+      ),
     }
 
     const configurator = OptionsConfigurator(props)
@@ -49,7 +61,13 @@ describe(OptionsConfigurator.name, () => {
   it('should allow overriding default values for optional fields', () => {
     const props = {
       name: Type.String(),
-      state: Type.Optional(Type.String({ default: () => 'CA' })),
+      state: Type.Optional(
+        Type.String({
+          default: () => {
+            return 'CA'
+          },
+        }),
+      ),
     }
 
     const configurator = OptionsConfigurator(props)
@@ -114,7 +132,13 @@ describe(OptionsConfigurator.name, () => {
   it('should expose getDefaults', () => {
     const props = {
       name: Type.String(),
-      state: Type.Optional(Type.String({ default: () => 'WA' })),
+      state: Type.Optional(
+        Type.String({
+          default: () => {
+            return 'WA'
+          },
+        }),
+      ),
     }
     const configurator = OptionsConfigurator(props)
     const defaults = configurator.getDefaults()
@@ -150,7 +174,13 @@ describe(OptionsConfigurator.name, () => {
   it('should handle passing undefined to an accessor with default (triggers default)', () => {
     const props = {
       name: Type.String(),
-      state: Type.Optional(Type.String({ default: () => 'CA' })),
+      state: Type.Optional(
+        Type.String({
+          default: () => {
+            return 'CA'
+          },
+        }),
+      ),
     }
     const configurator = OptionsConfigurator(props)
     const create = configurator.getCreate()
@@ -192,7 +222,13 @@ describe(OptionsConfigurator.name, () => {
   it('should handle $data property access without done()', () => {
     const props = {
       name: Type.String(),
-      state: Type.Optional(Type.String({ default: () => 'WA' })),
+      state: Type.Optional(
+        Type.String({
+          default: () => {
+            return 'WA'
+          },
+        }),
+      ),
     }
     const configurator = OptionsConfigurator(props)
     const create = configurator.getCreate()

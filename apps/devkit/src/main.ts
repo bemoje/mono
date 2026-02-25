@@ -1,36 +1,38 @@
 import 'source-map-support/register'
-import { enablePrettyStackTrace } from '@mono/stacktrace'
-enablePrettyStackTrace()
 import 'dotenv/config'
+
 //
 import { Command } from '@mono/cli'
-//
-import version from './core/version'
-import description from './core/description'
-//
-import { configAction } from "./commands/config";
-import { configDirpathHook } from "./commands/config";
-import { configFilepathHook } from "./commands/config";
 import { buildLibsAction } from './commands/build_libs'
-import { fixWorkspaceImportsAction } from './commands/fix_workspace_imports'
-import { listTopImportStatementsAction } from './commands/list_top_import_statements'
-import { listImportedFilesAction } from './commands/list_imported_files'
-import { listImportStatementsAction } from './commands/list_import_statements'
-import { fixDashCharsAction } from './commands/fix_dash_chars'
-import { missingCoverageFilesAction } from './commands/missing_coverage_files'
-import { listLibModuleExportsAction } from './commands/list_lib_module_exports'
-import { linesOfCodeAction } from './commands/lines_of_code'
 import { buildReadmeAction } from './commands/build_readme'
 import { clearNodeModulesAction } from './commands/clear_node_modules'
-import { fixVitestImportsAction } from './commands/fix_vitest_imports'
-import { fixIndexTsAction } from './commands/fix_index_ts'
-import { runAction } from './commands/run'
-import { createLibsWorkspaceAction } from './commands/create_workspace'
-import { missingTsdocFilesAction } from './commands/missing_tsdoc_files'
-import { fixEmptyFilesAction } from './commands/fix_empty_files'
+//
+import { configAction } from './commands/config'
+import { configDirpathHook } from './commands/config'
 import { configFile } from './core/config/config'
-import { listImportedDependenciesAction } from './commands/list_imported_dependencies'
+import { configFilepathHook } from './commands/config'
+import { createLibsWorkspaceAction } from './commands/create_workspace'
+import description from './core/description'
+import { enablePrettyStackTrace } from '@mono/stacktrace'
+import { fixDashCharsAction } from './commands/fix_dash_chars'
+import { fixEmptyFilesAction } from './commands/fix_empty_files'
+import { fixIndexTsAction } from './commands/fix_index_ts'
+import { fixVitestImportsAction } from './commands/fix_vitest_imports'
+import { fixWorkspaceImportsAction } from './commands/fix_workspace_imports'
+import { linesOfCodeAction } from './commands/lines_of_code'
+import { listImportStatementsAction } from './commands/list_import_statements'
 import { listImportedBuiltinNodeDependencies } from './commands/listImportedBuiltinNodeDependencies'
+import { listImportedDependenciesAction } from './commands/list_imported_dependencies'
+import { listImportedFilesAction } from './commands/list_imported_files'
+import { listLibModuleExportsAction } from './commands/list_lib_module_exports'
+import { listTopImportStatementsAction } from './commands/list_top_import_statements'
+import { missingCoverageFilesAction } from './commands/missing_coverage_files'
+import { missingTsdocFilesAction } from './commands/missing_tsdoc_files'
+import { runAction } from './commands/run'
+//
+import version from './core/version'
+
+enablePrettyStackTrace()
 
 //
 

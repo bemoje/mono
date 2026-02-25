@@ -9,7 +9,9 @@ export function mapGetOrDefault<K, V, T extends GenericMap<K, V, 'get' | 'has' |
   factory: (key: K, map: T) => V,
 ): V {
   let value = map.get(key)
-  if (value !== undefined || map.has(key)) return value as V
+  if (value !== undefined || map.has(key)) {
+    return value as V
+  }
   value = factory(key, map)
   map.set(key, value)
   return value

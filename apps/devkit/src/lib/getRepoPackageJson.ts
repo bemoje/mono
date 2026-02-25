@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
-import upath from 'upath'
 import { getRepoRootDirpath } from './getRepoRootDirpath'
+import upath from 'upath'
 
 /**
  * Reads the repository's root package.json file.

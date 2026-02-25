@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { thisProxy } from './thisProxy'
 
 describe(thisProxy.name, () => {
@@ -93,7 +93,9 @@ describe(thisProxy.name, () => {
       }
 
       // The callback must return the same type as expected by the function
-      const getSetting = thisProxy(config.getSetting, (obj: typeof config) => obj)
+      const getSetting = thisProxy(config.getSetting, (obj: typeof config) => {
+        return obj
+      })
 
       expect(getSetting.call(config)).toBe('enabled')
     })
@@ -139,7 +141,9 @@ describe(thisProxy.name, () => {
         service: AsyncService = {
           data: 'async-data',
           async getData() {
-            await new Promise((resolve) => setTimeout(resolve, 1))
+            await new Promise((resolve) => {
+              return setTimeout(resolve, 1)
+            })
             return this.data
           },
         }
@@ -155,7 +159,9 @@ describe(thisProxy.name, () => {
     it('should handle methods with no parameters', () => {
       class Simple {
         target = {
-          getValue: () => 'simple-value',
+          getValue: () => {
+            return 'simple-value'
+          },
         }
       }
 

@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
-import { vi } from "vitest";
-import path from 'node:path'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isRelative } from './isRelative'
+import { it } from 'vitest'
+import path from 'node:path'
+import { vi } from 'vitest'
 
 describe(isRelative.name, () => {
   it('should return true for relative paths', () => {

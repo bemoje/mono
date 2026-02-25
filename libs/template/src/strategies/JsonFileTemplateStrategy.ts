@@ -1,7 +1,7 @@
-import { Static } from "@sinclair/typebox";
-import { TObject } from "@sinclair/typebox";
-import { Type } from "@sinclair/typebox";
+import { Static } from '@sinclair/typebox'
+import { TObject } from '@sinclair/typebox'
 import { TemplateStrategy } from '../interfaces/TemplateStrategy'
+import { Type } from '@sinclair/typebox'
 
 /**
  * Template strategy for handling JSON file templates with structured object schemas.

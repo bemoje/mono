@@ -5,13 +5,12 @@ import { execSync } from 'node:child_process'
  */
 export function getDefaultBrowserWindows() {
   const result = execSync(
-    'reg ' +
-      [
-        'QUERY',
-        ' HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice',
-        '/v',
-        'ProgId',
-      ].join(' '),
+    `reg ${[
+      'QUERY',
+      ' HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice',
+      '/v',
+      'ProgId',
+    ].join(' ')}`,
   )
   const match = /ProgId\s*REG_SZ\s*(?<id>\S+)/.exec(result.toString())
   if (!match || !match.groups) {

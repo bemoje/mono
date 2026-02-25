@@ -1,17 +1,21 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
 import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Mock dependencies
-vi.mock('node:child_process', () => ({
-  exec: vi.fn(),
-}))
-vi.mock('./getOS', () => ({
-  getOS: vi.fn(),
-}))
+vi.mock('node:child_process', () => {
+  return {
+    exec: vi.fn(),
+  }
+})
+vi.mock('./getOS', () => {
+  return {
+    getOS: vi.fn(),
+  }
+})
 
 describe('isLinuxProgramInstalled', () => {
   let mockExec: any

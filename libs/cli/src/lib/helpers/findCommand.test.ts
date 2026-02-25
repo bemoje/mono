@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { findCommand } from './findCommand'
 import type { ICommand } from '../types'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { findCommand } from './findCommand'
+import { it } from 'vitest'
 
 function mockSubcommand(name: string, aliases: string[] = []): ICommand {
   return { name, aliases } as unknown as ICommand

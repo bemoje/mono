@@ -1,9 +1,9 @@
-import memoizee from 'memoizee'
-import { ms } from 'enhanced-ms'
-import { MemoizeAsyncOptions } from "./types.internal";
-import { SomeAsyncFunction } from "./types.internal";
+import { MemoizeAsyncOptions } from './types.internal'
+import { SomeAsyncFunction } from './types.internal'
 import assertDescriptorValueIsFunction from './assertDescriptorValueIsFunction'
 import { mapGetOrDefault } from '@mono/map'
+import memoizee from 'memoizee'
+import { ms } from 'enhanced-ms'
 
 /**
  * Decorator to memoize an async method. Uses memoizee library, so if params are objects, the decorator needs a normalizer function.
@@ -26,7 +26,9 @@ export function memoizeAsync(arg: (number | string) | MemoizeAsyncOptions = {}) 
   const opts = typeof arg === 'object' ? arg : { maxAge: typeof arg === 'number' ? arg : ms(arg) }
 
   return function decorator(target: unknown, key: string, descriptor?: PropertyDescriptor) {
-    if (!descriptor) throw new TypeError('descriptor is undefined')
+    if (!descriptor) {
+      throw new TypeError('descriptor is undefined')
+    }
     const orig = descriptor.value
     assertDescriptorValueIsFunction(key, descriptor)
     const options = {
@@ -41,7 +43,9 @@ export function memoizeAsync(arg: (number | string) | MemoizeAsyncOptions = {}) 
     } else {
       const wmap = new WeakMap()
       descriptor.value = async function (...args: any[]) {
-        const memoized = mapGetOrDefault(wmap, this, () => memoizee(orig, options))
+        const memoized = mapGetOrDefault(wmap, this, () => {
+          return memoizee(orig, options)
+        })
         return await memoized.apply(this, args)
       }
     }

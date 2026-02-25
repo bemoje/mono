@@ -1,27 +1,27 @@
-import { filterIterable } from "@mono/iter";
-import { mapIterable } from "@mono/iter";
-import { mapIterableKeys } from "@mono/iter";
-import { mapIterableValues } from "@mono/iter";
-import { reduceIterable } from "@mono/iter";
-import { toObjectIterable } from "@mono/iter";
-import { isIterable } from 'iter-tools'
-import { mapLoad } from './mapLoad'
-import { keysArray } from './keysArray'
-import { valuesArray } from './valuesArray'
+import { InspectOptions } from 'node:util'
+import { View } from '@mono/composition'
+import { defineMethod } from '@mono/object'
 import { entriesArray } from './entriesArray'
-import { toMap } from './toMap'
+import { entriesOf } from '@mono/object'
+import { filterIterable } from '@mono/iter'
+import { inheritProxifiedPrototype } from '@mono/composition'
+import { inspect } from 'node:util'
+import { isIterable } from 'iter-tools'
+import { keysArray } from './keysArray'
+import { mapGetOrDefault } from './mapGetOrDefault'
+import { mapIterable } from '@mono/iter'
+import { mapIterableKeys } from '@mono/iter'
+import { mapIterableValues } from '@mono/iter'
+import { mapLoad } from './mapLoad'
+import { mapReverse } from './mapReverse'
+import { mapUpdate } from './mapUpdate'
+import { reduceIterable } from '@mono/iter'
 import { sort } from './sort'
 import { sortByKeys } from './sortByKeys'
 import { sortByValues } from './sortByValues'
-import { mapUpdate } from './mapUpdate'
-import { mapGetOrDefault } from './mapGetOrDefault'
-import { mapReverse } from './mapReverse'
-import { View } from "@mono/composition";
-import { inheritProxifiedPrototype } from "@mono/composition";
-import { entriesOf } from "@mono/object";
-import { defineMethod } from "@mono/object";
-import { inspect } from "node:util";
-import { InspectOptions } from "node:util";
+import { toMap } from './toMap'
+import { toObjectIterable } from '@mono/iter'
+import { valuesArray } from './valuesArray'
 
 declare module './ExtMap' {
   export interface ExtMap<K, V> extends Map<K, V> {

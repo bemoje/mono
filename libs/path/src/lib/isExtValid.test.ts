@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isExtValid } from './isExtValid'
+import { it } from 'vitest'
 
 describe(isExtValid.name, () => {
   it('should return true for valid file extensions', () => {

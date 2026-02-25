@@ -1,24 +1,30 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
 import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getOS } from './getOS'
 import { isLinux } from './isLinux'
 import { isOSX } from './isOSX'
 import { isWindows } from './isWindows'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Mock dependencies
-vi.mock('./isLinux', () => ({
-  isLinux: vi.fn(),
-}))
-vi.mock('./isOSX', () => ({
-  isOSX: vi.fn(),
-}))
-vi.mock('./isWindows', () => ({
-  isWindows: vi.fn(),
-}))
+vi.mock('./isLinux', () => {
+  return {
+    isLinux: vi.fn(),
+  }
+})
+vi.mock('./isOSX', () => {
+  return {
+    isOSX: vi.fn(),
+  }
+})
+vi.mock('./isWindows', () => {
+  return {
+    isWindows: vi.fn(),
+  }
+})
 
 const mockIsLinux = vi.mocked(isLinux)
 const mockIsOSX = vi.mocked(isOSX)

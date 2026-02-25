@@ -1,8 +1,8 @@
-import { isDigits } from './isDigits'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { isDigits } from './isDigits'
+import { it } from 'vitest'
 
 describe(isDigits.name, () => {
   it('examples', () => {

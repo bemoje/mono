@@ -1,6 +1,6 @@
 import colors from 'ansi-colors'
-import upath from 'upath'
 import { execSync } from 'node:child_process'
+import upath from 'upath'
 
 /**
  * Execute one or multiple shell commands.
@@ -27,8 +27,8 @@ export function execute(commands: string[] | string, options: IExecuteCommandOpt
       .relative(process.cwd(), cwd)
       .replace(/\\/g, '/')
       .replace(upath.basename(cwd), colors.bold(colors.magenta(upath.basename(cwd))))
-    const out = `${colors.green(command)}${cwd === process.cwd() ? '' : ' in ' + colors.bold(colors.magenta(relative))}`
-    console.log(silent && fadedOutput ? '  ' + colors.dim(out) : out)
+    const out = `${colors.green(command)}${cwd === process.cwd() ? '' : ` in ${colors.bold(colors.magenta(relative))}`}`
+    console.log(silent && fadedOutput ? `  ${colors.dim(out)}` : out)
   }
 
   const buffer = execSync(command, { stdio: silent || fadedOutput ? 'pipe' : 'inherit', cwd })
@@ -36,8 +36,12 @@ export function execute(commands: string[] | string, options: IExecuteCommandOpt
   if (!silent) {
     const out = string
       .split(/\r*\n/)
-      .filter((line) => !fadedOutput || line.trim())
-      .map((line) => (fadedOutput ? colors.dim('- ' + line).trim() : line))
+      .filter((line) => {
+        return !fadedOutput || line.trim()
+      })
+      .map((line) => {
+        return fadedOutput ? colors.dim(`- ${line}`).trim() : line
+      })
       .join('\n')
       .trim()
     if (out) {

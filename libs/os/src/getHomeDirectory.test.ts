@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getHomeDirectory } from './getHomeDirectory'
+import { it } from 'vitest'
 
 describe.sequential(getHomeDirectory.name, () => {
   it('gets the os home directory', () => {
@@ -9,15 +9,17 @@ describe.sequential(getHomeDirectory.name, () => {
   })
 
   it('should throw when HOME and USERPROFILE are not set', () => {
-    const origHome = process.env['HOME']
-    const origUserProfile = process.env['USERPROFILE']
+    const origHome = process.env.HOME
+    const origUserProfile = process.env.USERPROFILE
     try {
-      delete process.env['HOME']
-      delete process.env['USERPROFILE']
-      expect(() => getHomeDirectory()).toThrow('Home directory not found')
+      delete process.env.HOME
+      delete process.env.USERPROFILE
+      expect(() => {
+        return getHomeDirectory()
+      }).toThrow('Home directory not found')
     } finally {
-      process.env['HOME'] = origHome
-      process.env['USERPROFILE'] = origUserProfile
+      process.env.HOME = origHome
+      process.env.USERPROFILE = origUserProfile
     }
   })
 })

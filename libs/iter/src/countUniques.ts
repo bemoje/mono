@@ -9,8 +9,12 @@ export function countUniques<V>(input: Iterable<V>) {
   return new ExtMap<V, number>(
     reduce(
       new MultiSet<V>(), //
-      (acc, imp) => acc.add(imp),
+      (acc, imp) => {
+        return acc.add(imp)
+      },
       input,
     ).multiplicities(),
-  ).sortByValues((a, b) => b - a)
+  ).sortByValues((a, b) => {
+    return b - a
+  })
 }

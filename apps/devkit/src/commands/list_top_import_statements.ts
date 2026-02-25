@@ -8,5 +8,7 @@ export async function listTopImportStatementsAction(
   { logger: log }: { logger: Logger },
 ) {
   const res = topImports(new MonoRepo(), Number(n)).reverse()
-  res.forEach((e) => log.info(e.count, e.code))
+  res.forEach((e) => {
+    return log.info(e.count, e.code)
+  })
 }

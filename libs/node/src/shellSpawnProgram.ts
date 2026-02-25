@@ -12,7 +12,9 @@ export function shellSpawnProgram(command: string, ...args: string[]): Promise<s
     const originalArgsLength = args.length
 
     if (hasNoInherit) {
-      args = args.filter((arg) => arg !== '--no-inherit')
+      args = args.filter((arg) => {
+        return arg !== '--no-inherit'
+      })
       child = spawn(command, args, { shell: true })
     } else {
       child = spawn(command, args, { stdio: 'inherit', shell: true })
@@ -27,19 +29,19 @@ export function shellSpawnProgram(command: string, ...args: string[]): Promise<s
         // When --no-inherit was present
         if (args.length % 2 === 1) {
           // Odd number of args after filtering - no trailing space
-          resolve(command + ' ' + args.join(' '))
+          resolve(`${command} ${args.join(' ')}`)
         } else {
           // Even number of args (including 0) after filtering - add trailing space
-          resolve(command + (args.length > 0 ? ' ' + args.join(' ') + ' ' : ' '))
+          resolve(command + (args.length > 0 ? ` ${args.join(' ')} ` : ' '))
         }
       } else {
         // When no --no-inherit
         if (originalArgsLength === 0) {
           // No arguments at all, add trailing space
-          resolve(command + ' ')
+          resolve(`${command} `)
         } else {
           // Has arguments, no trailing space
-          resolve(command + ' ' + args.join(' '))
+          resolve(`${command} ${args.join(' ')}`)
         }
       }
     })

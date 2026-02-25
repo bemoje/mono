@@ -1,5 +1,5 @@
-import { cp } from "node:child_process";
-import { SpawnOptions } from "node:child_process";
+import { SpawnOptions } from 'node:child_process'
+import cp from 'node:child_process'
 
 /**
  * Spawn a child process.
@@ -16,12 +16,16 @@ export function spawnChildProcess(
       const child = cp.spawn(binaryPath, args, spawnOptions)
       child.on('error', reject)
       child.on('exit', (code, signal) => {
-        if (!code) resolve(0)
+        if (!code) {
+          resolve(0)
+        }
         reject(
           new Error(`Child node process exited with code: ${code}, signal: ${signal}, argv: [${args.join(', ')}]`),
         )
       })
-      if (callback) callback(child)
+      if (callback) {
+        callback(child)
+      }
     } catch (error) {
       reject(error)
     }

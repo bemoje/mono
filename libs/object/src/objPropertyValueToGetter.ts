@@ -24,9 +24,17 @@ export function objPropertyValueToGetter<V, T extends Record<PropertyKey, V>>(
 ): T {
   for (const propertyName of propertyNames) {
     const descriptor = Object.getOwnPropertyDescriptor(object, propertyName)
-    if (!descriptor) throw new Error(`Property descriptor for '${String(propertyName)}' not found.`)
+    if (!descriptor) {
+      throw new Error(`Property descriptor for '${String(propertyName)}' not found.`)
+    }
     const { enumerable, configurable, value } = descriptor
-    Object.defineProperty(object, propertyName, { enumerable, configurable, get: () => value })
+    Object.defineProperty(object, propertyName, {
+      enumerable,
+      configurable,
+      get: () => {
+        return value
+      },
+    })
   }
   return object
 }

@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { importStatementToOneLiner } from './importStatementToOneLiner'
+import { it } from 'vitest'
 
 describe(importStatementToOneLiner.name, () => {
   it('examples', () => {

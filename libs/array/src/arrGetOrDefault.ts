@@ -3,6 +3,8 @@
  */
 export function arrGetOrDefault<V>(array: V[], index: number, factory: (index: number) => V): V {
   const value = array[index]
-  if (value !== undefined || Object.hasOwn(array, index)) return value
+  if (value !== undefined || Object.hasOwn(array, index)) {
+    return value
+  }
   return (array[index] = factory(index))
 }

@@ -1,7 +1,6 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { setEnumerable } from './setEnumerable'
 
 describe('setEnumerable', () => {

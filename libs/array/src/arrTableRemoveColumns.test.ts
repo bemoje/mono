@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { arrTableRemoveColumns } from './arrTableRemoveColumns'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('arrTableRemoveColumns', () => {
   it('should return an empty array if the table is empty', () => {

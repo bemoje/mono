@@ -1,8 +1,8 @@
 import { PackageJson } from '@mono/types'
 import fs from 'fs-extra'
+import { getRepoRootDirpath } from './getRepoRootDirpath'
 import { globSync } from 'glob'
 import path from 'upath'
-import { getRepoRootDirpath } from './getRepoRootDirpath'
 
 /**
  * Get all workspace directory paths by reading the workspace patterns from the root package.json.
@@ -13,5 +13,9 @@ export function getWorkspaceDirpaths(): string[] {
   if (!pkg.workspaces) {
     throw new Error(`No workspaces found in package.json at ${rootDirpath}`)
   }
-  return pkg.workspaces.flatMap((workspace: string) => globSync(workspace)).map(path.normalizeSafe)
+  return pkg.workspaces
+    .flatMap((workspace: string) => {
+      return globSync(workspace)
+    })
+    .map(path.normalizeSafe)
 }

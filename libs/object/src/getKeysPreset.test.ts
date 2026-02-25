@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getKeysPreset } from './getKeysPreset'
+import { it } from 'vitest'
 
 describe(getKeysPreset.name, () => {
   it('examples', () => {
@@ -16,7 +16,11 @@ describe(getKeysPreset.name, () => {
 
       assert(Array.isArray(stringKeys))
       assert(stringKeys.includes('a'))
-      assert(!stringKeys.some((k) => typeof k === 'symbol'))
+      assert(
+        !stringKeys.some((k) => {
+          return typeof k === 'symbol'
+        }),
+      )
     }).not.toThrow()
   })
 
@@ -26,7 +30,11 @@ describe(getKeysPreset.name, () => {
     const keys = getStringKeys(obj)
 
     expect(keys).toContain('a')
-    expect(keys.every((k) => typeof k === 'string')).toBe(true)
+    expect(
+      keys.every((k) => {
+        return typeof k === 'string'
+      }),
+    ).toBe(true)
   })
 
   it('should create function that ignores strings', () => {
@@ -36,7 +44,11 @@ describe(getKeysPreset.name, () => {
     const keys = getSymbolKeys(obj)
 
     expect(keys).toContain(sym)
-    expect(keys.every((k) => typeof k === 'symbol')).toBe(true)
+    expect(
+      keys.every((k) => {
+        return typeof k === 'symbol'
+      }),
+    ).toBe(true)
   })
 
   it('should create function that ignores non-enumerable properties', () => {

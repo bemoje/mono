@@ -1,33 +1,40 @@
+import * as fs from '@mono/fs'
+import * as fsExtra from 'fs-extra/esm'
+
+import { MonoRepo } from '../MonoRepo'
+import { PackageJson } from '@mono/types'
+import { TestFile } from '../file/TestFile'
+import { TsFile } from '../file/TsFile'
+import { Workspace } from './Workspace'
+import assert from 'node:assert'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
+import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
+import { hasParentDirname } from '@mono/path'
 import { it } from 'vitest'
-import { vi } from 'vitest'
-import assert from 'node:assert'
-import { Workspace } from './Workspace'
-import { MonoRepo } from '../MonoRepo'
-import { TsFile } from '../file/TsFile'
-import { TestFile } from '../file/TestFile'
-import { PackageJson } from '@mono/types'
 import path from 'upath'
-import * as fsExtra from 'fs-extra/esm'
-import * as fs from '@mono/fs'
 import { promisify } from 'node:util'
+// Mock resolveModuleImportPath
+import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
+import { vi } from 'vitest'
 
 // Mock dependencies
 vi.mock('fs-extra/esm')
 vi.mock('@mono/fs')
 vi.mock('node:child_process')
 vi.mock('node:util')
-vi.mock('upath', () => ({
-  default: {
-    normalize: vi.fn(),
-    basename: vi.fn(),
-    dirname: vi.fn(),
-    join: vi.fn(),
-    relative: vi.fn(),
-  },
-}))
+vi.mock('upath', () => {
+  return {
+    default: {
+      normalize: vi.fn(),
+      basename: vi.fn(),
+      dirname: vi.fn(),
+      join: vi.fn(),
+      relative: vi.fn(),
+    },
+  }
+})
 vi.mock('../file/TsFile')
 vi.mock('../file/TestFile')
 vi.mock('../util/resolveModuleImportPath')
@@ -38,24 +45,22 @@ vi.mock('@mono/path', async (importOriginal) => {
     hasParentDirname: vi.fn(),
   }
 })
-vi.mock('../util/hasExtnamePrefix', () => ({
-  hasExtnamePrefix: vi.fn(),
-}))
-
+vi.mock('../util/hasExtnamePrefix', () => {
+  return {
+    hasExtnamePrefix: vi.fn(),
+  }
+})
 const mockPath = vi.mocked(path)
 const mockFsExtra = vi.mocked(fsExtra)
 const mockFs = vi.mocked(fs)
 const mockPromisify = vi.mocked(promisify)
 const mockTestFile = vi.mocked(TestFile)
 
-// Mock resolveModuleImportPath
-import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
-import { hasParentDirname } from '@mono/path'
-import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
-
-vi.mock('../util/resolveModuleImportPath', () => ({
-  resolveModuleImportPath: vi.fn(),
-}))
+vi.mock('../util/resolveModuleImportPath', () => {
+  return {
+    resolveModuleImportPath: vi.fn(),
+  }
+})
 
 const mockResolveModuleImportPath = vi.mocked(resolveModuleImportPath)
 const mockHasParentDirname = vi.mocked(hasParentDirname)
@@ -104,10 +109,12 @@ describe(Workspace.name, () => {
       const parts = p.split('/')
       return parts.slice(0, -1).join('/')
     })
-    mockPath.join.mockImplementation((...args: string[]) => args.join('/'))
+    mockPath.join.mockImplementation((...args: string[]) => {
+      return args.join('/')
+    })
     mockPath.relative.mockImplementation((from: string, to: string) => {
       // Simple mock implementation
-      return to.replace(from + '/', '')
+      return to.replace(`${from}/`, '')
     })
 
     // Mock fs-extra
@@ -204,7 +211,9 @@ describe(Workspace.name, () => {
     it('should throw error when name is missing', () => {
       mockFsExtra.readJsonSync.mockReturnValue({} as PackageJson)
 
-      expect(() => workspace.name).toThrow("Workspace package.json missing 'name' field")
+      expect(() => {
+        return workspace.name
+      }).toThrow("Workspace package.json missing 'name' field")
     })
   })
 
@@ -305,7 +314,9 @@ describe(Workspace.name, () => {
       ] as TsFile[]
 
       vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue(mockTsFiles)
-      mockPath.relative.mockImplementation((from, to) => to.replace('/test/repo/', ''))
+      mockPath.relative.mockImplementation((from, to) => {
+        return to.replace('/test/repo/', '')
+      })
 
       const result = workspace.importedDependenciesByFile
 
@@ -325,7 +336,9 @@ describe(Workspace.name, () => {
       ] as TestFile[]
 
       vi.spyOn(workspace, 'testFiles', 'get').mockReturnValue(mockTestFiles)
-      mockPath.relative.mockImplementation((from, to) => to.replace('/test/repo/', ''))
+      mockPath.relative.mockImplementation((from, to) => {
+        return to.replace('/test/repo/', '')
+      })
 
       const result = workspace.importedTestDependenciesByFile
 

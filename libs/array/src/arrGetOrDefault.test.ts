@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vitest } from "vitest";
 import { arrGetOrDefault } from './arrGetOrDefault'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vitest } from 'vitest'
 
 describe(arrGetOrDefault.name, () => {
   it('should return existing value', () => {

@@ -1,11 +1,11 @@
-import { bindArg } from '@mono/fn'
 import { Arrayable } from 'type-fest'
+import { bindArg } from '@mono/fn'
 
 /**
  * Checks if a file path has any of the specified file extensions.
  */
 export function hasExtname(tsFilepath: string, extnames: Arrayable<string>): boolean {
-  return new RegExp('[.](' + [extnames].flat(2).join('|') + ')$').test(tsFilepath)
+  return new RegExp(`[.](${[extnames].flat(2).join('|')})$`).test(tsFilepath)
 }
 
 hasExtname.js = bindArg(hasExtname, 1, ['js', 'mjs', 'jsx', 'cjs'])

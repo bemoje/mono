@@ -10,5 +10,7 @@
  * ```
  */
 export function arrEachToString<T>(array: T[]): string[] {
-  return array.map((element) => '' + element)
+  return array.map((element) => {
+    return `${element}`
+  })
 }

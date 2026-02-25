@@ -1,20 +1,22 @@
-import fs from 'fs-extra'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
 import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import fs from 'fs-extra'
+import { it } from 'vitest'
 import { updateFileLines } from './updateFileLines'
+import { vi } from 'vitest'
 
 // Mock fs-extra
-vi.mock('fs-extra', () => ({
-  default: {
-    ensureFile: vi.fn(),
-    readFile: vi.fn(),
-    outputFile: vi.fn(),
-  },
-}))
+vi.mock('fs-extra', () => {
+  return {
+    default: {
+      ensureFile: vi.fn(),
+      readFile: vi.fn(),
+      outputFile: vi.fn(),
+    },
+  }
+})
 
 const mockFs = fs as any
 
@@ -32,19 +34,27 @@ describe(updateFileLines.name, () => {
       mockFs.readFile.mockResolvedValue('line1\nline2\nline3')
 
       // Create file with lines
-      await updateFileLines(testFile, () => ['line1', 'line2', 'line3'])
+      await updateFileLines(testFile, () => {
+        return ['line1', 'line2', 'line3']
+      })
       let content = await fs.readFile(testFile, 'utf8')
       assert.deepStrictEqual(content, 'line1\nline2\nline3')
 
       // Update lines by modifying array
       mockFs.readFile.mockResolvedValue('LINE1\nLINE2\nLINE3')
-      await updateFileLines(testFile, (lines) => lines.map((line) => line.toUpperCase()))
+      await updateFileLines(testFile, (lines) => {
+        return lines.map((line) => {
+          return line.toUpperCase()
+        })
+      })
       content = await fs.readFile(testFile, 'utf8')
       assert.deepStrictEqual(content, 'LINE1\nLINE2\nLINE3')
 
       // Update by returning string
       mockFs.readFile.mockResolvedValue('single line content')
-      await updateFileLines(testFile, () => 'single line content')
+      await updateFileLines(testFile, () => {
+        return 'single line content'
+      })
       content = await fs.readFile(testFile, 'utf8')
       assert.deepStrictEqual(content, 'single line content')
     }).not.toThrow()
@@ -68,12 +78,16 @@ describe(updateFileLines.name, () => {
 
     // Test array return
     mockFs.readFile.mockResolvedValueOnce('')
-    await updateFileLines(testFile, () => ['a', 'b', 'c'])
+    await updateFileLines(testFile, () => {
+      return ['a', 'b', 'c']
+    })
     expect(mockFs.outputFile).toHaveBeenCalledWith(testFile, 'a\nb\nc')
 
     // Test string return
     mockFs.readFile.mockResolvedValueOnce('')
-    await updateFileLines(testFile, () => 'x\ny\nz')
+    await updateFileLines(testFile, () => {
+      return 'x\ny\nz'
+    })
     expect(mockFs.outputFile).toHaveBeenCalledWith(testFile, 'x\ny\nz')
   })
 })

@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { memoizeAsync } from './memoizeAsync'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe(memoizeAsync.name, () => {
   it('should memoized the function on the target object', async () => {
@@ -25,6 +25,7 @@ describe(memoizeAsync.name, () => {
     expect(wasCalled).toBe(true)
     expect(await a2.value()).toBe('2')
 
+    // eslint-disable-next-line require-atomic-updates
     wasCalled = false
     expect(wasCalled).toBe(false)
     expect(await a1.value()).toBe('1')

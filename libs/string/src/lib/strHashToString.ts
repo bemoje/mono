@@ -1,6 +1,6 @@
+import { TCryptoAlgorithm } from './TCryptoAlgorithm'
 import crypto from 'node:crypto'
 import { strHashToBuffer } from './strHashToBuffer'
-import { TCryptoAlgorithm } from './TCryptoAlgorithm'
 
 /**
  * Hash a string into a buffer with a given algorithm

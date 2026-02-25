@@ -9,6 +9,8 @@
 export function strTrimLinesRight(string: string): string {
   return string
     .split(/\r?\n/)
-    .map((line) => line.trimEnd())
+    .map((line) => {
+      return line.trimEnd()
+    })
     .join('\n')
 }

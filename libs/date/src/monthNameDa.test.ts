@@ -1,6 +1,6 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { monthNameDa } from './monthNameDa'
 
 describe(monthNameDa.name, () => {
@@ -20,9 +20,17 @@ describe(monthNameDa.name, () => {
   })
 
   it('should throw an error for invalid month numbers', () => {
-    expect(() => monthNameDa(0)).toThrow('Invalid month number. Got: 0')
-    expect(() => monthNameDa(13)).toThrow('Invalid month number. Got: 13')
-    expect(() => monthNameDa(-1)).toThrow('Invalid month number. Got: -1')
-    expect(() => monthNameDa(100)).toThrow('Invalid month number. Got: 100')
+    expect(() => {
+      return monthNameDa(0)
+    }).toThrow('Invalid month number. Got: 0')
+    expect(() => {
+      return monthNameDa(13)
+    }).toThrow('Invalid month number. Got: 13')
+    expect(() => {
+      return monthNameDa(-1)
+    }).toThrow('Invalid month number. Got: -1')
+    expect(() => {
+      return monthNameDa(100)
+    }).toThrow('Invalid month number. Got: 100')
   })
 })

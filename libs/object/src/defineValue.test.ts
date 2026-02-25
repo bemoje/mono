@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
 import { defineValue } from './defineValue'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(defineValue.name, () => {
   it('examples', () => {
@@ -128,7 +128,9 @@ describe(defineValue.name, () => {
       expect(obj.obj).toBe(objValue)
 
       // Function
-      const fnValue = () => 'function-result'
+      const fnValue = () => {
+        return 'function-result'
+      }
       defineValue(obj, 'fn', fnValue)
       expect(obj.fn).toBe(fnValue)
 

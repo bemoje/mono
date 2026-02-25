@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isGenericMap } from './isGenericMap'
+import { it } from 'vitest'
 
 describe(isGenericMap.name, () => {
   it('should return true for a native Map', () => {
@@ -10,9 +10,15 @@ describe(isGenericMap.name, () => {
 
   it('should return true for an object implementing Map interface', () => {
     const fakeMap = {
-      get: () => undefined,
-      set: () => fakeMap,
-      has: () => false,
+      get: () => {
+        return undefined
+      },
+      set: () => {
+        return fakeMap
+      },
+      has: () => {
+        return false
+      },
     }
     expect(isGenericMap(fakeMap)).toBe(true)
   })
@@ -34,7 +40,11 @@ describe(isGenericMap.name, () => {
   })
 
   it('should check custom required props', () => {
-    const partial = { get: () => undefined }
+    const partial = {
+      get: () => {
+        return undefined
+      },
+    }
     expect(isGenericMap(partial, ['get'])).toBe(true)
     expect(isGenericMap(partial, ['get', 'set'])).toBe(false)
   })

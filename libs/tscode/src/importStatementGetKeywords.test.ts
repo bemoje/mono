@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { importStatementGetKeywords } from './importStatementGetKeywords'
+import { it } from 'vitest'
 
 describe(importStatementGetKeywords.name, () => {
   it('examples', () => {

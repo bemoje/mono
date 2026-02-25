@@ -21,7 +21,9 @@ export function maxConcurrency<Ret, Args extends unknown[]>(
   })
 
   return setName(task, async function (...args: Args) {
-    return (await queue.add(() => task(...args))) as Ret
+    return (await queue.add(() => {
+      return task(...args)
+    })) as Ret
   })
 }
 

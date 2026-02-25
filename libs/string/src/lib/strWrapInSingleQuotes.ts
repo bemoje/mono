@@ -7,5 +7,5 @@
  * ```
  */
 export function strWrapInSingleQuotes(input: string): string {
-  return "'" + input + "'"
+  return `'${input}'`
 }

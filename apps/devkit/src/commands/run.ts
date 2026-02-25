@@ -1,7 +1,7 @@
 import cp from 'node:child_process'
 import fs from 'fs-extra'
-import upath from 'upath'
 import { getRepoRootDirpath } from '../lib/getRepoRootDirpath'
+import upath from 'upath'
 
 export async function runAction(filepath: string, args: string[]) {
   const root = getRepoRootDirpath()
@@ -51,12 +51,12 @@ export async function runAction(filepath: string, args: string[]) {
   try {
     if (!tscode.includes(importSourceMapLine)) {
       changedSourceFile = true
-      tscode = importSourceMapLine + '\n' + tscode
+      tscode = `${importSourceMapLine}\n${tscode}`
     }
 
     if (!tscode.includes(importPrettyStackTraceLine)) {
       changedSourceFile = true
-      tscode = importPrettyStackTraceLine + '\n' + tscode
+      tscode = `${importPrettyStackTraceLine}\n${tscode}`
     }
 
     if (changedSourceFile) {
@@ -69,7 +69,9 @@ export async function runAction(filepath: string, args: string[]) {
       'source-map-support/register',
       `./scripts/enablePrettyStackTrace.cjs`,
     ]
-      .map((r) => `-r ${r}`)
+      .map((r) => {
+        return `-r ${r}`
+      })
       .join(' ')
 
     cp.execSync(`tsx ${requires} ${relative} ${args.join(' ')}`, {

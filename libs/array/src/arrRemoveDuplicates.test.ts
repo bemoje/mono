@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { arrRemoveDuplicates } from './arrRemoveDuplicates'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('arrRemoveDuplicates', () => {
   it('removes duplicates', () => {

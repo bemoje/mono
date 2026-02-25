@@ -1,7 +1,6 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { objOmitKeysMutable } from './objOmitKeysMutable'
 
 describe(objOmitKeysMutable.name, () => {
@@ -19,7 +18,9 @@ describe(objOmitKeysMutable.name, () => {
 
   it('should not throw an error if a specified key does not exist in the object', () => {
     const obj = { a: 1, b: 2, c: 3 }
-    expect(() => objOmitKeysMutable(obj, 'd')).not.toThrow()
+    expect(() => {
+      return objOmitKeysMutable(obj, 'd')
+    }).not.toThrow()
   })
 
   it('should handle an empty object', () => {

@@ -7,12 +7,20 @@ export function* tsDocExtractAllComments(code: string) {
   let lines = code.split(/\r?\n/)
   let offset = 0
   while (true) {
-    const indexStart = lines.findIndex((line) => reStart.test(line))
-    const indexEnd = lines.findIndex((line) => reEnd.test(line))
+    const indexStart = lines.findIndex((line) => {
+      return reStart.test(line)
+    })
+    const indexEnd = lines.findIndex((line) => {
+      return reEnd.test(line)
+    })
     if (indexStart !== -1 && indexEnd !== -1) {
       let nextLine: string | undefined
-      if (indexEnd + 1 < lines.length) nextLine = lines[indexEnd + 1]
-      if (nextLine?.trim() === '' && indexEnd + 2 < lines.length) nextLine = lines[indexEnd + 2]
+      if (indexEnd + 1 < lines.length) {
+        nextLine = lines[indexEnd + 1]
+      }
+      if (nextLine?.trim() === '' && indexEnd + 2 < lines.length) {
+        nextLine = lines[indexEnd + 2]
+      }
       yield {
         start: indexStart + offset,
         end: indexEnd + offset,
@@ -34,17 +42,29 @@ export function getNamedExportTsDocSummary(name: string, code: string): string |
   for (const c of tsDocExtractAllComments(
     code
       .split('\n')
-      .map((l) => l.trim())
-      .filter((l) => l && !/^(@|\/\/)/.test(l))
+      .map((l) => {
+        return l.trim()
+      })
+      .filter((l) => {
+        return l && !/^(@|\/\/)/.test(l)
+      })
       .join('\n'),
   )) {
-    if (c.nextLine?.startsWith('export default ')) continue
-    if (!c.nextLine?.startsWith('export ')) continue
-    if (!c.nextLine?.includes(` ${name}`)) continue
+    if (c.nextLine?.startsWith('export default ')) {
+      continue
+    }
+    if (!c.nextLine?.startsWith('export ')) {
+      continue
+    }
+    if (!c.nextLine?.includes(` ${name}`)) {
+      continue
+    }
     return c.match
       .split('\n')
       .slice(1, -1)
-      .map((l: string) => l.substring(2).trim())
+      .map((l: string) => {
+        return l.substring(2).trim()
+      })
       .filter(Boolean)
       .join(' ')
       .split('@')[0]

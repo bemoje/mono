@@ -12,7 +12,9 @@
  * ```
  */
 export function arrSwap<T>(input: Array<T>, from: number, to: number): Array<T> {
-  if (from === to) return input
+  if (from === to) {
+    return input
+  }
   ;[input[from], input[to]] = [input[to], input[from]]
   return input
 }

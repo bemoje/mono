@@ -1,20 +1,24 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { timer } from './timer'
+import { vi } from 'vitest'
 
 describe(timer.name, () => {
   it('should execute a synchronous task and return the result', () => {
     vi.spyOn(console, 'info').mockImplementation(() => {})
-    const result = timer('sync-task', () => 42)
+    const result = timer('sync-task', () => {
+      return 42
+    })
     expect(result).toBe(42)
     vi.restoreAllMocks()
   })
 
   it('should execute an async task and return the result', async () => {
     vi.spyOn(console, 'info').mockImplementation(() => {})
-    const result = await timer('async-task', async () => 'hello')
+    const result = await timer('async-task', async () => {
+      return 'hello'
+    })
     expect(result).toBe('hello')
     vi.restoreAllMocks()
   })
@@ -52,7 +56,9 @@ describe(timer.name, () => {
 
   it('should call log.done after the task completes', () => {
     const spy = vi.spyOn(console, 'info').mockImplementation(() => {})
-    timer('done-task', () => 'result')
+    timer('done-task', () => {
+      return 'result'
+    })
     // The last console.info call should be from log.done
     expect(spy).toHaveBeenCalled()
     vi.restoreAllMocks()
@@ -60,14 +66,18 @@ describe(timer.name, () => {
 
   it('should call log.done after async task resolves', async () => {
     const spy = vi.spyOn(console, 'info').mockImplementation(() => {})
-    await timer('async-done', async () => 'async-result')
+    await timer('async-done', async () => {
+      return 'async-result'
+    })
     expect(spy).toHaveBeenCalled()
     vi.restoreAllMocks()
   })
 
   it('should not call log.start when name is empty string', () => {
     const spy = vi.spyOn(console, 'info').mockImplementation(() => {})
-    timer('', () => 'no-name')
+    timer('', () => {
+      return 'no-name'
+    })
     // Only log.done should be called, not log.start
     expect(spy.mock.calls.length).toBe(1)
     vi.restoreAllMocks()
@@ -76,7 +86,9 @@ describe(timer.name, () => {
   it('should return the exact value from a synchronous task', () => {
     vi.spyOn(console, 'info').mockImplementation(() => {})
     const obj = { a: 1, b: [2, 3] }
-    const result = timer('obj-task', () => obj)
+    const result = timer('obj-task', () => {
+      return obj
+    })
     expect(result).toBe(obj)
     vi.restoreAllMocks()
   })
@@ -84,7 +96,9 @@ describe(timer.name, () => {
   it('should return the exact value from an async task', async () => {
     vi.spyOn(console, 'info').mockImplementation(() => {})
     const obj = { a: 1, b: [2, 3] }
-    const result = await timer('async-obj', async () => obj)
+    const result = await timer('async-obj', async () => {
+      return obj
+    })
     expect(result).toBe(obj)
     vi.restoreAllMocks()
   })

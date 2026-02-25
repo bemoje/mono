@@ -7,5 +7,5 @@
  * ```
  */
 export function strWrapInBrackets(input: string): string {
-  return '[' + input + ']'
+  return `[${input}]`
 }

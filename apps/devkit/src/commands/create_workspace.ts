@@ -1,9 +1,9 @@
-import fs from 'fs-extra'
-import upath from 'upath'
 import { cliExecSync } from '../lib/cliExec'
-import { repoRootPackageJsonPath } from "../core/constants/paths";
-import { tsconfigBasePathsJsonPath } from "../core/constants/paths";
+import fs from 'fs-extra'
+import { repoRootPackageJsonPath } from '../core/constants/paths'
 import { templates } from '../core/templates/templates'
+import { tsconfigBasePathsJsonPath } from '../core/constants/paths'
+import upath from 'upath'
 
 export interface CreateWorkspaceOptions {
   yes?: boolean

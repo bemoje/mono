@@ -1,5 +1,5 @@
-import { reduceIterable } from '@mono/iter'
 import { entriesOf } from './entriesOf'
+import { reduceIterable } from '@mono/iter'
 /**
  * Reduces the values of an object into a single value.
  * @param object The object to reduce.

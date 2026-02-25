@@ -6,7 +6,9 @@ import { hasOwnProperty } from './hasOwnProperty'
  */
 export function setEnumerable<T extends object>(object: T, ...keys: PropertyKey[]): void {
   for (const key of keys) {
-    if (!hasOwnProperty(object, key)) continue
+    if (!hasOwnProperty(object, key)) {
+      continue
+    }
     defineProperty(object, key, { enumerable: true })
   }
 }

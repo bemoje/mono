@@ -1,10 +1,10 @@
-import { beforeEach } from "vitest";
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
 import { Command } from './Command'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { findCommand } from './helpers/findCommand'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 describe(Command.name, () => {
   beforeEach(() => {
@@ -49,7 +49,7 @@ describe(Command.name, () => {
         cmd.addArgument('<file>')
         return cmd
       })
-      const sub = (parent.commands as Record<string, Command>)['sub']
+      const sub = (parent.commands as Record<string, Command>).sub
       expect(sub.arguments).toHaveLength(1)
     })
   })
@@ -92,7 +92,7 @@ describe(Command.name, () => {
       parent.command('build')
       // second command 'bundle' would want 'b' but it is taken, should try 'bu'
       parent.command('bundle')
-      const bundleCmd = (parent.commands as Record<string, Command>)['bundle']
+      const bundleCmd = (parent.commands as Record<string, Command>).bundle
       expect(bundleCmd.aliases).toContain('bu')
     })
 
@@ -101,11 +101,11 @@ describe(Command.name, () => {
       // Take 'b' via build
       parent.command('build')
       // Take 'bu' via an alias on build
-      const buildCmd = (parent.commands as Record<string, Command>)['build']
+      const buildCmd = (parent.commands as Record<string, Command>).build
       buildCmd.addAliases('bu')
       // Now 'bundle' can't use 'b' or 'bu'
       parent.command('bundle')
-      const bundleCmd = (parent.commands as Record<string, Command>)['bundle']
+      const bundleCmd = (parent.commands as Record<string, Command>).bundle
       expect(bundleCmd.aliases).not.toContain('b')
       expect(bundleCmd.aliases).not.toContain('bu')
     })

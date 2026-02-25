@@ -1,11 +1,11 @@
-import { DefaultMap } from "mnemonist";
-import { MultiSet } from "mnemonist";
-import { globSync } from 'glob'
-import { tsExtractImports } from '@mono/tscode'
-import fs from 'fs-extra'
+import { DefaultMap } from 'mnemonist'
 import { ExtMap } from '@mono/map'
-import { reduce } from 'iter-tools'
+import { MultiSet } from 'mnemonist'
 import cp from 'node:child_process'
+import fs from 'fs-extra'
+import { globSync } from 'glob'
+import { reduce } from 'iter-tools'
+import { tsExtractImports } from '@mono/tscode'
 
 function parseNameFromImportStatement(line: string): string {
   return line
@@ -23,14 +23,18 @@ function isOtherRepoOwnPath(line: string) {
   return /from '@(dn|bmj|bemoje|rfmain|mono)[/]/.test(line)
 }
 
-const defaultImports = new DefaultMap<string, MultiSet<string>>(() => new MultiSet())
+const defaultImports = new DefaultMap<string, MultiSet<string>>(() => {
+  return new MultiSet()
+})
 
 // const lines = globSync('{mono,tsmono,dn,ts}/{libs,apps,packages}/*/src/**/*.ts', {
 //   cwd: 'C:/Users/bemoj/repos',
 //   absolute: true,
 // })
 const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
-  .filter((p) => !/[./\\](test|wip|old|examples?|benchmark|temp)[./\\]/.test(p))
+  .filter((p) => {
+    return !/[./\\](test|wip|old|examples?|benchmark|temp)[./\\]/.test(p)
+  })
   .flatMap((p) => {
     const code = fs.readFileSync(p, 'utf8')
     const imports = tsExtractImports(code)
@@ -74,7 +78,7 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
         const [specifiers, modulePath] = line.replace(strImp, '').split(' from ')
         if (!line.includes('{')) {
           const name = parseNameFromImportStatement(line)
-          const tempName = '__' + modulePath.replace(/['"@/]/g, '').replace(/-/g, '_')
+          const tempName = `__${modulePath.replace(/['"@/]/g, '').replace(/-/g, '_')}`
           const tempLine = line.replace(name, tempName)
           defaultImports.get(tempLine).add(line)
           return [tempLine]
@@ -83,7 +87,9 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
           .replace(/import /, '')
           .replace(/[{}]/g, '')
           .split(',')
-          .map((s) => s.trim())
+          .map((s) => {
+            return s.trim()
+          })
           .filter(Boolean)
           .map((specifier) => {
             return `${strImp}{ ${specifier} } from ${modulePath}`
@@ -94,7 +100,9 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
     if (!defaultImports.has(line)) {
       return line
     }
-    return Array.from(defaultImports.get(line).multiplicities()).sort((a, b) => b[1] - a[1])[0][0]
+    return Array.from(defaultImports.get(line).multiplicities()).sort((a, b) => {
+      return b[1] - a[1]
+    })[0][0]
   })
   .concat(...cp.execSync(`yarn devkit imports statements`).toString().trim().split('\n'))
 
@@ -110,12 +118,18 @@ counts.keysArray().forEach((line) => {
 })
 
 const _result = Array.from(nameToStatementMap.values()).flat().reverse()
-const defaults = _result.filter((line) => !line.includes('{'))
-const named = _result.filter((line) => line.includes('{'))
+const defaults = _result.filter((line) => {
+  return !line.includes('{')
+})
+const named = _result.filter((line) => {
+  return line.includes('{')
+})
 
 const result = [...named, ...defaults]
 
-result.forEach((p) => console.log(p))
+result.forEach((p) => {
+  return console.log(p)
+})
 
 // console.log([...nameToStatementMap.keys()])
 console.log()
@@ -131,8 +145,12 @@ function countUniques<V>(arr: Iterable<V>) {
   return new ExtMap<V, number>(
     reduce(
       new MultiSet<V>(), //
-      (acc, imp) => acc.add(imp),
+      (acc, imp) => {
+        return acc.add(imp)
+      },
       arr,
     ).multiplicities(),
-  ).sortByValues((a, b) => b - a)
+  ).sortByValues((a, b) => {
+    return b - a
+  })
 }

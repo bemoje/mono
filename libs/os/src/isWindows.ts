@@ -7,7 +7,7 @@
  */
 export function isWindows(): boolean {
   if (isWin === undefined) {
-    isWin = process && (process.platform === 'win32' || /^(msys|cygwin)$/.test(process.env['OSTYPE'] || ''))
+    isWin = process && (process.platform === 'win32' || /^(msys|cygwin)$/.test(process.env.OSTYPE || ''))
   }
   return isWin
 }

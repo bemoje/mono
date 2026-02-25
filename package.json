@@ -25,7 +25,7 @@
     "docs": "devkit build-readme",
     "lint": "yarn eslint",
     "lint-fix": "yarn eslint --fix './*' 'scripts/**/*.mjs' '{libs,apps}/*/*.{ts,js,mjs}' '{libs,apps}/*/src/**/*.ts'",
-    "format-all:check": "yarn prettier -u ./ '{.github,.vscode,scripts,docs,apps,libs}/**/*' --check",
+    "format-all:check": "yarn prettier ./ '{.github,.vscode,scripts,docs,apps,libs}/**/*' --check",
     "format:write": "node scripts/format.mjs --write --ignore-unknown --list-different",
     "format:check": "node scripts/format.mjs --check --ignore-unknown",
     "typecheck": "tsc -p tsconfig.json --noEmit",

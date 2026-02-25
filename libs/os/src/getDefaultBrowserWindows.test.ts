@@ -1,15 +1,17 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
 import assert from 'node:assert'
-import { getDefaultBrowserWindows } from './getDefaultBrowserWindows'
+import { describe } from 'vitest'
 import { execSync } from 'node:child_process'
+import { expect } from 'vitest'
+import { getDefaultBrowserWindows } from './getDefaultBrowserWindows'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Mock child_process
-vi.mock('node:child_process', () => ({
-  execSync: vi.fn(),
-}))
+vi.mock('node:child_process', () => {
+  return {
+    execSync: vi.fn(),
+  }
+})
 
 const mockExecSync = vi.mocked(execSync)
 

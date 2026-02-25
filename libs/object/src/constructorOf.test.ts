@@ -1,8 +1,8 @@
-import { constructorOf } from './constructorOf'
 import { Constructor } from 'type-fest'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { constructorOf } from './constructorOf'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(constructorOf.name, () => {
   it('should return the constructor of a given object', () => {

@@ -23,7 +23,6 @@ export function bindArgs<
 >(fn: T, boundArgs: BoundArgs) {
   type NewArgs = RemoveArrayElements<
     Parameters<T>,
-     
     // @ts-expect-error
     UnionToTuple<Extract<keyof BoundArgs, number>>
   >
@@ -37,14 +36,22 @@ export function bindArgs<
     const boundIndex = index as keyof BoundArgs
     const unboundIndex = index - (isBound ? offset++ : offset)
     return isBound
-      ? () => boundArgs[boundIndex] //
-      : (args: NewArgs) => args[unboundIndex]
+      ? () => {
+          return boundArgs[boundIndex]
+        } //
+      : (args: NewArgs) => {
+          return args[unboundIndex]
+        }
   })
 
   return preserveNameAndLength(
     fn,
     (...args: NewArgs): ReturnType<T> => {
-      return fn(...argGetters.map((get) => get(args)))
+      return fn(
+        ...argGetters.map((get) => {
+          return get(args)
+        }),
+      )
     },
     boundIndices.length * -1,
   )

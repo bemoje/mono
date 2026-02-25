@@ -3,7 +3,11 @@ import fs from 'fs'
 
 const args = process.argv.slice(2)
 
-if (!args.some((arg) => ['--check', '--write', '-c', '-w'].includes(arg))) {
+if (
+  !args.some((arg) => {
+    return ['--check', '--write', '-c', '-w'].includes(arg)
+  })
+) {
   console.error(
     `Error: You must provide either --check or --write (or their short versions -c or -w) as an argument.`,
   )
@@ -15,7 +19,9 @@ async function exec(cmd) {
     .execSync(cmd, { encoding: 'utf8' })
     .trim()
     .split('\n')
-    .map((f) => f.trim())
+    .map((f) => {
+      return f.trim()
+    })
     .filter(Boolean)
 }
 

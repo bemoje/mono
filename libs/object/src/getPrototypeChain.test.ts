@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getPrototypeChain } from './getPrototypeChain'
+import { it } from 'vitest'
 
 describe(getPrototypeChain.name, () => {
   it('examples', () => {

@@ -1,15 +1,16 @@
+/* eslint-disable max-lines-per-function */
 import type { Browser } from 'puppeteer'
-import { autoScroll } from './utils/autoScroll'
-import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
-import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
-import { parseDate } from './utils/parseDate'
 import { CliOptions } from '../types/CliOptions'
+import { Logger } from '@mono/node'
+import { ResumeEducation } from '../types/Resume'
+import { autoScroll } from './utils/autoScroll'
+import { getPageUrl } from './utils/getPageUrl'
+import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { onScrapeError } from './utils/onScrapeError'
+import { parseDate } from './utils/parseDate'
+import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { scrapeOutputJson } from './utils/scrapeOutputJson'
 import { userConfigFile } from '../userConfigFile'
-import { getPageUrl } from './utils/getPageUrl'
-import { ResumeEducation } from '../types/Resume'
-import { Logger } from '@mono/node'
 
 export async function scrapeEducation(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const page = await browser.newPage()
@@ -27,6 +28,7 @@ export async function scrapeEducation(browser: Browser, options: CliOptions, log
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
     } catch {
       logger.warn('No education section found or it took too long to load.')
+      // eslint-disable-next-line no-throw-literal
       throw 'ignore'
     }
     await autoScroll(page)
@@ -35,7 +37,9 @@ export async function scrapeEducation(browser: Browser, options: CliOptions, log
 
     const rawEntries = await page.evaluate(() => {
       const container = document.querySelector('.scaffold-finite-scroll__content')
-      if (!container) return []
+      if (!container) {
+        return []
+      }
       const topLevelItems = Array.from(container.querySelector('ul')?.children ?? [])
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,7 +53,9 @@ export async function scrapeEducation(browser: Browser, options: CliOptions, log
       return topLevelItems.map((li) => {
         const { mediaLinks, mediaTexts } = extractMedia(li)
         const mediaTextSet = new Set(mediaTexts)
-        const spans = getVisibleSpans(li).filter((text) => !mediaTextSet.has(text))
+        const spans = getVisibleSpans(li).filter((text) => {
+          return !mediaTextSet.has(text)
+        })
         return {
           spans,
           logoUrl: li.querySelector('img')?.src ?? '',
@@ -63,7 +69,9 @@ export async function scrapeEducation(browser: Browser, options: CliOptions, log
       /^\d{4}$|^[A-Z][a-z]{2}\s+\d{4}$|^\d{4}\s*-\s*\d{4}$|^[A-Z][a-z]{2}\s+\d{4}\s*-\s*[A-Z][a-z]{2}\s+\d{4}$/
 
     for (const { spans, logoUrl, mediaLinks } of rawEntries) {
-      if (spans.length < 2) continue
+      if (spans.length < 2) {
+        continue
+      }
 
       const name = spans[0]
       let area = ''
@@ -94,8 +102,12 @@ export async function scrapeEducation(browser: Browser, options: CliOptions, log
 
       // Parse dates - education dates append day precision
       function parseEducationDate(d: string): string {
-        if (!d) return ''
-        if (/^\d{4}$/.test(d)) return `${d}-01`
+        if (!d) {
+          return ''
+        }
+        if (/^\d{4}$/.test(d)) {
+          return `${d}-01`
+        }
         const parsed = parseDate(d)
         return parsed && parsed !== d ? parsed : d
       }
@@ -109,7 +121,9 @@ export async function scrapeEducation(browser: Browser, options: CliOptions, log
         ? skillsStr
             .replace(/^Skills:\s*/, '')
             .split(' · ')
-            .map((s) => s.trim())
+            .map((s) => {
+              return s.trim()
+            })
             .filter(Boolean)
         : []
 

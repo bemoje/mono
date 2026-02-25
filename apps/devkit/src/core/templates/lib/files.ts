@@ -1,10 +1,10 @@
-import { JsonFileTemplateStrategy } from "@mono/template";
-import { Template } from "@mono/template";
-import { TextFileTemplateStrategy } from "@mono/template";
+import { JsonFileTemplateStrategy } from '@mono/template'
+import { Template } from '@mono/template'
+import { TextFileTemplateStrategy } from '@mono/template'
 import { Type } from '@sinclair/typebox'
-import { repoRootPackageJsonPath } from "../../constants/paths";
-import { tsconfigBaseJsonBasename } from "../../constants/paths";
 import fs from 'fs-extra'
+import { repoRootPackageJsonPath } from '../../constants/paths'
+import { tsconfigBaseJsonBasename } from '../../constants/paths'
 
 const eslintConfigJs = new Template({
   strategy: new TextFileTemplateStrategy(),
@@ -71,7 +71,7 @@ const readmeMd = new Template({
 
 const tsconfigJson = new Template({
   strategy: new JsonFileTemplateStrategy(),
-  template: { extends: '../../' + tsconfigBaseJsonBasename },
+  template: { extends: `../../${tsconfigBaseJsonBasename}` },
 })
 
 const indexTs = new Template({ strategy: new TextFileTemplateStrategy(), template: [''] })

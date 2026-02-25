@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { arrHasDuplicates } from './arrHasDuplicates'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(arrHasDuplicates.name, () => {
   it('should return false for an empty array', () => {

@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { inheritPrototypeMembers } from './inheritPrototypeMembers'
+import { it } from 'vitest'
 
 describe(inheritPrototypeMembers.name, () => {
   it('examples', () => {
@@ -271,7 +271,9 @@ describe(inheritPrototypeMembers.name, () => {
         }
       }
 
-      expect(() => inheritPrototypeMembers(Target, Source)).not.toThrow()
+      expect(() => {
+        return inheritPrototypeMembers(Target, Source)
+      }).not.toThrow()
 
       const instance = new Target()
       expect(instance.targetMethod()).toBe('target')
@@ -301,7 +303,9 @@ describe(inheritPrototypeMembers.name, () => {
 
       class Target {}
 
-      expect(() => inheritPrototypeMembers(Target, Source, [])).not.toThrow()
+      expect(() => {
+        return inheritPrototypeMembers(Target, Source, [])
+      }).not.toThrow()
 
       const instance = new Target() as any
       expect(instance.sourceMethod()).toBe('source')
@@ -316,7 +320,9 @@ describe(inheritPrototypeMembers.name, () => {
 
       class Target {}
 
-      expect(() => inheritPrototypeMembers(Target, Source)).not.toThrow()
+      expect(() => {
+        return inheritPrototypeMembers(Target, Source)
+      }).not.toThrow()
 
       const instance = new Target() as any
       expect(instance.sourceMethod()).toBe('source')

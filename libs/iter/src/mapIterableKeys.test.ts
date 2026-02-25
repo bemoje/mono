@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { mapIterableKeys } from './mapIterableKeys'
 
 describe(mapIterableKeys.name, () => {
@@ -13,7 +13,11 @@ describe(mapIterableKeys.name, () => {
         ['b', 2],
         ['c', 3],
       ]
-      const transformed = [...mapIterableKeys(entries, (key) => key.toUpperCase())]
+      const transformed = [
+        ...mapIterableKeys(entries, (key) => {
+          return key.toUpperCase()
+        }),
+      ]
       assert.deepStrictEqual(
         transformed,
         [
@@ -25,7 +29,11 @@ describe(mapIterableKeys.name, () => {
       )
 
       // use both key and value in transformation
-      const indexed = [...mapIterableKeys(entries, (key, value) => `${key}_${value}`)]
+      const indexed = [
+        ...mapIterableKeys(entries, (key, value) => {
+          return `${key}_${value}`
+        }),
+      ]
       assert.deepStrictEqual(
         indexed,
         [
@@ -37,7 +45,11 @@ describe(mapIterableKeys.name, () => {
       )
 
       // empty iterable
-      const empty = [...mapIterableKeys([], (k: any, v: any) => k)]
+      const empty = [
+        ...mapIterableKeys([], (k: any, v: any) => {
+          return k
+        }),
+      ]
       assert.deepStrictEqual(empty, [], 'empty result')
     }).not.toThrow()
   })
@@ -47,7 +59,11 @@ describe(mapIterableKeys.name, () => {
       ['x', 10],
       ['y', 20],
     ]
-    const result = [...mapIterableKeys(entries, (key) => key.toUpperCase())]
+    const result = [
+      ...mapIterableKeys(entries, (key) => {
+        return key.toUpperCase()
+      }),
+    ]
     expect(result).toEqual([
       ['X', 10],
       ['Y', 20],
@@ -59,7 +75,11 @@ describe(mapIterableKeys.name, () => {
       ['item', 5],
       ['data', 10],
     ]
-    const result = [...mapIterableKeys(entries, (key, value) => `${key}_${value}`)]
+    const result = [
+      ...mapIterableKeys(entries, (key, value) => {
+        return `${key}_${value}`
+      }),
+    ]
     expect(result).toEqual([
       ['item_5', 5],
       ['data_10', 10],
@@ -71,7 +91,11 @@ describe(mapIterableKeys.name, () => {
       [1, 'one'],
       [2, 'two'],
     ]
-    const result = [...mapIterableKeys(entries, (key) => `key_${key}`)]
+    const result = [
+      ...mapIterableKeys(entries, (key) => {
+        return `key_${key}`
+      }),
+    ]
     expect(result).toEqual([
       ['key_1', 'one'],
       ['key_2', 'two'],
@@ -79,7 +103,11 @@ describe(mapIterableKeys.name, () => {
   })
 
   it('should handle empty iterable', () => {
-    const result = [...mapIterableKeys([], (key: any) => key)]
+    const result = [
+      ...mapIterableKeys([], (key: any) => {
+        return key
+      }),
+    ]
     expect(result).toEqual([])
   })
 
@@ -88,7 +116,11 @@ describe(mapIterableKeys.name, () => {
       [10, 'ten'],
       [20, 'twenty'],
     ])
-    const result = [...mapIterableKeys(map, (key) => key * 2)]
+    const result = [
+      ...mapIterableKeys(map, (key) => {
+        return key * 2
+      }),
+    ]
     expect(result).toEqual([
       [20, 'ten'],
       [40, 'twenty'],
@@ -101,7 +133,11 @@ describe(mapIterableKeys.name, () => {
       ['a', objects[0]],
       ['b', objects[1]],
     ]
-    const result = [...mapIterableKeys(entries, (key) => key + '_new')]
+    const result = [
+      ...mapIterableKeys(entries, (key) => {
+        return `${key}_new`
+      }),
+    ]
 
     expect(result[0][1]).toBe(objects[0]) // Same reference
     expect(result[1][1]).toBe(objects[1]) // Same reference

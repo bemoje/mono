@@ -1,26 +1,30 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import { afterEach } from "vitest";
+import { afterEach } from 'vitest'
 import assert from 'node:assert'
-import { execSync } from 'node:child_process'
+import { beforeEach } from 'vitest'
 import colors from 'ansi-colors'
-import upath from 'upath'
+import { describe } from 'vitest'
+import { execSync } from 'node:child_process'
 import { execute } from './execute'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import upath from 'upath'
+import { vi } from 'vitest'
 
 // Mock dependencies
-vi.mock('node:child_process', () => ({
-  execSync: vi.fn(),
-}))
+vi.mock('node:child_process', () => {
+  return {
+    execSync: vi.fn(),
+  }
+})
 
-vi.mock('upath', () => ({
-  default: {
-    relative: vi.fn(),
-    basename: vi.fn(),
-  },
-}))
+vi.mock('upath', () => {
+  return {
+    default: {
+      relative: vi.fn(),
+      basename: vi.fn(),
+    },
+  }
+})
 
 const mockExecSync = vi.mocked(execSync)
 const mockPath = vi.mocked(upath)
@@ -226,8 +230,12 @@ describe(execute.name, () => {
       execute('test', { fadedOutput: true })
 
       // Should only log non-empty lines
-      const logCalls = consoleLogSpy.mock.calls.map((call) => call[0])
-      const outputCall = logCalls.find((call) => typeof call === 'string' && call.includes('- line1'))
+      const logCalls = consoleLogSpy.mock.calls.map((call) => {
+        return call[0]
+      })
+      const outputCall = logCalls.find((call) => {
+        return typeof call === 'string' && call.includes('- line1')
+      })
       expect(outputCall).toBeDefined()
     })
 
@@ -325,7 +333,9 @@ describe(execute.name, () => {
         throw error
       })
 
-      expect(() => execute('failing-command')).toThrow('Command failed')
+      expect(() => {
+        return execute('failing-command')
+      }).toThrow('Command failed')
     })
 
     it('should handle execSync returning non-buffer values', () => {
@@ -348,7 +358,7 @@ describe(execute.name, () => {
 
   describe('edge cases', () => {
     it('should handle very long commands', () => {
-      const longCommand = 'echo ' + 'a'.repeat(10000)
+      const longCommand = `echo ${'a'.repeat(10000)}`
 
       execute(longCommand)
 

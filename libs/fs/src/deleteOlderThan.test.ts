@@ -1,11 +1,11 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import fs from 'fs-extra'
+import { beforeEach } from 'vitest'
 import { deleteOlderThan } from './deleteOlderThan'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import fs from 'fs-extra'
 import { getFileAge } from './getFileAge'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 vi.mock('fs-extra')
 vi.mock('./getFileAge')

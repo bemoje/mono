@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strMaxTwoConsecutiveEmptyLines } from './strMaxTwoConsecutiveEmptyLines'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe(strMaxTwoConsecutiveEmptyLines.name, () => {
   it('does nothing if max not exceeded', () => {

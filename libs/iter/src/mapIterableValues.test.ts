@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { mapIterableValues } from './mapIterableValues'
 
 describe(mapIterableValues.name, () => {
@@ -13,7 +13,11 @@ describe(mapIterableValues.name, () => {
         ['b', 2],
         ['c', 3],
       ]
-      const transformed = [...mapIterableValues(entries, (value) => value * 2)]
+      const transformed = [
+        ...mapIterableValues(entries, (value) => {
+          return value * 2
+        }),
+      ]
       assert.deepStrictEqual(
         transformed,
         [
@@ -25,7 +29,11 @@ describe(mapIterableValues.name, () => {
       )
 
       // use both key and value in transformation
-      const indexed = [...mapIterableValues(entries, (value, key) => `${key}:${value}`)]
+      const indexed = [
+        ...mapIterableValues(entries, (value, key) => {
+          return `${key}:${value}`
+        }),
+      ]
       assert.deepStrictEqual(
         indexed,
         [
@@ -37,7 +45,11 @@ describe(mapIterableValues.name, () => {
       )
 
       // empty iterable
-      const empty = [...mapIterableValues([], (v: any, k: any) => v)]
+      const empty = [
+        ...mapIterableValues([], (v: any, k: any) => {
+          return v
+        }),
+      ]
       assert.deepStrictEqual(empty, [], 'empty result')
     }).not.toThrow()
   })
@@ -47,7 +59,11 @@ describe(mapIterableValues.name, () => {
       ['x', 10],
       ['y', 20],
     ]
-    const result = [...mapIterableValues(entries, (value) => value / 2)]
+    const result = [
+      ...mapIterableValues(entries, (value) => {
+        return value / 2
+      }),
+    ]
     expect(result).toEqual([
       ['x', 5],
       ['y', 10],
@@ -59,7 +75,11 @@ describe(mapIterableValues.name, () => {
       ['item', 5],
       ['data', 10],
     ]
-    const result = [...mapIterableValues(entries, (value, key) => `${key}_${value}`)]
+    const result = [
+      ...mapIterableValues(entries, (value, key) => {
+        return `${key}_${value}`
+      }),
+    ]
     expect(result).toEqual([
       ['item', 'item_5'],
       ['data', 'data_10'],
@@ -71,7 +91,11 @@ describe(mapIterableValues.name, () => {
       ['a', 1],
       ['b', 2],
     ]
-    const result = [...mapIterableValues(entries, (value) => value.toString())]
+    const result = [
+      ...mapIterableValues(entries, (value) => {
+        return value.toString()
+      }),
+    ]
     expect(result).toEqual([
       ['a', '1'],
       ['b', '2'],
@@ -79,7 +103,11 @@ describe(mapIterableValues.name, () => {
   })
 
   it('should handle empty iterable', () => {
-    const result = [...mapIterableValues([], (value: any) => value)]
+    const result = [
+      ...mapIterableValues([], (value: any) => {
+        return value
+      }),
+    ]
     expect(result).toEqual([])
   })
 
@@ -88,7 +116,11 @@ describe(mapIterableValues.name, () => {
       ['key1', 100],
       ['key2', 200],
     ])
-    const result = [...mapIterableValues(map, (value) => value * 0.01)]
+    const result = [
+      ...mapIterableValues(map, (value) => {
+        return value * 0.01
+      }),
+    ]
     expect(result).toEqual([
       ['key1', 1],
       ['key2', 2],
@@ -101,7 +133,11 @@ describe(mapIterableValues.name, () => {
       [keyObjects[0], 10],
       [keyObjects[1], 20],
     ]
-    const result = [...mapIterableValues(entries, (value) => value + 1)]
+    const result = [
+      ...mapIterableValues(entries, (value) => {
+        return value + 1
+      }),
+    ]
 
     expect(result[0][0]).toBe(keyObjects[0]) // Same reference
     expect(result[1][0]).toBe(keyObjects[1]) // Same reference
@@ -117,11 +153,13 @@ describe(mapIterableValues.name, () => {
       ['item2', { count: 10, name: 'second' }],
     ]
     const result = [
-      ...mapIterableValues(entries, (value, key) => ({
-        ...value,
-        count: value.count * 2,
-        key,
-      })),
+      ...mapIterableValues(entries, (value, key) => {
+        return {
+          ...value,
+          count: value.count * 2,
+          key,
+        }
+      }),
     ]
     expect(result).toEqual([
       ['item1', { count: 10, name: 'first', key: 'item1' }],

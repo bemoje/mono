@@ -1,9 +1,9 @@
-import upath from 'upath'
-import fs from 'fs-extra'
-import { SCRAPE_PATH } from '../../constants'
-import { ResumeSection } from '../../types/ResumeSection'
-import { Logger } from '@mono/node'
 import { CliOptions } from '../../types/CliOptions'
+import { Logger } from '@mono/node'
+import { ResumeSection } from '../../types/ResumeSection'
+import { SCRAPE_PATH } from '../../constants'
+import fs from 'fs-extra'
+import upath from 'upath'
 
 /**
  * Output scraped section data to a JSON file in the scrape directory, and log the result.

@@ -9,5 +9,7 @@
  * ```
  */
 export function arrSum(array: number[]): number {
-  return array.reduce((acc, cur) => acc + cur, 0)
+  return array.reduce((acc, cur) => {
+    return acc + cur
+  }, 0)
 }

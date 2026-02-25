@@ -2,9 +2,15 @@
  * Check if the given descriptor is an accessor descriptor.
  */
 export function isAccessorDescriptor<T>(des?: TypedPropertyDescriptor<T>): des is AccessorDescriptor<T> {
-  if (!des) return false
-  if (!des.get && !des.set) return false
-  if (des.writable !== undefined) return false
+  if (!des) {
+    return false
+  }
+  if (!des.get && !des.set) {
+    return false
+  }
+  if (des.writable !== undefined) {
+    return false
+  }
   return true
 }
 

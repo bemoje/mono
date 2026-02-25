@@ -1,7 +1,6 @@
 export * from './StringStream'
 export * from './argvHasHelpFlag'
 export * from './createLogger'
-export * from './execInherit'
 export * from './execOutput'
 export * from './execute'
 export * from './formatTableForTerminal'

@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { Inspector } from './Inspector'
+import { InspectorTarget } from './Inspector'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { inspect } from 'node:util'
-import { Inspector } from "./Inspector";
-import { InspectorTarget } from "./Inspector";
+import { it } from 'vitest'
 
 describe(Inspector.name, () => {
   it('examples', () => {
@@ -43,9 +43,9 @@ describe(Inspector.name, () => {
     }
 
     const instances = [new A(), new B(), new A(), new B()]
-    const inspectStrings = instances.map((x) =>
-      (x as unknown as InspectorTarget).inspector.inspect(0, { colors: false }),
-    )
+    const inspectStrings = instances.map((x) => {
+      return (x as unknown as InspectorTarget).inspector.inspect(0, { colors: false })
+    })
     const [a1, b1, a2, b2] = inspectStrings
 
     expect(a1).toBe(`[A] { one: 1, a: 'a' }`)
@@ -54,7 +54,9 @@ describe(Inspector.name, () => {
     expect(b2).toBe(`[B] { one: 1, two: 2, three: 3, b: 'b' }`)
 
     instances
-      .map((x) => (x as unknown as InspectorTarget).inspector.toObject())
+      .map((x) => {
+        return (x as unknown as InspectorTarget).inspector.toObject()
+      })
       .forEach((obj) => {
         expect(obj).toBeTypeOf('object')
       })
@@ -232,7 +234,11 @@ describe(Inspector.name, () => {
       class Filtered {
         static inspector = Inspector.compose(Filtered, {
           keys: ['a', 'b', 'c'],
-          filters: [(_value: unknown, key: string | symbol) => key !== 'b'],
+          filters: [
+            (_value: unknown, key: string | symbol) => {
+              return key !== 'b'
+            },
+          ],
         })
         a = 1
         b = 2

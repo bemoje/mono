@@ -1,15 +1,15 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { beforeEach } from "vitest";
-import { afterEach } from "vitest";
-import assert from 'node:assert'
-import fs from 'fs-extra'
-import upath from 'upath'
-import { Type } from "@sinclair/typebox";
-import { Static } from "@sinclair/typebox";
 import { ConfigFile } from './ConfigFile'
+import { Static } from '@sinclair/typebox'
+import { Type } from '@sinclair/typebox'
+import { afterEach } from 'vitest'
+import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import fs from 'fs-extra'
 import { getTempDataPath } from '@mono/os'
+import { it } from 'vitest'
+import upath from 'upath'
 
 describe(ConfigFile.name, () => {
   const testDir = getTempDataPath('ConfigFile')
@@ -62,11 +62,13 @@ describe(ConfigFile.name, () => {
       assert.strictEqual(config.features.auth, true, 'default auth feature should be applied')
 
       // Update config
-      const updatedConfig = configFile.update((current) => ({
-        ...current,
-        appName: 'Updated App',
-        port: 8080,
-      }))
+      const updatedConfig = configFile.update((current) => {
+        return {
+          ...current,
+          appName: 'Updated App',
+          port: 8080,
+        }
+      })
 
       assert.strictEqual(updatedConfig.appName, 'Updated App', 'app name should be updated')
       assert.strictEqual(updatedConfig.port, 8080, 'port should be updated')
@@ -198,7 +200,9 @@ describe(ConfigFile.name, () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
       // Should throw since JSON parsing fails
-      expect(() => configFile.load()).not.toThrow()
+      expect(() => {
+        return configFile.load()
+      }).not.toThrow()
     })
   })
 
@@ -206,11 +210,13 @@ describe(ConfigFile.name, () => {
     it('should update config and apply defaults', () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
-      const updatedConfig = configFile.update((current) => ({
-        ...current,
-        appName: 'Updated App',
-        port: 9000,
-      }))
+      const updatedConfig = configFile.update((current) => {
+        return {
+          ...current,
+          appName: 'Updated App',
+          port: 9000,
+        }
+      })
 
       expect(updatedConfig).toEqual({
         appName: 'Updated App',
@@ -242,14 +248,16 @@ describe(ConfigFile.name, () => {
 
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
-      const updatedConfig = configFile.update((current) => ({
-        ...current,
-        appName: 'Modified App',
-        features: {
-          ...current.features,
-          debug: false,
-        },
-      }))
+      const updatedConfig = configFile.update((current) => {
+        return {
+          ...current,
+          appName: 'Modified App',
+          features: {
+            ...current.features,
+            debug: false,
+          },
+        }
+      })
 
       expect(updatedConfig).toEqual({
         appName: 'Modified App',
@@ -266,14 +274,16 @@ describe(ConfigFile.name, () => {
     it('should add optional fields', () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
-      const updatedConfig = configFile.update((current) => ({
-        ...current,
-        database: {
-          host: 'localhost',
-          port: 5432,
-          name: 'mydb',
-        },
-      }))
+      const updatedConfig = configFile.update((current) => {
+        return {
+          ...current,
+          database: {
+            host: 'localhost',
+            port: 5432,
+            name: 'mydb',
+          },
+        }
+      })
 
       expect(updatedConfig.database).toEqual({
         host: 'localhost',
@@ -288,26 +298,32 @@ describe(ConfigFile.name, () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
       expect(() => {
-        configFile.update((current) => ({
-          ...current,
-          port: -1, // invalid port
-        }))
+        configFile.update((current) => {
+          return {
+            ...current,
+            port: -1, // invalid port
+          }
+        })
       }).toThrow('Invalid config.')
     })
 
     it('should handle multiple updates', () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
-      const firstUpdate = configFile.update((current) => ({
-        ...current,
-        appName: 'First Update',
-      }))
+      const firstUpdate = configFile.update((current) => {
+        return {
+          ...current,
+          appName: 'First Update',
+        }
+      })
 
-      const secondUpdate = configFile.update((current) => ({
-        ...current,
-        appName: 'Second Update',
-        port: 7000,
-      }))
+      const secondUpdate = configFile.update((current) => {
+        return {
+          ...current,
+          appName: 'Second Update',
+          port: 7000,
+        }
+      })
 
       expect(firstUpdate.appName).toBe('First Update')
       expect(secondUpdate.appName).toBe('Second Update')
@@ -352,7 +368,9 @@ describe(ConfigFile.name, () => {
   describe('singleton behavior', () => {
     it('should maintain singleton instances across operations', () => {
       const configFile1 = new ConfigFile(appConfigSchema, testConfigPath)
-      configFile1.update((current) => ({ ...current, appName: 'Singleton Test' }))
+      configFile1.update((current) => {
+        return { ...current, appName: 'Singleton Test' }
+      })
 
       const configFile2 = new ConfigFile(appConfigSchema, testConfigPath)
       const config = configFile2.load()

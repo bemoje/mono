@@ -1,19 +1,21 @@
-import fs from 'fs-extra'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
 import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import fs from 'fs-extra'
+import { it } from 'vitest'
 import { updateJsonFileSync } from './updateJsonFileSync'
+import { vi } from 'vitest'
 
 // Mock fs-extra
-vi.mock('fs-extra', () => ({
-  default: {
-    readJsonSync: vi.fn(),
-    outputJsonSync: vi.fn(),
-  },
-}))
+vi.mock('fs-extra', () => {
+  return {
+    default: {
+      readJsonSync: vi.fn(),
+      outputJsonSync: vi.fn(),
+    },
+  }
+})
 
 const mockFs = fs as any
 
@@ -33,11 +35,15 @@ describe(updateJsonFileSync.name, () => {
       mockFs.readJsonSync.mockReturnValue({ name: 'test', value: 42 })
 
       // Create JSON file
-      const result1 = updateJsonFileSync(testFile, () => ({ name: 'test', value: 42 }))
+      const result1 = updateJsonFileSync(testFile, () => {
+        return { name: 'test', value: 42 }
+      })
       assert.deepStrictEqual(result1, { name: 'test', value: 42 })
 
       // Update existing JSON
-      const result2 = updateJsonFileSync(testFile, (data: any) => ({ ...data, updated: true }))
+      const result2 = updateJsonFileSync(testFile, (data: any) => {
+        return { ...data, updated: true }
+      })
       assert.deepStrictEqual(result2, { name: 'test', value: 42, updated: true })
 
       // Verify file content
@@ -55,7 +61,13 @@ describe(updateJsonFileSync.name, () => {
       throw new Error('File not found')
     })
 
-    const result = updateJsonFileSync(testFile, (data) => ({ ...data, count: data.count + 1 }), defaultValue)
+    const result = updateJsonFileSync(
+      testFile,
+      (data) => {
+        return { ...data, count: data.count + 1 }
+      },
+      defaultValue,
+    )
 
     expect(result).toEqual({ default: true, count: 1 })
     expect(mockFs.outputJsonSync).toHaveBeenCalledWith(testFile, { default: true, count: 1 })
@@ -69,7 +81,13 @@ describe(updateJsonFileSync.name, () => {
       throw new Error('Invalid JSON')
     })
 
-    const result = updateJsonFileSync(testFile, (data) => ({ ...data, fixed: true }), defaultValue)
+    const result = updateJsonFileSync(
+      testFile,
+      (data) => {
+        return { ...data, fixed: true }
+      },
+      defaultValue,
+    )
 
     expect(result).toEqual({ recovered: true, fixed: true })
     expect(mockFs.outputJsonSync).toHaveBeenCalledWith(testFile, { recovered: true, fixed: true })
@@ -84,12 +102,14 @@ describe(updateJsonFileSync.name, () => {
 
     const result = updateJsonFileSync(
       testFile,
-      (data) => ({
-        ...data,
-        timestamp: Date.now(),
-        items: ['a', 'b', 'c'],
-        nested: { deep: { value: 123 } },
-      }),
+      (data) => {
+        return {
+          ...data,
+          timestamp: Date.now(),
+          items: ['a', 'b', 'c'],
+          nested: { deep: { value: 123 } },
+        }
+      },
       { version: 1 },
     )
 

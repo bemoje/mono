@@ -1,17 +1,19 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import { afterEach } from "vitest";
+import { afterEach } from 'vitest'
 import assert from 'node:assert'
-import { spawnNodeProcess } from './spawnNodeProcess'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { spawnChildProcess } from './spawnChildProcess'
+import { spawnNodeProcess } from './spawnNodeProcess'
+import { vi } from 'vitest'
 
 // Mock the spawnChildProcess function
-vi.mock('./spawnChildProcess', () => ({
-  spawnChildProcess: vi.fn(),
-}))
+vi.mock('./spawnChildProcess', () => {
+  return {
+    spawnChildProcess: vi.fn(),
+  }
+})
 
 const mockSpawnChildProcess = vi.mocked(spawnChildProcess)
 

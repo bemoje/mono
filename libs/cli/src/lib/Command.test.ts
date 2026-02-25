@@ -1,9 +1,9 @@
-import { beforeEach } from "vitest";
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
 import { Command } from './Command'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 describe(Command.name, () => {
   beforeEach(() => {
@@ -123,14 +123,22 @@ describe(Command.name, () => {
       it('should add version option', () => {
         const cmd = new Command('test')
         cmd.setVersion('1.2.3')
-        expect(cmd.options.filter((option) => option.name === 'version')).toHaveLength(1)
+        expect(
+          cmd.options.filter((option) => {
+            return option.name === 'version'
+          }),
+        ).toHaveLength(1)
       })
 
       it('should not add version option more than once', () => {
         const cmd = new Command('test')
         cmd.setVersion('1.2.3')
         cmd.setVersion('1.2.3')
-        expect(cmd.options.filter((option) => option.name === 'version')).toHaveLength(1)
+        expect(
+          cmd.options.filter((option) => {
+            return option.name === 'version'
+          }),
+        ).toHaveLength(1)
       })
     })
 

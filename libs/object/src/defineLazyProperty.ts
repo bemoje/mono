@@ -1,6 +1,6 @@
-import { defineValue } from './defineValue'
-import { defineGetter } from './defineGetter'
 import { AccessorDescriptor } from './isAccessorDescriptor'
+import { defineGetter } from './defineGetter'
+import { defineValue } from './defineValue'
 
 /**
  * Define a lazy property that evaluates its getter on first access and then caches the value.

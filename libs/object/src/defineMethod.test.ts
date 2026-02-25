@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
 import { defineMethod } from './defineMethod'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(defineMethod.name, () => {
   it('examples', () => {
@@ -16,17 +16,33 @@ describe(defineMethod.name, () => {
       assert.strictEqual(obj.greet('World'), 'Hello, World!')
 
       // Method with custom descriptor options
-      defineMethod(obj, 'compute', () => 42, { enumerable: true })
+      defineMethod(
+        obj,
+        'compute',
+        () => {
+          return 42
+        },
+        { enumerable: true },
+      )
       assert.strictEqual(obj.compute(), 42)
       assert.strictEqual(Object.propertyIsEnumerable.call(obj, 'compute'), true)
 
       // Non-writable method
-      defineMethod(obj, 'constant', () => 'fixed', { writable: false })
+      defineMethod(
+        obj,
+        'constant',
+        () => {
+          return 'fixed'
+        },
+        { writable: false },
+      )
       assert.strictEqual(obj.constant(), 'fixed')
 
       // Attempting to overwrite should throw in strict mode
       assert.throws(() => {
-        obj.constant = () => 'changed'
+        obj.constant = () => {
+          return 'changed'
+        }
       }, TypeError)
     }).not.toThrow()
   })
@@ -46,7 +62,9 @@ describe(defineMethod.name, () => {
 
     it('should return the modified object', () => {
       const obj: any = {}
-      const result = defineMethod(obj, 'method', () => 'value')
+      const result = defineMethod(obj, 'method', () => {
+        return 'value'
+      })
 
       expect(result).toBe(obj)
     })
@@ -54,7 +72,9 @@ describe(defineMethod.name, () => {
     it('should work with symbol keys', () => {
       const obj: any = {}
       const sym = Symbol('method')
-      const methodFn = () => 'symbol-method'
+      const methodFn = () => {
+        return 'symbol-method'
+      }
 
       defineMethod(obj, sym, methodFn)
 
@@ -64,7 +84,9 @@ describe(defineMethod.name, () => {
 
     it('should work with number keys', () => {
       const obj: any = {}
-      const methodFn = () => 'number-method'
+      const methodFn = () => {
+        return 'number-method'
+      }
 
       defineMethod(obj, 42, methodFn)
 
@@ -76,7 +98,9 @@ describe(defineMethod.name, () => {
   describe('descriptor handling', () => {
     it('should use default descriptor options', () => {
       const obj: any = {}
-      const methodFn = () => 'value'
+      const methodFn = () => {
+        return 'value'
+      }
 
       defineMethod(obj, 'prop', methodFn)
 
@@ -92,7 +116,9 @@ describe(defineMethod.name, () => {
 
     it('should allow overriding descriptor options', () => {
       const obj: any = {}
-      const methodFn = () => 'value'
+      const methodFn = () => {
+        return 'value'
+      }
 
       defineMethod(obj, 'prop', methodFn, {
         enumerable: true,
@@ -112,7 +138,9 @@ describe(defineMethod.name, () => {
 
     it('should handle value descriptor options', () => {
       const obj: any = {}
-      const methodFn = () => 'test'
+      const methodFn = () => {
+        return 'test'
+      }
 
       defineMethod(obj, 'method', methodFn, {
         writable: false,
@@ -140,7 +168,9 @@ describe(defineMethod.name, () => {
 
     it('should work with arrow functions', () => {
       const obj: any = {}
-      const arrowFn = () => 'arrow'
+      const arrowFn = () => {
+        return 'arrow'
+      }
 
       defineMethod(obj, 'arrow', arrowFn)
 
@@ -163,7 +193,9 @@ describe(defineMethod.name, () => {
 
     it('should work with async functions', async () => {
       const obj: any = {}
-      const asyncFn = async () => 'async-result'
+      const asyncFn = async () => {
+        return 'async-result'
+      }
 
       defineMethod(obj, 'async', asyncFn)
 
@@ -221,8 +253,12 @@ describe(defineMethod.name, () => {
   describe('method overriding', () => {
     it('should allow overriding when writable is true', () => {
       const obj: any = {}
-      const original = () => 'original'
-      const replacement = () => 'replacement'
+      const original = () => {
+        return 'original'
+      }
+      const replacement = () => {
+        return 'replacement'
+      }
 
       defineMethod(obj, 'method', original, { writable: true })
       obj.method = replacement
@@ -233,8 +269,12 @@ describe(defineMethod.name, () => {
 
     it('should prevent overriding when writable is false', () => {
       const obj: any = {}
-      const original = () => 'original'
-      const replacement = () => 'replacement'
+      const original = () => {
+        return 'original'
+      }
+      const replacement = () => {
+        return 'replacement'
+      }
 
       defineMethod(obj, 'method', original, { writable: false })
 
@@ -250,7 +290,9 @@ describe(defineMethod.name, () => {
   describe('edge cases', () => {
     it('should work with existing objects that have properties', () => {
       const obj: any = { existing: 'prop' }
-      const methodFn = () => 'new-method'
+      const methodFn = () => {
+        return 'new-method'
+      }
 
       defineMethod(obj, 'method', methodFn)
 

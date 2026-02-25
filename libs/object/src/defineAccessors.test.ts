@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { defineAccessors } from './defineAccessors'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(defineAccessors.name, () => {
   it('examples', () => {
@@ -10,7 +10,9 @@ describe(defineAccessors.name, () => {
       let value = 0
 
       defineAccessors(obj, 'prop', {
-        get: () => value,
+        get: () => {
+          return value
+        },
         set: (v) => {
           value = v
         },
@@ -29,7 +31,9 @@ describe(defineAccessors.name, () => {
     let value = 0
 
     defineAccessors(obj, 'prop', {
-      get: () => value,
+      get: () => {
+        return value
+      },
       set: (v) => {
         value = v
       },
@@ -47,7 +51,9 @@ describe(defineAccessors.name, () => {
     const obj = {}
 
     defineAccessors(obj, 'prop', {
-      get: () => 42,
+      get: () => {
+        return 42
+      },
     })
 
     const descriptors = Object.getOwnPropertyDescriptors(obj)
@@ -58,7 +64,9 @@ describe(defineAccessors.name, () => {
     const obj = {}
 
     defineAccessors(obj, 'prop', {
-      get: () => 42,
+      get: () => {
+        return 42
+      },
     })
 
     const descriptors = Object.getOwnPropertyDescriptors(obj)
@@ -69,7 +77,9 @@ describe(defineAccessors.name, () => {
     const obj = {}
 
     defineAccessors(obj, 'prop', {
-      get: () => 42,
+      get: () => {
+        return 42
+      },
       enumerable: true,
     })
 
@@ -84,7 +94,9 @@ describe(defineAccessors.name, () => {
     let value = 'symbol value'
 
     defineAccessors(obj, symbolKey, {
-      get: () => value,
+      get: () => {
+        return value
+      },
       set: (v) => {
         value = v
       },
@@ -101,7 +113,9 @@ describe(defineAccessors.name, () => {
     const obj = {}
 
     const result = defineAccessors(obj, 'prop', {
-      get: () => 42,
+      get: () => {
+        return 42
+      },
     })
 
     expect(result).toBe(obj)

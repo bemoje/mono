@@ -1,12 +1,12 @@
 import { CodeBlock } from '../CodeBlock'
 import { ImportKeywords } from './ImportKeywords'
 import { ImportSpecifiers } from './ImportSpecifiers'
-import { Inspector } from "@mono/composition";
-import { Parenting } from "@mono/composition";
-import { lazyProp } from '@mono/decorators'
+import { Inspector } from '@mono/composition'
 import { ModuleSpecifier } from './ModuleSpecifier'
+import { Parenting } from '@mono/composition'
 import { TsCode } from '../TsCode'
 import { TsFile } from '../../file/TsFile'
+import { lazyProp } from '@mono/decorators'
 
 /**
  * Represents an import statement in TypeScript code with parsing and manipulation capabilities.
@@ -43,7 +43,9 @@ export class ImportStatement<P extends TsCode = TsCode> extends CodeBlock<P> {
   get specifiers() {
     const match = this.code.match(/import\s+([^'"]+)\s+from\s+/)
     const code = match ? match[1].trim() : ''
-    if (!code) return undefined
+    if (!code) {
+      return undefined
+    }
     return new ImportSpecifiers(this, this.codeIndexRangeOf(code))
   }
 

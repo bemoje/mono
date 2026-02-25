@@ -1,5 +1,5 @@
-import colors from 'ansi-colors'
 import { NumberFormatter } from '@mono/number'
+import colors from 'ansi-colors'
 import { lazyProp } from '@mono/decorators'
 
 /**
@@ -41,7 +41,9 @@ export class TableFormatter {
     color: {
       separator: colors.dim.gray,
       columnHeader: colors.cyan,
-      rowHeader: (s: string) => s,
+      rowHeader: (s: string) => {
+        return s
+      },
       string: colors.green,
       positiveNumber: colors.yellow,
       negativeNumber: colors.yellow,
@@ -62,8 +64,12 @@ export class TableFormatter {
   get numberColumnPrecisions(): (number | undefined)[] {
     return this.table.reduce((acc: (number | undefined)[], row) => {
       return row.map((cell, c) => {
-        if (typeof cell !== 'number') return undefined
-        if (Number.isInteger(cell)) return 0
+        if (typeof cell !== 'number') {
+          return undefined
+        }
+        if (Number.isInteger(cell)) {
+          return 0
+        }
         const digits = cell.toString().split('.')[1].length
         return Math.max(acc[c] || 0, digits)
       })
@@ -91,7 +97,9 @@ export class TableFormatter {
   @lazyProp
   get tableWidth(): number {
     const separatorsWidth = (this.columnWidths.length - 1) * this.options.columnSeparator.length
-    const columnsWidth = this.columnWidths.reduce((acc, width) => acc + width, 0)
+    const columnsWidth = this.columnWidths.reduce((acc, width) => {
+      return acc + width
+    }, 0)
     return columnsWidth + separatorsWidth
   }
 
@@ -130,7 +138,9 @@ export class TableFormatter {
 
   @lazyProp
   get formattedLines() {
-    const lines = this.formattedRows.map((row) => row.join(this.columnSeparatorFormatted))
+    const lines = this.formattedRows.map((row) => {
+      return row.join(this.columnSeparatorFormatted)
+    })
     lines.splice(1, 0, this.headerRowSeparatorLineFormatted)
     const headersLine = lines[0]
     lines.push(this.headerRowSeparatorLineFormatted)
@@ -144,8 +154,12 @@ export class TableFormatter {
 
   protected handleOptions(options: FormatTableOptions = {}): FormatTableOptionsMerged {
     options = { ...options }
-    if (!options.columnSeparator) options.columnSeparator = TableFormatter.defaults.columnSeparator
-    if (!options.headerRowSeparator) options.headerRowSeparator = TableFormatter.defaults.headerRowSeparator
+    if (!options.columnSeparator) {
+      options.columnSeparator = TableFormatter.defaults.columnSeparator
+    }
+    if (!options.headerRowSeparator) {
+      options.headerRowSeparator = TableFormatter.defaults.headerRowSeparator
+    }
     options.color = !options.color
       ? defaultColorsNoop
       : options.color === true
@@ -193,21 +207,31 @@ export class TableFormatter {
 
   protected formatString(cell: string, r: number, c: number) {
     cell = this.alignLeft(cell, c)
-    if (this.isColumnHeader(r)) return this.options.color.columnHeader(cell)
-    if (this.isRowHeader(c)) return this.options.color.rowHeader(cell)
+    if (this.isColumnHeader(r)) {
+      return this.options.color.columnHeader(cell)
+    }
+    if (this.isRowHeader(c)) {
+      return this.options.color.rowHeader(cell)
+    }
     return this.options.color.string(cell)
   }
 
   protected formatBoolean(cell: string, c: number) {
     const padded = this.alignLeft(cell, c)
-    if (cell === 'true') return this.options.color.booleanTrue(padded)
-    if (cell === 'false') return this.options.color.booleanFalse(padded)
+    if (cell === 'true') {
+      return this.options.color.booleanTrue(padded)
+    }
+    if (cell === 'false') {
+      return this.options.color.booleanFalse(padded)
+    }
     throw new Error(`Unexpected boolean representation: ${cell}`)
   }
 
   protected formatNumber(cell: string, originalCell: number | undefined, c: number) {
     cell = this.alignRight(cell, c)
-    if ((originalCell ?? 0) < 0) return this.options.color.negativeNumber(cell)
+    if ((originalCell ?? 0) < 0) {
+      return this.options.color.negativeNumber(cell)
+    }
     return this.options.color.positiveNumber(cell)
   }
 
@@ -247,14 +271,30 @@ interface FormatTableOptionsMerged {
 }
 
 const defaultColorsNoop: FormatTableColors = {
-  separator: (s: string) => s,
-  columnHeader: (s: string) => s,
-  rowHeader: (s: string) => s,
-  string: (s: string) => s,
-  positiveNumber: (s: string) => s,
-  negativeNumber: (s: string) => s,
-  booleanTrue: (s: string) => s,
-  booleanFalse: (s: string) => s,
+  separator: (s: string) => {
+    return s
+  },
+  columnHeader: (s: string) => {
+    return s
+  },
+  rowHeader: (s: string) => {
+    return s
+  },
+  string: (s: string) => {
+    return s
+  },
+  positiveNumber: (s: string) => {
+    return s
+  },
+  negativeNumber: (s: string) => {
+    return s
+  },
+  booleanTrue: (s: string) => {
+    return s
+  },
+  booleanFalse: (s: string) => {
+    return s
+  },
 }
 
 type Primitive = string | number | boolean | undefined | null

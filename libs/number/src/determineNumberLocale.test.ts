@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
 import { determineNumberLocale } from './determineNumberLocale'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(determineNumberLocale.name, () => {
   describe('indistinguishable', () => {
@@ -120,7 +120,9 @@ describe(determineNumberLocale.name, () => {
 
   describe('invalid', () => {
     it('should throw TypeError for a value with both comma and period that does not match either locale', () => {
-      expect(() => determineNumberLocale(['1,2.3'])).toThrow(TypeError)
+      expect(() => {
+        return determineNumberLocale(['1,2.3'])
+      }).toThrow(TypeError)
     })
   })
 })

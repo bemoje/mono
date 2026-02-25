@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strFirstCharToLowerCase } from './strFirstCharToLowerCase'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('strFirstCharToLowerCase', () => {
   it('should convert the first character of a string to lowercase', () => {

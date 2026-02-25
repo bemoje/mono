@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getWsPaths } from './getWsPaths'
+import { it } from 'vitest'
 import upath from 'upath'
 
 describe(getWsPaths.name, () => {

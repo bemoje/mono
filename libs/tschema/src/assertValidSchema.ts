@@ -1,7 +1,7 @@
-import { Static } from '@sinclair/typebox'
-import { Value } from '@sinclair/typebox/value'
 import { SchemaValidationError } from './SchemaValidationError'
+import { Static } from '@sinclair/typebox'
 import { TSchema } from '@sinclair/typebox'
+import { Value } from '@sinclair/typebox/value'
 
 /**
  * Asserts that data conforms to a TypeBox schema, throwing a SchemaValidationError if it doesn't.

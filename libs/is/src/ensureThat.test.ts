@@ -1,19 +1,30 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
-import { expectTypeOf } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import { ensureThat } from './ensureThat'
 import * as ValidatorErrorModule from './ValidatorError'
 
-describe(ensureThat.name, () => {
-  const isZero = (n: unknown) => typeof n === 'number' && n === 0
-  const isPos = (n: unknown) => typeof n === 'number' && n >= 0
-  const isNeg = (n: unknown) => typeof n === 'number' && n < 0
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { ensureThat } from './ensureThat'
+import { expect } from 'vitest'
+import { expectTypeOf } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
-  const isZeroAsync = async (n: unknown) => typeof n === 'number' && n === 0
-  const isPosAsync = async (n: unknown) => typeof n === 'number' && n >= 0
+describe(ensureThat.name, () => {
+  const isZero = (n: unknown) => {
+    return typeof n === 'number' && n === 0
+  }
+  const isPos = (n: unknown) => {
+    return typeof n === 'number' && n >= 0
+  }
+  const isNeg = (n: unknown) => {
+    return typeof n === 'number' && n < 0
+  }
+
+  const isZeroAsync = async (n: unknown) => {
+    return typeof n === 'number' && n === 0
+  }
+  const isPosAsync = async (n: unknown) => {
+    return typeof n === 'number' && n >= 0
+  }
 
   let errSpy = vi.spyOn(ValidatorErrorModule, 'ValidatorError')
 
@@ -40,95 +51,161 @@ describe(ensureThat.name, () => {
 
   describe('should pass when all validators return true', () => {
     it('validator => true => pass', () => {
-      expect(() => ensureThat(3, isPos)).not.toThrow()
+      expect(() => {
+        return ensureThat(3, isPos)
+      }).not.toThrow()
     })
     it('[validator] => [true] => pass', () => {
-      expect(() => ensureThat(3, [isPos])).not.toThrow()
+      expect(() => {
+        return ensureThat(3, [isPos])
+      }).not.toThrow()
     })
     it('validator[] => [true, true] => pass', () => {
-      expect(() => ensureThat(0, [isZero, isPos])).not.toThrow()
+      expect(() => {
+        return ensureThat(0, [isZero, isPos])
+      }).not.toThrow()
     })
   })
 
   describe('should throw when all validators return false', () => {
     it('validator => false => throws', () => {
-      expectThrowsWith(() => ensureThat(-1, isPos), {
-        cause: { isPos: false },
-      })
+      expectThrowsWith(
+        () => {
+          return ensureThat(-1, isPos)
+        },
+        {
+          cause: { isPos: false },
+        },
+      )
     })
     it('[validator] => [false] => throws', () => {
-      expectThrowsWith(() => ensureThat(-1, [isPos]), {
-        cause: { isPos: false },
-      })
+      expectThrowsWith(
+        () => {
+          return ensureThat(-1, [isPos])
+        },
+        {
+          cause: { isPos: false },
+        },
+      )
     })
     it('validator[] => [false, false] => throws', () => {
-      expectThrowsWith(() => ensureThat(3, [isZero, isNeg]), {
-        cause: { isZero: false, isNeg: false },
-      })
+      expectThrowsWith(
+        () => {
+          return ensureThat(3, [isZero, isNeg])
+        },
+        {
+          cause: { isZero: false, isNeg: false },
+        },
+      )
     })
   })
 
   describe('should throw when any validator returns false', () => {
     it('validator[] => [false, true] => throws', () => {
-      expectThrowsWith(() => ensureThat(0, [isNeg, isZero]), {
-        cause: { isNeg: false },
-      })
+      expectThrowsWith(
+        () => {
+          return ensureThat(0, [isNeg, isZero])
+        },
+        {
+          cause: { isNeg: false },
+        },
+      )
     })
     it('validator[] => [true, false] => throws', () => {
-      expectThrowsWith(() => ensureThat(0, [isZero, isNeg]), {
-        cause: { isNeg: false },
-      })
+      expectThrowsWith(
+        () => {
+          return ensureThat(0, [isZero, isNeg])
+        },
+        {
+          cause: { isNeg: false },
+        },
+      )
     })
   })
 
   describe('should negate all validator return values when negate option is enabled', () => {
     // all true
     it('validator => true, negate => false => throws', () => {
-      expectThrowsWith(() => ensureThat(3, isPos, { negate: true }), {
-        cause: { isPos: true },
-      })
+      expectThrowsWith(
+        () => {
+          return ensureThat(3, isPos, { negate: true })
+        },
+        {
+          cause: { isPos: true },
+        },
+      )
     })
     it('[validator] => [true], negate => [false] => throws', () => {
-      expectThrowsWith(() => ensureThat(3, [isPos], { negate: true }), {
-        cause: { isPos: true },
-      })
+      expectThrowsWith(
+        () => {
+          return ensureThat(3, [isPos], { negate: true })
+        },
+        {
+          cause: { isPos: true },
+        },
+      )
     })
     it('validator[] => [true, true], negate => [false, false] => throws', () => {
-      expectThrowsWith(() => ensureThat(0, [isZero, isPos], { negate: true }), {
-        cause: { isZero: true, isPos: true },
-      })
+      expectThrowsWith(
+        () => {
+          return ensureThat(0, [isZero, isPos], { negate: true })
+        },
+        {
+          cause: { isZero: true, isPos: true },
+        },
+      )
     })
 
     // both true and false
     it('validator[] => [true, false], negate => [false, true] => throws', () => {
-      expectThrowsWith(() => ensureThat(0, [isZero, isNeg], { negate: true }), {
-        cause: { isZero: true },
-      })
+      expectThrowsWith(
+        () => {
+          return ensureThat(0, [isZero, isNeg], { negate: true })
+        },
+        {
+          cause: { isZero: true },
+        },
+      )
     })
     it('validator[] => [false, true], negate => [true, false] => throws', () => {
-      expectThrowsWith(() => ensureThat(0, [isNeg, isZero], { negate: true }), {
-        cause: { isZero: true },
-      })
+      expectThrowsWith(
+        () => {
+          return ensureThat(0, [isNeg, isZero], { negate: true })
+        },
+        {
+          cause: { isZero: true },
+        },
+      )
     })
 
     // all false
     it('[validator] => false, negate => true => pass', () => {
-      expect(() => ensureThat(3, isNeg, { negate: true })).not.toThrow()
+      expect(() => {
+        return ensureThat(3, isNeg, { negate: true })
+      }).not.toThrow()
     })
     it('[validator] => [false], negate => [true] => pass', () => {
-      expect(() => ensureThat(3, [isNeg], { negate: true })).not.toThrow()
+      expect(() => {
+        return ensureThat(3, [isNeg], { negate: true })
+      }).not.toThrow()
     })
     it('validator[] => [false, false], negate => [true, true] => pass', () => {
-      expect(() => ensureThat(3, [isZero, isNeg], { negate: true })).not.toThrow()
+      expect(() => {
+        return ensureThat(3, [isZero, isNeg], { negate: true })
+      }).not.toThrow()
     })
   })
 
   describe('should always pass when no validators are provided', () => {
     it('[] => [] => pass', () => {
-      expect(() => ensureThat(2 as never, [])).not.toThrow()
+      expect(() => {
+        return ensureThat(2 as never, [])
+      }).not.toThrow()
     })
     it('[] => [], negate => pass', () => {
-      expect(() => ensureThat(2 as never, [], { negate: true })).not.toThrow()
+      expect(() => {
+        return ensureThat(2 as never, [], { negate: true })
+      }).not.toThrow()
     })
   })
 
@@ -151,14 +228,29 @@ describe(ensureThat.name, () => {
 
   describe('unnamed functions', () => {
     it('anonymous validator', () => {
-      expect(() => ensureThat(5, (n: unknown) => true)).not.toThrow()
+      expect(() => {
+        return ensureThat(5, (n: unknown) => {
+          return true
+        })
+      }).not.toThrow()
 
-      expect(() => ensureThat(5, (n: unknown) => false)).toThrow()
+      expect(() => {
+        return ensureThat(5, (n: unknown) => {
+          return false
+        })
+      }).toThrow()
       expectErrorData({
         cause: { '[0]': false },
       })
 
-      expect(() => ensureThat(5, [isZero, (n: unknown) => false])).toThrow()
+      expect(() => {
+        return ensureThat(5, [
+          isZero,
+          (n: unknown) => {
+            return false
+          },
+        ])
+      }).toThrow()
       expectErrorData({
         cause: { 'isZero': false, '[1]': false },
       })
@@ -166,38 +258,59 @@ describe(ensureThat.name, () => {
   })
 
   describe('validators returning strings', () => {
-    const stringFail = (n: unknown) => 'failure reason' as string | true
+    const stringFail = (n: unknown) => {
+      return 'failure reason' as string | true
+    }
 
     it('string-returning validator failure', () => {
-      expect(() => ensureThat(1, stringFail)).toThrow()
+      expect(() => {
+        return ensureThat(1, stringFail)
+      }).toThrow()
       expectErrorData({
         cause: { stringFail: 'failure reason' },
       })
     })
 
     it('anonymous string-returning validator failure', () => {
-      expect(() => ensureThat(1, (n: unknown) => 'failure reason' as string | true)).toThrow()
+      expect(() => {
+        return ensureThat(1, (n: unknown) => {
+          return 'failure reason' as string | true
+        })
+      }).toThrow()
       expectErrorData({
         cause: { '[0]': 'failure reason' },
       })
     })
 
     it('anonymous mixed boolean and string returning validator failure', () => {
-      expect(() => ensureThat(1, [isZero, (n: unknown) => 'failure reason' as string | true])).toThrow()
+      expect(() => {
+        return ensureThat(1, [
+          isZero,
+          (n: unknown) => {
+            return 'failure reason' as string | true
+          },
+        ])
+      }).toThrow()
       expectErrorData({
         cause: { 'isZero': false, '[1]': 'failure reason' },
       })
     })
 
     it('string-returning validator with negate', () => {
-      expect(() => ensureThat(1, stringFail, { negate: true })).not.toThrow()
-      expect(() => ensureThat(1, [stringFail], { negate: true })).not.toThrow()
+      expect(() => {
+        return ensureThat(1, stringFail, { negate: true })
+      }).not.toThrow()
+      expect(() => {
+        return ensureThat(1, [stringFail], { negate: true })
+      }).not.toThrow()
     })
   })
 
   describe('custom message option', () => {
     it('should use custom message when provided', () => {
-      expect(() => ensureThat(-1, isPos, { message: 'Custom error' })).toThrow()
+      expect(() => {
+        return ensureThat(-1, isPos, { message: 'Custom error' })
+      }).toThrow()
       expectErrorData({
         cause: { isPos: false },
       })
@@ -206,13 +319,25 @@ describe(ensureThat.name, () => {
   })
 
   describe('typing tests', () => {
-    const unknownParam = (n: unknown) => true
-    const stringParam = (n: string) => true
+    const unknownParam = (n: unknown) => {
+      return true
+    }
+    const stringParam = (n: string) => {
+      return true
+    }
 
-    const syncBool = (n: number) => n > 0
-    const syncString = (n: number) => (n > 0 ? true : 'bad')
-    const asyncBool = async (n: number) => n > 0
-    const asyncString = async (n: number) => (n > 0 ? true : 'bad')
+    const syncBool = (n: number) => {
+      return n > 0
+    }
+    const syncString = (n: number) => {
+      return n > 0 ? true : 'bad'
+    }
+    const asyncBool = async (n: number) => {
+      return n > 0
+    }
+    const asyncString = async (n: number) => {
+      return n > 0 ? true : 'bad'
+    }
 
     it('accepts single sync validator', () => {
       expectTypeOf(ensureThat).toBeFunction()

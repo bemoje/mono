@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isUnc } from './isUnc'
+import { it } from 'vitest'
 
 describe(isUnc.name, function () {
   it('should return true for UNC paths', function () {

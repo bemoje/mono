@@ -1,11 +1,11 @@
-import fs from 'fs-extra'
+import { arrayTableToMarkdown } from './arrayTableToMarkdown'
 import cp from 'node:child_process'
-import upath from 'upath'
+import fs from 'fs-extra'
+import { getLinesOfCode } from './getLinesOfCode'
 import { getRepoPackageJson } from './getRepoPackageJson'
 import { importLibs } from './importLibs'
-import { arrayTableToMarkdown } from './arrayTableToMarkdown'
-import { getLinesOfCode } from './getLinesOfCode'
 import { parseLibsTsDocSummaries } from './parseLibsTsDocSummaries'
+import upath from 'upath'
 
 export const README_TEMPLATE_PATH = 'docs/readmeTemplate.md'
 
@@ -13,16 +13,26 @@ export const README_TEMPLATE_PATH = 'docs/readmeTemplate.md'
  * Renders the full README content.
  */
 export async function renderReadme(): Promise<string> {
-  cp.execSync('yarn prettier -w --l ' + README_TEMPLATE_PATH, { stdio: 'inherit' })
+  cp.execSync(`yarn prettier -w --l ${README_TEMPLATE_PATH}`, { stdio: 'inherit' })
 
   let md = await fs.readFile(README_TEMPLATE_PATH, 'utf8')
 
-  md = md.replace('<!-- REPO_NAME -->', await getRepoName())
-  md = md.replace('<!-- REPO_DESCRIPTION -->', await getRepoDescription())
-  md = md.replace('<!-- LINES_OF_CODE_TABLE -->', await renderLinesOfCodeTable())
-  md = md.replace('<!-- LIBS_COVERAGE_SUMMARY_TABLE -->', await renderCoverageSummary())
-  md = md.replace('<!-- LIBRARY_EXPORTED_MODULES -->', await renderLibsExportedModules())
-  md = md.replace('<!-- TOC_TABLE -->', await renderTOC(md))
+  const [repoName, repoDescription, linesOfCodeTable, coverageSummary, libsExportedModules] = await Promise.all([
+    getRepoName(),
+    getRepoDescription(),
+    renderLinesOfCodeTable(),
+    renderCoverageSummary(),
+    renderLibsExportedModules(),
+  ])
+
+  md = md.replace('<!-- REPO_NAME -->', repoName)
+  md = md.replace('<!-- REPO_DESCRIPTION -->', repoDescription)
+  md = md.replace('<!-- LINES_OF_CODE_TABLE -->', linesOfCodeTable)
+  md = md.replace('<!-- LIBS_COVERAGE_SUMMARY_TABLE -->', coverageSummary)
+  md = md.replace('<!-- LIBRARY_EXPORTED_MODULES -->', libsExportedModules)
+
+  const toc = await renderTOC(md)
+  md = md.replace('<!-- TOC_TABLE -->', toc)
 
   const descriptions = await getNpmPkgDescriptions([
     ['<!-- ES_TOOLKIT_INFO -->', 'es-toolkit'],
@@ -43,7 +53,9 @@ export async function renderTOC(readmeMarkdown: string): Promise<string> {
   return readmeMarkdown
     .replace(/\n```\w+\n[^`]+\n```\n/gs, '\n')
     .split('\n')
-    .filter((line) => /^#+ /.test(line))
+    .filter((line) => {
+      return /^#+ /.test(line)
+    })
     .map((line) => {
       const level = line.match(/^#+/)![0].length
       const indent = '  '.repeat(level - 1)
@@ -58,6 +70,7 @@ export async function renderTOC(readmeMarkdown: string): Promise<string> {
     .join('\n')
 }
 
+// eslint-disable-next-line max-lines-per-function
 export async function renderLibsExportedModules(): Promise<string> {
   const { validSummaries } = await parseLibsTsDocSummaries()
 
@@ -69,9 +82,13 @@ export async function renderLibsExportedModules(): Promise<string> {
     try {
       const regex = /^libs\/([^/]+)\/src\/(.+)\.ts$/
       const match = filepath.match(regex)
-      if (!match) continue
+      if (!match) {
+        continue
+      }
       const [libName, fileName] = match.slice(1)
-      if (libName === 'module.exports') continue
+      if (libName === 'module.exports') {
+        continue
+      }
       if (!librarySummaries.has(libName)) {
         librarySummaries.set(libName, [])
       }
@@ -90,18 +107,28 @@ export async function renderLibsExportedModules(): Promise<string> {
 
   for (const libName of sortedLibNames) {
     const libModule = libsModulesMap.get(libName)
-    if (!libModule) continue
+    if (!libModule) {
+      continue
+    }
 
     const namedExports = Object.keys(libModule)
-      .filter((name) => name !== 'default')
+      .filter((name) => {
+        return name !== 'default'
+      })
       .sort()
 
-    if (namedExports.length === 0) continue
+    if (namedExports.length === 0) {
+      continue
+    }
 
     libExports.push(`**${libName}**`)
 
     const summaries = librarySummaries.get(libName) || []
-    const summaryMap = new Map(summaries.map((s) => [s.functionName, s.summary]))
+    const summaryMap = new Map(
+      summaries.map((s) => {
+        return [s.functionName, s.summary]
+      }),
+    )
 
     for (const exportName of namedExports) {
       const summary = summaryMap.get(exportName) || '?'
@@ -148,11 +175,13 @@ export async function renderCoverageSummary(): Promise<string> {
 
 export async function getNpmPkgDescriptions(placeholders: [string, string][]) {
   return await Promise.all(
-    placeholders.map(async ([placeholder, name]) => ({
-      placeholder,
-      name,
-      description: await getNpmPkgDescription(name),
-    })),
+    placeholders.map(async ([placeholder, name]) => {
+      return {
+        placeholder,
+        name,
+        description: await getNpmPkgDescription(name),
+      }
+    }),
   )
 }
 
@@ -160,6 +189,8 @@ export async function renderLinesOfCodeTable(): Promise<string> {
   const counts = await getLinesOfCode()
   return arrayTableToMarkdown([
     ['file type', 'files', 'lines of code'],
-    ...Object.entries(counts).map(([k, v]) => [k, String(v.files), String(v.lines)]),
+    ...Object.entries(counts).map(([k, v]) => {
+      return [k, String(v.files), String(v.lines)]
+    }),
   ])
 }

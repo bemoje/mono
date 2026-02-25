@@ -1,10 +1,10 @@
 import type { Logger } from '@mono/node'
-import upath from 'upath'
-import { glob } from 'glob'
-import { getRepoRootDirpath } from '../lib/getRepoRootDirpath'
-import { outputFileIfChanged } from '../lib/outputFileIfChanged'
 import { forEachAsync } from 'es-toolkit'
 import fs from 'fs-extra'
+import { getRepoRootDirpath } from '../lib/getRepoRootDirpath'
+import { glob } from 'glob'
+import { outputFileIfChanged } from '../lib/outputFileIfChanged'
+import upath from 'upath'
 
 export async function fixIndexTsAction(
   dirnames: string[],
@@ -14,8 +14,12 @@ export async function fixIndexTsAction(
   const repoRoot = getRepoRootDirpath()
 
   const libWorkspacePaths = (dirnames.length ? dirnames : await fs.readdir('libs'))
-    .filter((dirname) => !opts.ignore || !opts.ignore.includes(dirname))
-    .map((d) => upath.joinSafe('libs', d))
+    .filter((dirname) => {
+      return !opts.ignore || !opts.ignore.includes(dirname)
+    })
+    .map((d) => {
+      return upath.joinSafe('libs', d)
+    })
 
   await forEachAsync(
     libWorkspacePaths,
@@ -25,28 +29,50 @@ export async function fixIndexTsAction(
       const WS_ROOT = upath.joinSafe(repoRoot, wsPath)
 
       const filepaths = (await glob('src/**/*.ts', { cwd: WS_ROOT }))
-        .map((fp) => upath.normalizeSafe(fp))
-        .filter((fp) => !/[./](test|wip|old|examples?|benchmark|temp|internal)[./]/.test(fp))
+        .map((fp) => {
+          return upath.normalizeSafe(fp)
+        })
+        .filter((fp) => {
+          return !/[./](test|wip|old|examples?|benchmark|temp|internal)[./]/.test(fp)
+        })
 
       const exportDirpaths = filepaths
-        .filter((fp) => fp.endsWith('/index.ts') && fp !== OUTFILE)
-        .map((fp) => upath.dirname(fp))
+        .filter((fp) => {
+          return fp.endsWith('/index.ts') && fp !== OUTFILE
+        })
+        .map((fp) => {
+          return upath.dirname(fp)
+        })
         .sort()
 
       const exportFilepaths = filepaths
-        .filter((fp) => !exportDirpaths.some((dp) => fp.startsWith(dp)))
-        .filter((fp) => fp !== OUTFILE)
-        .map((fp) => fp.replace(/\.ts$/, ''))
+        .filter((fp) => {
+          return !exportDirpaths.some((dp) => {
+            return fp.startsWith(dp)
+          })
+        })
+        .filter((fp) => {
+          return fp !== OUTFILE
+        })
+        .map((fp) => {
+          return fp.replace(/\.ts$/, '')
+        })
         .sort()
 
       const relative = [...exportDirpaths, ...exportFilepaths] //
-        .map((fp) => fp.replace(/^src/, '.'))
+        .map((fp) => {
+          return fp.replace(/^src/, '.')
+        })
 
       const tempName = (i: number) => {
-        return 'MODULE_' + String(i + 1).padStart(relative.length.toString().length, '0')
+        return `MODULE_${String(i + 1).padStart(relative.length.toString().length, '0')}`
       }
 
-      let lines = relative.flatMap((fp) => `export * from '${fp}'`).concat('')
+      let lines = relative
+        .flatMap((fp) => {
+          return `export * from '${fp}'`
+        })
+        .concat('')
 
       const tsconfig = {
         ...(await fs.readJson(upath.joinSafe(repoRoot, 'tsconfig.json'), 'utf8')),
@@ -60,15 +86,20 @@ export async function fixIndexTsAction(
           }),
           '', //
           `export default {`,
-          ...relative.map((_, i) => `  ...${tempName(i)},` + (i === 0 ? ' //' : '')),
+          ...relative.map((_, i) => {
+            return `  ...${tempName(i)},${i === 0 ? ' //' : ''}`
+          }),
           `}`,
           '',
         )
       }
 
       const testLines = [
-        `import { describe, expect, it } from 'vitest'`,
         `import * as EXPORTS from './index'`,
+        ``,
+        `import { describe } from 'vitest'`,
+        `import { expect } from 'vitest'`,
+        `import { it } from 'vitest'`,
         ``,
         `describe('index.ts', () => {`,
         `  it('should load modules', () => {`,

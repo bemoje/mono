@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { ImportKeywords } from './ImportKeywords'
 import { TsCode } from '../TsCode'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 function getImportStatement(code: string) {
   const tsCode = new TsCode({} as any, code)

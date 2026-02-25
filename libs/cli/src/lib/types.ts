@@ -1,9 +1,9 @@
+import type { AllUnionFields } from 'type-fest'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Command } from './Command'
-import type { Simplify } from "type-fest";
-import type { AllUnionFields } from "type-fest";
-import type { SetFieldType } from "type-fest";
-import type { SetRequired } from "type-fest";
+import type { SetFieldType } from 'type-fest'
+import type { SetRequired } from 'type-fest'
+import type { Simplify } from 'type-fest'
 
 /** Logger interface defining methods for different log levels. */
 export interface Logger {
@@ -23,7 +23,7 @@ export type Arguments = (undefined | string | string[])[]
 export type Options = Record<string, undefined | boolean | string | string[]>
 
 /** Result of parsing command-line input, including arguments, options, triggered actions, and execution method */
- 
+
 export type SubCommands = { [name: string]: Command<Arguments, Options, any> }
 
 /** Base descriptor for command-line arguments with shared properties */

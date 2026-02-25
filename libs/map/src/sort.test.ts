@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { sort } from './sort'
 import { ExtMap } from './ExtMap'
+import { describe } from 'vitest'
 import { entriesArray } from './entriesArray'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { sort } from './sort'
 
 describe(sort.name, () => {
   it('should sort entries using compare function', () => {
@@ -13,7 +13,9 @@ describe(sort.name, () => {
       ['b', 2],
     ])
 
-    const result = sort(map, ([k1], [k2]) => (k1 as string).localeCompare(k2 as string))
+    const result = sort(map, ([k1], [k2]) => {
+      return (k1 as string).localeCompare(k2 as string)
+    })
 
     expect(result).toBe(map) // Should return the same instance
     expect(entriesArray(map)).toEqual([
@@ -30,7 +32,9 @@ describe(sort.name, () => {
       ['m', 13],
     ])
 
-    sort(map, ([k1], [k2]) => (k1 as string).localeCompare(k2 as string))
+    sort(map, ([k1], [k2]) => {
+      return (k1 as string).localeCompare(k2 as string)
+    })
 
     expect(entriesArray(map)).toEqual([
       ['a', 1],
@@ -42,7 +46,9 @@ describe(sort.name, () => {
   it('should handle empty map', () => {
     const map = new ExtMap<string, number>()
 
-    const result = sort(map, ([k1], [k2]) => (k1 as string).localeCompare(k2 as string))
+    const result = sort(map, ([k1], [k2]) => {
+      return (k1 as string).localeCompare(k2 as string)
+    })
 
     expect(result).toBe(map)
     expect(entriesArray(map)).toEqual([])
@@ -55,7 +61,9 @@ describe(sort.name, () => {
       ['c', 20],
     ])
 
-    sort(map, ([, v1], [, v2]) => (v1 as number) - (v2 as number))
+    sort(map, ([, v1], [, v2]) => {
+      return (v1 as number) - (v2 as number)
+    })
 
     expect(entriesArray(map)).toEqual([
       ['b', 10],
@@ -71,7 +79,9 @@ describe(sort.name, () => {
       ['person3', { name: 'Charlie', age: 35 }],
     ])
 
-    sort(map, ([, v1], [, v2]) => (v1 as { age: number }).age - (v2 as { age: number }).age)
+    sort(map, ([, v1], [, v2]) => {
+      return (v1 as { age: number }).age - (v2 as { age: number }).age
+    })
 
     expect(entriesArray(map)).toEqual([
       ['person2', { name: 'Bob', age: 25 }],
@@ -83,7 +93,9 @@ describe(sort.name, () => {
   it('should handle single entry', () => {
     const map = new ExtMap<string, number>([['a', 1]])
 
-    sort(map, ([k1], [k2]) => (k1 as string).localeCompare(k2 as string))
+    sort(map, ([k1], [k2]) => {
+      return (k1 as string).localeCompare(k2 as string)
+    })
 
     expect(entriesArray(map)).toEqual([['a', 1]])
   })

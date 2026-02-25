@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strRemoveFirstAndLastLine } from './strRemoveFirstAndLastLine'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('strRemoveFirstAndLastLine', () => {
   it('should remove the first and last line from a multi-line string', () => {

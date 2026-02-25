@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { objUpdatePropertyDescriptors } from './objUpdatePropertyDescriptors'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe(objUpdatePropertyDescriptors.name, () => {
   it('should update property descriptors of specified properties on the object', () => {
@@ -9,10 +9,12 @@ describe(objUpdatePropertyDescriptors.name, () => {
       name: 'John',
       age: 30,
     }
-    objUpdatePropertyDescriptors(object, ['name'], (descriptor, property) => ({
-      ...descriptor,
-      enumerable: false,
-    }))
+    objUpdatePropertyDescriptors(object, ['name'], (descriptor, property) => {
+      return {
+        ...descriptor,
+        enumerable: false,
+      }
+    })
     expect(Object.getOwnPropertyDescriptor(object, 'name')).toEqual({
       value: 'John',
       writable: true,
@@ -27,7 +29,9 @@ describe(objUpdatePropertyDescriptors.name, () => {
       age: 30,
     }
     expect(() => {
-      objUpdatePropertyDescriptors(object, ['address'], (descriptor, property) => descriptor)
+      objUpdatePropertyDescriptors(object, ['address'], (descriptor, property) => {
+        return descriptor
+      })
     }).toThrowError("Property, 'address' does not exist on object.")
   })
 
@@ -37,7 +41,9 @@ describe(objUpdatePropertyDescriptors.name, () => {
       age: 30,
     }
     expect(() => {
-      objUpdatePropertyDescriptors(object, ['name', 'address'], (descriptor, property) => descriptor)
+      objUpdatePropertyDescriptors(object, ['name', 'address'], (descriptor, property) => {
+        return descriptor
+      })
     }).toThrowError("Property, 'address' does not exist on object.")
   })
 })

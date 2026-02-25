@@ -5,6 +5,8 @@
 export function unwrapDoubleQuotes(s: string) {
   s = s.trim()
   const result = s.replace(/^"/, '').replace(/"$/, '')
-  if (result.length !== s.length - 2) return s
+  if (result.length !== s.length - 2) {
+    return s
+  }
   return result
 }

@@ -1,7 +1,7 @@
 import { createLteValidator } from './createLteValidator'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(createLteValidator.name, () => {
   it('should create a validator with correct name', () => {

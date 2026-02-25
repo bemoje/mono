@@ -1,7 +1,7 @@
 import { IsFileExt } from './IsFileExt'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(IsFileExt.name, () => {
   it('should create file extension validator', () => {

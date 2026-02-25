@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { SchemaValidationError } from './SchemaValidationError'
 import { Type } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('SchemaValidationError', () => {
   it('should create an instance from an array of errors', () => {
@@ -11,7 +11,6 @@ describe('SchemaValidationError', () => {
     const value = { name: 'John' }
     const message = 'Custom error message'
 
-     
     const error = new SchemaValidationError(errors as any, value, message)
 
     expect(error).toBeInstanceOf(SchemaValidationError)

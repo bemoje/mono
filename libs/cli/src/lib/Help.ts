@@ -1,9 +1,9 @@
-import { lazyProp } from '@mono/decorators'
-import type { IHelp } from './types'
 import type { Argument } from './types'
-import type { ICommand } from './types'
-import type { Option } from './types'
 import C from 'ansi-colors'
+import type { ICommand } from './types'
+import type { IHelp } from './types'
+import type { Option } from './types'
+import { lazyProp } from '@mono/decorators'
 
 /**
  * This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the
@@ -30,7 +30,9 @@ export class Help implements IHelp {
    */
   @lazyProp
   visibleCommands(): ICommand[] {
-    const res = Object.values(this.cmd.commands).filter((c) => !c.hidden)
+    const res = Object.values(this.cmd.commands).filter((c) => {
+      return !c.hidden
+    })
     if (this.sortSubcommands) {
       res.sort((a: ICommand, b: ICommand) => {
         return a.name.localeCompare(b.name)
@@ -55,8 +57,12 @@ export class Help implements IHelp {
    */
   @lazyProp
   visibleOptions(): Option[] {
-    const res = this.cmd.options.filter((option: Option) => !option.hidden)
-    if (this.sortOptions) res.sort(this.compareOptions)
+    const res = this.cmd.options.filter((option: Option) => {
+      return !option.hidden
+    })
+    if (this.sortOptions) {
+      res.sort(this.compareOptions)
+    }
     return res
   }
 
@@ -66,7 +72,11 @@ export class Help implements IHelp {
   @lazyProp
   visibleArguments(): Argument[] {
     // If there are any arguments with a description then return all the arguments.
-    if (this.cmd.arguments.find((argument: Argument) => !!argument.description)) {
+    if (
+      this.cmd.arguments.find((argument: Argument) => {
+        return !!argument.description
+      })
+    ) {
       return [...this.cmd.arguments]
     }
     return []
@@ -76,12 +86,16 @@ export class Help implements IHelp {
    * Get the command term to show in the list of subcommands.
    */
   subcommandTerm(sub: ICommand): string {
-    const args = sub.arguments.map((arg) => arg.usage).join(' ')
+    const args = sub.arguments
+      .map((arg) => {
+        return arg.usage
+      })
+      .join(' ')
     return (
-      (sub.aliases[0] ? sub.aliases[0].padEnd(this.longestSubcommandAliasLength(), ' ') + ' | ' : '') +
+      (sub.aliases[0] ? `${sub.aliases[0].padEnd(this.longestSubcommandAliasLength(), ' ')} | ` : '') +
       sub.name +
-      (sub.options.length ? ' ' + this.usageDisplayOptionsAs : '') + // simplistic check for non-help option
-      (args ? ' ' + args : '')
+      (sub.options.length ? ` ${this.usageDisplayOptionsAs}` : '') + // simplistic check for non-help option
+      (args ? ` ${args}` : '')
     )
   }
 
@@ -104,7 +118,12 @@ export class Help implements IHelp {
    */
   @lazyProp
   longestSubcommandAliasLength(): number {
-    return Math.max(0, ...this.visibleCommands().map((c) => c.aliases[0]?.length || 0))
+    return Math.max(
+      0,
+      ...this.visibleCommands().map((c) => {
+        return c.aliases[0]?.length || 0
+      }),
+    )
   }
 
   /**
@@ -144,27 +163,22 @@ export class Help implements IHelp {
     // Usage
     let path = ''
     for (let ancestor = this.cmd.parent; ancestor; ancestor = ancestor.parent) {
-      path = ancestor.name + ' ' + path
+      path = `${ancestor.name} ${path}`
     }
 
-    return (
-      path +
-      this.cmd.name +
-      ' ' +
-      [
-        ...(Object.keys(this.cmd.commands).length ? [this.usageDisplaySubcommandAs] : []),
-        ...(this.cmd.options.length ? [this.usageDisplayOptionsAs] : []),
-        ...this.cmd.arguments.map((arg) => {
-          return arg.required
-            ? arg.variadic
-              ? `<${arg.name}...>`
-              : `<${arg.name}>`
-            : arg.variadic
-              ? `[${arg.name}...]`
-              : `[${arg.name}]`
-        }),
-      ].join(' ')
-    ).trim()
+    return `${path + this.cmd.name} ${[
+      ...(Object.keys(this.cmd.commands).length ? [this.usageDisplaySubcommandAs] : []),
+      ...(this.cmd.options.length ? [this.usageDisplayOptionsAs] : []),
+      ...this.cmd.arguments.map((arg) => {
+        return arg.required
+          ? arg.variadic
+            ? `<${arg.name}...>`
+            : `<${arg.name}>`
+          : arg.variadic
+            ? `[${arg.name}...]`
+            : `[${arg.name}]`
+      }),
+    ].join(' ')}`.trim()
   }
 
   /**
@@ -200,7 +214,11 @@ export class Help implements IHelp {
     if (option.choices) {
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${option.choices.map((choice: string) => String(choice)).join(', ')}`,
+        `choices: ${option.choices
+          .map((choice: string) => {
+            return String(choice)
+          })
+          .join(', ')}`,
       )
     }
     if (option.defaultValue && !(Array.isArray(option.defaultValue) && option.defaultValue.length === 0)) {
@@ -229,7 +247,11 @@ export class Help implements IHelp {
     if (argument.choices) {
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${argument.choices.map((choice: string) => String(choice)).join(', ')}`,
+        `choices: ${argument.choices
+          .map((choice: string) => {
+            return String(choice)
+          })
+          .join(', ')}`,
       )
     }
     if (argument.defaultValue !== undefined) {
@@ -249,7 +271,9 @@ export class Help implements IHelp {
    * Format a list of items, given a heading and an array of formatted items.
    */
   formatItemList(heading: string, items: string[]): string[] {
-    if (items.length === 0) return []
+    if (items.length === 0) {
+      return []
+    }
     return [this.styleTitle(heading), ...items, '']
   }
 
@@ -265,7 +289,9 @@ export class Help implements IHelp {
     // Add groups in order of appearance in unsortedItems.
     unsortedItems.forEach((item: T) => {
       const group = getGroup(item)
-      if (!result.has(group)) result.set(group, [])
+      if (!result.has(group)) {
+        result.set(group, [])
+      }
     })
     // Add items in order of appearance in visibleItems.
     visibleItems.forEach((item: T) => {
@@ -303,11 +329,21 @@ export class Help implements IHelp {
     return str
       .split(' ')
       .map((word: string, index, arr) => {
-        if (word === this.usageDisplaySubcommandAs) return C.green(word)
-        if (word === this.usageDisplayOptionsAs) return C.blue(word)
-        if (word[0] === '<') return C.red(word)
-        if (word[0] === '[') return C.cyan(word)
-        if (arr[index + 1]?.startsWith('[')) return C.magenta(word)
+        if (word === this.usageDisplaySubcommandAs) {
+          return C.green(word)
+        }
+        if (word === this.usageDisplayOptionsAs) {
+          return C.blue(word)
+        }
+        if (word[0] === '<') {
+          return C.red(word)
+        }
+        if (word[0] === '[') {
+          return C.cyan(word)
+        }
+        if (arr[index + 1]?.startsWith('[')) {
+          return C.magenta(word)
+        }
         return this.styleCommandText(word) // Restrict to initial words?
       })
       .join(' ')
@@ -364,8 +400,12 @@ export class Help implements IHelp {
     const res = str
       .split(' ')
       .map((word: string) => {
-        if (word === this.usageDisplayOptionsAs) return C.dim(word)
-        if (word[0] === '[' || word[0] === '<') return C.dim(word)
+        if (word === this.usageDisplayOptionsAs) {
+          return C.dim(word)
+        }
+        if (word[0] === '[' || word[0] === '<') {
+          return C.dim(word)
+        }
         return this.styleSubcommandText(word) // Restrict to initial words?
       })
       .join(' ')
@@ -441,7 +481,9 @@ export class Help implements IHelp {
   formatItem(term: string, termWidth: number, description: string): string {
     const itemIndent = 2
     const itemIndentStr = ' '.repeat(itemIndent)
-    if (!description) return itemIndentStr + term
+    if (!description) {
+      return itemIndentStr + term
+    }
 
     // Pad the term out to a consistent width, so descriptions are aligned.
     const paddedTerm = term.padEnd(termWidth + term.length - this.displayWidth(term))
@@ -455,7 +497,7 @@ export class Help implements IHelp {
       formattedDescription = description
     } else {
       const wrappedDescription = this.boxWrap(description, remainingWidth)
-      formattedDescription = wrappedDescription.replace(/\n/g, '\n' + ' '.repeat(termWidth + spacerWidth))
+      formattedDescription = wrappedDescription.replace(/\n/g, `\n${' '.repeat(termWidth + spacerWidth)}`)
     }
 
     // Construct and overall indent.
@@ -472,7 +514,9 @@ export class Help implements IHelp {
    * Wrapping is skipped if the width is less than `minWidthToWrap`.
    */
   boxWrap(str: string, width: number): string {
-    if (width < this.minWidthToWrap) return str
+    if (width < this.minWidthToWrap) {
+      return str
+    }
 
     const rawLines = str.split(/\r\n|\n/)
     // split up text by whitespace
@@ -531,11 +575,9 @@ export class Help implements IHelp {
     output = output.concat(this.formatItemList('Arguments:', argumentList))
 
     // Options
-    const optionGroups = this.groupItems(
-      this.cmd.options,
-      this.visibleOptions(),
-      (option: Option) => option.group ?? 'Options:',
-    )
+    const optionGroups = this.groupItems(this.cmd.options, this.visibleOptions(), (option: Option) => {
+      return option.group ?? 'Options:'
+    })
     optionGroups.forEach((options, group) => {
       const optionList = options.map((option: Option) => {
         return this.formatItem(
@@ -552,7 +594,9 @@ export class Help implements IHelp {
       Object.values(this.cmd.commands),
       this.visibleCommands(),
 
-      (sub: ICommand) => sub.group || 'Commands:',
+      (sub: ICommand) => {
+        return sub.group || 'Commands:'
+      },
     )
     commandGroups.forEach((commands, group) => {
       const commandList = commands.map((sub: ICommand) => {

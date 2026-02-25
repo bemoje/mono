@@ -15,7 +15,9 @@ export function numRange(start: number, end: number): number[] {
   if (start > end) {
     throw new Error(`Expected start to be less than or equal to end. Got: ${start} > ${end}`)
   }
-  if (start === end) return [start]
+  if (start === end) {
+    return [start]
+  }
   const result: number[] = []
   for (let i = start; i <= end; i++) {
     result.push(i)

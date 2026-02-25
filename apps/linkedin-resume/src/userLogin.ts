@@ -1,9 +1,9 @@
-import puppeteer from 'puppeteer'
 import type { Browser } from 'puppeteer'
 import { CHROME_PROFILE_PATH } from './constants'
 import { CliOptions } from './types/CliOptions'
 import { Logger } from '@mono/node'
 import { closeBrowserPages } from './utils/closeBrowserPages'
+import puppeteer from 'puppeteer'
 
 /**
  * Ensures the user is logged in to LinkedIn by first checking login status with a headless browser,
@@ -56,9 +56,14 @@ export async function userLogin(options: CliOptions, logger: Logger): Promise<vo
       timeout: 20000,
     })
 
-    await page.waitForFunction(() => window.location.href.includes('/feed'), {
-      timeout: 0,
-    })
+    await page.waitForFunction(
+      () => {
+        return window.location.href.includes('/feed')
+      },
+      {
+        timeout: 0,
+      },
+    )
 
     logger.info('LinkedIn login detected. You are now logged in.')
   } finally {

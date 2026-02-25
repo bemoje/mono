@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getCurrentMemoryUsage } from './getCurrentMemoryUsage'
+import { it } from 'vitest'
 
 describe(getCurrentMemoryUsage.name, () => {
   it('should ', () => {

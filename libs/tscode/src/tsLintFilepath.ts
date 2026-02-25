@@ -13,7 +13,7 @@ import { execSync } from 'node:child_process'
  */
 export function tsLintFilepath(filepath: string) {
   try {
-    execSync('yarn run eslint --fix ' + filepath, { stdio: 'ignore' })
+    execSync(`yarn run eslint --fix ${filepath}`, { stdio: 'ignore' })
   } catch (_) {
     //
   }

@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
 import { dethisify } from './dethisify'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(dethisify.name, () => {
   it('examples', () => {
@@ -147,7 +147,9 @@ describe(dethisify.name, () => {
     it('should handle async methods', async () => {
       class AsyncClass {
         async getData(delay: number) {
-          await new Promise((resolve) => setTimeout(resolve, delay))
+          await new Promise((resolve) => {
+            return setTimeout(resolve, delay)
+          })
           return 'data'
         }
       }

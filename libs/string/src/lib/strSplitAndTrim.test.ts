@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strSplitAndTrim } from './strSplitAndTrim'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('strSplitAndTrim', () => {
   it('should split the string by the specified delimiter and trim each resulting substring', () => {

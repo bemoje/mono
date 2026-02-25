@@ -500,7 +500,6 @@ describe(ClassToTest.name, () => {
 - `StringStream`: Extension of Node's native Readable class for converting a string into a Readable stream.
 - `argvHasHelpFlag`: Checks if the command line arguments contain a help flag (--help or -h).
 - `createLogger`: Creates a logger instance with colored output and consistent formatting.
-- `execInherit`: Executes a command synchronously with inherited stdio, returning a promise with the output.
 - `execOutput`: Helper function to execute a shell command and return stdout and stderr without throwing on error. If there was an error and nothing was sent to stderr, the error.message takes its place.
 - `execute`: Execute one or multiple shell commands.
 - `formatTableForTerminal`: Formats a 2D array of strings as a terminal table with optional headers and styling.

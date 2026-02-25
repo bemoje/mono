@@ -1,11 +1,11 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
 import { ModuleSpecifier } from './ModuleSpecifier'
-import { TsCode } from '../TsCode'
 import { MonoRepo } from '../../MonoRepo'
+import { TsCode } from '../TsCode'
 import { Workspace } from '../../repo/Workspace'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 function getModule(code: string) {
   const tsCode = new TsCode({} as any, code)
@@ -29,31 +29,41 @@ describe(ModuleSpecifier.name, () => {
   describe('dependency', () => {
     it('should return the package name for external packages', () => {
       const mod = getModule("import { Foo } from 'es-toolkit'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'test-mono' } as any
+      })
       expect(mod.dependency).toBe('es-toolkit')
     })
 
     it('should return scoped package name', () => {
       const mod = getModule("import { Foo } from '@scope/pkg'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'test-mono' } as any
+      })
       expect(mod.dependency).toBe('@scope/pkg')
     })
 
     it('should return package name without subpath for deep imports', () => {
       const mod = getModule("import { Foo } from 'es-toolkit/fp'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'test-mono' } as any
+      })
       expect(mod.dependency).toBe('es-toolkit')
     })
 
     it('should return undefined for relative imports', () => {
       const mod = getModule("import { Foo } from './local'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'test-mono' } as any
+      })
       expect(mod.dependency).toBeUndefined()
     })
 
     it('should return undefined for builtin modules', () => {
       const mod = getModule("import { Foo } from 'fs'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'test-mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'test-mono' } as any
+      })
       expect(mod.dependency).toBeUndefined()
     })
   })
@@ -90,13 +100,17 @@ describe(ModuleSpecifier.name, () => {
   describe('isRepoScoped', () => {
     it('should return true for repo-scoped imports', () => {
       const mod = getModule("import { Foo } from '@mono/array'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'mono' } as any
+      })
       expect(mod.isRepoScoped).toBe(true)
     })
 
     it('should return false for other scoped imports', () => {
       const mod = getModule("import { Foo } from '@other/pkg'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'mono' } as any
+      })
       expect(mod.isRepoScoped).toBe(false)
     })
   })
@@ -116,19 +130,25 @@ describe(ModuleSpecifier.name, () => {
   describe('isExternal', () => {
     it('should return true for external packages', () => {
       const mod = getModule("import { Foo } from 'es-toolkit'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'mono' } as any
+      })
       expect(mod.isExternal).toBe(true)
     })
 
     it('should return false for builtins', () => {
       const mod = getModule("import { Foo } from 'fs'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'mono' } as any
+      })
       expect(mod.isExternal).toBe(false)
     })
 
     it('should return false for relative imports', () => {
       const mod = getModule("import { Foo } from './local'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'mono' } as any
+      })
       expect(mod.isExternal).toBe(false)
     })
   })
@@ -136,13 +156,17 @@ describe(ModuleSpecifier.name, () => {
   describe('isDependency', () => {
     it('should return true for external packages', () => {
       const mod = getModule("import { Foo } from 'es-toolkit'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'mono' } as any
+      })
       expect(mod.isDependency).toBe(true)
     })
 
     it('should return false for relative imports', () => {
       const mod = getModule("import { Foo } from './local'")
-      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => ({ name: 'mono' }) as any)
+      vi.spyOn(mod, 'getParentDeep').mockImplementation(() => {
+        return { name: 'mono' } as any
+      })
       expect(mod.isDependency).toBe(false)
     })
   })
@@ -169,8 +193,12 @@ describe(ModuleSpecifier.name, () => {
       const mod = getModule("import { Foo } from '@mono/other-lib'")
       const mockWorkspaces = [{ name: '@mono/other-lib' }, { name: '@mono/current' }]
       vi.spyOn(mod, 'getParentDeep').mockImplementation((cls: any) => {
-        if (cls === MonoRepo) return { workspaces: mockWorkspaces } as any
-        if (cls === Workspace) return { name: '@mono/current' } as any
+        if (cls === MonoRepo) {
+          return { workspaces: mockWorkspaces } as any
+        }
+        if (cls === Workspace) {
+          return { name: '@mono/current' } as any
+        }
         throw new Error('Unexpected class')
       })
       expect(mod.isOtherRepoWorkspace).toBe(true)
@@ -180,8 +208,12 @@ describe(ModuleSpecifier.name, () => {
       const mod = getModule("import { Foo } from '@mono/current'")
       const mockWorkspaces = [{ name: '@mono/other-lib' }, { name: '@mono/current' }]
       vi.spyOn(mod, 'getParentDeep').mockImplementation((cls: any) => {
-        if (cls === MonoRepo) return { workspaces: mockWorkspaces } as any
-        if (cls === Workspace) return { name: '@mono/current' } as any
+        if (cls === MonoRepo) {
+          return { workspaces: mockWorkspaces } as any
+        }
+        if (cls === Workspace) {
+          return { name: '@mono/current' } as any
+        }
         throw new Error('Unexpected class')
       })
       expect(mod.isOtherRepoWorkspace).toBe(false)
@@ -191,8 +223,12 @@ describe(ModuleSpecifier.name, () => {
       const mod = getModule("import { Foo } from 'es-toolkit'")
       const mockWorkspaces = [{ name: '@mono/other-lib' }]
       vi.spyOn(mod, 'getParentDeep').mockImplementation((cls: any) => {
-        if (cls === MonoRepo) return { workspaces: mockWorkspaces } as any
-        if (cls === Workspace) return { name: '@mono/current' } as any
+        if (cls === MonoRepo) {
+          return { workspaces: mockWorkspaces } as any
+        }
+        if (cls === Workspace) {
+          return { name: '@mono/current' } as any
+        }
         throw new Error('Unexpected class')
       })
       expect(mod.isOtherRepoWorkspace).toBe(false)

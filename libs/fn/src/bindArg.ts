@@ -1,5 +1,5 @@
-import { preserveNameAndLength } from './preserveNameAndLength'
 import { ParametersWithout } from '@mono/types'
+import { preserveNameAndLength } from './preserveNameAndLength'
 
 /**
  * Binds a specified argument to the provided function, returning a new function that requires

@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { mapObjectKeys } from './mapObjectKeys'
 
 describe(mapObjectKeys.name, () => {
@@ -10,7 +10,9 @@ describe(mapObjectKeys.name, () => {
       const obj = { firstName: 'John', lastName: 'Doe', age: 30 }
 
       // Transform keys to uppercase
-      const result = mapObjectKeys(obj, (key) => key.toUpperCase())
+      const result = mapObjectKeys(obj, (key) => {
+        return key.toUpperCase()
+      })
 
       assert.deepStrictEqual(result, {
         FIRSTNAME: 'John',
@@ -23,7 +25,9 @@ describe(mapObjectKeys.name, () => {
   describe('basic functionality', () => {
     it('should transform keys while preserving values', () => {
       const obj = { a: 1, b: 2, c: 3 }
-      const result = mapObjectKeys(obj, (key) => `prefix_${key}`)
+      const result = mapObjectKeys(obj, (key) => {
+        return `prefix_${key}`
+      })
 
       expect(result).toEqual({
         prefix_a: 1,
@@ -34,7 +38,9 @@ describe(mapObjectKeys.name, () => {
 
     it('should allow access to values during key transformation', () => {
       const obj = { small: 5, medium: 15, large: 25 }
-      const result = mapObjectKeys(obj, (key, value) => `${key}_${value > 10 ? 'big' : 'small'}`)
+      const result = mapObjectKeys(obj, (key, value) => {
+        return `${key}_${value > 10 ? 'big' : 'small'}`
+      })
 
       expect(result).toEqual({
         small_small: 5,
@@ -45,7 +51,9 @@ describe(mapObjectKeys.name, () => {
 
     it('should handle string keys', () => {
       const obj = { hello: 'world', foo: 'bar' }
-      const result = mapObjectKeys(obj, (key) => key.split('').reverse().join(''))
+      const result = mapObjectKeys(obj, (key) => {
+        return key.split('').reverse().join('')
+      })
 
       expect(result).toEqual({
         olleh: 'world',
@@ -57,14 +65,18 @@ describe(mapObjectKeys.name, () => {
   describe('edge cases', () => {
     it('should handle empty objects', () => {
       const obj = {}
-      const result = mapObjectKeys(obj, (key) => key)
+      const result = mapObjectKeys(obj, (key) => {
+        return key
+      })
 
       expect(result).toEqual({})
     })
 
     it('should handle objects with mixed value types', () => {
       const obj = { str: 'text', num: 42, bool: true, arr: [1, 2] }
-      const result = mapObjectKeys(obj, (key, value) => `${key}_${typeof value}`)
+      const result = mapObjectKeys(obj, (key, value) => {
+        return `${key}_${typeof value}`
+      })
 
       expect(result).toEqual({
         str_string: 'text',
@@ -78,7 +90,9 @@ describe(mapObjectKeys.name, () => {
   describe('transformations', () => {
     it('should handle camelCase to snake_case conversion', () => {
       const obj = { firstName: 'John', lastName: 'Doe', phoneNumber: '123-456-7890' }
-      const result = mapObjectKeys(obj, (key) => key.replace(/([A-Z])/g, '_$1').toLowerCase())
+      const result = mapObjectKeys(obj, (key) => {
+        return key.replace(/([A-Z])/g, '_$1').toLowerCase()
+      })
 
       expect(result).toEqual({
         first_name: 'John',
@@ -90,8 +104,12 @@ describe(mapObjectKeys.name, () => {
     it('should handle value-dependent key transformations', () => {
       const obj = { a: 1, b: 10, c: 100 }
       const result = mapObjectKeys(obj, (key, value) => {
-        if (value < 10) return `small_${key}`
-        if (value < 100) return `medium_${key}`
+        if (value < 10) {
+          return `small_${key}`
+        }
+        if (value < 100) {
+          return `medium_${key}`
+        }
         return `large_${key}`
       })
 
@@ -105,11 +123,15 @@ describe(mapObjectKeys.name, () => {
     it('should preserve complex value types', () => {
       const complexObj = {
         data: { nested: { deep: 'value' } },
-        func: () => 'test',
+        func: () => {
+          return 'test'
+        },
         date: new Date('2023-01-01'),
       }
 
-      const result = mapObjectKeys(complexObj, (key) => `wrapped_${key}`)
+      const result = mapObjectKeys(complexObj, (key) => {
+        return `wrapped_${key}`
+      })
 
       expect(result.wrapped_data).toEqual({ nested: { deep: 'value' } })
       expect(typeof result.wrapped_func).toBe('function')

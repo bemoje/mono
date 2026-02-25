@@ -11,7 +11,7 @@
  */
 export function monthNameDa(month: number): string {
   if (month < 1 || month > 12) {
-    throw new Error('Invalid month number. Got: ' + month)
+    throw new Error(`Invalid month number. Got: ${month}`)
   }
   return MONTH_NAMES_DA[month]
 }

@@ -1,13 +1,13 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import { afterEach } from "vitest";
+import { afterEach } from 'vitest'
 import assert from 'node:assert'
+import { beforeEach } from 'vitest'
 import colors from 'ansi-colors'
+import { describe } from 'vitest'
 import { enablePrettyStackTrace } from './enablePrettyStackTrace'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { prettyStackTrace } from './prettyStackTrace'
+import { vi } from 'vitest'
 
 describe(prettyStackTrace.name, () => {
   let originalListeners: NodeJS.UncaughtExceptionListener[]
@@ -22,7 +22,9 @@ describe(prettyStackTrace.name, () => {
   afterEach(() => {
     // Remove all uncaughtException listeners and restore originals
     process.removeAllListeners('uncaughtException')
-    originalListeners.forEach((listener) => process.on('uncaughtException', listener))
+    originalListeners.forEach((listener) => {
+      return process.on('uncaughtException', listener)
+    })
     consoleErrorSpy.mockRestore()
   })
 
@@ -167,7 +169,9 @@ describe(prettyStackTrace.name, () => {
       // Should not contain standard properties as separate props in the props section
       // The 'stack:' that appears is the stack trace section header, not a property
       const lines = result.split('\n')
-      const stackLineIndex = lines.findIndex((line) => line.includes('stack:'))
+      const stackLineIndex = lines.findIndex((line) => {
+        return line.includes('stack:')
+      })
       const propsSection = lines.slice(0, stackLineIndex).join('\n')
 
       expect(propsSection).not.toContain('name:')
@@ -277,7 +281,9 @@ describe(enablePrettyStackTrace.name, () => {
   afterEach(() => {
     // Remove all uncaughtException listeners and restore originals
     process.removeAllListeners('uncaughtException')
-    originalListeners.forEach((listener) => process.on('uncaughtException', listener))
+    originalListeners.forEach((listener) => {
+      return process.on('uncaughtException', listener)
+    })
     consoleErrorSpy.mockRestore()
   })
 
@@ -294,9 +300,9 @@ describe(enablePrettyStackTrace.name, () => {
       const testError = new Error('Test uncaught error')
 
       // Manually trigger the listener to test it
-      const addedListeners = process
-        .listeners('uncaughtException')
-        .filter((listener) => !originalListeners.includes(listener))
+      const addedListeners = process.listeners('uncaughtException').filter((listener) => {
+        return !originalListeners.includes(listener)
+      })
 
       assert(addedListeners.length === 1, 'should add exactly one listener')
 
@@ -341,9 +347,9 @@ describe(enablePrettyStackTrace.name, () => {
 
     // Get the added listener and call it directly
     const listeners = process.listeners('uncaughtException')
-    const addedListener = listeners.find((listener) => !originalListeners.includes(listener)) as (
-      error: Error,
-    ) => void
+    const addedListener = listeners.find((listener) => {
+      return !originalListeners.includes(listener)
+    }) as (error: Error) => void
 
     expect(addedListener).toBeDefined()
 
@@ -374,9 +380,9 @@ describe(enablePrettyStackTrace.name, () => {
     delete testError.stack
 
     const listeners = process.listeners('uncaughtException')
-    const addedListener = listeners.find((listener) => !originalListeners.includes(listener)) as (
-      error: Error,
-    ) => void
+    const addedListener = listeners.find((listener) => {
+      return !originalListeners.includes(listener)
+    }) as (error: Error) => void
 
     expect(() => {
       addedListener(testError)

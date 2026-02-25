@@ -37,7 +37,9 @@ export function formatAsStringTable<T extends UnformattedIndexSignature, U exten
   function getEntriesOnObjectWithStringVal(obj: T) {
     return Object.entries(obj).reduce(
       (acc, [key, val]) => {
-        if (typeof val !== 'string') return acc
+        if (typeof val !== 'string') {
+          return acc
+        }
         acc[key as keyof T] = val
         return acc
       },
@@ -46,7 +48,9 @@ export function formatAsStringTable<T extends UnformattedIndexSignature, U exten
   }
 
   function getDefaultFormattedObj(obj: T) {
-    if (!opts.defaultFormatter) return {}
+    if (!opts.defaultFormatter) {
+      return {}
+    }
     return Object.entries(obj).reduce(
       (acc, [key, val]) => {
         acc[key as keyof T] = opts.defaultFormatter!.format(val as T[keyof T])
@@ -57,7 +61,9 @@ export function formatAsStringTable<T extends UnformattedIndexSignature, U exten
   }
 
   function formatEntriesOnObjectWithNonStringVals(obj: T) {
-    if (opts.stringFormatters.length === 0) return {}
+    if (opts.stringFormatters.length === 0) {
+      return {}
+    }
     const formatterMap = opts.stringFormatters.reduce(
       (acc, formatter) => {
         acc[formatter.key as string] = formatter
@@ -69,7 +75,9 @@ export function formatAsStringTable<T extends UnformattedIndexSignature, U exten
     return Object.entries(obj).reduce(
       (acc, [key, val]) => {
         const formatter = formatterMap[key]
-        if (!formatter) return acc
+        if (!formatter) {
+          return acc
+        }
         acc[key as keyof T] = formatter.format(val as T[keyof T])
         return acc
       },

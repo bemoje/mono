@@ -1,10 +1,10 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { expectTypeOf } from "vitest";
-import { it } from "vitest";
-import type { Arguments } from "./types";
-import type { Options } from "./types";
+import type { Arguments } from './types'
 import { Command } from './Command'
+import type { Options } from './types'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { expectTypeOf } from 'vitest'
+import { it } from 'vitest'
 
 // Helper to extract the A (Arguments) generic from a Command
 type CmdArgs<C> = C extends Command<infer A, Options> ? A : never
@@ -14,7 +14,7 @@ type CmdOpts<C> = C extends Command<Arguments, infer O> ? O : never
 // Compile-time assertion helper
 type AssertExtends<T extends Expected, Expected> = T
 
-describe(Command.name + ' type inference', () => {
+describe(`${Command.name} type inference`, () => {
   describe('addArgument', () => {
     it('should infer required argument as [string]', () => {
       const cmd = new Command('test').addArgument('<input>')
@@ -311,7 +311,9 @@ describe(Command.name + ' type inference', () => {
   describe('addCommand return type', () => {
     it('should return parent command type preserving opts', () => {
       const parent = new Command('parent').addOption('-v, --verbose', { description: 'verbose' })
-      const result = parent.addCommand('child', (cmd) => cmd)
+      const result = parent.addCommand('child', (cmd) => {
+        return cmd
+      })
       type _O = AssertExtends<CmdOpts<typeof result>, { verbose?: boolean }>
       type _A = AssertExtends<CmdArgs<typeof result>, []>
     })

@@ -1,17 +1,22 @@
+import * as esbuild from 'esbuild'
+
+import cp from 'node:child_process'
+import fs from 'fs-extra'
 /**
  * Self-contained build script.
  * This file must NOT import from s/ or any workspace - it is the bootstrap entry point.
  */
 import upath from 'upath'
-import fs from 'fs-extra'
-import * as esbuild from 'esbuild'
-import cp from 'node:child_process'
 
 // inline repo root discovery
 const repoRootDirpath = (() => {
   const parts = upath.normalizeSafe(import.meta.dirname).split('/')
-  const i = parts.findLastIndex((p) => p === 'mono')
-  if (i === -1) throw new Error('Could not find repo root directory')
+  const i = parts.findLastIndex((p) => {
+    return p === 'mono'
+  })
+  if (i === -1) {
+    throw new Error('Could not find repo root directory')
+  }
   return parts.slice(0, i + 1).join('/')
 })()
 
@@ -22,8 +27,8 @@ const tsconfigFilepath = upath.joinSafe(wsDirpath, 'tsconfig.json')
 const indexFilepath = upath.joinSafe(wsDirpath, 'src', 'main.ts')
 
 const distDirpath = upath.joinSafe(repoRootDirpath, '.dist')
-const indexOutFilepath = upath.joinSafe(distDirpath, wsDirname + '.cjs')
-const indexOutFileTemp = upath.joinSafe(distDirpath, wsDirname + '-temp.cjs')
+const indexOutFilepath = upath.joinSafe(distDirpath, `${wsDirname}.cjs`)
+const indexOutFileTemp = upath.joinSafe(distDirpath, `${wsDirname}-temp.cjs`)
 
 // ensure package details are consistent across package.json and source code, and that version is unique on npm
 void (await (async () => {
@@ -37,7 +42,7 @@ void (await (async () => {
     semver[2] = (parseInt(semver[2]) + 1).toString()
     pkg.version = semver.join('.')
     console.info(`Version ${npmVersion} already exists on npm. Bumping version to ${pkg.version}...`)
-    await fs.writeFile(packageJsonFilepath, JSON.stringify(pkg, null, 2) + '\n')
+    await fs.writeFile(packageJsonFilepath, `${JSON.stringify(pkg, null, 2)}\n`)
   }
 
   // update version in source code
@@ -49,7 +54,11 @@ void (await (async () => {
     console.info(
       `Version mismatch: src/core/version.ts (${cmdVersion}) vs package.json (${pkg.version}). Updating src/core/version.ts...`,
     )
-    const cmdVersionSrcNew = cmdVersionSplit.map((part, i) => (i === 1 ? pkg.version : part)).join('`')
+    const cmdVersionSrcNew = cmdVersionSplit
+      .map((part, i) => {
+        return i === 1 ? pkg.version : part
+      })
+      .join('`')
     await fs.writeFile(cmdVersionFilepath, cmdVersionSrcNew)
   }
 
@@ -62,7 +71,11 @@ void (await (async () => {
     console.info(
       `Description mismatch: src/core/description.ts (${cmdDescription}) vs package.json (${pkg.description}). Updating src/core/description.ts...`,
     )
-    const cmdDescriptionSrcNew = cmdDescriptionSplit.map((part, i) => (i === 1 ? pkg.description : part)).join('`')
+    const cmdDescriptionSrcNew = cmdDescriptionSplit
+      .map((part, i) => {
+        return i === 1 ? pkg.description : part
+      })
+      .join('`')
     await fs.writeFile(cmdDescriptionFilepath, cmdDescriptionSrcNew)
   }
 })())
@@ -87,26 +100,26 @@ await esbuild.build({
 })
 
 // validate the built artifact
-const stdout = cp.execSync('node ' + indexOutFileTemp + ' --help', { cwd: repoRootDirpath }).toString()
+const stdout = cp.execSync(`node ${indexOutFileTemp} --help`, { cwd: repoRootDirpath }).toString()
 if (typeof stdout !== 'string' || !stdout) {
-  console.error('Build did not produce a valid module: ' + indexOutFileTemp)
+  console.error(`Build did not produce a valid module: ${indexOutFileTemp}`)
   process.exit(1)
 }
 
 // swap temp → final
 await fs.remove(indexOutFilepath)
 await fs.rename(indexOutFileTemp, indexOutFilepath)
-await fs.remove(indexOutFilepath + '.map')
-if (await fs.pathExists(indexOutFileTemp + '.map')) {
-  await fs.rename(indexOutFileTemp + '.map', indexOutFilepath + '.map')
+await fs.remove(`${indexOutFilepath}.map`)
+if (await fs.pathExists(`${indexOutFileTemp}.map`)) {
+  await fs.rename(`${indexOutFileTemp}.map`, `${indexOutFilepath}.map`)
 }
 
 // copy to apps/*/dist/ for npm publishing
 const npmDistDir = upath.joinSafe(wsDirpath, 'dist')
 await fs.ensureDir(npmDistDir)
-await fs.copy(indexOutFilepath, upath.joinSafe(npmDistDir, wsDirname + '.cjs'))
-if (await fs.pathExists(indexOutFilepath + '.map')) {
-  await fs.copy(indexOutFilepath + '.map', upath.joinSafe(npmDistDir, wsDirname + '.cjs.map'))
+await fs.copy(indexOutFilepath, upath.joinSafe(npmDistDir, `${wsDirname}.cjs`))
+if (await fs.pathExists(`${indexOutFilepath}.map`)) {
+  await fs.copy(`${indexOutFilepath}.map`, upath.joinSafe(npmDistDir, `${wsDirname}.cjs.map`))
 }
 
 // create bin wrapper for cross-platform npx support

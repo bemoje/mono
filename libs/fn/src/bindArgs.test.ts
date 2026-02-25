@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
 import { bindArgs } from './bindArgs'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(bindArgs.name, () => {
   // Helper function for testing

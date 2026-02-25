@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import type { ICommand } from '../types'
+import type { Option } from '../types'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { findOption } from './findOption'
-import type { ICommand } from "../types";
-import type { Option } from "../types";
+import { it } from 'vitest'
 
 function mockOption(overrides: Partial<Option> = {}): Option {
   return { name: 'verbose', short: 'v', long: 'verbose', ...overrides } as Option

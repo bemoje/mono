@@ -1,17 +1,17 @@
+import { CONFIG_PATH } from './constants'
+import type { CliOptions } from './types/CliOptions'
 import { Command } from 'commander'
-import { scrapeLinkedIn } from './scrapeLinkedIn'
+import cp from 'node:child_process'
+import description from './core/description'
+import { loadUserConfig } from './loadUserConfig'
+import { renderPdfFromHtml } from './renderPdfFromHtml'
 import { renderResumeHtml } from './renderResumeHtml'
 import { renderResumeJson } from './renderResumeJson'
-import { renderPdfFromHtml } from './renderPdfFromHtml'
-import { loadUserConfig } from './loadUserConfig'
-import type { CliOptions } from './types/CliOptions'
-import { CONFIG_PATH } from './constants'
-import cp from 'node:child_process'
-import { userLogin } from './userLogin'
-import description from './core/description'
-import version from './core/version'
-import { timer } from '@mono/node'
 import { renderResumeMd } from './renderResumeMd'
+import { scrapeLinkedIn } from './scrapeLinkedIn'
+import { timer } from '@mono/node'
+import { userLogin } from './userLogin'
+import version from './core/version'
 
 const cli = new Command('linkedin-resume')
   .version(version)
@@ -33,8 +33,12 @@ const cli = new Command('linkedin-resume')
       }
 
       if (!options.render) {
-        await timer('login', (logger) => userLogin(options, logger))
-        await timer('scrape', (logger) => scrapeLinkedIn(options, logger))
+        await timer('login', (logger) => {
+          return userLogin(options, logger)
+        })
+        await timer('scrape', (logger) => {
+          return scrapeLinkedIn(options, logger)
+        })
       }
 
       await timer('render', async (logger) => {

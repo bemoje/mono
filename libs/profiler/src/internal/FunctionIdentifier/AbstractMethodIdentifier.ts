@@ -1,8 +1,8 @@
 import { AbstractFunctionIdentifier } from './AbstractFunctionIdentifier'
 import type { FunctionPrototype } from '@mono/types'
+import { MethodTargetType } from './types'
+import { MethodType } from './types'
 import { isSymbol } from 'es-toolkit/predicate'
-import { MethodTargetType } from "./types";
-import { MethodType } from "./types";
 import { setNonEnumerable } from '@mono/object'
 
 /**
@@ -25,9 +25,13 @@ export abstract class AbstractMethodIdentifier<
     return isSymbol(this.key) ? `[${this.key.description}]` : this.key
   }
   get methodName(): string {
-    if (this.type === 'method') return this.keytoString() + '()'
-    if (this.type === 'get') return this.keytoString()
-    return this.keytoString() + '[set]'
+    if (this.type === 'method') {
+      return `${this.keytoString()}()`
+    }
+    if (this.type === 'get') {
+      return this.keytoString()
+    }
+    return `${this.keytoString()}[set]`
   }
   get name(): string {
     return this.parentName + (isSymbol(this.key) ? '' : '.') + this.methodName

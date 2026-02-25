@@ -7,5 +7,5 @@
  * ```
  */
 export function strWrapInAngleBrackets(input: string): string {
-  return '<' + input + '>'
+  return `<${input}>`
 }

@@ -1,8 +1,8 @@
-import { isIntRange } from './isIntRange'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { isIntRange } from './isIntRange'
+import { it } from 'vitest'
 
 describe(isIntRange.name, () => {
   it('examples', () => {

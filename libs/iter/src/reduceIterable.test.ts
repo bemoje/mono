@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { reduceIterable } from './reduceIterable'
 
 describe(reduceIterable.name, () => {
@@ -13,17 +13,31 @@ describe(reduceIterable.name, () => {
         ['b', 2],
         ['c', 3],
       ]
-      const sum = reduceIterable(entries, (acc, value) => acc + value, 0)
+      const sum = reduceIterable(
+        entries,
+        (acc, value) => {
+          return acc + value
+        },
+        0,
+      )
       assert.strictEqual(sum, 6, 'sum calculated')
 
       // collect all keys
-      const keys = reduceIterable(entries, (acc, value, key) => [...acc, key], [] as string[])
+      const keys = reduceIterable(
+        entries,
+        (acc, value, key) => {
+          return [...acc, key]
+        },
+        [] as string[],
+      )
       assert.deepStrictEqual(keys, ['a', 'b', 'c'], 'keys collected')
 
       // create object from entries
       const obj = reduceIterable(
         entries,
-        (acc, value, key) => ({ ...acc, [key]: value }),
+        (acc, value, key) => {
+          return { ...acc, [key]: value }
+        },
         {} as Record<string, number>,
       )
       assert.deepStrictEqual(obj, { a: 1, b: 2, c: 3 }, 'object created')
@@ -36,7 +50,13 @@ describe(reduceIterable.name, () => {
       ['y', 20],
       ['z', 30],
     ]
-    const result = reduceIterable(entries, (acc, value) => acc + value, 0)
+    const result = reduceIterable(
+      entries,
+      (acc, value) => {
+        return acc + value
+      },
+      0,
+    )
     expect(result).toBe(60)
   })
 
@@ -46,7 +66,13 @@ describe(reduceIterable.name, () => {
       ['b', 2],
       ['c', 3],
     ]
-    const result = reduceIterable(entries, (acc, value, key) => acc + key.repeat(value), '')
+    const result = reduceIterable(
+      entries,
+      (acc, value, key) => {
+        return acc + key.repeat(value)
+      },
+      '',
+    )
     expect(result).toBe('abbccc')
   })
 
@@ -55,12 +81,24 @@ describe(reduceIterable.name, () => {
       ['first', 10],
       ['second', 20],
     ]
-    const result = reduceIterable(entries, (acc, value, key) => [...acc, `${key}:${value}`], [] as string[])
+    const result = reduceIterable(
+      entries,
+      (acc, value, key) => {
+        return [...acc, `${key}:${value}`]
+      },
+      [] as string[],
+    )
     expect(result).toEqual(['first:10', 'second:20'])
   })
 
   it('should handle empty iterable', () => {
-    const result = reduceIterable([], (acc: number, value: any) => acc + value, 42)
+    const result = reduceIterable(
+      [],
+      (acc: number, value: any) => {
+        return acc + value
+      },
+      42,
+    )
     expect(result).toBe(42)
   })
 
@@ -70,7 +108,13 @@ describe(reduceIterable.name, () => {
       ['b', 10],
       ['c', 15],
     ])
-    const result = reduceIterable(map, (acc, value) => Math.max(acc, value), 0)
+    const result = reduceIterable(
+      map,
+      (acc, value) => {
+        return Math.max(acc, value)
+      },
+      0,
+    )
     expect(result).toBe(15)
   })
 

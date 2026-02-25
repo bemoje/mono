@@ -1,8 +1,8 @@
-import { resolveModuleName } from "typescript";
-import { createCompilerHost } from "typescript";
-import upath from 'upath'
-import { getRepoRootDirpath } from './getRepoRootDirpath'
+import { createCompilerHost } from 'typescript'
 import fs from 'fs-extra/esm'
+import { getRepoRootDirpath } from './getRepoRootDirpath'
+import { resolveModuleName } from 'typescript'
+import upath from 'upath'
 
 /**
  * Returns the resolved import path (relative from repo root)
@@ -24,6 +24,8 @@ export function resolveModuleImportPath(filepath: string, importFrom: string) {
     createCompilerHost({}, true),
   )
   const f = result.resolvedModule?.resolvedFileName
-  if (f) result.resolvedModule.resolvedFileName = upath.relative(rootdir, f)
+  if (f) {
+    result.resolvedModule.resolvedFileName = upath.relative(rootdir, f)
+  }
   return result.resolvedModule
 }

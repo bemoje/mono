@@ -1,5 +1,5 @@
-import { isValidNumber } from '@mono/is'
 import { NumberFormatter } from './NumberFormatter'
+import { isValidNumber } from '@mono/is'
 
 /**
  * Determine whether a set of valid number strings are formatted in da-DK or en-US locale.
@@ -22,14 +22,16 @@ export function determineNumberLocale(values: Iterable<string>): 'da' | 'en' | u
     }
 
     if ((reHasComma.test(value) && reHasPeriod.test(value)) || reStartsWithDecimalSep.test(value)) {
-      if (reStartsWithDecimalSep.test(value)) value = '0' + value
+      if (reStartsWithDecimalSep.test(value)) {
+        value = `0${value}`
+      }
       if (reCouldBeDA.test(value) && isValidNumber(numberFormatterDa.parse(value))) {
         return 'da'
       }
       if (reCouldBeEN.test(value) && isValidNumber(numberFormatterEn.parse(value))) {
         return 'en'
       }
-      throw new TypeError('Invalid number format: ' + value)
+      throw new TypeError(`Invalid number format: ${value}`)
     }
 
     if (reCouldBeDA.test(value)) {

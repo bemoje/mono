@@ -1,6 +1,6 @@
-import path from 'upath'
 import fs from 'fs-extra'
 import onetime from 'onetime'
+import path from 'upath'
 
 /**
  * Get the root directory path of the monorepo by finding the package.json with workspaces configuration.
@@ -13,7 +13,9 @@ export const getRepoRootDirpath = onetime(function getRepoRootDirpath() {
       return dirpath
     }
     const parent = path.dirname(dirpath)
-    if (parent !== dirpath) return recurse(parent)
-    throw new Error('Could not find repo root from process.cwd(): ' + process.cwd())
+    if (parent !== dirpath) {
+      return recurse(parent)
+    }
+    throw new Error(`Could not find repo root from process.cwd(): ${process.cwd()}`)
   })()
 })

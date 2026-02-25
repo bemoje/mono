@@ -1,11 +1,11 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
-import { afterEach } from "vitest";
-import assert from 'node:assert'
+import { afterEach } from 'vitest'
 import { argvHasHelpFlag } from './argvHasHelpFlag'
+import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 describe(argvHasHelpFlag.name, () => {
   let originalArgv: string[]
@@ -332,11 +332,15 @@ describe(argvHasHelpFlag.name, () => {
     })
 
     it('should handle null input gracefully', () => {
-      expect(() => argvHasHelpFlag(null as any)).toThrow()
+      expect(() => {
+        return argvHasHelpFlag(null as any)
+      }).toThrow()
     })
 
     it('should handle non-array input gracefully', () => {
-      expect(() => argvHasHelpFlag('not an array' as any)).toThrow()
+      expect(() => {
+        return argvHasHelpFlag('not an array' as any)
+      }).toThrow()
     })
   })
 })

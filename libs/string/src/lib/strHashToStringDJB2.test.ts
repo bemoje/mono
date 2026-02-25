@@ -1,6 +1,6 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strHashToStringDJB2 } from './strHashToStringDJB2'
 
 describe(strHashToStringDJB2.name, () => {

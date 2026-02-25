@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getWeek } from './getWeek'
+import { it } from 'vitest'
 
 describe(getWeek.name, () => {
   it('should get correct week', () => {

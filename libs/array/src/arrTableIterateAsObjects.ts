@@ -27,7 +27,9 @@ export function* arrTableIterateAsObjects<T>(
 
     const o: Record<string, T> = {}
     for (let c = 0; c < headers.length; c++) {
-      if (ignoreHeaders.has(headers[c])) continue
+      if (ignoreHeaders.has(headers[c])) {
+        continue
+      }
       o[headers[c]] = rows[r][c]
     }
     yield o

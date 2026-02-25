@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strHashToUint32Array } from './strHashToUint32Array'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('strHashToUint32Array', () => {
   it('should hash a string into an array of unsigned 32-bit integers', () => {

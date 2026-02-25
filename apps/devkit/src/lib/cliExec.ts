@@ -6,7 +6,7 @@ export function cliExecSync(
 ) {
   if (options.dryRun) {
     if (!options.quiet) {
-      console.log('dryRun. Command skipped: ' + command)
+      console.log(`dryRun. Command skipped: ${command}`)
     }
     return
   }

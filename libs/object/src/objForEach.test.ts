@@ -1,8 +1,8 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { objForEach } from './objForEach'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
+import { vi } from 'vitest'
 
 describe('objForEach', () => {
   it('should apply the callback to each key-value pair in the object', () => {

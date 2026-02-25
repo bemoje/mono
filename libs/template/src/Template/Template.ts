@@ -1,10 +1,10 @@
-import { assertValidSchema } from '@mono/tschema'
-import { Static } from "@sinclair/typebox";
-import { TObject } from "@sinclair/typebox";
-import { Type } from "@sinclair/typebox";
-import { TemplateStrategy } from '../interfaces/TemplateStrategy'
+import { Static } from '@sinclair/typebox'
+import { TObject } from '@sinclair/typebox'
 import { TSchema } from '@sinclair/typebox'
+import { TemplateStrategy } from '../interfaces/TemplateStrategy'
+import { Type } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
+import { assertValidSchema } from '@mono/tschema'
 
 export interface TemplateOptions<TemplateSchema extends TSchema, OptionsSchema extends TObject> {
   readonly strategy: TemplateStrategy<TemplateSchema>

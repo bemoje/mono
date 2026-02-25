@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isHexOrUnicode } from './isHexOrUnicode'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { it } from 'vitest'
 
 describe('isHexOrUnicode', () => {
   it('should return true for hexadecimal strings', () => {

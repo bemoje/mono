@@ -13,7 +13,9 @@ export function parseOptionFlags<Long extends string>(
   argName: string | undefined
 } {
   const match = flags.match(/^-(.+?), --([a-zA-Z][\w-]*)(?:\s*(<(.+?)>|\[(.+?)\]))?$/)
-  if (!match) throw new Error(`Invalid option format: ${flags}`)
+  if (!match) {
+    throw new Error(`Invalid option format: ${flags}`)
+  }
 
   const short = match[1]
   if (short.length !== 1) {

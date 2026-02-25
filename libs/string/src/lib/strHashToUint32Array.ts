@@ -1,5 +1,5 @@
-import { strHashToBuffer } from './strHashToBuffer'
 import { TCryptoAlgorithm } from './TCryptoAlgorithm'
+import { strHashToBuffer } from './strHashToBuffer'
 
 /**
  * Hash a string into an array of unsigned 32-bit integers.

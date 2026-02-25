@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isValueDescriptor } from './isValueDescriptor'
+import { it } from 'vitest'
 
 describe(isValueDescriptor.name, () => {
   it('examples', () => {
@@ -17,7 +17,9 @@ describe(isValueDescriptor.name, () => {
 
       // Accessor descriptor
       const accessorDescriptor = {
-        get: () => 'test',
+        get: () => {
+          return 'test'
+        },
         enumerable: true,
         configurable: true,
       }
@@ -32,7 +34,9 @@ describe(isValueDescriptor.name, () => {
 
     it('when descriptor has a getter', () => {
       const descriptor = {
-        get: () => 'value',
+        get: () => {
+          return 'value'
+        },
         enumerable: true,
         configurable: true,
       }
@@ -50,7 +54,9 @@ describe(isValueDescriptor.name, () => {
 
     it('when descriptor has both getter and setter', () => {
       const descriptor = {
-        get: () => 'value',
+        get: () => {
+          return 'value'
+        },
         set: (v: string) => {},
         enumerable: true,
         configurable: true,

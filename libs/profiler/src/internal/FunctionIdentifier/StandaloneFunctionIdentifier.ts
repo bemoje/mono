@@ -1,7 +1,7 @@
 import { AbstractFunctionIdentifier } from './AbstractFunctionIdentifier'
 import type { FunctionPrototype } from '@mono/types'
-import { FunctionType } from "./types";
-import { TargetType } from "./types";
+import { FunctionType } from './types'
+import { TargetType } from './types'
 
 /**
  * Identifies standalone functions for profiling purposes.
@@ -14,6 +14,6 @@ export class StandaloneFunctionIdentifier extends AbstractFunctionIdentifier<Fun
     return 'function'
   }
   override get name(): string {
-    return this.target.name + '()'
+    return `${this.target.name}()`
   }
 }

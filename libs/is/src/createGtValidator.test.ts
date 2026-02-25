@@ -1,7 +1,7 @@
 import { createGtValidator } from './createGtValidator'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(createGtValidator.name, () => {
   it('should create a validator with correct name', () => {

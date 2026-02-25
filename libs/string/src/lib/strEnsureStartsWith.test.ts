@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strEnsureStartsWith } from './strEnsureStartsWith'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('strEnsureStartsWith', () => {
   it('should return the original string if it already starts with the specified substring', () => {

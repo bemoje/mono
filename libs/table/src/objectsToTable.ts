@@ -6,12 +6,16 @@
 export function objectsToTable<T extends object>(objects: T[], keys?: string[]) {
   type K = Exclude<keyof T, number | symbol>
   type V = T[K] | string
-  if (!objects.length) return [keys ?? []] as [K, ...V[]][]
+  if (!objects.length) {
+    return [keys ?? []] as [K, ...V[]][]
+  }
   keys =
     keys ??
     (Array.from(
       objects.reduce((set, obj) => {
-        Object.keys(obj).forEach((key) => set.add(key as K))
+        Object.keys(obj).forEach((key) => {
+          return set.add(key as K)
+        })
         return set
       }, new Set<K>()),
     ).sort() as K[])
@@ -21,8 +25,11 @@ export function objectsToTable<T extends object>(objects: T[], keys?: string[]) 
     const row: V[] = []
     for (const key of keys) {
       const value = object[key as K]
-      if (value == null) row.push('')
-      else row.push(value)
+      if (value == null) {
+        row.push('')
+      } else {
+        row.push(value)
+      }
     }
     rows.push(row)
   }

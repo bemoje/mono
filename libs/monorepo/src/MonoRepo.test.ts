@@ -1,14 +1,15 @@
+import * as fs from 'node:fs'
+import * as fse from 'fs-extra/esm'
+
+import { MonoRepo } from './MonoRepo'
+import { Workspace } from './repo/Workspace'
 import { afterEach } from 'vitest'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
-import { it } from 'vitest'
-import { vi } from 'vitest'
 import { expect } from 'vitest'
-import { MonoRepo } from './MonoRepo'
-import * as fs from 'node:fs'
-import * as fse from 'fs-extra/esm'
-import { Workspace } from './repo/Workspace'
+import { it } from 'vitest'
 import path from 'upath'
+import { vi } from 'vitest'
 
 vi.mock('./repo/Workspace')
 vi.mock('./util/getRepoRootDirpath')
@@ -16,15 +17,17 @@ vi.mock('./util/getRepoRootDirpath')
 // Mock dependencies
 vi.mock('node:fs')
 vi.mock('fs-extra/esm')
-vi.mock('upath', () => ({
-  default: {
-    normalize: vi.fn(),
-    join: vi.fn(),
-    joinSafe: vi.fn(),
-    normalizeSafe: vi.fn(),
-    dirname: vi.fn(),
-  },
-}))
+vi.mock('upath', () => {
+  return {
+    default: {
+      normalize: vi.fn(),
+      join: vi.fn(),
+      joinSafe: vi.fn(),
+      normalizeSafe: vi.fn(),
+      dirname: vi.fn(),
+    },
+  }
+})
 
 const mockPath = vi.mocked(path)
 const mockFs = vi.mocked(fs)
@@ -44,8 +47,12 @@ describe(MonoRepo.name, () => {
     mockPath.dirname.mockReturnValue(mockRootPath)
     mockPath.normalize.mockReturnValue(normalizedPath)
     mockPath.normalizeSafe.mockReturnValue(normalizedPath)
-    mockPath.join.mockImplementation((...args: string[]) => args.join('/'))
-    mockPath.joinSafe.mockImplementation((...args: string[]) => args.join('/'))
+    mockPath.join.mockImplementation((...args: string[]) => {
+      return args.join('/')
+    })
+    mockPath.joinSafe.mockImplementation((...args: string[]) => {
+      return args.join('/')
+    })
   })
 
   afterEach(() => {
@@ -250,7 +257,9 @@ describe(MonoRepo.name, () => {
 
       const repo = new MonoRepo()
 
-      expect(() => repo.name).toThrow(`MonoRepo package.json missing 'name' field: ${repo.packageJsonPath}`)
+      expect(() => {
+        return repo.name
+      }).toThrow(`MonoRepo package.json missing 'name' field: ${repo.packageJsonPath}`)
     })
   })
 
@@ -264,7 +273,9 @@ describe(MonoRepo.name, () => {
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       // Mock path.normalize to return the expected values for workspace paths
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
 
@@ -282,7 +293,9 @@ describe(MonoRepo.name, () => {
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
 
@@ -302,9 +315,9 @@ describe(MonoRepo.name, () => {
 
       const repo = new MonoRepo()
 
-      expect(() => repo.workspacesRootPaths).toThrow(
-        `MonoRepo package.json missing 'workspaces' field: ${repo.packageJsonPath}`,
-      )
+      expect(() => {
+        return repo.workspacesRootPaths
+      }).toThrow(`MonoRepo package.json missing 'workspaces' field: ${repo.packageJsonPath}`)
     })
   })
 
@@ -315,13 +328,30 @@ describe(MonoRepo.name, () => {
         workspaces: ['libs/*', 'apps/*'],
       }
 
-      const mockDirent1 = { name: 'package1', isDirectory: () => true }
-      const mockDirent2 = { name: 'package2', isDirectory: () => true }
-      const mockDirent3 = { name: 'app1', isDirectory: () => true }
+      const mockDirent1 = {
+        name: 'package1',
+        isDirectory: () => {
+          return true
+        },
+      }
+      const mockDirent2 = {
+        name: 'package2',
+        isDirectory: () => {
+          return true
+        },
+      }
+      const mockDirent3 = {
+        name: 'app1',
+        isDirectory: () => {
+          return true
+        },
+      }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
       mockFs.readdirSync.mockReturnValueOnce([mockDirent1, mockDirent2] as any)
@@ -341,13 +371,30 @@ describe(MonoRepo.name, () => {
         workspaces: ['libs/*'],
       }
 
-      const mockDirent1 = { name: 'package1', isDirectory: () => true }
-      const mockDirent2 = { name: 'file.txt', isDirectory: () => false }
-      const mockDirent3 = { name: 'package2', isDirectory: () => true }
+      const mockDirent1 = {
+        name: 'package1',
+        isDirectory: () => {
+          return true
+        },
+      }
+      const mockDirent2 = {
+        name: 'file.txt',
+        isDirectory: () => {
+          return false
+        },
+      }
+      const mockDirent3 = {
+        name: 'package2',
+        isDirectory: () => {
+          return true
+        },
+      }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
       mockFs.readdirSync.mockReturnValue([mockDirent1, mockDirent2, mockDirent3] as any)
@@ -364,12 +411,24 @@ describe(MonoRepo.name, () => {
         workspaces: ['libs/*', 'apps/*'],
       }
 
-      const mockDirent1 = { name: 'lib1', isDirectory: () => true }
-      const mockDirent2 = { name: 'app1', isDirectory: () => true }
+      const mockDirent1 = {
+        name: 'lib1',
+        isDirectory: () => {
+          return true
+        },
+      }
+      const mockDirent2 = {
+        name: 'app1',
+        isDirectory: () => {
+          return true
+        },
+      }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
       mockFs.readdirSync.mockReturnValueOnce([mockDirent1] as any)
@@ -390,11 +449,18 @@ describe(MonoRepo.name, () => {
         workspaces: ['libs/*'],
       }
 
-      const mockDirent = { name: 'package1', isDirectory: () => true }
+      const mockDirent = {
+        name: 'package1',
+        isDirectory: () => {
+          return true
+        },
+      }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
       mockFs.readdirSync.mockReturnValue([mockDirent] as any)
@@ -413,12 +479,24 @@ describe(MonoRepo.name, () => {
         workspaces: ['libs/*', 'apps/*'],
       }
 
-      const mockDirent1 = { name: 'lib1', isDirectory: () => true }
-      const mockDirent2 = { name: 'app1', isDirectory: () => true }
+      const mockDirent1 = {
+        name: 'lib1',
+        isDirectory: () => {
+          return true
+        },
+      }
+      const mockDirent2 = {
+        name: 'app1',
+        isDirectory: () => {
+          return true
+        },
+      }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
       mockFs.readdirSync.mockReturnValueOnce([mockDirent1] as any)
@@ -441,7 +519,9 @@ describe(MonoRepo.name, () => {
 
       const repo = new MonoRepo()
 
-      expect(() => repo.packageJson).toThrow('File not found')
+      expect(() => {
+        return repo.packageJson
+      }).toThrow('File not found')
     })
   })
 

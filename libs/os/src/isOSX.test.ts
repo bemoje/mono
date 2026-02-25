@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isOSX } from './isOSX'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Mock process
 const mockProcess = {

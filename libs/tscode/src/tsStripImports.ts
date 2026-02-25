@@ -22,5 +22,7 @@ import { tsExtractImports } from './tsExtractImports'
 export function tsStripImports(code: string, imports?: ReturnType<typeof tsExtractImports>): string {
   code = tsCrlfToLf(code)
   const imps = imports ?? tsExtractImports(code)
-  return imps.reduce((acc, imp) => acc.replace(imp.match, ''), code)
+  return imps.reduce((acc, imp) => {
+    return acc.replace(imp.match, '')
+  }, code)
 }

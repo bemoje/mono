@@ -32,7 +32,9 @@ export function sortByValues<K, V>(
   compare: (a: V, b: V) => number,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
-  const entries = Array.from(ins).sort((a, b) => compare(a[1], b[1]))
+  const entries = Array.from(ins).sort((a, b) => {
+    return compare(a[1], b[1])
+  })
   ins.clear()
   for (const [k, v] of entries) {
     ins.set(k, v)

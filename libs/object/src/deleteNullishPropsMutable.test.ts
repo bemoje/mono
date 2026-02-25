@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
 import { deleteNullishPropsMutable } from './deleteNullishPropsMutable'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(deleteNullishPropsMutable.name, () => {
   it('should remove properties with null values', () => {

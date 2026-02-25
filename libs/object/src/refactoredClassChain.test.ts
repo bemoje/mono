@@ -1,9 +1,9 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { test } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getClassChain } from './getClassChain'
-import { getSuperClass } from './getSuperClass'
 import { getPrototypeChain } from './getPrototypeChain'
+import { getSuperClass } from './getSuperClass'
+import { test } from 'vitest'
 
 describe('refactored class chain functions', () => {
   class A {}

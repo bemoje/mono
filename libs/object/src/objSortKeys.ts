@@ -8,7 +8,12 @@ export function objSortKeys<T extends object>(
   compare?: (a: [string, ValueOf<T>], b: [string, ValueOf<T>]) => number,
 ): T {
   const entries = Object.entries(o)
-  if (compare) entries.sort(compare)
-  else entries.sort((a, b) => a[0].localeCompare(b[0]))
+  if (compare) {
+    entries.sort(compare)
+  } else {
+    entries.sort((a, b) => {
+      return a[0].localeCompare(b[0])
+    })
+  }
   return Object.fromEntries(entries) as T
 }

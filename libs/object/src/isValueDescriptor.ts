@@ -2,9 +2,15 @@
  * Check if the given descriptor is a value descriptor.
  */
 export function isValueDescriptor<T>(des?: TypedPropertyDescriptor<T>): des is ValueDescriptor<T> {
-  if (!des) return false
-  if (des.get) return false
-  if (des.set) return false
+  if (!des) {
+    return false
+  }
+  if (des.get) {
+    return false
+  }
+  if (des.set) {
+    return false
+  }
   return true
 }
 

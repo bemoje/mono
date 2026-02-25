@@ -1,7 +1,7 @@
-import upath from 'upath'
-import fs from 'fs-extra'
-import { SCRAPE_PATH } from '../../constants'
 import { ResumeSection } from '../../types/ResumeSection'
+import { SCRAPE_PATH } from '../../constants'
+import fs from 'fs-extra'
+import upath from 'upath'
 
 /**
  * Read scraped section data from a JSON file in the scrape directory.

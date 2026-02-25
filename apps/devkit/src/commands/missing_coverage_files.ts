@@ -1,7 +1,7 @@
 import type { Logger } from '@mono/node'
 import fs from 'fs-extra'
-import upath from 'upath'
 import { getRepoRootDirpath } from '../lib/getRepoRootDirpath'
+import upath from 'upath'
 
 export async function missingCoverageFilesAction(opts: { check?: boolean }, { logger: log }: { logger: Logger }) {
   const repoRoot = getRepoRootDirpath()
@@ -14,7 +14,9 @@ export async function missingCoverageFilesAction(opts: { check?: boolean }, { lo
   const coverageDirectory = fs
     .readFileSync(vitestConfigFilepath, 'utf-8')
     .split('\n')
-    .find((line) => line.includes('reportsDirectory:'))
+    .find((line) => {
+      return line.includes('reportsDirectory:')
+    })
     ?.match(/reportsDirectory:\s*['"`](.+?)['"`]/)?.[1]
     ?.trim()
 
@@ -42,8 +44,12 @@ export async function missingCoverageFilesAction(opts: { check?: boolean }, { lo
   )
 
   const result = Object.entries(coverageSummary)
-    .filter(([filepath]) => filepath !== 'total')
-    .filter(([_, metrics]) => metrics.lines.total > 0)
+    .filter(([filepath]) => {
+      return filepath !== 'total'
+    })
+    .filter(([_, metrics]) => {
+      return metrics.lines.total > 0
+    })
     .filter(([_, metrics]) => {
       return Object.values(metrics).some((metric) => {
         return metric.pct < 100 && metric.total > 0

@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { arrTableEachToString } from './arrTableEachToString'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('arrTableEachToString', () => {
   it('should convert each value of a 2D array to string', () => {

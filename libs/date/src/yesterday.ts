@@ -1,6 +1,6 @@
+import { stripTime } from './stripTime'
 import { subDays } from 'date-fns'
 import { today } from './today'
-import { stripTime } from './stripTime'
 
 /**
  * Get the UTC date yesterday, time stripped

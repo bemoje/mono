@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { importStatementToFormattedOneLiner } from './importStatementToFormattedOneLiner'
+import { it } from 'vitest'
 
 describe(importStatementToFormattedOneLiner.name, () => {
   it('examples', () => {

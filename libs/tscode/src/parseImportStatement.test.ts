@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import assert from 'node:assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { parseImportStatement } from './parseImportStatement'
 
 describe(parseImportStatement.name, () => {
@@ -118,7 +118,9 @@ describe(parseImportStatement.name, () => {
 
     it('should correctly identify workspace imports via isWorkspacePath option', () => {
       const result = parseImportStatement("import foo from '@mono/utils'", {
-        isWorkspacePath: (p) => p.startsWith('@mono/'),
+        isWorkspacePath: (p) => {
+          return p.startsWith('@mono/')
+        },
       })
       expect(result.modulePath.type).toBe('workspace')
       expect(result.modulePath.path).toBe('@mono/utils')

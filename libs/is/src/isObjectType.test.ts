@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isObjectType } from './isObjectType'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
+import { it } from 'vitest'
 
 describe(isObjectType.name, () => {
   it('should return true for an object', () => {
@@ -36,7 +36,11 @@ describe(isObjectType.name, () => {
   })
 
   it('should return false for a function', () => {
-    expect(isObjectType(() => 1)).toBe(false)
+    expect(
+      isObjectType(() => {
+        return 1
+      }),
+    ).toBe(false)
   })
 
   it('should be true when the value is an object.', function () {

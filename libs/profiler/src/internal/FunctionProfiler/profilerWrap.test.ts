@@ -1,18 +1,19 @@
 import * as fnLib from '@mono/fn'
-import { afterEach } from "vitest";
-import { beforeEach } from "vitest";
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vitest } from "vitest";
+
 import { FunctionProfiler } from './FunctionProfiler'
 import { ModuleMethodIdentifier } from '../FunctionIdentifier/ModuleMethodIdentifier'
+import { afterEach } from 'vitest'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { profilerWrap } from './profilerWrap'
+import { vitest } from 'vitest'
 
 describe('profilerWrap', () => {
-  const functionSpyMock = vitest
-    .spyOn(fnLib, 'functionSpy')
-    .mockImplementation(((arg: unknown) => arg) as typeof fnLib.functionSpy)
+  const functionSpyMock = vitest.spyOn(fnLib, 'functionSpy').mockImplementation(((arg: unknown) => {
+    return arg
+  }) as typeof fnLib.functionSpy)
 
   beforeEach(() => {
     vitest.clearAllMocks()

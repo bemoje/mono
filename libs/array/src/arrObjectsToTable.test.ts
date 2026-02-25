@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { arrObjectsToTable } from './arrObjectsToTable'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('arrObjectsToTable', () => {
   it('should convert an array of objects to a two-dimensional table', () => {

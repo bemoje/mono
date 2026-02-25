@@ -1,20 +1,22 @@
-import fs from 'fs-extra'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
 import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import fs from 'fs-extra'
+import { it } from 'vitest'
 import { updateFileLinesSync } from './updateFileLinesSync'
+import { vi } from 'vitest'
 
 // Mock fs-extra
-vi.mock('fs-extra', () => ({
-  default: {
-    ensureFileSync: vi.fn(),
-    readFileSync: vi.fn(),
-    outputFileSync: vi.fn(),
-  },
-}))
+vi.mock('fs-extra', () => {
+  return {
+    default: {
+      ensureFileSync: vi.fn(),
+      readFileSync: vi.fn(),
+      outputFileSync: vi.fn(),
+    },
+  }
+})
 
 const mockFs = fs as any
 
@@ -32,19 +34,27 @@ describe(updateFileLinesSync.name, () => {
       mockFs.readFileSync.mockReturnValue('line1\nline2\nline3')
 
       // Create file with lines
-      updateFileLinesSync(testFile, () => ['line1', 'line2', 'line3'])
+      updateFileLinesSync(testFile, () => {
+        return ['line1', 'line2', 'line3']
+      })
       let content = fs.readFileSync(testFile, 'utf8')
       assert.deepStrictEqual(content, 'line1\nline2\nline3')
 
       // Update lines by modifying array
       mockFs.readFileSync.mockReturnValue('LINE1\nLINE2\nLINE3')
-      updateFileLinesSync(testFile, (lines) => lines.map((line) => line.toUpperCase()))
+      updateFileLinesSync(testFile, (lines) => {
+        return lines.map((line) => {
+          return line.toUpperCase()
+        })
+      })
       content = fs.readFileSync(testFile, 'utf8')
       assert.deepStrictEqual(content, 'LINE1\nLINE2\nLINE3')
 
       // Update by returning string
       mockFs.readFileSync.mockReturnValue('single line content')
-      updateFileLinesSync(testFile, () => 'single line content')
+      updateFileLinesSync(testFile, () => {
+        return 'single line content'
+      })
       content = fs.readFileSync(testFile, 'utf8')
       assert.deepStrictEqual(content, 'single line content')
     }).not.toThrow()
@@ -69,10 +79,18 @@ describe(updateFileLinesSync.name, () => {
     mockFs.readFileSync.mockReturnValueOnce('')
     mockFs.readFileSync.mockReturnValueOnce('keep\nremove\nkeep\nremove')
 
-    updateFileLinesSync(testFile, () => ['keep', 'remove', 'keep', 'remove'])
-    updateFileLinesSync(testFile, (lines) =>
-      lines.filter((line) => line === 'keep').map((line) => line.toUpperCase()),
-    )
+    updateFileLinesSync(testFile, () => {
+      return ['keep', 'remove', 'keep', 'remove']
+    })
+    updateFileLinesSync(testFile, (lines) => {
+      return lines
+        .filter((line) => {
+          return line === 'keep'
+        })
+        .map((line) => {
+          return line.toUpperCase()
+        })
+    })
 
     expect(mockFs.outputFileSync).toHaveBeenCalledWith(testFile, 'KEEP\nKEEP')
   })

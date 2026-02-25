@@ -1,9 +1,9 @@
 import type { BuildOptions } from 'esbuild'
-import upath from 'upath'
-import fs from 'fs-extra'
 import cp from 'node:child_process'
+import fs from 'fs-extra'
 import { getRepoRootDirpath } from './getRepoRootDirpath'
 import { relativeImportPath } from './relativeImportPath'
+import upath from 'upath'
 
 const cwd = process.cwd()
 
@@ -17,7 +17,7 @@ export async function buildFile(
   optionsOverride: BuildOptions = {},
 ) {
   const parsed = upath.parse(outfile)
-  const outfileTemp = upath.joinSafe(parsed.dir, parsed.name + '-temp' + upath.extname(outfile))
+  const outfileTemp = upath.joinSafe(parsed.dir, `${parsed.name}-temp${upath.extname(outfile)}`)
 
   const esbuild = await import('esbuild')
 
@@ -52,9 +52,9 @@ export async function buildFile(
     const loadedBuiltModule = await import(importPath)
     Object.entries(loadedBuiltModule)
   } else {
-    const stdout = cp.execSync('node ' + outfileTemp + ' --help').toString()
+    const stdout = cp.execSync(`node ${outfileTemp} --help`).toString()
     if (typeof stdout !== 'string' || !stdout) {
-      console.error('Build did not produce a valid module: ' + outfileTemp)
+      console.error(`Build did not produce a valid module: ${outfileTemp}`)
       process.exit(1)
     }
   }
@@ -64,8 +64,8 @@ export async function buildFile(
   // remove the temporary file and rename the output file
   await fs.remove(outfile)
   await fs.rename(outfileTemp, outfile)
-  await fs.remove(outfile + '.map')
-  await fs.rename(outfileTemp + '.map', outfile + '.map')
+  await fs.remove(`${outfile}.map`)
+  await fs.rename(`${outfileTemp}.map`, `${outfile}.map`)
 
   return result
 }

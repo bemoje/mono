@@ -1,8 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-
 import { arrLast } from './arrLast'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(arrLast.name, () => {
   it('should return the last element of a non-empty array', () => {
@@ -12,7 +11,9 @@ describe(arrLast.name, () => {
   })
 
   it('should throw an error when called with an empty array', () => {
-    expect(() => arrLast([])).toThrow('Cannot get last element of empty array.')
+    expect(() => {
+      return arrLast([])
+    }).toThrow('Cannot get last element of empty array.')
   })
 
   it('should return the last element of an array with a single element', () => {

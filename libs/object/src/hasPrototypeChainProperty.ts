@@ -6,5 +6,7 @@ import { hasOwnProperty } from './hasOwnProperty'
  * including the object itself.
  */
 export function hasPrototypeChainProperty<T extends object>(object: T, key: PropertyKey): boolean {
-  return getClassChain(object).some((ctor) => hasOwnProperty(ctor.prototype, key))
+  return getClassChain(object).some((ctor) => {
+    return hasOwnProperty(ctor.prototype, key)
+  })
 }

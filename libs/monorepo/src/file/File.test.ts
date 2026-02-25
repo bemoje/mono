@@ -1,34 +1,49 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
 import { File } from './File'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import fs from 'node:fs'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
-vi.mock('node:fs', () => ({
-  default: {
-    statSync: vi.fn().mockReturnValue({ size: 100, isFile: () => true }),
-    existsSync: vi.fn().mockReturnValue(true),
-    readFileSync: vi.fn().mockReturnValue(''),
-  },
-}))
+vi.mock('node:fs', () => {
+  return {
+    default: {
+      statSync: vi.fn().mockReturnValue({
+        size: 100,
+        isFile: () => {
+          return true
+        },
+      }),
+      existsSync: vi.fn().mockReturnValue(true),
+      readFileSync: vi.fn().mockReturnValue(''),
+    },
+  }
+})
 
-vi.mock('@mono/path', () => ({
-  default: {
-    normalize: vi.fn((p: string) => p),
-    hasExtname: vi.fn((p: string, exts: string | string[]) => {
-      const ext = p.split('.').pop() ?? ''
-      return Array.isArray(exts) ? exts.includes(ext) : ext === exts
+vi.mock('@mono/path', () => {
+  return {
+    default: {
+      normalize: vi.fn((p: string) => {
+        return p
+      }),
+      hasExtname: vi.fn((p: string, exts: string | string[]) => {
+        const ext = p.split('.').pop() ?? ''
+        return Array.isArray(exts) ? exts.includes(ext) : ext === exts
+      }),
+      parse: vi.fn((p: string) => {
+        const basename = p.split('/').pop() ?? ''
+        const dotIndex = basename.indexOf('.')
+        return { name: dotIndex >= 0 ? basename.slice(0, dotIndex) : basename }
+      }),
+      hasParentDirname: vi.fn((p: string, name: string) => {
+        return p.includes(`/${name}/`)
+      }),
+    },
+    hasParentDirname: vi.fn((p: string, name: string) => {
+      return p.includes(`/${name}/`)
     }),
-    parse: vi.fn((p: string) => {
-      const basename = p.split('/').pop() ?? ''
-      const dotIndex = basename.indexOf('.')
-      return { name: dotIndex >= 0 ? basename.slice(0, dotIndex) : basename }
-    }),
-    hasParentDirname: vi.fn((p: string, name: string) => p.includes('/' + name + '/')),
-  },
-  hasParentDirname: vi.fn((p: string, name: string) => p.includes('/' + name + '/')),
-}))
+  }
+})
 
 function createFile(filepath: string) {
   return new File({} as any, filepath)
@@ -151,7 +166,9 @@ describe.sequential(File.name, () => {
     it('should throw when file does not exist', () => {
       vi.mocked(fs.existsSync).mockReturnValueOnce(false)
       const file = createFile('/workspace/src/missing.ts')
-      expect(() => (file as any).readFile()).toThrow('File not found')
+      expect(() => {
+        return (file as any).readFile()
+      }).toThrow('File not found')
     })
   })
 })

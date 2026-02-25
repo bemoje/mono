@@ -14,7 +14,11 @@ import { isPrototype } from '@mono/is'
  * - null | undefined: TypeError
  */
 export function classPrototype<T>(value: NonNullable<T>): typeof Object.prototype {
-  if (isFunction(value)) return value.prototype
-  if (isPrototype(value)) return value
+  if (isFunction(value)) {
+    return value.prototype
+  }
+  if (isPrototype(value)) {
+    return value
+  }
   return value.constructor.prototype
 }

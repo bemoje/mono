@@ -10,8 +10,12 @@ export function inheritPrototypeMembers<T extends Constructor<object>>(
 ): T {
   const ignore: Set<PropertyKey> = new Set([...ignoreKeys, 'constructor'])
   for (const key of Reflect.ownKeys(source.prototype)) {
-    if (ignore.has(key)) continue
-    if (Reflect.has(target.prototype, key)) continue
+    if (ignore.has(key)) {
+      continue
+    }
+    if (Reflect.has(target.prototype, key)) {
+      continue
+    }
     const des = Object.getOwnPropertyDescriptor(source.prototype, key)
     Object.defineProperty(target.prototype, key, des as PropertyDescriptor)
   }

@@ -8,10 +8,16 @@ export function collectVariadicOptionValues(
 ): void {
   for (let i = 0; i < parsed.tokens.length; i++) {
     const token = parsed.tokens[i]
-    if (token.kind !== 'option') continue
+    if (token.kind !== 'option') {
+      continue
+    }
 
-    const def = options.find((o) => o.name === token.name)
-    if (!def?.variadic || def.type !== 'string') continue
+    const def = options.find((o) => {
+      return o.name === token.name
+    })
+    if (!def?.variadic || def.type !== 'string') {
+      continue
+    }
 
     const values = [token.value]
     let j = i + 1
@@ -19,14 +25,18 @@ export function collectVariadicOptionValues(
       const positionalToken = parsed.tokens[j]
       values.push(positionalToken.value)
       const posIndex = parsed.positionals.indexOf(positionalToken.value)
-      if (posIndex !== -1) parsed.positionals.splice(posIndex, 1)
+      if (posIndex !== -1) {
+        parsed.positionals.splice(posIndex, 1)
+      }
       j++
     }
 
     Reflect.set(
       parsed.values,
       token.name,
-      values.filter((v): v is string => v !== undefined),
+      values.filter((v): v is string => {
+        return v !== undefined
+      }),
     )
   }
 }

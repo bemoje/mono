@@ -1,14 +1,18 @@
-import { describe } from "vitest";
-import { it } from "vitest";
-import { expect } from "vitest";
-import { vi } from "vitest";
-import { beforeAll } from "vitest";
-import { afterAll } from "vitest";
+import { afterAll } from 'vitest'
+import { beforeAll } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { msSinceDate } from './msSinceDate'
+import { vi } from 'vitest'
 
 describe(msSinceDate.name, () => {
-  beforeAll(() => vi.useFakeTimers())
-  afterAll(() => vi.useRealTimers())
+  beforeAll(() => {
+    return vi.useFakeTimers()
+  })
+  afterAll(() => {
+    return vi.useRealTimers()
+  })
 
   it('should return the correct milliseconds for a Date object', () => {
     const now = new Date()

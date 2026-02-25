@@ -1,11 +1,11 @@
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
-import { it } from 'vitest'
-import { vi } from 'vitest'
-import { formatAsStringTable } from './formatAsStringTable'
 import { format } from 'date-fns'
+import { formatAsStringTable } from './formatAsStringTable'
+import { it } from 'vitest'
 import { startCase } from 'es-toolkit/string'
+import { vi } from 'vitest'
 
 describe('formatAsStringTable', () => {
   type Input = {
@@ -62,7 +62,9 @@ describe('formatAsStringTable', () => {
         },
       ],
     })
-    const sorted = stringData.sort((a, b) => a.season.localeCompare(b.season))
+    const sorted = stringData.sort((a, b) => {
+      return a.season.localeCompare(b.season)
+    })
     expect(sorted).toEqual([
       {
         season: 'season1',
@@ -97,7 +99,9 @@ describe('formatAsStringTable', () => {
         },
       ],
     })
-    const sorted = stringData.sort((a, b) => a.season.localeCompare(b.season))
+    const sorted = stringData.sort((a, b) => {
+      return a.season.localeCompare(b.season)
+    })
     expect(sorted).toEqual([
       {
         season: 'season1',
@@ -131,7 +135,9 @@ describe('formatAsStringTable', () => {
         },
       ],
     })
-    const sorted = stringData.sort((a, b) => a.season.localeCompare(b.season))
+    const sorted = stringData.sort((a, b) => {
+      return a.season.localeCompare(b.season)
+    })
     expect(sorted).toEqual([
       {
         season: 'season1',
@@ -158,10 +164,12 @@ describe('formatAsStringTable', () => {
     })
 
     type ExtendedInput = Input & { description: string }
-    const extendedData: ExtendedInput[] = data.map((obj) => ({
-      ...obj,
-      description: obj.season,
-    }))
+    const extendedData: ExtendedInput[] = data.map((obj) => {
+      return {
+        ...obj,
+        description: obj.season,
+      }
+    })
 
     const stringData = formatAsStringTable<ExtendedInput, Output>({
       data: extendedData,
@@ -172,7 +180,9 @@ describe('formatAsStringTable', () => {
         },
       ],
     })
-    const sorted = stringData.sort((a, b) => a.season.localeCompare(b.season))
+    const sorted = stringData.sort((a, b) => {
+      return a.season.localeCompare(b.season)
+    })
     expect(sorted).toEqual([
       {
         season: 'season1',
@@ -217,13 +227,17 @@ describe('formatAsStringTable', () => {
       stringFormatters: [],
       defaultFormatter: {
         format: (value) => {
-          if (typeof value === 'string') return value
+          if (typeof value === 'string') {
+            return value
+          }
           return value.toString(10)
         },
       },
     })
 
-    const sorted = stringData.sort((a, b) => a.season.localeCompare(b.season))
+    const sorted = stringData.sort((a, b) => {
+      return a.season.localeCompare(b.season)
+    })
     expect(sorted).toEqual([
       {
         'season': 'season1',

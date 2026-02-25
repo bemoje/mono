@@ -1,7 +1,7 @@
-import { JsonFileTemplateStrategy } from "@mono/template";
-import { StringTemplateStrategy } from "@mono/template";
-import { Template } from "@mono/template";
-import { TextFileTemplateStrategy } from "@mono/template";
+import { JsonFileTemplateStrategy } from '@mono/template'
+import { StringTemplateStrategy } from '@mono/template'
+import { Template } from '@mono/template'
+import { TextFileTemplateStrategy } from '@mono/template'
 import { Type } from '@sinclair/typebox'
 
 stringTemplate()

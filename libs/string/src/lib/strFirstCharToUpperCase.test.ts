@@ -1,7 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strFirstCharToUpperCase } from './strFirstCharToUpperCase'
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 
 describe('strFirstCharToUpperCase', () => {
   it('should convert the first character of a string to uppercase', () => {

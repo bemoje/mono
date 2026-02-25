@@ -1,10 +1,10 @@
-import type { AnyGetter } from '@mono/types'
 import type { AnyFunction } from '@mono/types'
+import type { AnyGetter } from '@mono/types'
 import type { AnySetter } from '@mono/types'
-import type { TFunction } from '@mono/types'
 import type { IProfilerFactory } from '../ProfilerFactory/IProfilerFactory'
-import { profilerWrap } from '../FunctionProfiler/profilerWrap'
+import type { TFunction } from '@mono/types'
 import type { WrapMethodsStrategy } from '@mono/fn'
+import { profilerWrap } from '../FunctionProfiler/profilerWrap'
 
 /**
  * Strategy for wrapping object methods with profiling capabilities using the Strategy pattern.
@@ -19,8 +19,12 @@ export class ProfilerWrapMethodsStrategy<Target extends object> implements WrapM
   }
 
   filter<T extends Target>(target: T, key: string | symbol): boolean {
-    if (key === 'constructor') return false
-    if (this.ignoreKeys.has(key)) return false
+    if (key === 'constructor') {
+      return false
+    }
+    if (this.ignoreKeys.has(key)) {
+      return false
+    }
     return true
   }
 

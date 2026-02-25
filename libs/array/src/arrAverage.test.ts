@@ -1,7 +1,7 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
 import { arrAverage } from './arrAverage'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(arrAverage.name, () => {
   it('should calculate the average of the provided array', () => {
@@ -9,6 +9,8 @@ describe(arrAverage.name, () => {
   })
 
   it('should throw an error if the input array is empty', () => {
-    expect(() => arrAverage([])).toThrowError('Cannot take an average of zero values.')
+    expect(() => {
+      return arrAverage([])
+    }).toThrowError('Cannot take an average of zero values.')
   })
 })

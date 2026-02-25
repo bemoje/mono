@@ -1,10 +1,10 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { vi } from "vitest";
-import { beforeEach } from "vitest";
 import assert from 'node:assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { spawnChildProcess } from './spawnChildProcess'
+import { vi } from 'vitest'
 
 const { mockSpawn } = vi.hoisted(() => {
   return {
@@ -64,7 +64,9 @@ describe(spawnChildProcess.name, () => {
       const promise = spawnChildProcess('node', ['--version'])
 
       // Simulate successful exit
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(0, null)
 
       const result = await promise
@@ -76,7 +78,9 @@ describe(spawnChildProcess.name, () => {
       const options = { cwd: '/custom/path', env: { NODE_ENV: 'test' } }
       const promise = spawnChildProcess('npm', ['test'], options)
 
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(0, null)
 
       await promise
@@ -86,7 +90,9 @@ describe(spawnChildProcess.name, () => {
     it('should handle spawn with empty arguments', async () => {
       const promise = spawnChildProcess('node')
 
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(0, null)
 
       await promise
@@ -96,7 +102,9 @@ describe(spawnChildProcess.name, () => {
     it('should handle spawn with undefined arguments', async () => {
       const promise = spawnChildProcess('node', undefined)
 
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(0, null)
 
       await promise
@@ -106,7 +114,9 @@ describe(spawnChildProcess.name, () => {
     it('should handle spawn with empty spawn options', async () => {
       const promise = spawnChildProcess('node', ['--version'], {})
 
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(0, null)
 
       await promise
@@ -120,7 +130,9 @@ describe(spawnChildProcess.name, () => {
       const promise = spawnChildProcess('nonexistent-command')
 
       // Simulate error
-      const errorHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'error')[1]
+      const errorHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'error'
+      })[1]
       errorHandler(error)
 
       await expect(promise).rejects.toThrow('Spawn failed')
@@ -130,7 +142,9 @@ describe(spawnChildProcess.name, () => {
       const promise = spawnChildProcess('node', ['failing-script.js'])
 
       // Simulate non-zero exit
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(1, null)
 
       await expect(promise).rejects.toThrow(
@@ -150,7 +164,9 @@ describe(spawnChildProcess.name, () => {
       const args = ['script.js', '--arg1', 'value1', '--arg2', 'value2']
       const promise = spawnChildProcess('node', args)
 
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(1, null)
 
       await expect(promise).rejects.toThrow(
@@ -167,7 +183,9 @@ describe(spawnChildProcess.name, () => {
       expect(callback).toHaveBeenCalledWith(mockChild)
 
       // Complete the process
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(0, null)
 
       await promise
@@ -176,7 +194,9 @@ describe(spawnChildProcess.name, () => {
     it('should work without callback', async () => {
       const promise = spawnChildProcess('node', ['--version'])
 
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(0, null)
 
       const result = await promise
@@ -190,7 +210,9 @@ describe(spawnChildProcess.name, () => {
       expect(callback).toHaveBeenCalledWith(mockChild)
 
       // Simulate failure
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(1, null)
 
       await expect(promise).rejects.toThrow()
@@ -210,8 +232,12 @@ describe(spawnChildProcess.name, () => {
 
       // Verify event listeners are set up
       const calls = mockChild.on.mock.calls
-      const errorCall = calls.find((call: string[]) => call[0] === 'error')
-      const exitCall = calls.find((call: string[]) => call[0] === 'exit')
+      const errorCall = calls.find((call: string[]) => {
+        return call[0] === 'error'
+      })
+      const exitCall = calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })
 
       expect(errorCall).toBeDefined()
       expect(exitCall).toBeDefined()
@@ -237,7 +263,9 @@ describe(spawnChildProcess.name, () => {
       ]
 
       const promise = spawnChildProcess('node', complexArgs)
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(0, null)
 
       await promise
@@ -258,7 +286,9 @@ describe(spawnChildProcess.name, () => {
       }
 
       const promise = spawnChildProcess('node', ['app.js'], complexOptions)
-      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => call[0] === 'exit')[1]
+      const exitHandler = mockChild.on.mock.calls.find((call: string[]) => {
+        return call[0] === 'exit'
+      })[1]
       exitHandler(0, null)
 
       await promise

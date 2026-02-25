@@ -1,8 +1,8 @@
-import { describe } from "vitest";
-import { expect } from "vitest";
-import { it } from "vitest";
-import { getCommandAncestors } from './getCommandAncestors'
 import type { ICommand } from '../types'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { getCommandAncestors } from './getCommandAncestors'
+import { it } from 'vitest'
 
 function mockCmd(name: string, parent?: ICommand): ICommand {
   return { name, parent } as unknown as ICommand
