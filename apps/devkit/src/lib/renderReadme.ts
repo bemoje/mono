@@ -120,7 +120,7 @@ export async function renderLibsExportedModules(): Promise<string> {
       continue
     }
 
-    libExports.push(`**${libName}** (see [documentation](./libs/${libName}/README.md))`)
+    libExports.push(`**${libName}** (see [README.md](./libs/${libName}/README.md))`)
 
     const summaries = librarySummaries.get(libName) || []
     const summaryMap = new Map(

@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7754  | 7754    | 100%       |
-| Functions | 787   | 787     | 100%       |
-| Branches  | 2525  | 2525    | 100%       |
+| Lines     | 7636  | 7636    | 100%       |
+| Functions | 769   | 769     | 100%       |
+| Branches  | 2488  | 2488    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 597   | 13778         |
-| test      | 447   | 30946         |
+| source    | 580   | 13657         |
+| test      | 430   | 30467         |
 | examples  | 1     | 48            |
-| total     | 1045  | 44772         |
+| total     | 1011  | 44172         |
 
 ## Table of Contents
 
@@ -278,25 +278,19 @@ describe(ClassToTest.name, () => {
 
 ## Libraries
 
-**array** (see [documentation](./libs/array/README.md))
+**array** (see [README.md](./libs/array/README.md))
 
-- `arrAverage`: Calculates the average of an array of numbers.
 - `arrEachToString`: Coerce each element of an array to string.
 - `arrFindIndicesOf`: Returns an array of indices where the predicate function returns true for the corresponding element in the input array.
 - `arrGetOrDefault`: Get array element at index or create it using factory function if it doesn't exist.
 - `arrHasDuplicates`: Checks if an array has any duplicate elements.
 - `arrIndicesOf`: Returns all indexes at which an element is found.
-- `arrLast`: Returns the last element of an array. Throws an error if the array is empty.
 - `arrMapMutable`: This function takes an array and a callback function as arguments. It applies the callback function to each element of the array, mutating the original array in the process.
 - `arrObjectsToTable`: Convert an array of objects to a two-dimensional table.
 - `arrObjectsUniqueKeys`: Returns an array of all unique object keys found in an array of objects.
-- `arrRemove`: Remove a given element from a copy of a given array and return the resulting array.
-- `arrRemoveDuplicates`: Remove duplicates from an array
 - `arrRemoveMutable`: Remove elements in-place from an array.
-- `arrShuffle`: Shuffle items in an array in-place. Guarantees changes.
 - `arrSortNumeric`: Sorts an array of numbers, bigints, or booleans in ascending order.
 - `arrSortedInsertionIndex`: Returns an index in the sorted array where the specified value could be inserted while maintaining the sorted order of the array. If the element is already in the array, returns the index after the last instance of the element.
-- `arrSum`: Calculates the sum of an array of numbers.
 - `arrSwap`: Swaps two elements in an array. This function takes an input array and swaps the elements at the specified indices.
 - `arrTableAssertRowsSameLength`: Asserts that all rows in a 2D array have the same length.
 - `arrTableEachToString`: Coerce each value of a 2D array table to string.
@@ -306,7 +300,7 @@ describe(ClassToTest.name, () => {
 - `arrTableToObjects`: Converts a 2D array representing a table into an array of objects.
 - `arrayToString`: Short and condensed string representation of an array, easy to read for error outputs or similar.
 
-**cli** (see [documentation](./libs/cli/README.md))
+**cli** (see [README.md](./libs/cli/README.md))
 
 - `Command`: a type-safe CLI composer that can parse argv and generate help without execution coupling.
 - `Help`: This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the expected interface of the Command instance to parse, are both similar, but different and not compatible without custom adaptations,
@@ -316,7 +310,7 @@ describe(ClassToTest.name, () => {
 - `getCommandAndAncestors`: Returns command and all ancestor commands in hierarchy
 - `parseOptionFlags`: Parses option flags string into its components
 
-**composition** (see [documentation](./libs/composition/README.md))
+**composition** (see [README.md](./libs/composition/README.md))
 
 - `Inspector`: Interface that target objects must implement to be inspectable. Provides standard inspection methods for debugging and serialization.
 - `ParentRelationTypes`: Manages parent-child relationships between constructor types, tracking hierarchical connections and providing debugging capabilities.
@@ -329,13 +323,13 @@ describe(ClassToTest.name, () => {
 - `inspectDefaults`: Default options for Node.js util.inspect with enhanced settings for better debugging output.
 - `inspectorDefaults`: The default inspector configuration options.
 
-**config** (see [documentation](./libs/config/README.md))
+**config** (see [README.md](./libs/config/README.md))
 
 - `ConfigFile`: Configuration file manager that provides schema validation and file I/O using the Strategy pattern.
 - `JsonFileStrategy`: Strategy for loading and saving configuration data as JSON files.
 - `SchemaConfigStrategy`: Strategy for validating configuration data against a TypeBox schema and applying default values.
 
-**crypto** (see [documentation](./libs/crypto/README.md))
+**crypto** (see [README.md](./libs/crypto/README.md))
 
 - `decrypt`: Decrypts a string that was encrypted using encrypt(). Expects input in format: hexadecimal IV (32 chars) + encrypted data Uses PBKDF2 for key derivation with 100k iterations.
 - `encrypt`: Encrypts a string using AES-256-CBC with a random IV. Uses PBKDF2 for key derivation with 100k iterations.
@@ -344,7 +338,7 @@ describe(ClassToTest.name, () => {
 - `strHashToStringDJB2`: Hashes a string using the DJB2 algorithm, returning a numeric hash value.
 - `strHashToUint32Array`: Hash a string into an array of unsigned 32-bit integers.
 
-**date** (see [documentation](./libs/date/README.md))
+**date** (see [README.md](./libs/date/README.md))
 
 - `Timer`: Returns a function that returns the elapsed time since invokation.
 - `dateString`: Reutnrs the date formatted as: yyyy-MM-dd
@@ -361,13 +355,13 @@ describe(ClassToTest.name, () => {
 - `today`: Get the UTC date today, time stripped
 - `yesterday`: Get the UTC date yesterday, time stripped
 
-**decorators** (see [documentation](./libs/decorators/README.md))
+**decorators** (see [README.md](./libs/decorators/README.md))
 
 - `lazyProp`: Decorator to memoize a method or getter accessor property.
 - `memoizeAsync`: Decorator to memoize an async method. Uses memoizee library, so if params are objects, the decorator needs a normalizer function.
 - `memoizeSync`: Decorator to memoize a sync method.
 
-**fn** (see [documentation](./libs/fn/README.md))
+**fn** (see [README.md](./libs/fn/README.md))
 
 - `bindArg`: Binds a specified argument to the provided function, returning a new function that requires only the remaining arguments at call time.
 - `bindArgs`: Binds specified arguments to the provided function, returning a new function that requires only the remaining arguments at call time.
@@ -381,7 +375,7 @@ describe(ClassToTest.name, () => {
 - `transformReturnValue`: Wraps a function to transform its return value using a transform function.
 - `wrapMethods`: Wrap methods, getters and setters of an object with custom logic.
 
-**fs** (see [documentation](./libs/fs/README.md))
+**fs** (see [README.md](./libs/fs/README.md))
 
 - `deleteOlderThan`: Delete files older than a given timestamp
 - `getFileAge`: Retrieves the age of a file in milliseconds.
@@ -396,7 +390,7 @@ describe(ClassToTest.name, () => {
 - `updateJsonFileSync`: Synchronous version of `updateJsonFile`.
 - `walkDirectory`: Walk a directory recursively and return an array of paths.
 
-**is** (see [documentation](./libs/is/README.md))
+**is** (see [README.md](./libs/is/README.md))
 
 - `IsArrayWhereEach`: Creates a validator function that checks whether the input is an array where all elements are valid according to every validator provided.
 - `IsFileExt`: Creates a validator function that checks if a string has the specified file extension (case-insensitive).
@@ -412,7 +406,6 @@ describe(ClassToTest.name, () => {
 - `isClass`: Checks if the given value is a constructor function using 'class' syntax. WARNING: If the running code is minified or mangled, this function may not work as expected. However, it should be resistant to minification/mangling if the 'class' keyword is present in the first line of the function.
 - `isConstructor`: Checks if the given value is a valid constructor function.
 - `isDefined`: This function checks if a value is defined or not. It performs a strict comparison against `undefined`.
-- `isDefinedValue`: Checks if the provided value is defined (i.e., not `undefined` or `null`).
 - `isDigit`: Returns true if the given character is a digit between 0 and 9.
 - `isDigits`: Returns true if the given string is a string of digits between 0 and 9.
 - `isEven`: Checks if a number is even.
@@ -429,7 +422,6 @@ describe(ClassToTest.name, () => {
 - `isNonZeroNegativeNumber`: Checks if a given value is a negative number less than zero.
 - `isNonZeroPositiveInteger`: Checks if a given number is a positive non-zero integer.
 - `isNonZeroPositiveNumber`: Checks if a given value is a positive number greater than zero.
-- `isNull`: Checks if the provided value is null.
 - `isNumArrayAscending`: Determine whether the input is an array of numbers in ascending order. Duplicate values are allowed.
 - `isNumericString`: Checks if a given string is numeric.
 - `isObject`: Checks if the provided value is an object (null, arrays and functions not included).
@@ -439,14 +431,13 @@ describe(ClassToTest.name, () => {
 - `isPosIntRange`: Checks if the input is an array of exactly two positive integers in ascending order, representing a valid range.
 - `isPositiveInteger`: Checks if a given number is a positive integer.
 - `isPositiveNumber`: Checks if a given value is a positive number (including zero).
-- `isPrimitive`: Checks if the provided value is a primitive type (null, undefined, bigint, boolean, number, string or symbol).
 - `isPrototype`: Checks if the given value is a prototype object
 - `isStringArray`: Determine whether the input is a string array.
 - `isStringWithNoSpacesOrDashes`: Checks if the provided value is a string that contains no spaces or dashes.
 - `isUniqueNumArrayAscending`: Determine whether the input is an array of numbers in ascending order. Duplicate values are not allowed.
 - `isValidNumber`: Checks if the provided value is a valid finite number (not NaN or Infinity).
 
-**iter** (see [documentation](./libs/iter/README.md))
+**iter** (see [README.md](./libs/iter/README.md))
 
 - `filter`: Filter a `Map` (or `ReadonlyMap`). Predicate receives `(value, key)`. Returns a new `Map`.
 - `filterIterable`: Transform values of an iterable.
@@ -464,7 +455,7 @@ describe(ClassToTest.name, () => {
 - `reduceIterableEntries`: Reduce a map-like iterable to a single value.
 - `toObjectIterable`: Convert a map-like iterable to a regular object.
 
-**map** (see [documentation](./libs/map/README.md))
+**map** (see [README.md](./libs/map/README.md))
 
 - `ExtMap`: Minimal Extended Map class focused only on Map-specific utilities.
 - `TimeoutWeakMap`: A WeakMap with automatic timeout-based expiry for entries. Entries are automatically removed after a specified timeout period. Accessing an entry refreshes its timeout, extending its lifetime. This is useful for caching scenarios where you want automatic cleanup of unused entries while keeping frequently accessed ones alive.
@@ -482,7 +473,7 @@ describe(ClassToTest.name, () => {
 - `toMap`: Converts a GenericMap to a native Map.
 - `valuesArray`: Returns an array of all values in the map. Convenience method that converts the values iterator to an array.
 
-**monorepo** (see [documentation](./libs/monorepo/README.md))
+**monorepo** (see [README.md](./libs/monorepo/README.md))
 
 - `AbstractBase`: Abstract base class that provides common functionality for monorepo management including parenting and inspection capabilities.
 - `AbstractCode`: Abstract base class for representing code structures in the monorepo with inspection and preview capabilities.
@@ -513,7 +504,7 @@ describe(ClassToTest.name, () => {
 - `resolveModuleImportPath`: Returns the resolved import path (relative from repo root)
 - `semverVersionBump`: Bumps the semantic versioning (SemVer) of a given version string or array based on the specified level. The function supports 'major', 'minor', and 'patch' levels.
 
-**node** (see [documentation](./libs/node/README.md))
+**node** (see [README.md](./libs/node/README.md))
 
 - `StringStream`: Extension of Node's native Readable class for converting a string into a Readable stream.
 - `argvHasHelpFlag`: Checks if the command line arguments contain a help flag (--help or -h).
@@ -533,20 +524,18 @@ describe(ClassToTest.name, () => {
 - `timer`: Executes a task and logs the execution time.
 - `toError`: Converts the given value to an Error object. If the value is already an Error object, it is returned as is. If the value is not an Error object, it is converted to a string and used as the error message.
 
-**number** (see [documentation](./libs/number/README.md))
+**number** (see [README.md](./libs/number/README.md))
 
 - `NumberFormatter`: A utility class for formatting and parsing numbers with locale-specific separators. This class allows for customizing thousand and decimal separators, setting precision for decimal places, and supports different locales for international number formatting.
 - `bytesToKilobytes`: Converts a given number of bytes into kilobytes.
 - `bytesToMegabytes`: Converts a given number of bytes into megabytes.
-- `numRange`: Generates an array of numbers within a specified range.
-- `randomIntBetween`: Returns a random integer between min (inclusive) and max (inclusive).
-- `round`: Round a given number with a given precision. Shifts with exponential notation to avoid floating-point issues.
+- `round`: Round a number to a specified number of decimal places.
 - `roundDown`: Round a given number down with a given precision. Shifts with exponential notation to avoid floating-point issues.
 - `roundToNearest`: Round a given number to a given nearest whole number.
 - `roundUp`: Round a given number up with a given precision. Shifts with exponential notation to avoid floating-point issues.
 - `roundWith`: Round a given number with a given precision and rounding function. Shifts with exponential notation to avoid floating-point issues.
 
-**object** (see [documentation](./libs/object/README.md))
+**object** (see [README.md](./libs/object/README.md))
 
 - `OptionsConfigurator`: A utility function to configure options based on a given schema or properties. This function provides a builder pattern to define and validate options, including handling default values, required keys, and optional keys.
 - `arrAssign`: Array assignment function that merges arrays excluding null and undefined values.
@@ -586,7 +575,6 @@ describe(ClassToTest.name, () => {
 - `iterableFirstElement`: Returns the first element of an iterable object.
 - `iterateObject`: Generator that performs a depth-first traversal of an object's structure. Yields information about each node including its path, value, and container type. Handles circular references and maintains parent-child relationships. Key features: - Supports both objects and arrays - Generates Lodash-style property paths - Detects leaf nodes (primitives) - Prevents circular reference loops - Preserves traversal order
 - `keysOf`: Same as Object.keys except the keys are typed as string keys of T.
-- `mapObject`: Maps over an object's values, transforming each value using the provided function.
 - `mapObjectEntries`: Maps over an object's entries, transforming both keys and values using the provided function.
 - `mapObjectKeys`: Maps over an object's keys, transforming each key using the provided function while preserving values.
 - `objAssign`: Like Object.assign, but only copies source object property values != null.
@@ -598,7 +586,6 @@ describe(ClassToTest.name, () => {
 - `objGetOrDefault`: Gets a property value from an object or creates it using a factory function if it doesn't exist.
 - `objGetOrDefaultValue`: This function attempts to retrieve a value from an object using a provided key. If the key does not exist in the object, it sets the provided default value in the object and returns it.
 - `objHas`: Checks if an object has a specific key.
-- `objIsEmpty`: Checks if an object is empty.
 - `objOmitKeysMutable`: Deletes the specified keys from an object in a mutable way.
 - `objPropertyValueToGetter`: Converts the specified properties of an object into getter functions.
 - `objReduce`: Reduces the values of an object into a single value.
@@ -619,7 +606,7 @@ describe(ClassToTest.name, () => {
 - `staticClassKeysOf`: Returns the static string-property keys of a class but without the natively built-in keys 'length', 'name', and 'prototype'.
 - `valuesOf`: Get the values of an object with type-safe return value.
 
-**os** (see [documentation](./libs/os/README.md))
+**os** (see [README.md](./libs/os/README.md))
 
 - `defaultOpenInEditorCommand`: Get the default command to open a file in in a text editor. If VSCode is installed, this is used. Otherwise, the default text editor of the OS is used.
 - `getAppDataPath`: Get the app data path, depending on the current OS (win, osx, linux).
@@ -636,7 +623,7 @@ describe(ClassToTest.name, () => {
 - `openInDefaultBrowserCommand`: Gets the command to open a URL in the default browser for the current operating system.
 - `winExplorerOpenDirectory`: Opens a directory in Windows Explorer. Works on Windows only.
 
-**path** (see [documentation](./libs/path/README.md))
+**path** (see [README.md](./libs/path/README.md))
 
 - `cwd`: Join paths starting from process.cwd()
 - `dirnameDeep`: Returns the absolute path of the parent directory of the given path.
@@ -654,21 +641,20 @@ describe(ClassToTest.name, () => {
 - `toCwdRelative`: Solve the relative path from the process.cwd() path to the {p} path. At times we have two absolute paths, and we need to derive the relative path from one to the other. This is actually the reverse transform of path.resolve.
 - `toWin32`: Ensures win32 backslashes are used instead of forward slashes.
 
-**profiler** (see [documentation](./libs/profiler/README.md))
+**profiler** (see [README.md](./libs/profiler/README.md))
 
 - `Profiler`: A utility class for profiling functions, classes, and modules to measure execution time and other performance metrics.
 
-**regex** (see [documentation](./libs/regex/README.md))
+**regex** (see [README.md](./libs/regex/README.md))
 
-- `regexEscapeString`: Escapes special characters in a string to be used in a regular expression.
 - `rexec`: Easily perform regex 'exec' on a string. An iterable is returned which steps through the exec process and yields all the details you might need.
 
-**stacktrace** (see [documentation](./libs/stacktrace/README.md))
+**stacktrace** (see [README.md](./libs/stacktrace/README.md))
 
 - `enablePrettyStackTrace`: Enables pretty stack trace formatting for uncaught exceptions.
 - `prettyStackTrace`: Formats stack traces with colors and improved readability for debugging.
 
-**string** (see [documentation](./libs/string/README.md))
+**string** (see [README.md](./libs/string/README.md))
 
 - `countFloatDecimals`: Counts the number of decimal places in a floating-point number.
 - `endsWithIncompleteUtfPairSurrogate`: Returns true if the string ends with an incomplete UTF-16 surrogate pair. This is useful for determining if a string can be safely concatenated with another string.
@@ -676,8 +662,6 @@ describe(ClassToTest.name, () => {
 - `strCountChars`: Counts the number of occurrences of each character in a string and returns a Map where the keys are the characters and the values are their counts.
 - `strEnsureEndsWith`: Ensures that a string ends with a specified substring. If the string already ends with the specified substring, it is returned as is. Otherwise, the substring is appended to the end of the string.
 - `strEnsureStartsWith`: Ensures that a string starts with a specified substring. If the string already starts with the specified substring, it is returned as is. Otherwise, the substring is appended to the end of the string.
-- `strFirstCharToLowerCase`: Converts the first character of a string to lowercase.
-- `strFirstCharToUpperCase`: Converts the first character of a string to uppercase.
 - `strIsLowerCase`: Checks if the given string is in lower case.
 - `strIsMultiLine`: Checks if a string contains multiple lines.
 - `strIsUpperCase`: Checks if the given string is in upper case.
@@ -714,10 +698,9 @@ describe(ClassToTest.name, () => {
 - `strWrapInParenthesis`: Wraps a given string in parenthesis.
 - `strWrapInSingleQuotes`: Wraps a given string in single quotes.
 - `stringLineCount`: Count the number of lines in a string.
-- `titleCaseWord`: Returns first char upper, rest lower. Assumes the given string is a single word.
 - `unwrapDoubleQuotes`: Remove double quote from the beginning and end of a string and trims whitespace at the beginning and end of the string
 
-**table** (see [documentation](./libs/table/README.md))
+**table** (see [README.md](./libs/table/README.md))
 
 - `TableFormatter`: Formats a 2D array representing a table.
 - `formatAsStringTable`: Formats an array of objects into a string table with customizable column formatters.
@@ -726,24 +709,24 @@ describe(ClassToTest.name, () => {
 - `objectsToTable`: Convert an array of objects to a table.
 - `parseCsvHeaderLine`: Takes the first line of a CSV string and returns an array of column names.
 
-**template** (see [documentation](./libs/template/README.md))
+**template** (see [README.md](./libs/template/README.md))
 
 - `JsonFileTemplateStrategy`: Template strategy for handling JSON file templates with structured object schemas. Converts structured objects to formatted JSON strings and parses JSON strings back to typed objects. Uses pretty-printing with 2-space indentation for human-readable output.
 - `StringTemplateStrategy`: Template strategy for handling simple string templates. Provides pass-through behavior for string templates where the template and rendered output are both plain strings. Useful for text-based templates that don't require parsing or complex structure.
 - `Template`: A generic template engine that supports variable substitution using the Strategy pattern. Validates templates and options against TypeBox schemas and renders templates with provided data. Supports mustache-style `{{variable}}` syntax for variable substitution.
 - `TextFileTemplateStrategy`: Template strategy for handling multi-line text file templates. Converts arrays of strings to newline-separated text and parses text files back to string arrays by splitting on newlines. Ideal for processing configuration files, scripts, or any line-based text content.
 
-**terminal** (see [documentation](./libs/terminal/README.md))
+**terminal** (see [README.md](./libs/terminal/README.md))
 
 - `clearTerminal`: Clears the terminal screen using the system's clear command.
 - `confirmPrompt`: Prompts the user to confirm in the terminal.
 
-**tschema** (see [documentation](./libs/tschema/README.md))
+**tschema** (see [README.md](./libs/tschema/README.md))
 
 - `SchemaValidationError`: Error thrown when a value does not match a given schema. Contains an array of ValueError instances with details about each violation.
 - `assertValidSchema`: Asserts that data conforms to a TypeBox schema, throwing a SchemaValidationError if it doesn't.
 
-**tscode** (see [documentation](./libs/tscode/README.md))
+**tscode** (see [README.md](./libs/tscode/README.md))
 
 - `importStatementGetKeywords`: Extracts keywords from an import statement line (e.g., 'type' from 'import type').
 - `importStatementHasTypeKeyword`: Checks if an import statement line contains the 'type' keyword.

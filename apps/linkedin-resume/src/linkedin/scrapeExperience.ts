@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 /* eslint-disable complexity */
 /* eslint-disable max-lines-per-function */
 import type { Browser } from 'puppeteer'
