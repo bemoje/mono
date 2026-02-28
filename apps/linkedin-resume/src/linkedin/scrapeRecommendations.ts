@@ -1,3 +1,5 @@
+/* eslint-disable max-depth */
+/* eslint-disable complexity */
 import type { Browser } from 'puppeteer'
 import type { CliOptions } from '../types/CliOptions'
 import type { Logger } from '@mono/node'

@@ -29,6 +29,7 @@ export async function injectBrowserHelpers(page: Page): Promise<void> {
         })
 
         .map((span) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           return (globalThis as any).__getTextWithBreaks(span)
         })
     }
@@ -43,6 +44,7 @@ export async function injectBrowserHelpers(page: Page): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(globalThis as any).__extractMedia = (
       li: Element,
+      // eslint-disable-next-line complexity
     ): { mediaLinks: { title: string; url: string }[]; mediaTexts: string[] } => {
       const FILENAME_RE = /\.(jpe?g|png|gif|webp|svg|bmp|tiff?|pdf|doc|docx|pptx?|xlsx?|mp[34])$/i
       const mediaLinks: { title: string; url: string }[] = []

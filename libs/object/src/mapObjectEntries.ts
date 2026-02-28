@@ -4,7 +4,7 @@ import { entriesOf } from './entriesOf'
 /**
  * Maps over an object's entries, transforming both keys and values using the provided function.
  */
-export function mapObjectEntries<T extends object, K extends string, V>(
+export function mapObjectEntries<T extends object, K extends PropertyKey, V>(
   obj: T,
   fn: (key: StringKeyOf<T>, value: T[StringKeyOf<T>]) => [K, V],
 ) {

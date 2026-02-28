@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable max-lines-per-function */
 import type { Browser } from 'puppeteer'
 import type { CliOptions } from '../types/CliOptions'
