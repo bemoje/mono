@@ -2,7 +2,8 @@ import type { ConfigDataStrategy } from '../interfaces/ConfigDataStrategy'
 import type { ConfigValidationStrategy } from '../interfaces/ConfigValidationStrategy'
 import { JsonFileStrategy } from '../strategies/JsonFileStrategy'
 import { SchemaConfigStrategy } from '../strategies/SchemaConfigStrategy'
-import type { Static, TSchema } from '@sinclair/typebox'
+import type { Static } from '@sinclair/typebox'
+import type { TSchema } from '@sinclair/typebox'
 
 /**
  * Configuration file manager that provides schema validation and file I/O using the Strategy pattern.

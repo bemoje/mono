@@ -1,4 +1,6 @@
-import type { ClassInspectorMixin, IgnoreValuesOptions, InspectorOptions } from './types'
+import type { ClassInspectorMixin } from './types'
+import type { IgnoreValuesOptions } from './types'
+import type { InspectorOptions } from './types'
 import type { InspectOptions as NativeInspectOptions } from 'util'
 import { View } from '../View'
 import { cloneDeep } from 'es-toolkit/object'

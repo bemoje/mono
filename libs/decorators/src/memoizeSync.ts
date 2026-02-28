@@ -1,4 +1,5 @@
-import type { MemoizeSyncOptions, SomeSyncFunction } from './types.internal'
+import type { MemoizeSyncOptions } from './types.internal'
+import type { SomeSyncFunction } from './types.internal'
 import assertDescriptorValueIsFunction from './assertDescriptorValueIsFunction'
 import { mapGetOrDefault } from '@mono/map'
 import memoizee from 'memoizee'

@@ -1,5 +1,6 @@
 import type { ConfigValidationStrategy } from '../interfaces/ConfigValidationStrategy'
-import type { Static, TSchema } from '@sinclair/typebox'
+import type { Static } from '@sinclair/typebox'
+import type { TSchema } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
 import { assertValidSchema } from '@mono/tschema'
 

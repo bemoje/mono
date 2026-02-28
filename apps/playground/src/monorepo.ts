@@ -10,11 +10,11 @@ import { Profiler } from '@mono/profiler'
 import { TsCode } from '@mono/monorepo'
 import { TsFile } from '@mono/monorepo'
 import { Workspace } from '@mono/monorepo'
+import fs from 'fs'
 // Profiler.class(Inspector)
 // Profiler.class(Parenting)
 // Profiler.class(ParentRelationTypes)
 import path from 'path'
-import fs from 'fs'
 
 Profiler.module(path, 'path')
 Profiler.module(fs, 'fs')

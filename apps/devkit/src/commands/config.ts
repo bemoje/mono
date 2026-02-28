@@ -11,13 +11,11 @@ export function configAction() {
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function configFilepathHook() {
   console.log('config file:', configFile.filepath)
   process.exitCode = 0
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function configDirpathHook() {
   console.log('config dir:', upath.dirname(configFile.filepath))
   process.exitCode = 0

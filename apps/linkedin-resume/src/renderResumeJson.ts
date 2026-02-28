@@ -1,15 +1,13 @@
 import { DIST_PATH } from './constants'
 import type { Logger } from '@mono/node'
-import type {
-  Resume,
-  ResumeEducation,
-  ResumeLanguage,
-  ResumeProfile,
-  ResumeProject,
-  ResumeRecommendation,
-  ResumeSkill,
-  ResumeWork,
-} from './types/Resume'
+import type { Resume } from './types/Resume'
+import type { ResumeEducation } from './types/Resume'
+import type { ResumeLanguage } from './types/Resume'
+import type { ResumeProfile } from './types/Resume'
+import type { ResumeProject } from './types/Resume'
+import type { ResumeRecommendation } from './types/Resume'
+import type { ResumeSkill } from './types/Resume'
+import type { ResumeWork } from './types/Resume'
 import fs from 'fs-extra'
 import { scrapeReadJson } from './linkedin/utils/scrapeReadJson'
 import upath from 'upath'

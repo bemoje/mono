@@ -1,4 +1,5 @@
-import type { MemoizeAsyncOptions, SomeAsyncFunction } from './types.internal'
+import type { MemoizeAsyncOptions } from './types.internal'
+import type { SomeAsyncFunction } from './types.internal'
 import assertDescriptorValueIsFunction from './assertDescriptorValueIsFunction'
 import { mapGetOrDefault } from '@mono/map'
 import memoizee from 'memoizee'

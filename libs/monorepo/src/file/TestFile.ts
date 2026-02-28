@@ -2,7 +2,7 @@ import { Inspector } from '@mono/composition'
 import { Parenting } from '@mono/composition'
 import { TsCode } from '../code/TsCode'
 import { TsFile } from './TsFile'
-import { Workspace } from '../repo/Workspace'
+import type { Workspace } from '../repo/Workspace'
 import { lazyProp } from '@mono/decorators'
 
 /**
