@@ -3,10 +3,10 @@ import { ImportStatement } from './imports/ImportStatement'
 import { Inspector } from '@mono/composition'
 import { Parenting } from '@mono/composition'
 import type { TsFile } from '../file/TsFile'
-import { arrRemoveDuplicates } from '@mono/array'
 import { lazyProp } from '@mono/decorators'
 import { rexec } from '@mono/regex'
 import { tsExtractImports } from '@mono/tscode'
+import { uniq } from 'es-toolkit'
 
 /**
  * Represents TypeScript code with import parsing and manipulation capabilities.
@@ -36,7 +36,7 @@ export class TsCode<P extends TsFile = TsFile> extends AbstractCode<P> {
         return this.requireRegex.test(line)
       })
     }
-    return arrRemoveDuplicates(
+    return uniq(
       Array.from(this.code.matchAll(this.requireRegex)).map((o) => {
         return o[1]
       }),

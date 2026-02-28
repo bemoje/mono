@@ -6,33 +6,33 @@
     "scripts": {
       "type": "object",
       "properties": {
-        "r": {
+        "fix": {
           "type": "string",
-          "description": "Execute/run a file (.ts, .test.ts, .js, .ps1, .mjs).\n\nUsage: `yarn r <filepath>`"
+          "description": "Runs all fix tasks in parallel: fixOwnWsImports, indexts, removeEmptyWsFiles, replaceBadDashChars."
         },
-        "clean": {
-          "type": "string",
-          "description": "Runs all clean tasks in parallel: fixOwnWsImports, indexts, removeEmptyWsFiles, replaceBadDashChars."
-        },
-        "clean:fixOwnWsImports": {
+        "fix:fixOwnWsImports": {
           "type": "string",
           "description": "Fixes import statements where a path alias is used to reference its own workspace (can cause build problems due to circular references)."
         },
-        "clean:indexts": {
+        "fix:indexts": {
           "type": "string",
           "description": "Generate barrel export files at src/index.ts (runs script defined in each workspace package.json)."
         },
-        "clean:removeEmptyWsFiles": {
+        "fix:removeEmptyWsFiles": {
           "type": "string",
           "description": "Removes any files that have size 0 bytes for all workspaces."
         },
-        "clean:replaceBadDashChars": {
+        "fix:replaceBadDashChars": {
           "type": "string",
           "description": "Replaces bad dash characters (em dash U+2014) with regular hyphens in all workspace files."
         },
         "check": {
           "type": "string",
-          "description": "Runs all check tasks in parallel: check:knip."
+          "description": "Runs all check tasks sequentially: check:tsdoc, check:knip."
+        },
+        "check:tsdoc": {
+          "type": "string",
+          "description": "Checks for missing TSDoc files."
         },
         "check:knip": {
           "type": "string",
@@ -40,23 +40,27 @@
         },
         "build": {
           "type": "string",
-          "description": "Removes .dist directory and builds all workspaces."
+          "description": "Builds all workspaces in parallel."
+        },
+        "build:apps": {
+          "type": "string",
+          "description": "Builds only the app workspaces."
+        },
+        "build:libs": {
+          "type": "string",
+          "description": "Builds only the library workspaces."
         },
         "insight": {
           "type": "string",
-          "description": "Runs all insight tasks sequentially: linesOfCode."
+          "description": "Runs all insight tasks sequentially."
         },
-        "insight:linesOfCode": {
+        "readme": {
           "type": "string",
-          "description": "Counts lines of code across the monorepo by category."
-        },
-        "docs": {
-          "type": "string",
-          "description": "Generates TSDoc documentation for all library exports, then generates and writes the README.md file."
+          "description": "Generates and writes the root README.md file using devkit."
         },
         "lint": {
           "type": "string",
-          "description": "Runs eslint on all workspaces (libs and apps) with caching. Ignores apps/playground and dist directories."
+          "description": "Runs eslint on all workspaces (libs and apps)."
         },
         "lint-fix": {
           "type": "string",
@@ -98,21 +102,9 @@
           "type": "string",
           "description": "Open the coverage index html file with OS default app."
         },
-        "precommit:fix": {
-          "type": "string",
-          "description": "Runs sequential fix tasks: clean, lint-fix, format:write."
-        },
-        "precommit:check": {
-          "type": "string",
-          "description": "Runs parallel check tasks: typecheck, check."
-        },
-        "precommit:build": {
-          "type": "string",
-          "description": "Runs sequential build tasks: build, test-coverage-full, docs."
-        },
         "precommit": {
           "type": "string",
-          "description": "Runs full pre-commit pipeline: install, precommit:fix, test-coverage, precommit:check, precommit:build."
+          "description": "Runs full pre-commit pipeline: install, fix, lint-fix, format:write, typecheck, check, build, test-coverage, readme, test-coverage-full."
         },
         "publish:devkit": {
           "type": "string",
@@ -122,9 +114,33 @@
           "type": "string",
           "description": "Build and publish the linkedin-resume package to npm."
         },
+        "publish-lib": {
+          "type": "string",
+          "description": "Builds all libs and then publishes them sequentially."
+        },
+        "publish-lib:array": {
+          "type": "string",
+          "description": "Publishes the @bemoje/array package."
+        },
+        "publish-lib:cli": {
+          "type": "string",
+          "description": "Publishes the @bemoje/cli package."
+        },
+        "publish-lib:fn": {
+          "type": "string",
+          "description": "Publishes the @bemoje/fn package."
+        },
         "foreach": {
           "type": "string",
           "description": "Run a command for each workspace in parallel (excludes root).\n\nUsage: `yarn foreach run <command>`"
+        },
+        "ts": {
+          "type": "string",
+          "description": "Execute/run a file (.ts, .test.ts, .js, .ps1, .mjs) using tsx."
+        },
+        "dk": {
+          "type": "string",
+          "description": "Run the devkit CLI tool."
         }
       }
     }

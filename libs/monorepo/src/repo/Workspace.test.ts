@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import * as fs from '@mono/fs'
 import * as fsExtra from 'fs-extra/esm'
 import { MonoRepo } from '../MonoRepo'

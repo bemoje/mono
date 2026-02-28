@@ -7,7 +7,6 @@ import type { Results } from 'depcheck'
 import { SemanticExtnamePrefix } from '../util/SemanticExtnamePrefix'
 import { TestFile } from '../file/TestFile'
 import { TsFile } from '../file/TsFile'
-import { arrRemoveDuplicates } from '@mono/array'
 import { difference } from 'es-toolkit/array'
 import { exec } from 'child_process'
 import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
@@ -18,6 +17,7 @@ import { promisify } from 'util'
 import { readJsonSync } from 'fs-extra/esm'
 import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
 import { union } from 'es-toolkit/array'
+import { uniq } from 'es-toolkit'
 import { walkDirectory } from '@mono/fs'
 
 @Parenting.compose
@@ -259,14 +259,14 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
    * Get imported non-relative dependencies for each source file in the workspace in a flat array.
    */
   get importedDependencies(): string[] {
-    return arrRemoveDuplicates(Array.from(this.importedDependenciesByFile.values()).flat())
+    return uniq(Array.from(this.importedDependenciesByFile.values()).flat())
   }
 
   /**
    * Get imported non-relative dependencies for each test file in the workspace in a flat array.
    */
   get importedTestDependencies(): string[] {
-    return arrRemoveDuplicates(Array.from(this.importedTestDependenciesByFile.values()).flat())
+    return uniq(Array.from(this.importedTestDependenciesByFile.values()).flat())
   }
 
   /**

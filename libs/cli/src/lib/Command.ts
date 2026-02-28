@@ -31,7 +31,6 @@ import type { SetFieldType } from 'type-fest'
 import type { SetRequired } from 'type-fest'
 import type { Simplify } from 'type-fest'
 import type { SubCommands } from './types'
-import { arrRemoveDuplicates } from '@mono/array'
 import { collectVariadicOptionValues } from './internal/collectVariadicOptionValues'
 import colors from 'ansi-colors'
 import { filterObject } from '@mono/object'
@@ -49,8 +48,9 @@ import { parseArgs } from 'util'
 import { parseOptionFlags } from './helpers/parseOptionFlags'
 import { resolveArguments } from './internal/resolveArguments'
 import { setName } from '@mono/fn'
-import { strFirstCharToUpperCase } from '@mono/string'
 import { timer } from '@mono/node'
+import { uniq } from 'es-toolkit'
+import { upperFirst } from 'es-toolkit'
 import { validateParsed } from './internal/validateParsed'
 import { valuesOf } from '@mono/object'
 
@@ -61,8 +61,7 @@ export class Command<
   A extends Arguments = [],
   O extends Options = { help?: boolean; debug?: boolean },
   Subs extends SubCommands = SubCommands,
-> implements ICommand
-{
+> implements ICommand {
   /** parent command in the hierarchy, undefined for root command */
   parent?: Command<Arguments, Options & O>
   /** the command name used to invoke it */
@@ -154,7 +153,7 @@ export class Command<
           return [c.name, ...c.aliases]
         })
       : []
-    arrRemoveDuplicates(aliases.flat())
+    uniq(aliases.flat())
       .filter((a) => {
         return !this.aliases.includes(a) && a !== this.name
       })
@@ -474,7 +473,7 @@ export class Command<
     }
     this.hooks.push({
       name: optionName,
-      predicate: setName(`has${strFirstCharToUpperCase(optionName as string)}`, (({ opts }) => {
+      predicate: setName(`has${upperFirst(optionName as string)}`, (({ opts }) => {
         return (
           opts[optionName] !== undefined &&
           opts[optionName] !== false &&

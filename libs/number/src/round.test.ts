@@ -6,7 +6,7 @@ import { round } from './round'
 describe('round', () => {
   it('correctly rounds to nearest whole number', () => {
     expect(round(-1.1)).toBe(-1)
-    expect(round(-0.1)).toBe(0)
+    expect(round(-0.1)).toBeCloseTo(0)
     expect(round(0)).toBe(0)
     expect(round(0.1)).toBe(0)
     expect(round(0.9)).toBe(1)

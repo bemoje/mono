@@ -2,7 +2,7 @@ import type { ImportStatement } from '@mono/tscode'
 import fs from 'fs-extra'
 import { globSync } from 'glob'
 import { groupBy } from 'es-toolkit/array'
-import { mapObject } from '@mono/object'
+import { mapValues } from 'es-toolkit'
 import { parseImportStatement } from '@mono/tscode'
 import { sortBy } from 'es-toolkit/compat'
 import { tsExtractImports } from '@mono/tscode'
@@ -49,7 +49,7 @@ function example1() {
         return i.modulePath.type !== 'relative'
       })
     const wsName = `${repoLibScope}/${ws}`
-    const depsByType = mapObject(groupBy(arr, getImportType), toSortedModulePaths)
+    const depsByType = mapValues(groupBy(arr, getImportType), toSortedModulePaths)
     return [wsName, depsByType] as const
   })
 
