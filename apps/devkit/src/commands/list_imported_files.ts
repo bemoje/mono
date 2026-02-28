@@ -1,6 +1,6 @@
 import type { Logger } from '@mono/node'
 import { MonoRepo } from '@mono/monorepo'
-import { countUniques } from '@mono/iter'
+import { countUniques } from '@mono/map'
 import { getAllImports } from '@mono/monorepo'
 import { resolveModuleImportPath } from '@mono/monorepo'
 

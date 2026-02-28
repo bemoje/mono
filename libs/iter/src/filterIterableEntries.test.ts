@@ -1,10 +1,10 @@
 import assert from 'assert'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
-import { filterIterable } from './filterIterable'
+import { filterIterableEntries } from './filterIterableEntries'
 import { it } from 'vitest'
 
-describe(filterIterable.name, () => {
+describe(filterIterableEntries.name, () => {
   it('examples', () => {
     expect(() => {
       // filter map entries by value
@@ -14,7 +14,7 @@ describe(filterIterable.name, () => {
         ['c', 3],
       ]
       const filtered = [
-        ...filterIterable(entries, (value) => {
+        ...filterIterableEntries(entries, (value) => {
           return value > 1
         }),
       ]
@@ -29,7 +29,7 @@ describe(filterIterable.name, () => {
 
       // filter by key
       const filtered2 = [
-        ...filterIterable(entries, (value, key) => {
+        ...filterIterableEntries(entries, (value, key) => {
           return key !== 'b'
         }),
       ]
@@ -44,7 +44,7 @@ describe(filterIterable.name, () => {
 
       // empty result
       const empty = [
-        ...filterIterable(entries, () => {
+        ...filterIterableEntries(entries, () => {
           return false
         }),
       ]
@@ -60,7 +60,7 @@ describe(filterIterable.name, () => {
       ['d', 4],
     ]
     const result = [
-      ...filterIterable(entries, (value) => {
+      ...filterIterableEntries(entries, (value) => {
         return value % 2 === 0
       }),
     ]
@@ -77,7 +77,7 @@ describe(filterIterable.name, () => {
       ['cherry', 3],
     ]
     const result = [
-      ...filterIterable(entries, (value, key) => {
+      ...filterIterableEntries(entries, (value, key) => {
         return key.startsWith('a')
       }),
     ]
@@ -91,7 +91,7 @@ describe(filterIterable.name, () => {
       ['c', 30],
     ]
     const result = [
-      ...filterIterable(entries, (value, key) => {
+      ...filterIterableEntries(entries, (value, key) => {
         return value > 15 && key !== 'c'
       }),
     ]
@@ -100,7 +100,7 @@ describe(filterIterable.name, () => {
 
   it('should handle empty iterable', () => {
     const result = [
-      ...filterIterable([], () => {
+      ...filterIterableEntries([], () => {
         return true
       }),
     ]
@@ -113,7 +113,7 @@ describe(filterIterable.name, () => {
       ['b', 2],
     ]
     const result = [
-      ...filterIterable(entries, (value) => {
+      ...filterIterableEntries(entries, (value) => {
         return value > 10
       }),
     ]
@@ -127,7 +127,7 @@ describe(filterIterable.name, () => {
       ['z', 300],
     ])
     const result = [
-      ...filterIterable(map, (value) => {
+      ...filterIterableEntries(map, (value) => {
         return value >= 200
       }),
     ]

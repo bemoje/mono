@@ -1,13 +1,13 @@
 /**
- * Reduce a map-like iterable to a single value.
+ * Reduce any iterable to a single value.
  */
-export function reduceIterable<K, V, T>(
-  mapLike: Iterable<[K, V]>,
-  reducer: (accumulator: T, value: V, key: K) => T,
+export function reduceIterable<V, T>(
+  iterable: Iterable<V>,
+  reducer: (accumulator: T, value: V) => T,
   initialValue: T,
 ): T {
-  for (const [key, value] of mapLike) {
-    initialValue = reducer(initialValue, value, key)
+  for (const value of iterable) {
+    initialValue = reducer(initialValue, value)
   }
   return initialValue
 }

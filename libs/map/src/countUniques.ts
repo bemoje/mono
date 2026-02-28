@@ -1,4 +1,4 @@
-import { ExtMap } from '@mono/map'
+import { ExtMap } from './ExtMap'
 import { MultiSet } from 'mnemonist'
 import { reduce } from 'iter-tools'
 

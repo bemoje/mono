@@ -1,5 +1,5 @@
 import { entriesOf } from './entriesOf'
-import { reduceIterable } from '@mono/iter'
+import { reduceIterableEntries } from '@mono/iter'
 /**
  * Reduces the values of an object into a single value.
  * @param object The object to reduce.
@@ -13,5 +13,5 @@ export function objReduce<A, T extends Record<string, any>>(
   reducer: (accum: A, value: T[keyof T], key: string) => A,
   accum: A,
 ): A {
-  return reduceIterable(entriesOf(object), reducer, accum)
+  return reduceIterableEntries(entriesOf(object), reducer, accum)
 }

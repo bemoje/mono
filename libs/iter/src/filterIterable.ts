@@ -1,13 +1,10 @@
 import { filter } from 'iter-tools'
 
 /**
- * Filter map entries based on a predicate function.
+ * Transform values of an iterable.
  */
-export function filterIterable<K, V>(
-  mapLike: Iterable<[K, V]>,
-  predicate: (value: V, key: K) => boolean,
-): Iterable<[K, V]> {
-  return filter(([k, v]: [K, V]) => {
-    return predicate(v, k)
-  }, mapLike)
+export function filterIterable<T>(set: Iterable<T>, predicate: (value: T) => boolean | void): Iterable<T> {
+  return filter((value: T) => {
+    return !!predicate(value)
+  }, set)
 }

@@ -1,10 +1,10 @@
-import { forEach } from 'iter-tools'
+import { forEach as forEachIterTools } from 'iter-tools'
 
 /**
- * Execute a callback function for each entry in a map-like iterable.
+ * Iterate over values of an iterable, executing a callback for each.
  */
-export function forEachIterable<K, V>(mapLike: Iterable<[K, V]>, callback: (value: V, key: K) => void): void {
-  return forEach(([k, v]: [K, V]) => {
-    return callback(v, k)
-  }, mapLike)
+export function forEachIterable<T>(set: Iterable<T>, callback: (value: T) => unknown): void {
+  return forEachIterTools((value: T) => {
+    return callback(value)
+  }, set)
 }
