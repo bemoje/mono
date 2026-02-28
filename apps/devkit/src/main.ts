@@ -1,3 +1,4 @@
+import 'tsconfig-paths/register'
 import { Command } from '@mono/cli'
 import { buildReadmeAction } from './commands/build_readme'
 import { clearNodeModulesAction } from './commands/clear_node_modules'

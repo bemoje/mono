@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import cp from 'child_process'
+import cp from 'node:child_process'
 import fs from 'fs-extra'
 /**
  * Self-contained build script.
@@ -93,7 +93,7 @@ await esbuild.build({
   mainFields: ['module', 'main'],
   sourcemap: true,
   treeShaking: true,
-  external: ['esbuild', 'type-fest', 'd'],
+  external: ['esbuild', 'type-fest', 'd', 'tsconfig-paths'],
   banner: { js: '#!/usr/bin/env node' },
   logOverride: { 'empty-import-meta': 'silent' },
 })
