@@ -240,6 +240,6 @@ describe(ClassToTest.name, () => {
 - Performance analysis utilities library in [libs/profiler](/libs/profiler)
 - Stack trace enhancement utilities library in [libs/stacktrace](/libs/stacktrace)
 
-## Exported Modules
+## Libraries
 
 <!-- LIBRARY_EXPORTED_MODULES -->
