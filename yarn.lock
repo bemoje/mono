@@ -197,12 +197,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bemoje/devkit@npm:2.1.1":
-  version: 2.1.1
-  resolution: "@bemoje/devkit@npm:2.1.1"
+"@bemoje/devkit@npm:3.2.0":
+  version: 3.2.0
+  resolution: "@bemoje/devkit@npm:3.2.0"
+  dependencies:
+    tsconfig-paths: "npm:^4.2.0"
   bin:
     devkit: cli.mjs
-  checksum: 10c0/a75c88c4464387288851a4eb8d8c929bcf93097db013bf4313a93582bdd2b31c2e62699a22254e3fc693c0bac69324adb8608b71d770075add35bad3bf6b0957
+  checksum: 10c0/d77d7f3ec64c3bcf070cb1ee6438203785d7c456a17fbf350aa5d1a1896cfc46f4a71e4e404509f65d6a2d62317f77eb15c704974d3df9069e4c7b2d237366ea
   languageName: node
   linkType: hard
 
@@ -3377,6 +3379,8 @@ __metadata:
 "devkit@workspace:apps/devkit":
   version: 0.0.0-use.local
   resolution: "devkit@workspace:apps/devkit"
+  dependencies:
+    tsconfig-paths: "npm:^4.2.0"
   languageName: unknown
   linkType: soft
 
@@ -5440,7 +5444,7 @@ __metadata:
     "@bemoje/crypto": "npm:^1.0.0"
     "@bemoje/date": "npm:^1.0.0"
     "@bemoje/decorators": "npm:^1.0.0"
-    "@bemoje/devkit": "npm:2.1.1"
+    "@bemoje/devkit": "npm:3.2.0"
     "@bemoje/fn": "npm:^1.0.0"
     "@bemoje/fs": "npm:^1.0.0"
     "@bemoje/is": "npm:^1.0.0"
