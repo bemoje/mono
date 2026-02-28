@@ -112,4 +112,17 @@ describe(toObjectIterable.name, () => {
     expect(result.name).toBe('Bob')
     expect(result.age).toBe(42)
   })
+
+  it('should stringify non-propertykey keys', () => {
+    const objKey = { id: 1 }
+    const entries: Array<[any, number]> = [
+      [objKey, 100],
+      [123, 200],
+      [Symbol('test'), 300],
+    ]
+    const result = toObjectIterable(entries)
+    expect(result['[object Object]']).toBe(100)
+    expect(result[123]).toBe(200)
+    expect(typeof Object.getOwnPropertySymbols(result)[0]).toBe('symbol')
+  })
 })

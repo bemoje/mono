@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7583  | 7583    | 100%       |
-| Functions | 777   | 777     | 100%       |
-| Branches  | 2451  | 2451    | 100%       |
+| Lines     | 7754  | 7754    | 100%       |
+| Functions | 787   | 787     | 100%       |
+| Branches  | 2525  | 2525    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 589   | 13567         |
-| test      | 439   | 29989         |
+| source    | 597   | 13778         |
+| test      | 447   | 30946         |
 | examples  | 1     | 48            |
-| total     | 1029  | 43604         |
+| total     | 1045  | 44772         |
 
 ## Table of Contents
 
@@ -373,9 +373,9 @@ describe(ClassToTest.name, () => {
 - `bindArgs`: Binds specified arguments to the provided function, returning a new function that requires only the remaining arguments at call time.
 - `dethisify`: Converts a function from a class method by by making the first argument take the place of the 'this' context. The reverse of
 - `functionSpy`: Wraps a function so that the given
-- `setNameAndLength`: Preserves the name and length of a function or class constructor
 - `setLength`: Set the length of a function.
 - `setName`: Set the name of a function.
+- `setNameAndLength`: Preserves the name and length of a function or class constructor
 - `thisProxy`: Returns a function that redirects or 'proxies' the 'this' context of the input function to a property of a given key.
 - `thisify`: Converts a function to a class method by making the 'this' context the first argument.
 - `transformReturnValue`: Wraps a function to transform its return value using a transform function.
@@ -448,19 +448,27 @@ describe(ClassToTest.name, () => {
 
 **iter** (see [documentation](./libs/iter/README.md))
 
-- `countUniques`: Count unique occurrences of values in an iterable, returning a sorted map by count descending.
-- `filterIterable`: Filter map entries based on a predicate function.
-- `forEachIterable`: Execute a callback function for each entry in a map-like iterable.
-- `mapIterable`: Transform both keys and values of map entries.
+- `filter`: Filter a `Map` (or `ReadonlyMap`). Predicate receives `(value, key)`. Returns a new `Map`.
+- `filterIterable`: Transform values of an iterable.
+- `filterIterableEntries`: Filter map entries based on a predicate function.
+- `forEach`: Iterate a `Map` (or `ReadonlyMap`). Callback receives `(value, key)`.
+- `forEachIterable`: Iterate over values of an iterable, executing a callback for each.
+- `forEachIterableEntries`: Execute a callback function for each entry in a map-like iterable.
+- `map`: Map a `Map` (or `ReadonlyMap`). Callback receives `(value, key)`. Returns a new `Map`.
+- `mapIterable`: Transform values of an iterable.
+- `mapIterableEntries`: Transform both keys and values of map entries.
 - `mapIterableKeys`: Transform map keys while preserving values.
 - `mapIterableValues`: Transform map values while preserving keys.
-- `reduceIterable`: Reduce a map-like iterable to a single value.
+- `reduce`: Reduce a `Map` (or `ReadonlyMap`). Callback receives `(accumulator, value, key)`.
+- `reduceIterable`: Reduce any iterable to a single value.
+- `reduceIterableEntries`: Reduce a map-like iterable to a single value.
 - `toObjectIterable`: Convert a map-like iterable to a regular object.
 
 **map** (see [documentation](./libs/map/README.md))
 
 - `ExtMap`: Minimal Extended Map class focused only on Map-specific utilities.
 - `TimeoutWeakMap`: A WeakMap with automatic timeout-based expiry for entries. Entries are automatically removed after a specified timeout period. Accessing an entry refreshes its timeout, extending its lifetime. This is useful for caching scenarios where you want automatic cleanup of unused entries while keeping frequently accessed ones alive.
+- `countUniques`: Count unique occurrences of values in an iterable, returning a sorted map by count descending.
 - `entriesArray`: Returns an array of all key-value pairs in the map. Convenience method that converts the entries iterator to an array.
 - `isGenericMap`: Checks if the provided value implements the Map interface with the specified required properties.
 - `keysArray`: Returns an array of all keys in the map. Convenience method that converts the keys iterator to an array.
