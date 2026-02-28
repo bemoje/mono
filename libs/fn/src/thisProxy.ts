@@ -1,5 +1,5 @@
 import { isFunction } from 'es-toolkit/predicate'
-import { preserveNameAndLength } from './preserveNameAndLength'
+import { setNameAndLength } from './setNameAndLength'
 
 /**
  * Returns a function that redirects or 'proxies' the 'this' context of the input function
@@ -37,7 +37,7 @@ function thisProxyKey<ThisTarget extends This, This extends object, Args extends
   fn: (this: This, ...args: Args) => Ret,
   proxy: PropertyKey,
 ): (this: ThisTarget, ...args: Args) => Ret {
-  return preserveNameAndLength(fn, function (this: ThisTarget, ...args: Args): Ret {
+  return setNameAndLength(fn, function (this: ThisTarget, ...args: Args): Ret {
     const thisArg = this[proxy as keyof ThisTarget] as This
     return fn.apply(thisArg, args)
   })
@@ -50,7 +50,7 @@ function thisProxyCallback<ThisTarget extends This, This extends object, Args ex
   fn: (this: This, ...args: Args) => Ret,
   proxy: (object: ThisTarget) => This,
 ): (this: ThisTarget, ...args: Args) => Ret {
-  return preserveNameAndLength(fn, function (this: ThisTarget, ...args: Args): Ret {
+  return setNameAndLength(fn, function (this: ThisTarget, ...args: Args): Ret {
     const thisArg = proxy(this)
     return fn.apply(thisArg, args)
   })

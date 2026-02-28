@@ -115,7 +115,7 @@ wrapMethods(myObject, {
 ### Function Metadata
 
 ```ts
-import { setName, setLength, preserveNameAndLength } from '@bemoje/fn'
+import { setName, setLength, setNameAndLength } from '@bemoje/fn'
 
 const fn = () => {}
 setName('myFn', fn) // fn.name === 'myFn'
@@ -124,16 +124,16 @@ setLength(3, fn) // fn.length === 3
 
 ## API Reference
 
-| Export                  | Description                                                      |
-| ----------------------- | ---------------------------------------------------------------- |
-| `bindArg`               | Bind a single argument at a specific index                       |
-| `bindArgs`              | Bind multiple arguments by index                                 |
-| `thisify`               | Convert standalone function to method (first arg becomes `this`) |
-| `dethisify`             | Convert method to standalone function (`this` becomes first arg) |
-| `thisProxy`             | Redirect `this` to a property or callback                        |
-| `functionSpy`           | Wrap function with before/after hook strategy                    |
-| `transformReturnValue`  | Transform a function's return value                              |
-| `wrapMethods`           | Wrap all methods/getters/setters on an object                    |
-| `preserveNameAndLength` | Copy name and length from source to target function              |
-| `setName`               | Set the name of a function                                       |
-| `setLength`             | Set the length of a function                                     |
+| Export                 | Description                                                      |
+| ---------------------- | ---------------------------------------------------------------- |
+| `bindArg`              | Bind a single argument at a specific index                       |
+| `bindArgs`             | Bind multiple arguments by index                                 |
+| `thisify`              | Convert standalone function to method (first arg becomes `this`) |
+| `dethisify`            | Convert method to standalone function (`this` becomes first arg) |
+| `thisProxy`            | Redirect `this` to a property or callback                        |
+| `functionSpy`          | Wrap function with before/after hook strategy                    |
+| `transformReturnValue` | Transform a function's return value                              |
+| `wrapMethods`          | Wrap all methods/getters/setters on an object                    |
+| `setNameAndLength`     | Copy name and length from source to target function              |
+| `setName`              | Set the name of a function                                       |
+| `setLength`            | Set the length of a function                                     |

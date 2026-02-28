@@ -373,7 +373,7 @@ describe(ClassToTest.name, () => {
 - `bindArgs`: Binds specified arguments to the provided function, returning a new function that requires only the remaining arguments at call time.
 - `dethisify`: Converts a function from a class method by by making the first argument take the place of the 'this' context. The reverse of
 - `functionSpy`: Wraps a function so that the given
-- `preserveNameAndLength`: Preserves the name and length of a function or class constructor
+- `setNameAndLength`: Preserves the name and length of a function or class constructor
 - `setLength`: Set the length of a function.
 - `setName`: Set the name of a function.
 - `thisProxy`: Returns a function that redirects or 'proxies' the 'this' context of the input function to a property of a given key.

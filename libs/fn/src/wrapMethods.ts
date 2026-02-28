@@ -2,7 +2,7 @@ import type { AnyFunction } from '@mono/types'
 import type { AnyGetter } from '@mono/types'
 import type { AnySetter } from '@mono/types'
 import { isFunction } from 'es-toolkit/predicate'
-import { preserveNameAndLength } from './preserveNameAndLength'
+import { setNameAndLength } from './setNameAndLength'
 
 /**
  * Wrap methods, getters and setters of an object with custom logic.
@@ -23,7 +23,7 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
         continue
       }
       Object.defineProperty(target, key, {
-        value: preserveNameAndLength(orig, wrapped),
+        value: setNameAndLength(orig, wrapped),
         configurable: des.configurable,
         enumerable: des.enumerable,
       })
@@ -37,7 +37,7 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
         continue
       }
       Object.defineProperty(target, key, {
-        get: preserveNameAndLength(orig, wrapped),
+        get: setNameAndLength(orig, wrapped),
         configurable: des.configurable,
         enumerable: des.enumerable,
       })
@@ -51,7 +51,7 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
         continue
       }
       Object.defineProperty(target, key, {
-        set: preserveNameAndLength(orig, wrapped),
+        set: setNameAndLength(orig, wrapped),
         configurable: des.configurable,
         enumerable: des.enumerable,
       })

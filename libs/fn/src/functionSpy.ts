@@ -2,7 +2,7 @@ import type { Any } from '@mono/types'
 import type { AnyAsyncFunction } from '@mono/types'
 import type { TFunction } from '@mono/types'
 import { isAsyncFunction } from 'util/types'
-import { preserveNameAndLength } from './preserveNameAndLength'
+import { setNameAndLength } from './setNameAndLength'
 
 /**
  * Wraps a function so that the given @see IFunctionSpyStrategy will be applied.
@@ -67,7 +67,7 @@ function wrapMaybeAsync<T, Data>(
   if (ignore && ignore(func, spy)) {
     return func
   }
-  return preserveNameAndLength(func, function (this: T, ...args: any[]) {
+  return setNameAndLength(func, function (this: T, ...args: any[]) {
     if (ignore && ignore(func, spy, this)) {
       return func.apply(this, args)
     }
@@ -92,7 +92,7 @@ function wrapSync<T, Data>(
   if (ignore && ignore(func, spy)) {
     return func
   }
-  return preserveNameAndLength(func, function (this: T, ...args: any[]) {
+  return setNameAndLength(func, function (this: T, ...args: any[]) {
     if (ignore && ignore(func, spy, this)) {
       return func.apply(this, args)
     }
@@ -111,7 +111,7 @@ function wrapAsync<T, Data>(
   if (ignore && ignore(func, spy)) {
     return func
   }
-  return preserveNameAndLength(func, async function (this: T, ...args: any[]) {
+  return setNameAndLength(func, async function (this: T, ...args: any[]) {
     if (ignore && ignore(func, spy, this)) {
       return await func.apply(this, args)
     }

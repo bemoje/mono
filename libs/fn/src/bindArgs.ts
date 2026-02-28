@@ -2,8 +2,8 @@ import type { Any } from '@mono/types'
 import type { RemoveArrayElements } from '@mono/types'
 import type { TupleToObject } from 'type-fest'
 import type { UnionToTuple } from 'type-fest'
-import { preserveNameAndLength } from './preserveNameAndLength'
 import { range } from 'es-toolkit/math'
+import { setNameAndLength } from './setNameAndLength'
 
 /**
  * Binds specified arguments to the provided function, returning a new function that requires
@@ -44,7 +44,7 @@ export function bindArgs<
         }
   })
 
-  return preserveNameAndLength(
+  return setNameAndLength(
     fn,
     (...args: NewArgs): ReturnType<T> => {
       return fn(

@@ -1,15 +1,15 @@
 import { describe } from 'vitest'
 import { expect } from 'vitest'
 import { it } from 'vitest'
-import { preserveNameAndLength } from './preserveNameAndLength'
+import { setNameAndLength } from './setNameAndLength'
 
-describe(preserveNameAndLength.name, () => {
+describe(setNameAndLength.name, () => {
   it('should preserve the name and length of a function', () => {
     const sourceFn = function (a: number, b: number) {}
 
     const targetFn = function (x: number) {}
 
-    const adjustedFn = preserveNameAndLength(sourceFn, targetFn)
+    const adjustedFn = setNameAndLength(sourceFn, targetFn)
 
     expect(adjustedFn.name).toBe(sourceFn.name)
     expect(adjustedFn.length).toBe(sourceFn.length)
@@ -21,7 +21,7 @@ describe(preserveNameAndLength.name, () => {
     const targetFn = function (x: number) {}
 
     const adjustBy = 2
-    const adjustedFn = preserveNameAndLength(sourceFn, targetFn, adjustBy)
+    const adjustedFn = setNameAndLength(sourceFn, targetFn, adjustBy)
 
     expect(adjustedFn.length).toBe(sourceFn.length + adjustBy)
   })
@@ -35,7 +35,7 @@ describe(preserveNameAndLength.name, () => {
       constructor(x: number) {}
     }
 
-    const adjustedClass = preserveNameAndLength(SourceClass, TargetClass)
+    const adjustedClass = setNameAndLength(SourceClass, TargetClass)
 
     expect(adjustedClass.name).toBe(SourceClass.name)
     expect(adjustedClass.length).toBe(SourceClass.length)
@@ -51,7 +51,7 @@ describe(preserveNameAndLength.name, () => {
     }
 
     const adjustBy = 2
-    const adjustedClass = preserveNameAndLength(SourceClass, TargetClass, adjustBy)
+    const adjustedClass = setNameAndLength(SourceClass, TargetClass, adjustBy)
 
     expect(adjustedClass.length).toBe(SourceClass.length + adjustBy)
   })
