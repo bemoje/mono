@@ -1,10 +1,10 @@
-import type { Any } from '@mono/types'
-
-export type MapKeys = keyof Map<Any, Any>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type MapKeys = keyof Map<any, any>
 
 export type GenericMap<K, V, P extends MapKeys> = {
   [Method in P]: Method extends 'set'
-    ? (key: K, value: V) => Any
+    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (key: K, value: V) => any
     : Method extends 'get'
       ? (key: K) => V | undefined
       : Method extends 'has'
@@ -14,7 +14,8 @@ export type GenericMap<K, V, P extends MapKeys> = {
           : Method extends 'clear'
             ? () => void
             : Method extends 'forEach'
-              ? (callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: Any) => void
+              ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any) => void
               : Method extends 'entries'
                 ? () => IterableIterator<[K, V]>
                 : Method extends 'keys'
@@ -27,5 +28,6 @@ export type GenericMap<K, V, P extends MapKeys> = {
                         ? number
                         : Method extends typeof Symbol.toStringTag
                           ? string
-                          : Any
+                          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            any
 }

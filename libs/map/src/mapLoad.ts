@@ -1,4 +1,4 @@
-import type { GenericMap } from './types'
+import type { GenericMap } from '@mono/types'
 
 /**
  * Loads multiple entries into the map from an iterable.

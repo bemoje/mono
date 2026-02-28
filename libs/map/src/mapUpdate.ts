@@ -1,4 +1,4 @@
-import type { GenericMap } from './types'
+import type { GenericMap } from '@mono/types'
 
 /**
  * Updates a value in the map using an update function.

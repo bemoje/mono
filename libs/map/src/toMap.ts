@@ -1,4 +1,4 @@
-import type { GenericMap } from './types'
+import type { GenericMap } from '@mono/types'
 
 /**
  * Converts a GenericMap to a native Map.

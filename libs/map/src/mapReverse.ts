@@ -1,4 +1,4 @@
-import type { GenericMap } from './types'
+import type { GenericMap } from '@mono/types'
 import { mapLoad } from './mapLoad'
 
 /**

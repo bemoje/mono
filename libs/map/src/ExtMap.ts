@@ -3,19 +3,19 @@ import { View } from '@mono/composition'
 import { defineMethod } from '@mono/object'
 import { entriesArray } from './entriesArray'
 import { entriesOf } from '@mono/object'
-import { filterIterable } from '@mono/iter'
+import { filterIterableEntries } from '@mono/iter'
 import { inheritProxifiedPrototype } from '@mono/composition'
 import { inspect } from 'util'
 import { isIterable } from 'iter-tools'
 import { keysArray } from './keysArray'
 import { mapGetOrDefault } from './mapGetOrDefault'
-import { mapIterable } from '@mono/iter'
+import { mapIterableEntries } from '@mono/iter'
 import { mapIterableKeys } from '@mono/iter'
 import { mapIterableValues } from '@mono/iter'
 import { mapLoad } from './mapLoad'
 import { mapReverse } from './mapReverse'
 import { mapUpdate } from './mapUpdate'
-import { reduceIterable } from '@mono/iter'
+import { reduceIterableEntries } from '@mono/iter'
 import { sort } from './sort'
 import { sortByKeys } from './sortByKeys'
 import { sortByValues } from './sortByValues'
@@ -24,7 +24,8 @@ import { toObjectIterable } from '@mono/iter'
 import { valuesArray } from './valuesArray'
 
 declare module './ExtMap' {
-  export interface ExtMap<K, V> extends Map<K, V> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  export interface ExtMap<K = any, V = any> extends Map<K, V> {
     load(entries: Iterable<[K, V]>): this
     sort(compare: (a: [K, V], b: [K, V]) => number): this
     sortByKeys(compare: (a: K, b: K) => number): this
@@ -37,6 +38,7 @@ declare module './ExtMap' {
     entriesArray(): [K, V][]
     toMap(): Map<K, V>
     toObject<K extends string, V>(): Record<K, V>
+    toObject<K, V>(): Record<Extract<K, PropertyKey> | string, V>
     reduce<R>(reducer: (accumulator: R, value: V, key: K) => R, initialValue: R): R
     map<NewK, NewV>(mapper: (value: V, key: K) => [NewK, NewV]): ExtMap<NewK, NewV>
     mapKeys<NewK>(mapper: (key: K, value: V) => NewK): ExtMap<NewK, V>
@@ -72,15 +74,27 @@ declare module './ExtMap' {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class ExtMap<K = any, V = any> extends View<Map<K, V>> implements Map<K, V> {
   constructor(iterable?: Iterable<readonly [K, V]> | null | undefined)
-  constructor(obj?: Record<Extract<K, string>, V>)
-  constructor(arg?: Record<Extract<K, string>, V> | Iterable<readonly [K, V]> | null | undefined) {
+  constructor(obj?: Record<Extract<K, PropertyKey>, V>)
+  constructor(arg?: Record<Extract<K, PropertyKey>, V> | Iterable<readonly [K, V]> | null | undefined) {
     super(new Map(isIterable(arg) ? arg : arg ? entriesOf(arg) : undefined))
   }
 
-  static fromObject<K extends string, V>(obj: Record<K, V>): ExtMap<K, V> {
-    return new ExtMap(entriesOf(obj))
+  /**
+   * Creates a new ExtMap instance from a regular object.
+   *
+   * @param obj - An object whose key-value pairs will be used to initialize the map
+   * @returns A new ExtMap instance containing the entries from the object
+   */
+  static fromObject<K extends PropertyKey, V>(obj: Record<K, V>): ExtMap<K, V> {
+    return new ExtMap(Object.entries(obj)) as ExtMap<K, V>
   }
 
+  /**
+   * Creates a new ExtMap instance from an iterable of key-value pairs.
+   *
+   * @param entries - An iterable of key-value pairs to initialize the map
+   * @returns A new ExtMap instance containing the provided entries
+   */
   static fromIterable<K, V>(entries: Iterable<readonly [K, V]>): ExtMap<K, V> {
     return new ExtMap(entries)
   }
@@ -115,21 +129,29 @@ export class ExtMap<K = any, V = any> extends View<Map<K, V>> implements Map<K, 
   }
 }
 
+/**
+ * Identical to libs/fn/src/thisify.ts
+ * Copied to avoid circular dependencies between map and fn.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function thisify<T, Args extends any[], Ret>(
   fn: (target: T, ...args: Args) => Ret,
 ): (this: T, ...args: Args) => Ret {
-  return function (this: T, ...args: Args): Ret {
+  return function wrapped(this: T, ...args: Args): Ret {
     return fn(this, ...args)
   }
 }
 
+/**
+ * Identical to libs/fn/src/transformReturnValue.ts.
+ * Copied to avoid circular dependencies between map and fn.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformReturnValue<T, Args extends any[], Ret, NewRet>(
   fn: (this: T, ...args: Args) => Ret,
   transform: (value: Ret) => NewRet,
 ): (this: T, ...args: Args) => NewRet {
-  return function (this: T, ...args: Args): NewRet {
+  return function wrapped(this: T, ...args: Args): NewRet {
     const result = fn.apply(this, args)
     return transform(result)
   }
@@ -147,10 +169,10 @@ defineMethod(ExtMap.prototype, 'getOrDefault', thisify(mapGetOrDefault))
 defineMethod(ExtMap.prototype, 'keysArray', thisify(keysArray))
 defineMethod(ExtMap.prototype, 'valuesArray', thisify(valuesArray))
 defineMethod(ExtMap.prototype, 'entriesArray', thisify(entriesArray))
-defineMethod(ExtMap.prototype, 'toMap', thisify(toMap))
 defineMethod(ExtMap.prototype, 'toObject', thisify(toObjectIterable))
-defineMethod(ExtMap.prototype, 'reduce', thisify(reduceIterable))
-defineMethod(ExtMap.prototype, 'map', thisify(transformReturnValue(mapIterable, ExtMap.fromIterable)))
+defineMethod(ExtMap.prototype, 'toMap', thisify(toMap))
+defineMethod(ExtMap.prototype, 'reduce', thisify(reduceIterableEntries))
+defineMethod(ExtMap.prototype, 'map', thisify(transformReturnValue(mapIterableEntries, ExtMap.fromIterable)))
 defineMethod(ExtMap.prototype, 'mapKeys', thisify(transformReturnValue(mapIterableKeys, ExtMap.fromIterable)))
 defineMethod(ExtMap.prototype, 'mapValues', thisify(transformReturnValue(mapIterableValues, ExtMap.fromIterable)))
-defineMethod(ExtMap.prototype, 'filter', thisify(transformReturnValue(filterIterable, ExtMap.fromIterable)))
+defineMethod(ExtMap.prototype, 'filter', thisify(transformReturnValue(filterIterableEntries, ExtMap.fromIterable)))
