@@ -10,11 +10,14 @@ import { Profiler } from '@mono/profiler'
 import { TsCode } from '@mono/monorepo'
 import { TsFile } from '@mono/monorepo'
 import { Workspace } from '@mono/monorepo'
-
 // Profiler.class(Inspector)
-
 // Profiler.class(Parenting)
 // Profiler.class(ParentRelationTypes)
+import path from 'path'
+import fs from 'fs'
+
+Profiler.module(path, 'path')
+Profiler.module(fs, 'fs')
 
 Profiler.class(AbstractBase)
 Profiler.class(AbstractCode)
@@ -28,16 +31,14 @@ Profiler.class(TsFile)
 Profiler.class(Workspace)
 Profiler.class(MonoRepo)
 
-console.log(
-  Object.fromEntries(
-    new MonoRepo().workspaces.map((ws) => {
-      return [ws.name, ws.importedDependenciesRecursive]
-    }),
-  ),
+// console.log(
+Object.fromEntries(
+  new MonoRepo().workspaces.map((ws) => {
+    return [ws.name, ws.importedDependenciesRecursive]
+  }),
 )
-
-// console.log(repo.inspector.inspect())
+// )
 
 // ParentRelationTypes.printAllStats()
 
-// Profiler.printResults()
+Profiler.printResults()

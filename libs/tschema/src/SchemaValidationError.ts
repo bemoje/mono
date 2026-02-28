@@ -1,6 +1,6 @@
-import { TSchema } from '@sinclair/typebox'
+import type { TSchema } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
-import { ValueError } from '@sinclair/typebox/compiler'
+import type { ValueError } from '@sinclair/typebox/compiler'
 import { ValueErrorIterator } from '@sinclair/typebox/compiler'
 
 /**

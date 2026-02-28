@@ -1,3 +1,3 @@
-import { Any } from './Any'
+import type { Any } from './Any'
 
 export type AnyGetter = () => Any

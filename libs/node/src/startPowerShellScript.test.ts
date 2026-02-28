@@ -1,4 +1,4 @@
-import assert from 'node:assert'
+import assert from 'assert'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
@@ -16,13 +16,13 @@ const { mockExec, mockExecAsync } = vi.hoisted(() => {
 })
 
 // Mock child_process and util
-vi.mock('node:child_process', async () => {
+vi.mock('child_process', async () => {
   return {
     exec: mockExec,
   }
 })
 
-vi.mock('node:util', async () => {
+vi.mock('util', async () => {
   return {
     promisify: vi.fn(() => {
       return mockExecAsync

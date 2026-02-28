@@ -1,5 +1,5 @@
 import { arrayTableToMarkdown } from './arrayTableToMarkdown'
-import cp from 'node:child_process'
+import cp from 'child_process'
 import fs from 'fs-extra'
 import { getLinesOfCode } from './getLinesOfCode'
 import { getRepoPackageJson } from './getRepoPackageJson'
@@ -70,7 +70,6 @@ export async function renderTOC(readmeMarkdown: string): Promise<string> {
     .join('\n')
 }
 
-// eslint-disable-next-line max-lines-per-function
 export async function renderLibsExportedModules(): Promise<string> {
   const { validSummaries } = await parseLibsTsDocSummaries()
 

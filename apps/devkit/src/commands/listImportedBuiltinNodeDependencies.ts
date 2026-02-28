@@ -1,4 +1,4 @@
-import { Logger } from '@mono/cli'
+import type { Logger } from '@mono/cli'
 import { MonoRepo } from '@mono/monorepo'
 
 export async function listImportedBuiltinNodeDependencies(_opts: object, { logger: log }: { logger: Logger }) {

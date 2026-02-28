@@ -1,4 +1,4 @@
-import { Constructor } from 'type-fest'
+import type { Constructor } from 'type-fest'
 import { constructorOf } from './constructorOf'
 import { describe } from 'vitest'
 import { expect } from 'vitest'

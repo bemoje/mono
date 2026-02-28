@@ -1,14 +1,14 @@
-import assert from 'node:assert'
+import assert from 'assert'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
 import { it } from 'vitest'
 import { shellSpawnProgram } from './shellSpawnProgram'
-import { spawn } from 'node:child_process'
+import { spawn } from 'child_process'
 import { vi } from 'vitest'
 
 // Mock child_process
-vi.mock('node:child_process', () => {
+vi.mock('child_process', () => {
   return {
     spawn: vi.fn(),
   }

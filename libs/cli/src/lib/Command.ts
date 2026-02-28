@@ -39,13 +39,13 @@ import { findCommand } from './helpers/findCommand'
 import { findOption } from './helpers/findOption'
 import { getCommandAncestors } from './helpers/getCommandAncestors'
 import { getCommandAndAncestors } from './helpers/getCommandAndAncestors'
-import { inspect } from 'node:util'
+import { inspect } from 'util'
 import { kebabCase } from 'es-toolkit/string'
 import { lazyProp } from '@mono/decorators'
 import { mergeOptionDefaults } from './internal/mergeOptionDefaults'
 import { normalizeArgv } from './internal/normalizeArgv'
 import { objSortKeys } from '@mono/object'
-import { parseArgs } from 'node:util'
+import { parseArgs } from 'util'
 import { parseOptionFlags } from './helpers/parseOptionFlags'
 import { resolveArguments } from './internal/resolveArguments'
 import { setName } from '@mono/fn'
@@ -232,7 +232,7 @@ export class Command<
       return inherit.some((i) => {
         return i.name === t.name
       })
-    }) as any[]
+    })
     sub.hooks.push(...inheritHooks)
 
     const taken = valuesOf(this.commands).flatMap((c) => {
@@ -541,7 +541,7 @@ export class Command<
     const execute = async () => {
       for (const hook of hooks) {
         await hook.action(data)
-        if (process.exitCode) {
+        if (process.exitCode !== undefined) {
           return
         }
       }

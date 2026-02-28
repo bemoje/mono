@@ -1,4 +1,4 @@
-import { ParametersWithout } from '@mono/types'
+import type { ParametersWithout } from '@mono/types'
 import { preserveNameAndLength } from './preserveNameAndLength'
 
 /**

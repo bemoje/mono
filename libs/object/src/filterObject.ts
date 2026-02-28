@@ -1,5 +1,5 @@
-import { StringKeyOf } from '@mono/types'
-import { ValueOf } from '@mono/types'
+import type { StringKeyOf } from '@mono/types'
+import type { ValueOf } from '@mono/types'
 import { keysOf } from './keysOf'
 
 /**

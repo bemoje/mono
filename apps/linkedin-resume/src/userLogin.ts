@@ -1,7 +1,7 @@
 import type { Browser } from 'puppeteer'
 import { CHROME_PROFILE_PATH } from './constants'
-import { CliOptions } from './types/CliOptions'
-import { Logger } from '@mono/node'
+import type { CliOptions } from './types/CliOptions'
+import type { Logger } from '@mono/node'
 import { closeBrowserPages } from './utils/closeBrowserPages'
 import puppeteer from 'puppeteer'
 

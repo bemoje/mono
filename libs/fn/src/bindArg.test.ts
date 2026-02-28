@@ -1,4 +1,4 @@
-import assert from 'node:assert'
+import assert from 'assert'
 import { bindArg } from './bindArg'
 import { describe } from 'vitest'
 import { expect } from 'vitest'

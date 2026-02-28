@@ -75,7 +75,7 @@ describe(ModuleSpecifier.name, () => {
     })
 
     it('should return true for node: prefixed builtins', () => {
-      const mod = getModule("import { readFile } from 'node:fs'")
+      const mod = getModule("import { readFile } from 'fs'")
       expect(mod.isBuiltin).toBe(true)
     })
 

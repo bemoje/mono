@@ -1,11 +1,11 @@
 import { TsFile } from '../index'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
-import fs from 'node:fs'
+import fs from 'fs'
 import { it } from 'vitest'
 import { vi } from 'vitest'
 
-vi.mock('node:fs', () => {
+vi.mock('fs', () => {
   return {
     default: {
       statSync: vi.fn(),

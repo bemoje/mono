@@ -1,7 +1,7 @@
 import { AbstractFunctionIdentifier } from './AbstractFunctionIdentifier'
 import type { FunctionPrototype } from '@mono/types'
-import { FunctionType } from './types'
-import { TargetType } from './types'
+import type { FunctionType } from './types'
+import type { TargetType } from './types'
 
 /**
  * Identifies standalone functions for profiling purposes.

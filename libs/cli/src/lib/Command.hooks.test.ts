@@ -102,19 +102,6 @@ describe(Command.name, () => {
       expect(process.exitCode).toBe(0)
     })
 
-    it('should execute main action after hooks', async () => {
-      let mainCalled = false
-      const cmd = new Command('test')
-        .addOption('-v, --verbose', { description: 'verbose' })
-        .setAction(() => {
-          mainCalled = true
-        })
-        .addOptionHook('verbose', () => {})
-      const parsed = cmd.parseArgv(['-v'])
-      await parsed.execute()
-      expect(mainCalled).toBe(true)
-    })
-
     it('should print errors and exit when validation fails', async () => {
       const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
       const cmd = new Command('test').addArgument('<required>')

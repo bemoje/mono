@@ -145,7 +145,7 @@ describe(Help.name, () => {
   })
 
   describe(Help.prototype.visibleArguments.name, () => {
-    it('should return all arguments when any has description', () => {
+    it('should return all arguments', () => {
       const cmd = mockCmd({
         arguments: [
           mockArgument({ name: 'a', description: 'First' }),
@@ -154,14 +154,6 @@ describe(Help.name, () => {
       })
       const help = new Help(cmd)
       expect(help.visibleArguments()).toHaveLength(2)
-    })
-
-    it('should return empty when no arguments have descriptions', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ description: '' })],
-      })
-      const help = new Help(cmd)
-      expect(help.visibleArguments()).toHaveLength(0)
     })
   })
 
@@ -203,7 +195,7 @@ describe(Help.name, () => {
     it('should return argument name', () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
-      expect(help.argumentTerm(mockArgument({ name: 'file' }))).toBe('file')
+      expect(help.argumentTerm(mockArgument({ name: 'file' }))).toBe('<file>')
     })
   })
 

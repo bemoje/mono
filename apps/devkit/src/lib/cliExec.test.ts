@@ -1,12 +1,12 @@
 import { beforeEach } from 'vitest'
 import { cliExecSync } from './cliExec'
 import { describe } from 'vitest'
-import { execSync } from 'node:child_process'
+import { execSync } from 'child_process'
 import { expect } from 'vitest'
 import { it } from 'vitest'
 import { vi } from 'vitest'
 
-vi.mock('node:child_process', () => {
+vi.mock('child_process', () => {
   return {
     execSync: vi.fn(),
   }

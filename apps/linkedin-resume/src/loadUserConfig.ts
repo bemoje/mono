@@ -1,4 +1,4 @@
-import { UserConfig } from './types/UserConfig'
+import type { UserConfig } from './types/UserConfig'
 import { createInterface } from 'node:readline/promises'
 import { userConfigFile } from './userConfigFile'
 

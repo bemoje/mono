@@ -1,8 +1,7 @@
-/* eslint-disable max-lines-per-function */
 import type { Browser } from 'puppeteer'
-import { CliOptions } from '../types/CliOptions'
-import { Logger } from '@mono/node'
-import { ResumeRecommendation } from '../types/Resume'
+import type { CliOptions } from '../types/CliOptions'
+import type { Logger } from '@mono/node'
+import type { ResumeRecommendation } from '../types/Resume'
 import { autoScroll } from './utils/autoScroll'
 import { getPageUrl } from './utils/getPageUrl'
 import { onScrapeError } from './utils/onScrapeError'

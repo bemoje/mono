@@ -4,7 +4,7 @@ import { afterEach } from 'vitest'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
-import { inspect } from 'node:util'
+import { inspect } from 'util'
 import { it } from 'vitest'
 import { vitest } from 'vitest'
 

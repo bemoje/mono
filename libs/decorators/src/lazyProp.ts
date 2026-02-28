@@ -1,4 +1,4 @@
-import { GenericMap } from '@mono/map'
+import type { GenericMap } from '@mono/map'
 import { TimeoutWeakMap } from '@mono/map'
 import { isFunction } from 'es-toolkit/predicate'
 import { mapGetOrDefault } from '@mono/map'

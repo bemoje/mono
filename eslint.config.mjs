@@ -14,6 +14,7 @@ export default [
 
   {
     files: ['**/*.{ts,tsx,js,mjs}'],
+
     plugins: {
       'split-and-sort-imports': splitAndSortImports,
 
@@ -34,7 +35,7 @@ export default [
 
       // PLUGIN: split imports
       'split-and-sort-imports/split-imports': ['warn'],
-      'split-and-sort-imports/sort-imports': ['warn', { separateGroups: true }],
+      'split-and-sort-imports/sort-imports': ['warn'],
 
       '@typescript-eslint/no-unused-vars': [
         'warn',
@@ -60,13 +61,13 @@ export default [
 
       'require-atomic-updates': 'error',
       'arrow-body-style': ['error', 'always'],
-      'complexity': ['warn', 15],
+      'complexity': ['warn'],
       'curly': 'error',
       'dot-notation': 'error',
       'max-classes-per-file': ['warn', 1],
       'max-depth': ['warn', 4],
       'max-lines': ['warn', { max: 500, skipBlankLines: true, skipComments: true }],
-      'max-lines-per-function': ['warn', { max: 50, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': ['warn', { max: 100, skipBlankLines: true, skipComments: true }],
       'no-extra-bind': 'error',
       'no-extra-boolean-cast': 'error',
       'no-throw-literal': 'error',
@@ -84,7 +85,7 @@ export default [
   },
 
   {
-    files: ['**/*.test.ts', 'apps/playground/src/**/*.{ts,tsx,js,mjs}'],
+    files: ['**/*.test.ts', 'apps/playground/src/**/*.{ts,tsx,js,mjs}', '**/dist/**/*'],
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
@@ -103,9 +104,15 @@ export default [
   },
 
   {
-    files: ['**/index.ts'],
+    files: ['**/dist/*.{ts,mjs}'],
     rules: {
-      'split-and-sort-imports/sort-imports': 'off',
+      'max-lines': 'off',
+      'split-and-sort-imports/split-imports': ['off'],
+      'split-and-sort-imports/sort-imports': ['off'],
+      'no-cond-assign': 'off',
+      'no-control-regex': 'off',
+      'no-var': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
     },
   },
 ]

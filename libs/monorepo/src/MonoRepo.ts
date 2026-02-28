@@ -1,12 +1,11 @@
 import { AbstractBase } from './common/AbstractBase'
-import { CompilerOptions } from 'typescript'
+import type { CompilerOptions } from 'typescript'
 import { Inspector } from '@mono/composition'
-import { type PackageJson } from '@mono/types'
+import type { PackageJson } from '@mono/types'
 import { Parenting } from '@mono/composition'
-import { SetFieldType } from 'type-fest'
-import { TsConfigJson } from 'type-fest'
+import type { SetFieldType, TsConfigJson } from 'type-fest'
 import { Workspace } from './repo/Workspace'
-import fs from 'node:fs'
+import fs from 'fs'
 import { getRepoRootDirpath } from './util/getRepoRootDirpath'
 import { lazyProp } from '@mono/decorators'
 import path from 'upath'
@@ -33,11 +32,7 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
   }
 
   get monoRepo(): MonoRepo {
-    return (
-      super.findParentDeep<MonoRepo>((m) => {
-        return m instanceof MonoRepo
-      }) || this
-    )
+    return this
   }
 
   get packageJsonPath(): string {

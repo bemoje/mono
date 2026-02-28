@@ -1,5 +1,5 @@
-import { Class } from 'type-fest'
-import { IView } from './IView'
+import type { Class } from 'type-fest'
+import type { IView } from './IView'
 import { inheritProxifiedPrototypeProperty } from './inheritProxifiedPrototypeProperty'
 
 /**

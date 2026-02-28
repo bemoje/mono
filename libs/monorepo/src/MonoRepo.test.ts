@@ -1,6 +1,5 @@
-import * as fs from 'node:fs'
+import * as fs from 'fs'
 import * as fse from 'fs-extra/esm'
-
 import { MonoRepo } from './MonoRepo'
 import { Workspace } from './repo/Workspace'
 import { afterEach } from 'vitest'
@@ -15,7 +14,7 @@ vi.mock('./repo/Workspace')
 vi.mock('./util/getRepoRootDirpath')
 
 // Mock dependencies
-vi.mock('node:fs')
+vi.mock('fs')
 vi.mock('fs-extra/esm')
 vi.mock('upath', () => {
   return {
@@ -71,23 +70,7 @@ describe(MonoRepo.name, () => {
   })
 
   describe('monoRepo getter', () => {
-    it('should return parent MonoRepo if exists', () => {
-      const mockParent = { findParentDeep: vi.fn() }
-      const parentRepo = new MonoRepo()
-
-      mockParent.findParentDeep.mockReturnValue(parentRepo)
-
-      const repo = new MonoRepo()
-      // Mock the findParentDeep method to simulate parent existence
-      const originalFindParentDeep = repo.findParentDeep
-      repo.findParentDeep = vi.fn().mockReturnValue(parentRepo)
-
-      expect(repo.monoRepo).toBe(parentRepo)
-
-      repo.findParentDeep = originalFindParentDeep
-    })
-
-    it('should return self if no parent MonoRepo found', () => {
+    it('should return self', () => {
       const repo = new MonoRepo()
       expect(repo.monoRepo).toBe(repo)
     })

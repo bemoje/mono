@@ -1,4 +1,4 @@
-import { Any } from './Any'
+import type { Any } from './Any'
 
 export type PredicateFn<Args extends Any[] = Any[]> = (...args: Args) => boolean | void
 

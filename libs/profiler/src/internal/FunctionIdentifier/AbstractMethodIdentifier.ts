@@ -1,7 +1,7 @@
 import { AbstractFunctionIdentifier } from './AbstractFunctionIdentifier'
 import type { FunctionPrototype } from '@mono/types'
-import { MethodTargetType } from './types'
-import { MethodType } from './types'
+import type { MethodTargetType } from './types'
+import type { MethodType } from './types'
 import { isSymbol } from 'es-toolkit/predicate'
 import { setNonEnumerable } from '@mono/object'
 

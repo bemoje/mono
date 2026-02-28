@@ -1,5 +1,5 @@
-import { AccessorDescriptor } from './isAccessorDescriptor'
-import { ValueDescriptor } from './isValueDescriptor'
+import type { AccessorDescriptor } from './isAccessorDescriptor'
+import type { ValueDescriptor } from './isValueDescriptor'
 
 /**
  * Utility function for defining properties on objects with enhanced descriptor handling.

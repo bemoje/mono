@@ -1,5 +1,5 @@
-import { TChar } from './TChar'
-import { TDigits } from './TDigits'
+import type { TChar } from './TChar'
+import type { TDigits } from './TDigits'
 
 /**
  * A type representing a digit between 0 and 9.

@@ -1,4 +1,4 @@
-import { PackageJson } from '@mono/types'
+import type { PackageJson } from '@mono/types'
 import fs from 'fs-extra'
 import { getRepoRootDirpath } from './getRepoRootDirpath'
 import { globSync } from 'glob'

@@ -1,4 +1,4 @@
-import assert from 'node:assert'
+import assert from 'assert'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
@@ -13,7 +13,7 @@ const { mockSpawn } = vi.hoisted(() => {
 })
 
 // Mock child_process
-vi.mock('node:child_process', async () => {
+vi.mock('child_process', async () => {
   return {
     default: {
       spawn: mockSpawn,

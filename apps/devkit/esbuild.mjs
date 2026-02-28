@@ -1,6 +1,5 @@
 import * as esbuild from 'esbuild'
-
-import cp from 'node:child_process'
+import cp from 'child_process'
 import fs from 'fs-extra'
 /**
  * Self-contained build script.
@@ -26,15 +25,15 @@ const wsDirname = upath.basename(wsDirpath)
 const tsconfigFilepath = upath.joinSafe(wsDirpath, 'tsconfig.json')
 const indexFilepath = upath.joinSafe(wsDirpath, 'src', 'main.ts')
 
-const distDirpath = upath.joinSafe(repoRootDirpath, '.dist')
+const distDirpath = upath.joinSafe(wsDirpath, 'dist')
 const indexOutFilepath = upath.joinSafe(distDirpath, `${wsDirname}.cjs`)
 const indexOutFileTemp = upath.joinSafe(distDirpath, `${wsDirname}-temp.cjs`)
 
+const packageJsonFilepath = upath.joinSafe(wsDirpath, 'package.json')
+const pkg = await fs.readJson(packageJsonFilepath)
+
 // ensure package details are consistent across package.json and source code, and that version is unique on npm
 void (await (async () => {
-  const packageJsonFilepath = upath.joinSafe(wsDirpath, 'package.json')
-  const pkg = await fs.readJson(packageJsonFilepath)
-
   // check if version already exists on npm, and if so, bump patch version
   const npmVersion = cp.execSync(`npm view ${pkg.name} version`, { encoding: 'utf8' })
   if (npmVersion.trim() === pkg.version) {
@@ -42,7 +41,7 @@ void (await (async () => {
     semver[2] = (parseInt(semver[2]) + 1).toString()
     pkg.version = semver.join('.')
     console.info(`Version ${npmVersion} already exists on npm. Bumping version to ${pkg.version}...`)
-    await fs.writeFile(packageJsonFilepath, `${JSON.stringify(pkg, null, 2)}\n`)
+    await fs.outputFile(packageJsonFilepath, `${JSON.stringify(pkg, null, 2)}\n`)
   }
 
   // update version in source code
@@ -59,7 +58,7 @@ void (await (async () => {
         return i === 1 ? pkg.version : part
       })
       .join('`')
-    await fs.writeFile(cmdVersionFilepath, cmdVersionSrcNew)
+    await fs.outputFile(cmdVersionFilepath, cmdVersionSrcNew)
   }
 
   // update description in source code
@@ -76,7 +75,7 @@ void (await (async () => {
         return i === 1 ? pkg.description : part
       })
       .join('`')
-    await fs.writeFile(cmdDescriptionFilepath, cmdDescriptionSrcNew)
+    await fs.outputFile(cmdDescriptionFilepath, cmdDescriptionSrcNew)
   }
 })())
 
@@ -88,7 +87,7 @@ await esbuild.build({
   tsconfig: tsconfigFilepath,
   platform: 'node',
   format: 'cjs',
-  target: ['node20', 'es2022'],
+  target: ['node20', 'esnext'],
   minify: false,
   keepNames: true,
   mainFields: ['module', 'main'],
@@ -114,13 +113,34 @@ if (await fs.pathExists(`${indexOutFileTemp}.map`)) {
   await fs.rename(`${indexOutFileTemp}.map`, `${indexOutFilepath}.map`)
 }
 
-// copy to apps/*/dist/ for npm publishing
-const npmDistDir = upath.joinSafe(wsDirpath, 'dist')
-await fs.ensureDir(npmDistDir)
-await fs.copy(indexOutFilepath, upath.joinSafe(npmDistDir, `${wsDirname}.cjs`))
-if (await fs.pathExists(`${indexOutFilepath}.map`)) {
-  await fs.copy(`${indexOutFilepath}.map`, upath.joinSafe(npmDistDir, `${wsDirname}.cjs.map`))
-}
-
 // create bin wrapper for cross-platform npx support
-await fs.writeFile(upath.joinSafe(npmDistDir, 'cli.mjs'), `#!/usr/bin/env node\nimport("./${wsDirname}.cjs");\n`)
+await fs.outputFile(upath.joinSafe(distDirpath, 'cli.mjs'), `#!/usr/bin/env node\nimport("./${wsDirname}.cjs");\n`)
+
+await fs.outputFile(
+  upath.joinSafe(distDirpath, 'package.json'),
+  JSON.stringify(
+    {
+      ...pkg,
+      name: `@bemoje/${wsDirname}`,
+      bin: './cli.mjs',
+      files: ['cli.mjs', `${wsDirname}.cjs`, `${wsDirname}.cjs.map`],
+      publishConfig: {
+        access: 'public',
+      },
+      repository: {
+        type: 'git',
+        url: 'https://github.com/bemoje/mono.git',
+        directory: `apps/${wsDirname}`,
+      },
+      author: {
+        name: 'Benjamin Moller Jensen',
+        email: 'bemoje@bemoje.net',
+        url: 'https://github.com/bemoje/',
+      },
+      license: 'MIT',
+      scripts: [],
+    },
+    null,
+    2,
+  ),
+)

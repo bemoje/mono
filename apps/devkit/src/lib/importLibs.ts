@@ -1,28 +1,23 @@
 import fs from 'fs-extra'
-import { getRepoRootDirpath } from './getRepoRootDirpath'
-import upath from 'upath'
+import { tsconfigBasePathsJsonPath } from '../core/constants/paths'
 
 /**
  * Imports and caches library modules from the monorepo's built artifacts.
  */
-export async function importLibs(libDirnames?: string[]): Promise<Map<string, Record<string, unknown>>> {
-  if (!libDirnames) {
-    const libsDir = upath.joinSafe(getRepoRootDirpath(), 'libs')
-    libDirnames = await fs.readdir(libsDir)
-  }
-  const promises = libDirnames.map(async (ws) => {
-    const absPath = upath.joinSafe(getRepoRootDirpath(), '.dist', 'libs', `${ws}.cjs`)
-    const currentDir =
-      (typeof import.meta !== 'undefined' && import.meta.dirname) ||
-      (typeof __dirname !== 'undefined' && __dirname) ||
-      process.cwd()
-    let importPath = upath.relative(currentDir, absPath)
-    if (!importPath.startsWith('.')) {
-      importPath = `./${importPath}`
-    }
-    return [ws, await import(importPath)] as [string, Record<string, unknown>]
-  })
-  const entries = await Promise.all(promises)
+export async function importLibs(): Promise<Map<string, Record<string, unknown>>> {
+  const paths = (await fs.readJson(tsconfigBasePathsJsonPath)).compilerOptions.paths
+  const mod = Object.fromEntries(
+    await Promise.all(
+      Object.keys(paths)
+        .filter((p) => {
+          return p.startsWith('@mono/')
+        })
+        .map(async (ws) => {
+          return [ws.split('/')[1], await import(ws)]
+        }),
+    ),
+  )
+  const entries = Object.entries(mod) as [string, Record<string, unknown>][]
   return new Map(entries)
 }
 

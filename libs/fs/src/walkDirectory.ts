@@ -1,5 +1,5 @@
-import { Stats } from 'fs-extra'
-import { WalkOptions } from 'walkdir'
+import type { Stats } from 'fs-extra'
+import type { WalkOptions } from 'walkdir'
 import fs from 'fs-extra'
 import upath from 'upath'
 import walkdir from 'walkdir'

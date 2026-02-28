@@ -1,5 +1,5 @@
 import Table from 'cli-table'
-import assert from 'node:assert'
+import assert from 'assert'
 import { beforeEach } from 'vitest'
 import colors from 'ansi-colors'
 import { describe } from 'vitest'

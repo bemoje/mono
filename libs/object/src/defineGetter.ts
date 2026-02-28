@@ -1,4 +1,4 @@
-import { AccessorDescriptor } from './isAccessorDescriptor'
+import type { AccessorDescriptor } from './isAccessorDescriptor'
 
 /**
  * Define a getter property on an object with enhanced descriptor handling.

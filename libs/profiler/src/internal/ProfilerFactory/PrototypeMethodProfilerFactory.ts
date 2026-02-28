@@ -1,6 +1,6 @@
 import { FunctionProfiler } from '../FunctionProfiler/FunctionProfiler'
-import { IProfilerFactory } from './IProfilerFactory'
-import { MethodType } from '../FunctionIdentifier/types'
+import type { IProfilerFactory } from './IProfilerFactory'
+import type { MethodType } from '../FunctionIdentifier/types'
 import { PrototypeMethodIdentifier } from '../FunctionIdentifier/PrototypeMethodIdentifier'
 
 /**

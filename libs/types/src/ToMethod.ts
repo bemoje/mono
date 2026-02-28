@@ -1,4 +1,4 @@
-import { Tail } from './Tail'
+import type { Tail } from './Tail'
 
 /**
  * Converts a function to a method by making the 'this' context the first argument.

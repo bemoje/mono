@@ -1,7 +1,7 @@
 import { AbstractMethodIdentifier } from './AbstractMethodIdentifier'
 import type { AnyConstructor } from '@mono/types'
 import type { FunctionPrototype } from '@mono/types'
-import { MethodTargetType } from './types'
+import type { MethodTargetType } from './types'
 
 /**
  * Identifies static methods on classes for profiling purposes.

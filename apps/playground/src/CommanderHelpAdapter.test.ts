@@ -1,5 +1,5 @@
 // import { describe, expect, it } from 'vitest'
-// import assert from 'node:assert'
+// import assert from 'assert'
 // import { Command } from 'commander'
 // import { CommanderHelpAdapter } from './CommanderHelpAdapter'
 // import { Help } from './Help'

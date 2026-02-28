@@ -1,4 +1,4 @@
-import assert from 'node:assert'
+import assert from 'assert'
 import { decrypt } from './decrypt'
 import { describe } from 'vitest'
 import { encrypt } from './encrypt'

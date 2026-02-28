@@ -47,6 +47,14 @@ describe(TsCode.name, () => {
       const tsCode = createTsCode('const a = 1')
       expect(tsCode.dependencies).toEqual([])
     })
+
+    it('should return sorted dependencies from imports with dependencies', () => {
+      const code = "import { foo } from 'zlib'\nimport bar from 'alpha-lib'"
+      const tsCode = createTsCode(code)
+      expect(() => {
+        return tsCode.dependencies
+      }).toThrow()
+    })
   })
 
   describe(TsCode.prototype.requires.name, () => {

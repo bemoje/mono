@@ -1,5 +1,5 @@
 import { FunctionProfiler } from '../FunctionProfiler/FunctionProfiler'
-import { IProfilerFactory } from '../ProfilerFactory/IProfilerFactory'
+import type { IProfilerFactory } from '../ProfilerFactory/IProfilerFactory'
 import { ProfilerWrapMethodsStrategy } from './ProfilerWrapMethodsStrategy'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'

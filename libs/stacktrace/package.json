@@ -1,8 +1,20 @@
 {
   "name": "@mono/stacktrace",
+  "version": "1.0.0",
   "packageManager": "yarn@4.3.1",
   "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
-  "type": "module"
+  "type": "module",
+  "description": "stacktrace",
+  "keywords": [
+    "stacktrace"
+  ],
+  "scripts": {
+    "build": "node --import '../../scripts/build-lib.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1"
+  }
 }

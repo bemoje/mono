@@ -1,4 +1,4 @@
-import assert from 'node:assert'
+import assert from 'assert'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
 import { expect } from 'vitest'

@@ -4,9 +4,10 @@
   "include": ["nsTypes", "nsExports", "classMembers"],
 
   "ignoreExportsUsedInFile": true,
-  "ignore": [".github/copilot/refactoring.mts", "scripts/enablePrettyStackTrace.cjs"],
-  "ignoreDependencies": ["@mono/*", "tsconfig-paths"],
-  "ignoreBinaries": ["cls"],
+  "ignore": [".github/copilot/refactoring.mts"],
+  "ignoreDependencies": ["@mono/*", "tsconfig-paths", "source-map-support", "@swc/core", "tsup", "@bemoje/devkit"],
+
+  "ignoreBinaries": ["cls", "apps/devkit/src/main.ts"],
 
   "workspaces": {
     "apps/*": {

@@ -1,12 +1,21 @@
 {
   "name": "@mono/is",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
   "devDependencies": {
+    "tsup": "^8.5.1",
     "type-fest": "latest"
+  },
+  "description": "is",
+  "keywords": [
+    "is"
+  ],
+  "scripts": {
+    "build": "node --import '../../scripts/build-lib.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   }
 }

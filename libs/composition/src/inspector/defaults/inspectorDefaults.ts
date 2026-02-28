@@ -1,4 +1,4 @@
-import { InspectorOptions } from '../types'
+import type { InspectorOptions } from '../types'
 import { ignoreValuesDefaults } from './ignoreValuesDefaults'
 import { inspectDefaults } from './inspectDefaults'
 

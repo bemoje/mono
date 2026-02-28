@@ -1,6 +1,6 @@
-import { Increment } from './Increment'
-import { RemoveArrayElement } from './RemoveArrayElement'
-import { Subtract } from 'type-fest'
+import type { Increment } from './Increment'
+import type { RemoveArrayElement } from './RemoveArrayElement'
+import type { Subtract } from 'type-fest'
 
 /**
  * Removes elements from an array at specified indices.

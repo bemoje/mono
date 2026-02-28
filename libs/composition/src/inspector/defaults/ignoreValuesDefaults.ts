@@ -1,4 +1,4 @@
-import { IgnoreValuesOptions } from '../types'
+import type { IgnoreValuesOptions } from '../types'
 
 /**
  * Default options for ignoring specific values during object inspection.

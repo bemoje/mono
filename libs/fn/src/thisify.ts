@@ -1,5 +1,5 @@
 import type { Any } from '@mono/types'
-import { ArraySlice } from 'type-fest'
+import type { ArraySlice } from 'type-fest'
 import { preserveNameAndLength } from './preserveNameAndLength'
 
 /**

@@ -1,5 +1,5 @@
-import { IView } from './IView'
-import assert from 'node:assert'
+import type { IView } from './IView'
+import assert from 'assert'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
 import { inheritProxifiedPrototypeProperty } from './inheritProxifiedPrototypeProperty'

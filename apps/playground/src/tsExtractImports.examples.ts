@@ -1,4 +1,4 @@
-import { ImportStatement } from '@mono/tscode'
+import type { ImportStatement } from '@mono/tscode'
 import fs from 'fs-extra'
 import { globSync } from 'glob'
 import { groupBy } from 'es-toolkit/array'

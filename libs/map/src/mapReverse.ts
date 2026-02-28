@@ -1,4 +1,4 @@
-import { GenericMap } from './types'
+import type { GenericMap } from './types'
 import { mapLoad } from './mapLoad'
 
 /**

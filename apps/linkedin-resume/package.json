@@ -33,6 +33,7 @@
     "directory": "apps/linkedin-resume"
   },
   "scripts": {
-    "build": "node esbuild.mjs"
+    "build": "node esbuild.mjs",
+    "publish": "yarn build && cd dist && npm publish && cd ../../"
   }
 }

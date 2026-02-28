@@ -1,8 +1,8 @@
 import { Inspector } from './Inspector'
-import { InspectorTarget } from './Inspector'
+import type { InspectorTarget } from './Inspector'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
-import { inspect } from 'node:util'
+import { inspect } from 'util'
 import { it } from 'vitest'
 
 describe(Inspector.name, () => {

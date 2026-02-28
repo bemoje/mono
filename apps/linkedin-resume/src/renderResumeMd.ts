@@ -1,5 +1,5 @@
 import { DIST_PATH } from './constants'
-import { Logger } from '@mono/node'
+import type { Logger } from '@mono/node'
 import type { Resume } from './types/Resume'
 import type { ResumeWork } from './types/Resume'
 import fs from 'fs-extra'

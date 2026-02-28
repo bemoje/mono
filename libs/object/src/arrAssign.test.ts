@@ -1,5 +1,5 @@
 import { arrAssign } from './arrAssign'
-import assert from 'node:assert'
+import assert from 'assert'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
 import { it } from 'vitest'

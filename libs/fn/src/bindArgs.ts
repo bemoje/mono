@@ -1,7 +1,7 @@
-import { Any } from '@mono/types'
-import { RemoveArrayElements } from '@mono/types'
-import { TupleToObject } from 'type-fest'
-import { UnionToTuple } from 'type-fest'
+import type { Any } from '@mono/types'
+import type { RemoveArrayElements } from '@mono/types'
+import type { TupleToObject } from 'type-fest'
+import type { UnionToTuple } from 'type-fest'
 import { preserveNameAndLength } from './preserveNameAndLength'
 import { range } from 'es-toolkit/math'
 

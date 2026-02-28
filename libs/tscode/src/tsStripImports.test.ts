@@ -1,4 +1,4 @@
-import assert from 'node:assert'
+import assert from 'assert'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
 import { it } from 'vitest'
@@ -29,7 +29,7 @@ describe(tsStripImports.name, () => {
     })
 
     it('should remove multi-line imports', () => {
-      const code = `import {\n  foo,\n  bar\n} from 'node:module'\n\nconst test = 'value'`
+      const code = `import {\n  foo,\n  bar\n} from 'module'\n\nconst test = 'value'`
 
       const result = tsStripImports(code)
 
@@ -65,7 +65,7 @@ describe(tsStripImports.name, () => {
     })
 
     it('should handle code that looks like imports but is not', () => {
-      const code = `import { real } from 'node:module'\n\nconst str = "import { fake } from 'fake'"\n// import { comment } from 'comment'`
+      const code = `import { real } from 'module'\n\nconst str = "import { fake } from 'fake'"\n// import { comment } from 'comment'`
 
       const result = tsStripImports(code)
 

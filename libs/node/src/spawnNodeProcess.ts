@@ -1,5 +1,5 @@
-import { SpawnOptions } from 'node:child_process'
-import cp from 'node:child_process'
+import type { SpawnOptions } from 'child_process'
+import cp from 'child_process'
 import { spawnChildProcess } from './spawnChildProcess'
 
 /**

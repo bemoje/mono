@@ -1,4 +1,4 @@
-import { TStringOfLength } from './TStringOfLength'
+import type { TStringOfLength } from './TStringOfLength'
 
 /**
  * A type representing a string that has a length of exactly 1.

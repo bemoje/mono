@@ -1,4 +1,4 @@
-import { exec } from 'node:child_process'
+import { exec } from 'child_process'
 
 /**
  * Helper function to execute a shell command and return stdout and stderr without throwing on error.

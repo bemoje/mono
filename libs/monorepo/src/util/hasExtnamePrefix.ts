@@ -1,5 +1,5 @@
-import { Arrayable } from 'type-fest'
-import { SemanticExtnamePrefix } from './SemanticExtnamePrefix'
+import type { Arrayable } from 'type-fest'
+import type { SemanticExtnamePrefix } from './SemanticExtnamePrefix'
 import SemanticExtnamePrefixes from './SemanticExtnamePrefixes'
 
 /**

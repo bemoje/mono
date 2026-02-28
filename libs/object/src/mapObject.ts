@@ -1,4 +1,4 @@
-import { StringKeyOf } from '@mono/types'
+import type { StringKeyOf } from '@mono/types'
 import { entriesOf } from './entriesOf'
 
 /**

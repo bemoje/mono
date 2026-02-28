@@ -1,4 +1,4 @@
-import { Arrayable } from 'type-fest'
+import type { Arrayable } from 'type-fest'
 import { bindArg } from '@mono/fn'
 
 /**

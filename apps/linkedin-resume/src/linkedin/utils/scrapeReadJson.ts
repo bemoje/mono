@@ -1,4 +1,4 @@
-import { ResumeSection } from '../../types/ResumeSection'
+import type { ResumeSection } from '../../types/ResumeSection'
 import { SCRAPE_PATH } from '../../constants'
 import fs from 'fs-extra'
 import upath from 'upath'

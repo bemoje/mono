@@ -1,3 +1,4 @@
+import { chunk } from 'es-toolkit/array'
 import cp from 'child_process'
 import fs from 'fs'
 
@@ -14,7 +15,11 @@ if (
   process.exit(1)
 }
 
-async function exec(cmd) {
+const promises = [
+  `git diff --cached --name-only`, //
+  `git diff --name-only`,
+  `git ls-files --others --exclude-standard`,
+].map(async (cmd) => {
   return cp
     .execSync(cmd, { encoding: 'utf8' })
     .trim()
@@ -23,16 +28,10 @@ async function exec(cmd) {
       return f.trim()
     })
     .filter(Boolean)
-}
-
-const commands = [
-  `git diff --cached --name-only`, //
-  `git diff --name-only`,
-  `git ls-files --others --exclude-standard`,
-]
-
-const files = Array.from(new Set((await Promise.all(commands.map(exec))).flat()))
-const existentFiles = files
+})
+const files = await Promise.all(promises)
+const existentFiles = Array.from(new Set(files))
+  .flat()
   .filter((file) => {
     return !file.startsWith('.dist/')
   })
@@ -42,13 +41,17 @@ const existentFiles = files
   .filter((file) => {
     return fs.existsSync(file)
   })
+  .filter((file) => {
+    return fs.statSync(file).isFile()
+  })
 
 if (existentFiles.length === 0) {
   console.log('No files to format.')
   process.exit(0)
 }
 
-const prettierCmd = `yarn prettier --ignore-unknown ${args.join(' ')} ${existentFiles.join(' ')}`
-
-// console.debug(`Running: ${prettierCmd}`)
-cp.execSync(prettierCmd, { stdio: 'inherit' })
+for (const files of chunk(existentFiles, 20)) {
+  const prettierCmd = `yarn prettier ${args.join(' ')} --ignore-unknown ${files.join(' ')}`
+  // console.debug(`Running: ${prettierCmd}`)
+  cp.execSync(prettierCmd, { stdio: 'inherit' })
+}

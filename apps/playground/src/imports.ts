@@ -1,7 +1,7 @@
 import { DefaultMap } from 'mnemonist'
 import { ExtMap } from '@mono/map'
 import { MultiSet } from 'mnemonist'
-import cp from 'node:child_process'
+import cp from 'child_process'
 import fs from 'fs-extra'
 import { globSync } from 'glob'
 import { reduce } from 'iter-tools'
@@ -66,7 +66,7 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
           .replace(/ fse from 'fs-extra'/, " fs from 'fs-extra'")
           .replace(" path from 'upath'", " upath from 'upath'")
           .replace(" ems from 'enhanced-ms'", " ms from 'enhanced-ms'")
-          .replace(" child_process from 'node:child_process'", " cp from 'node:child_process'")
+          .replace(" child_process from 'child_process'", " cp from 'child_process'")
           .replace(" path from '@mono/path'", " mpath from '@mono/path'")
           .replace(/\s{2,}/g, ' ')
       })

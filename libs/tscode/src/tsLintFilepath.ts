@@ -1,4 +1,4 @@
-import { execSync } from 'node:child_process'
+import { execSync } from 'child_process'
 
 /**
  * Runs ESLint with auto-fix on a TypeScript file, suppressing any errors.

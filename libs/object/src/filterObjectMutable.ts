@@ -1,4 +1,4 @@
-import { ValueOf } from '@mono/types'
+import type { ValueOf } from '@mono/types'
 
 /**
  * Mutably filter an object's own properties based on a given predicate.

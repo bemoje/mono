@@ -1,5 +1,5 @@
-import { Class } from 'type-fest'
-import { IView } from './IView'
+import type { Class } from 'type-fest'
+import type { IView } from './IView'
 
 /**
  * Inherits a single prototype property from a target class to a viewer class with proxification.

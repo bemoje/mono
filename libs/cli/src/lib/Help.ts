@@ -71,15 +71,7 @@ export class Help implements IHelp {
    */
   @lazyProp
   visibleArguments(): Argument[] {
-    // If there are any arguments with a description then return all the arguments.
-    if (
-      this.cmd.arguments.find((argument: Argument) => {
-        return !!argument.description
-      })
-    ) {
-      return [...this.cmd.arguments]
-    }
-    return []
+    return this.cmd.arguments.slice()
   }
 
   /**
@@ -110,7 +102,7 @@ export class Help implements IHelp {
    * Get the argument term to show in the list of arguments.
    */
   argumentTerm(argument: Argument): string {
-    return argument.name
+    return argument.usage
   }
 
   /**
@@ -254,7 +246,7 @@ export class Help implements IHelp {
           .join(', ')}`,
       )
     }
-    if (argument.defaultValue !== undefined) {
+    if (argument.defaultValue && !(Array.isArray(argument.defaultValue) && argument.defaultValue.length === 0)) {
       extraInfo.push(`default: ${argument.defaultValueDescription || String(argument.defaultValue)}`)
     }
     if (extraInfo.length > 0) {

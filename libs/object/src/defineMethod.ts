@@ -1,5 +1,5 @@
-import { AccessorDescriptor } from './isAccessorDescriptor'
-import { ValueDescriptor } from './isValueDescriptor'
+import type { AccessorDescriptor } from './isAccessorDescriptor'
+import type { ValueDescriptor } from './isValueDescriptor'
 
 /**
  * Define a method property on an object with enhanced descriptor handling.

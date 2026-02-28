@@ -1,4 +1,4 @@
-import { Logger } from '@mono/node'
+import type { Logger } from '@mono/node'
 import fs from 'fs-extra'
 import { toCwdRelative } from '@mono/path'
 

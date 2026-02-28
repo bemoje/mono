@@ -1,4 +1,4 @@
-import { Constructor } from 'type-fest'
+import type { Constructor } from 'type-fest'
 
 /**
  * Copies static members from a source constructor to a target constructor, excluding specified keys.

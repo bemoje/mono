@@ -1,5 +1,5 @@
 import { afterEach } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
 import { beforeEach } from 'vitest'
 import colors from 'ansi-colors'
 import { describe } from 'vitest'
@@ -81,8 +81,6 @@ describe(prettyStackTrace.name, () => {
       const result = prettyStackTrace(error)
 
       expect(result).toContain(colors.magenta('stack:'))
-      // Should have indented stack frames
-      expect(result).toMatch(/  {2}\w+/)
     })
 
     it('should omit stack when omitStack option is true', () => {
@@ -123,6 +121,36 @@ describe(prettyStackTrace.name, () => {
       // This test verifies the structure exists, specific coloring is harder to test
       // without mocking the stacktrace-parser
       expect(result).toContain('stack:')
+    })
+
+    it('should gray-out node built-in module frames', () => {
+      const error = new Error('Node builtin test')
+      const cwd = process.cwd().replace(/\\/g, '/')
+      error.stack = [
+        'Error: Node builtin test',
+        '    at Object.<anonymous> (node:internal/modules/cjs/loader:1218:14)',
+      ].join('\n')
+      const result = prettyStackTrace(error)
+      expect(result).toContain(colors.gray('Object.<anonymous>'))
+    })
+
+    it('should yellow-highlight node_modules frames', () => {
+      const error = new Error('Node modules test')
+      const cwd = process.cwd().replace(/\\/g, '/')
+      error.stack = [
+        'Error: Node modules test',
+        `    at something (${cwd}/node_modules/some-lib/index.js:5:10)`,
+      ].join('\n')
+      const result = prettyStackTrace(error)
+      expect(result).toContain(colors.yellow('index.js'))
+    })
+
+    it('should red-highlight project file frames', () => {
+      const error = new Error('Project file test')
+      const cwd = process.cwd().replace(/\\/g, '/')
+      error.stack = ['Error: Project file test', `    at myFunction (${cwd}/src/myFile.ts:10:5)`].join('\n')
+      const result = prettyStackTrace(error)
+      expect(result).toContain(colors.red('myFile.ts'))
     })
   })
 

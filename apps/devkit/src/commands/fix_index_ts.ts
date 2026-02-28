@@ -64,39 +64,38 @@ export async function fixIndexTsAction(
           return fp.replace(/^src/, '.')
         })
 
-      const tempName = (i: number) => {
-        return `MODULE_${String(i + 1).padStart(relative.length.toString().length, '0')}`
-      }
+      // const tempName = (i: number) => {
+      //   return `MODULE_${String(i + 1).padStart(relative.length.toString().length, '0')}`
+      // }
 
-      let lines = relative
+      const lines = relative
         .flatMap((fp) => {
           return `export * from '${fp}'`
         })
         .concat('')
 
-      const tsconfig = {
-        ...(await fs.readJson(upath.joinSafe(repoRoot, 'tsconfig.json'), 'utf8')),
-        ...(await fs.readJson(upath.joinSafe(wsPath, 'tsconfig.json'), 'utf8')),
-      }
+      // const tsconfig = {
+      //   ...(await fs.readJson(upath.joinSafe(repoRoot, 'tsconfig.json'), 'utf8')),
+      //   ...(await fs.readJson(upath.joinSafe(wsPath, 'tsconfig.json'), 'utf8')),
+      // }
 
-      if (!tsconfig.compilerOptions.isolatedDeclarations) {
-        lines = lines.concat(
-          relative.map((fp, i) => {
-            return `import * as ${tempName(i)} from '${fp}'`
-          }),
-          '', //
-          `export default {`,
-          ...relative.map((_, i) => {
-            return `  ...${tempName(i)},${i === 0 ? ' //' : ''}`
-          }),
-          `}`,
-          '',
-        )
-      }
+      // if (!tsconfig.compilerOptions.isolatedDeclarations) {
+      //   lines = lines.concat(
+      //     relative.map((fp, i) => {
+      //       return `import * as ${tempName(i)} from '${fp}'`
+      //     }),
+      //     '', //
+      //     `export default {`,
+      //     ...relative.map((_, i) => {
+      //       return `  ...${tempName(i)},${i === 0 ? ' //' : ''}`
+      //     }),
+      //     `}`,
+      //     '',
+      //   )
+      // }
 
       const testLines = [
         `import * as EXPORTS from './index'`,
-        ``,
         `import { describe } from 'vitest'`,
         `import { expect } from 'vitest'`,
         `import { it } from 'vitest'`,

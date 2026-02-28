@@ -1,4 +1,4 @@
-import { Any } from '@mono/types'
+import type { Any } from '@mono/types'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
 import { it } from 'vitest'

@@ -1,4 +1,4 @@
-import { ResumeSection } from '../../types/ResumeSection'
+import type { ResumeSection } from '../../types/ResumeSection'
 
 /**
  * Get the URL for a LinkedIn page for a given section.

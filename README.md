@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 8494  | 8449    | 99.47%     |
-| Functions | 780   | 775     | 99.35%     |
-| Branches  | 2467  | 2466    | 99.95%     |
+| Lines     | 7596  | 7590    | 99.92%     |
+| Functions | 777   | 777     | 100%       |
+| Branches  | 2448  | 2447    | 99.95%     |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 602   | 14707         |
-| test      | 438   | 30197         |
+| source    | 591   | 13580         |
+| test      | 440   | 29974         |
 | examples  | 1     | 48            |
-| total     | 1041  | 44952         |
+| total     | 1032  | 43602         |
 
 ## Table of Contents
 
@@ -339,6 +339,10 @@ describe(ClassToTest.name, () => {
 
 - `decrypt`: Decrypts a string that was encrypted using encrypt(). Expects input in format: hexadecimal IV (32 chars) + encrypted data Uses PBKDF2 for key derivation with 100k iterations.
 - `encrypt`: Encrypts a string using AES-256-CBC with a random IV. Uses PBKDF2 for key derivation with 100k iterations.
+- `strHashToBuffer`: Hash a string into a buffer with a given algorithm
+- `strHashToString`: Hash a string into a buffer with a given algorithm
+- `strHashToStringDJB2`: Hashes a string using the DJB2 algorithm, returning a numeric hash value.
+- `strHashToUint32Array`: Hash a string into an array of unsigned 32-bit integers.
 
 **date**
 
@@ -369,7 +373,6 @@ describe(ClassToTest.name, () => {
 - `bindArgs`: Binds specified arguments to the provided function, returning a new function that requires only the remaining arguments at call time.
 - `dethisify`: Converts a function from a class method by by making the first argument take the place of the 'this' context. The reverse of
 - `functionSpy`: Wraps a function so that the given
-- `maxConcurrency`: Creates a throttled version of an async function that limits the rate at which the function can be called.
 - `preserveNameAndLength`: Preserves the name and length of a function or class constructor
 - `setLength`: Set the length of a function.
 - `setName`: Set the name of a function.
@@ -527,7 +530,6 @@ describe(ClassToTest.name, () => {
 - `NumberFormatter`: A utility class for formatting and parsing numbers with locale-specific separators. This class allows for customizing thousand and decimal separators, setting precision for decimal places, and supports different locales for international number formatting.
 - `bytesToKilobytes`: Converts a given number of bytes into kilobytes.
 - `bytesToMegabytes`: Converts a given number of bytes into megabytes.
-- `determineNumberLocale`: Determine whether a set of valid number strings are formatted in da-DK or en-US locale.
 - `numRange`: Generates an array of numbers within a specified range.
 - `randomIntBetween`: Returns a random integer between min (inclusive) and max (inclusive).
 - `round`: Round a given number with a given precision. Shifts with exponential notation to avoid floating-point issues.
@@ -660,7 +662,6 @@ describe(ClassToTest.name, () => {
 
 **string**
 
-- `camelCase`: Converts a string to camel case.
 - `countFloatDecimals`: Counts the number of decimal places in a floating-point number.
 - `endsWithIncompleteUtfPairSurrogate`: Returns true if the string ends with an incomplete UTF-16 surrogate pair. This is useful for determining if a string can be safely concatenated with another string.
 - `strCountCharOccurances`: Counts the number of occurrences of a specific character in a string.
@@ -669,10 +670,6 @@ describe(ClassToTest.name, () => {
 - `strEnsureStartsWith`: Ensures that a string starts with a specified substring. If the string already starts with the specified substring, it is returned as is. Otherwise, the substring is appended to the end of the string.
 - `strFirstCharToLowerCase`: Converts the first character of a string to lowercase.
 - `strFirstCharToUpperCase`: Converts the first character of a string to uppercase.
-- `strHashToBuffer`: Hash a string into a buffer with a given algorithm
-- `strHashToString`: Hash a string into a buffer with a given algorithm
-- `strHashToStringDJB2`: Hashes a string using the DJB2 algorithm, returning a numeric hash value.
-- `strHashToUint32Array`: Hash a string into an array of unsigned 32-bit integers.
 - `strIsLowerCase`: Checks if the given string is in lower case.
 - `strIsMultiLine`: Checks if a string contains multiple lines.
 - `strIsUpperCase`: Checks if the given string is in upper case.

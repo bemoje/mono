@@ -1,7 +1,7 @@
-import { GetKeysOptions } from './getKeysPreset'
-import { KeysPrimitiveTypeFrom } from './getKeysPreset'
-import { OptsKeyTypeVariants } from './getKeysPreset'
-import { OptsKeysVariants } from './getKeysPreset'
+import type { GetKeysOptions } from './getKeysPreset'
+import type { KeysPrimitiveTypeFrom } from './getKeysPreset'
+import type { OptsKeyTypeVariants } from './getKeysPreset'
+import type { OptsKeysVariants } from './getKeysPreset'
 import { getKeysPreset } from './getKeysPreset'
 
 /**

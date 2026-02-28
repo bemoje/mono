@@ -1,12 +1,11 @@
 import * as fs from '@mono/fs'
 import * as fsExtra from 'fs-extra/esm'
-
 import { MonoRepo } from '../MonoRepo'
-import { PackageJson } from '@mono/types'
+import type { PackageJson } from '@mono/types'
 import { TestFile } from '../file/TestFile'
 import { TsFile } from '../file/TsFile'
 import { Workspace } from './Workspace'
-import assert from 'node:assert'
+import assert from 'assert'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
@@ -14,7 +13,7 @@ import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
 import { hasParentDirname } from '@mono/path'
 import { it } from 'vitest'
 import path from 'upath'
-import { promisify } from 'node:util'
+import { promisify } from 'util'
 // Mock resolveModuleImportPath
 import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
 import { vi } from 'vitest'
@@ -22,8 +21,8 @@ import { vi } from 'vitest'
 // Mock dependencies
 vi.mock('fs-extra/esm')
 vi.mock('@mono/fs')
-vi.mock('node:child_process')
-vi.mock('node:util')
+vi.mock('child_process')
+vi.mock('util')
 vi.mock('upath', () => {
   return {
     default: {

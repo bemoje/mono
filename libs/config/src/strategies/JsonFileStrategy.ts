@@ -1,4 +1,4 @@
-import { ConfigDataStrategy } from '../interfaces/ConfigDataStrategy'
+import type { ConfigDataStrategy } from '../interfaces/ConfigDataStrategy'
 import fs from 'fs-extra'
 
 /**

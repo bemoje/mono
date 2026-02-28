@@ -1,5 +1,5 @@
 import { ConfigFile } from '@mono/config'
-import { Static } from '@sinclair/typebox'
+import type { Static } from '@sinclair/typebox'
 import { Type } from '@sinclair/typebox'
 import { repoRootPath } from '../constants/paths'
 import { templates } from '../templates/templates'

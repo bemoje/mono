@@ -1,4 +1,4 @@
-import { IView } from './IView'
+import type { IView } from './IView'
 
 const TARGET_SYMBOL = Symbol('target')
 

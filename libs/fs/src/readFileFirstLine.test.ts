@@ -2,8 +2,8 @@ import { describe } from 'vitest'
 import { expect } from 'vitest'
 import fs from 'fs-extra'
 import { it } from 'vitest'
-import os from 'node:os'
-import path from 'node:path'
+import os from 'os'
+import path from 'path'
 import { readFileFirstLine } from './readFileFirstLine'
 
 describe(readFileFirstLine.name, () => {

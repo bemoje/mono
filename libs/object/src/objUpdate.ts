@@ -1,4 +1,4 @@
-import { ValueOf } from '@mono/types'
+import type { ValueOf } from '@mono/types'
 
 /**
  * Updates the value of a specific key in an object using a callback function.

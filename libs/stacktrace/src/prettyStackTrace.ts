@@ -1,13 +1,16 @@
-import { StackFrame } from 'stacktrace-parser'
+import type { StackFrame } from 'stacktrace-parser'
 import colors from 'ansi-colors'
-import { inspect } from 'node:util'
+import { inspect } from 'util'
 import { parse } from 'stacktrace-parser'
 import upath from 'upath'
 
 /**
  * Formats stack traces with colors and improved readability for debugging.
  */
-export function prettyStackTrace(error: Error, options: { omitStack?: boolean; omitProps?: boolean } = {}) {
+export function prettyStackTrace(
+  error: Error,
+  options: { omitStack?: boolean; omitProps?: boolean } = {},
+): string {
   return [renderMessage(error), renderProps(error, options), renderStack(error, options), ''].join('\n')
 }
 

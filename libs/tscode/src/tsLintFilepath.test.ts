@@ -1,13 +1,13 @@
-import assert from 'node:assert'
+import assert from 'assert'
 import { describe } from 'vitest'
-import { execSync } from 'node:child_process'
+import { execSync } from 'child_process'
 import { expect } from 'vitest'
 import { it } from 'vitest'
 import { tsLintFilepath } from './tsLintFilepath'
 import { vi } from 'vitest'
 
 // Mock execSync to avoid actual command execution in tests
-vi.mock('node:child_process', () => {
+vi.mock('child_process', () => {
   return {
     execSync: vi.fn(),
   }

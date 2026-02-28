@@ -1,6 +1,6 @@
 {
   "name": "@mono/cli",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "A type-safe CLI composer that can parse argv and generate help without execution coupling.",
   "packageManager": "yarn@4.3.1",
   "type": "module",
@@ -24,10 +24,13 @@
     "argv"
   ],
   "scripts": {
-    "build": "node esbuild.mjs",
-    "publish": "yarn build && cd dist && npm publish && cd ../../"
+    "build": "node --import '../../scripts/build-lib.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+  },
+  "dependencies": {
+    "type-fest": "^5.4.4"
   },
   "devDependencies": {
-    "type-fest": "^5.4.4"
+    "tsup": "^8.5.1"
   }
 }

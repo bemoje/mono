@@ -1,6 +1,6 @@
 import { AbstractFunctionIdentifier } from '../FunctionIdentifier/AbstractFunctionIdentifier'
 import type { IFunctionSpyStrategy } from '@mono/fn'
-import { inspect } from 'node:util'
+import { inspect } from 'util'
 
 /**
  * Profiler for functions, measuring execution time and call counts.

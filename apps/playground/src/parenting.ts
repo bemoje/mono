@@ -1,6 +1,6 @@
 import { ParentRelationTypes } from '@mono/composition'
 import { Parenting } from '@mono/composition'
-import { ParentingTarget } from '@mono/composition'
+import type { ParentingTarget } from '@mono/composition'
 
 declare module './parenting' {
   export interface Root extends ParentingTarget<null> {}

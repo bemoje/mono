@@ -1,4 +1,4 @@
-import { TFunction } from './TFunction'
+import type { TFunction } from './TFunction'
 
 /**
  * Taken from https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#type-inference-in-conditional-types

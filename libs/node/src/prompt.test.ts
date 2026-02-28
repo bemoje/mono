@@ -1,5 +1,5 @@
 import { afterEach } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
@@ -14,7 +14,7 @@ const { mockCreateInterface } = vi.hoisted(() => {
 })
 
 // Mock readline
-vi.mock('node:readline', async () => {
+vi.mock('readline', async () => {
   return {
     default: {
       createInterface: mockCreateInterface,

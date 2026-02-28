@@ -1,4 +1,4 @@
-import assert from 'node:assert'
+import assert from 'assert'
 import { defineMethod } from './defineMethod'
 import { describe } from 'vitest'
 import { expect } from 'vitest'

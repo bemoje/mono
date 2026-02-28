@@ -1,4 +1,4 @@
-import { Readable } from 'node:stream'
+import { Readable } from 'stream'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
 import { it } from 'vitest'

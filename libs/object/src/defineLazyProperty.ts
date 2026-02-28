@@ -1,4 +1,4 @@
-import { AccessorDescriptor } from './isAccessorDescriptor'
+import type { AccessorDescriptor } from './isAccessorDescriptor'
 import { defineGetter } from './defineGetter'
 import { defineValue } from './defineValue'
 

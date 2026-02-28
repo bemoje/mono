@@ -1,4 +1,4 @@
-import { GenericMap } from './types'
+import type { GenericMap } from './types'
 
 /**
  * Gets a value from a map or creates it using a factory function if it doesn't exist.

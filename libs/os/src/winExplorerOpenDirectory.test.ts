@@ -1,4 +1,4 @@
-import assert from 'node:assert'
+import assert from 'assert'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
@@ -16,12 +16,12 @@ vi.mock('fs-extra', () => {
     stat: vi.fn(),
   }
 })
-vi.mock('node:child_process', () => {
+vi.mock('child_process', () => {
   return {
     spawn: vi.fn(),
   }
 })
-vi.mock('node:util', () => {
+vi.mock('util', () => {
   return {
     default: {
       promisify: vi.fn(),
@@ -47,8 +47,8 @@ describe('winExplorerOpenDirectory', () => {
 
     // Get fresh mocks
     const fs = await import('fs-extra')
-    const { spawn } = await import('node:child_process')
-    const util = await import('node:util')
+    const { spawn } = await import('child_process')
+    const util = await import('util')
     const { isWindows } = await import('./isWindows')
 
     mockFs = vi.mocked(fs.default)

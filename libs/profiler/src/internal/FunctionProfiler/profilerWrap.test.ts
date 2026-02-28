@@ -1,5 +1,4 @@
 import * as fnLib from '@mono/fn'
-
 import { FunctionProfiler } from './FunctionProfiler'
 import { ModuleMethodIdentifier } from '../FunctionIdentifier/ModuleMethodIdentifier'
 import { afterEach } from 'vitest'

@@ -1,6 +1,6 @@
-import { CliOptions } from '../../types/CliOptions'
-import { Logger } from '@mono/node'
-import { ResumeSection } from '../../types/ResumeSection'
+import type { CliOptions } from '../../types/CliOptions'
+import type { Logger } from '@mono/node'
+import type { ResumeSection } from '../../types/ResumeSection'
 import { prettyStackTrace } from '@mono/stacktrace'
 import { toError } from '@mono/node'
 

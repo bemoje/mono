@@ -1,4 +1,4 @@
-import { Primitive } from 'type-fest'
+import type { Primitive } from 'type-fest'
 
 /**
  * Checks if the provided value is a primitive type (null, undefined, bigint, boolean, number, string or symbol).

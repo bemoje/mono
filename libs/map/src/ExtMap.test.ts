@@ -1,7 +1,7 @@
 import { ExtMap } from './ExtMap'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
-import { inspect } from 'node:util'
+import { inspect } from 'util'
 import { it } from 'vitest'
 
 describe('ExtMap', () => {

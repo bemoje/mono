@@ -1,4 +1,4 @@
-import { Any } from '@mono/types'
+import type { Any } from '@mono/types'
 
 /**
  * Deletes the specified keys from an object in a mutable way.

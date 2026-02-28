@@ -1,8 +1,8 @@
+import type { InspectOptions } from 'util'
 import type { InspectorTarget } from './Inspector'
-import type { InspectOptions as NativeInspectOptions } from 'node:util'
 
 export interface InspectorOptions {
-  inspect?: NativeInspectOptions
+  inspect?: InspectOptions
   ignoreValues?: IgnoreValuesOptions
   keys?: (string | symbol)[]
   autoAddBooleanKeys?: boolean

@@ -1,8 +1,8 @@
 import fs from 'fs-extra'
 import { isWindows } from './isWindows'
-import { spawn } from 'node:child_process'
+import { spawn } from 'child_process'
 import upath from 'upath'
-import util from 'node:util'
+import util from 'util'
 
 /**
  * Opens a directory in Windows Explorer. Works on Windows only.

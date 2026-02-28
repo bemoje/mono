@@ -2,7 +2,7 @@ import { describe } from 'vitest'
 import { expect } from 'vitest'
 import { isRelative } from './isRelative'
 import { it } from 'vitest'
-import path from 'node:path'
+import path from 'path'
 import { vi } from 'vitest'
 
 describe(isRelative.name, () => {

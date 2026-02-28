@@ -1,15 +1,13 @@
 import type { AnyFunction } from '@mono/types'
 import type { AnyGetter } from '@mono/types'
 import type { AnySetter } from '@mono/types'
-import { defineGetter } from '@mono/object'
-import { defineMethod } from '@mono/object'
-import { defineSetter } from '@mono/object'
 import { isFunction } from 'es-toolkit/predicate'
 import { preserveNameAndLength } from './preserveNameAndLength'
 
 /**
  * Wrap methods, getters and setters of an object with custom logic.
  */
+
 export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrategy<T>) {
   for (const [key, type, des] of iterateMethods(target)) {
     if (strat.filter && !strat.filter(target, key, type, des)) {
@@ -24,7 +22,11 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
       if (!wrapped) {
         continue
       }
-      defineMethod(target, key, preserveNameAndLength(orig, wrapped))
+      Object.defineProperty(target, key, {
+        value: preserveNameAndLength(orig, wrapped),
+        configurable: des.configurable,
+        enumerable: des.enumerable,
+      })
     } else if (type === 'get') {
       if (!strat.onGetter) {
         continue
@@ -34,7 +36,11 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
       if (!wrapped) {
         continue
       }
-      defineGetter(target, key, preserveNameAndLength(orig, wrapped))
+      Object.defineProperty(target, key, {
+        get: preserveNameAndLength(orig, wrapped),
+        configurable: des.configurable,
+        enumerable: des.enumerable,
+      })
     } else if (type === 'set') {
       if (!strat.onSetter) {
         continue
@@ -44,7 +50,11 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
       if (!wrapped) {
         continue
       }
-      defineSetter(target, key, preserveNameAndLength(orig, wrapped))
+      Object.defineProperty(target, key, {
+        set: preserveNameAndLength(orig, wrapped),
+        configurable: des.configurable,
+        enumerable: des.enumerable,
+      })
     }
   }
   return target

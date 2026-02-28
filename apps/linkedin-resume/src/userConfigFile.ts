@@ -1,7 +1,7 @@
 import { CONFIG_PATH } from './constants'
 import { ConfigFile } from '@mono/config'
 import { Type } from '@sinclair/typebox'
-import { UserConfig } from './types/UserConfig'
+import type { UserConfig } from './types/UserConfig'
 
 export const UserConfigSchema = Type.Object(
   {

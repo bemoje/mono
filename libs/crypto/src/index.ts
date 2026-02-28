@@ -1,10 +1,7 @@
+export * from './TCryptoAlgorithm'
 export * from './decrypt'
 export * from './encrypt'
-
-import * as MODULE_1 from './decrypt'
-import * as MODULE_2 from './encrypt'
-
-export default {
-  ...MODULE_1, //
-  ...MODULE_2,
-}
+export * from './strHashToBuffer'
+export * from './strHashToString'
+export * from './strHashToStringDJB2'
+export * from './strHashToUint32Array'

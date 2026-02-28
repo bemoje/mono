@@ -1,4 +1,4 @@
-import { ValueOf } from '@mono/types'
+import type { ValueOf } from '@mono/types'
 
 /**
  * Sorts the keys of an object in alphabetical order unless a custom compare function is provided.

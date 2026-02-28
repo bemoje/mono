@@ -1,4 +1,4 @@
-import { GenericMap } from './types'
+import type { GenericMap } from './types'
 
 /**
  * Sorts the map entries by their values and updates the map in place.

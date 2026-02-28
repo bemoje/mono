@@ -1,14 +1,14 @@
-import { ExecException } from 'node:child_process'
+import type { ExecException } from 'child_process'
 import { afterAll } from 'vitest'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
-import { exec } from 'node:child_process'
+import { exec } from 'child_process'
 import { execOutput } from './execOutput'
 import { expect } from 'vitest'
 import { it } from 'vitest'
 import { vi } from 'vitest'
 
-vi.mock('node:child_process', () => {
+vi.mock('child_process', () => {
   return {
     exec: vi.fn(),
   }

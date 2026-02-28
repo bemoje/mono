@@ -1,8 +1,6 @@
-import type { Any } from '@mono/types'
-import { DefaultMap } from 'mnemonist'
-import type { FunctionPrototype } from '@mono/types'
-import { MultiSet } from 'mnemonist'
-import { ParentingTargetConstructor } from './types'
+import type { Any, FunctionPrototype } from '@mono/types'
+import { DefaultMap, MultiSet } from 'mnemonist'
+import type { ParentingTargetConstructor } from './types'
 import { View } from '../View'
 import colors from 'ansi-colors'
 

@@ -1,19 +1,12 @@
-import 'source-map-support/register'
-import 'dotenv/config'
-
-//
 import { Command } from '@mono/cli'
-import { buildLibsAction } from './commands/build_libs'
 import { buildReadmeAction } from './commands/build_readme'
 import { clearNodeModulesAction } from './commands/clear_node_modules'
-//
 import { configAction } from './commands/config'
 import { configDirpathHook } from './commands/config'
 import { configFile } from './core/config/config'
 import { configFilepathHook } from './commands/config'
 import { createLibsWorkspaceAction } from './commands/create_workspace'
 import description from './core/description'
-import { enablePrettyStackTrace } from '@mono/stacktrace'
 import { fixDashCharsAction } from './commands/fix_dash_chars'
 import { fixEmptyFilesAction } from './commands/fix_empty_files'
 import { fixIndexTsAction } from './commands/fix_index_ts'
@@ -28,13 +21,9 @@ import { listLibModuleExportsAction } from './commands/list_lib_module_exports'
 import { listTopImportStatementsAction } from './commands/list_top_import_statements'
 import { missingCoverageFilesAction } from './commands/missing_coverage_files'
 import { missingTsdocFilesAction } from './commands/missing_tsdoc_files'
-import { runAction } from './commands/run'
-//
 import version from './core/version'
 
-enablePrettyStackTrace()
-
-//
+configFile.load()
 
 const cli = new Command('devkit')
   .setVersion(version)
@@ -55,15 +44,6 @@ const cli = new Command('devkit')
   })
 
   // dev
-  .addCommand('run', (cmd) => {
-    return cmd
-      .setAliases('r')
-      .setDescription('Compile and run a file. Supports .ts, .test.ts, .js, .mjs, .cjs, .ps1')
-      .addArgument('<filepath>', { description: 'Path to file to run' })
-      .addArgument('[args...]', { description: 'Additional arguments to pass to the script' })
-      .setAction(runAction)
-  })
-
   .addCommand('create-libs-workspace', (cmd) => {
     return cmd
       .setDescription('Create a new library in the libs folder.')
@@ -87,14 +67,6 @@ const cli = new Command('devkit')
       .setGroup('Build Commands')
       .setDescription('Generate the root README.md from template.')
       .setAction(buildReadmeAction)
-  })
-
-  .addCommand('build-libs', (cmd) => {
-    return cmd
-      .setGroup('Build Commands')
-      .setDescription('Build all libs/ workspaces.')
-      .addArgument('[dirnames...]', { description: 'libs dirnames. Defaults to all.' })
-      .setAction(buildLibsAction)
   })
 
   // check
@@ -221,8 +193,6 @@ const cli = new Command('devkit')
       .setDescription('List all available modules and their exports from the libs directory.')
       .setAction(listLibModuleExportsAction)
   })
-
-configFile.load()
 
 void cli
   .parseArgv()

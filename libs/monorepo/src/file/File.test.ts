@@ -1,11 +1,11 @@
 import { File } from './File'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
-import fs from 'node:fs'
+import fs from 'fs'
 import { it } from 'vitest'
 import { vi } from 'vitest'
 
-vi.mock('node:fs', () => {
+vi.mock('fs', () => {
   return {
     default: {
       statSync: vi.fn().mockReturnValue({
@@ -20,20 +20,27 @@ vi.mock('node:fs', () => {
   }
 })
 
-vi.mock('@mono/path', () => {
+vi.mock('upath', () => {
   return {
     default: {
       normalize: vi.fn((p: string) => {
         return p
       }),
-      hasExtname: vi.fn((p: string, exts: string | string[]) => {
-        const ext = p.split('.').pop() ?? ''
-        return Array.isArray(exts) ? exts.includes(ext) : ext === exts
-      }),
+
       parse: vi.fn((p: string) => {
         const basename = p.split('/').pop() ?? ''
         const dotIndex = basename.indexOf('.')
         return { name: dotIndex >= 0 ? basename.slice(0, dotIndex) : basename }
+      }),
+    },
+  }
+})
+vi.mock('@mono/path', () => {
+  return {
+    default: {
+      hasExtname: vi.fn((p: string, exts: string | string[]) => {
+        const ext = p.split('.').pop() ?? ''
+        return Array.isArray(exts) ? exts.includes(ext) : ext === exts
       }),
       hasParentDirname: vi.fn((p: string, name: string) => {
         return p.includes(`/${name}/`)
@@ -41,6 +48,10 @@ vi.mock('@mono/path', () => {
     },
     hasParentDirname: vi.fn((p: string, name: string) => {
       return p.includes(`/${name}/`)
+    }),
+    hasExtname: vi.fn((p: string, exts: string | string[]) => {
+      const ext = p.split('.').pop() ?? ''
+      return Array.isArray(exts) ? exts.includes(ext) : ext === exts
     }),
   }
 })

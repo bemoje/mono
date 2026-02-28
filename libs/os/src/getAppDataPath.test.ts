@@ -4,7 +4,7 @@ import { expect } from 'vitest'
 import { getAppDataPath } from './getAppDataPath'
 import { getOS } from './getOS'
 import { it } from 'vitest'
-import os from 'node:os'
+import os from 'os'
 import { vi } from 'vitest'
 
 vi.mock('./getOS', () => {

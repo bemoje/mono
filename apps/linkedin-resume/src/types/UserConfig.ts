@@ -1,11 +1,13 @@
-import { PickPrimitive } from '@mono/types'
-import { ResumeEducation } from './Resume'
-import { ResumeLanguage } from './Resume'
-import { ResumeProject } from './Resume'
-import { ResumeRecommendation } from './Resume'
-import { ResumeSkill } from './Resume'
-import { ResumeSocial } from './Resume'
-import { ResumeWork } from './Resume'
+import type { PickPrimitive } from '@mono/types'
+import type {
+  ResumeEducation,
+  ResumeLanguage,
+  ResumeProject,
+  ResumeRecommendation,
+  ResumeSkill,
+  ResumeSocial,
+  ResumeWork,
+} from './Resume'
 
 export interface UserConfig {
   /**

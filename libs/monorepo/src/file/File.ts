@@ -1,13 +1,13 @@
+import * as path from '@mono/path'
 import { AbstractBase } from '../common/AbstractBase'
 import { Inspector } from '@mono/composition'
 import { Parenting } from '@mono/composition'
 import { SemanticExtnamePrefix } from '../util/SemanticExtnamePrefix'
-import type { Stats } from 'node:fs'
+import type { Stats } from 'fs'
 import { Workspace } from '../repo/Workspace'
-import fs from 'node:fs'
+import fs from 'fs'
 import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
 import { lazyProp } from '@mono/decorators'
-import path from '@mono/path'
 import upath from 'upath'
 
 @Parenting.compose

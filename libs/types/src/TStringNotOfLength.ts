@@ -1,4 +1,4 @@
-import { TLengthOfString } from './TLengthOfString'
+import type { TLengthOfString } from './TLengthOfString'
 
 /**
  * A type representing a string not of a specific length.

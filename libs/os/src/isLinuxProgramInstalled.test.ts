@@ -1,4 +1,4 @@
-import assert from 'node:assert'
+import assert from 'assert'
 import { beforeEach } from 'vitest'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
@@ -6,7 +6,7 @@ import { it } from 'vitest'
 import { vi } from 'vitest'
 
 // Mock dependencies
-vi.mock('node:child_process', () => {
+vi.mock('child_process', () => {
   return {
     exec: vi.fn(),
   }
@@ -27,7 +27,7 @@ describe('isLinuxProgramInstalled', () => {
     vi.resetModules()
 
     // Get fresh mocks
-    const { exec } = await import('node:child_process')
+    const { exec } = await import('child_process')
     const { getOS } = await import('./getOS')
 
     mockExec = vi.mocked(exec)

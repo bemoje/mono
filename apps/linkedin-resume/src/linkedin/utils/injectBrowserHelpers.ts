@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import type { Page } from 'puppeteer'
 
 /**
