@@ -2130,7 +2130,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/coverage-v8@npm:^3.2.4":
+"@vitest/coverage-v8@npm:3.2.4":
   version: 3.2.4
   resolution: "@vitest/coverage-v8@npm:3.2.4"
   dependencies:
@@ -5007,7 +5007,7 @@ __metadata:
     "@types/memoizee": "npm:^0.4.12"
     "@types/node": "npm:^24.3.1"
     "@types/strip-comments": "npm:^2.0.4"
-    "@vitest/coverage-v8": "npm:^3.2.4"
+    "@vitest/coverage-v8": "npm:3.2.4"
     ansi-colors: "npm:^4.1.3"
     cli-table: "npm:^0.3.11"
     command-exists: "npm:^1.2.9"

@@ -1,4 +1,5 @@
 // vitest.config.ts
+import '@vitest/coverage-v8'
 import { defineConfig } from 'vitest/config'
 import { globSync } from 'glob'
 import tsconfigPaths from 'vite-tsconfig-paths'

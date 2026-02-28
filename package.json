@@ -56,7 +56,7 @@
     "@types/humanize-duration": "^3.27.4",
     "@types/memoizee": "^0.4.12",
     "@types/strip-comments": "^2.0.4",
-    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/coverage-v8": "3.2.4",
     "depcheck": "1.4.7",
     "esbuild": "^0.23.0",
     "eslint": "^10.0.2",
