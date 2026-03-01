@@ -240,16 +240,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bemoje/iter@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@bemoje/iter@npm:1.0.0"
-  dependencies:
-    iter-tools: "npm:^7.5.4"
-    mnemonist: "npm:^0.40.3"
-  checksum: 10c0/8e71d5ab3723f4cd16a79449a93993db3efc13c27049db902a133233a62ea571b447b0329d4f0626448d89e89765f3f49a77e34890ec8d4402ea8eee77fea1f3
-  languageName: node
-  linkType: hard
-
 "@bemoje/map@npm:^1.0.0":
   version: 1.0.0
   resolution: "@bemoje/map@npm:1.0.0"
@@ -4976,7 +4966,6 @@ __metadata:
     "@bemoje/fn": "npm:^1.0.0"
     "@bemoje/fs": "npm:^1.0.0"
     "@bemoje/is": "npm:^1.0.0"
-    "@bemoje/iter": "npm:^1.0.0"
     "@bemoje/map": "npm:^1.0.0"
     "@bemoje/monorepo": "npm:^1.0.0"
     "@bemoje/node": "npm:^1.0.0"
