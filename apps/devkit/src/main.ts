@@ -1,4 +1,3 @@
-import 'tsconfig-paths/register'
 import { Command } from '@mono/cli'
 import { buildReadmeAction } from './commands/build_readme'
 import { clearNodeModulesAction } from './commands/clear_node_modules'
@@ -13,6 +12,7 @@ import { fixEmptyFilesAction } from './commands/fix_empty_files'
 import { fixIndexTsAction } from './commands/fix_index_ts'
 import { fixVitestImportsAction } from './commands/fix_vitest_imports'
 import { fixWorkspaceImportsAction } from './commands/fix_workspace_imports'
+import fs from 'fs-extra'
 import { linesOfCodeAction } from './commands/lines_of_code'
 import { listImportStatementsAction } from './commands/list_import_statements'
 import { listImportedBuiltinNodeDependencies } from './commands/listImportedBuiltinNodeDependencies'
@@ -22,10 +22,11 @@ import { listLibModuleExportsAction } from './commands/list_lib_module_exports'
 import { listTopImportStatementsAction } from './commands/list_top_import_statements'
 import { missingCoverageFilesAction } from './commands/missing_coverage_files'
 import { missingTsdocFilesAction } from './commands/missing_tsdoc_files'
+import { runInteractive2 } from './runInteractive2'
 import version from './core/version'
 
+const libDirnames = fs.readdirSync('libs')
 configFile.load()
-
 const cli = new Command('devkit')
   .setVersion(version)
   .setDescription(description)
@@ -122,7 +123,7 @@ const cli = new Command('devkit')
     return cmd
       .setGroup('Fix Commands')
       .setDescription('Generate barrel export index.ts for a workspace.')
-      .addArgument('[dirnames...]', { description: 'Workspace dirnames within libs/*' })
+      .addArgument('[dirnames...]', { description: 'Workspace dirnames within libs/*', choices: libDirnames })
       .addOption('-i, --ignore <dirnames...>', {
         description: 'Workspace dirnames to ignore (relative to repo root)',
       })
@@ -195,10 +196,40 @@ const cli = new Command('devkit')
       .setAction(listLibModuleExportsAction)
   })
 
-void cli
-  .parseArgv()
-  .execute()
-  .catch((error) => {
-    console.error(error)
-    process.exit(1)
+  .addCommand('wow', (cmd) => {
+    return cmd
+      .setDescription('Wow!')
+      .addCommand('such-command', (cmd) => {
+        return cmd
+          .addArgument('<name>', { description: 'Your name' })
+          .addArgument('[city]', { description: 'City name', choices: ['Herning', 'Ikast', 'Aarhus'] })
+          .addOption('-a, --age <int>', { description: 'The persons age' })
+          .addOption('-f, --friends <names...>', { description: 'Names of friends' })
+          .setDescription('Such command!')
+          .setAction((arg1, arg, opts) => {
+            console.log('Wow such command!', { arg1, arg2: arg, opts })
+          })
+      })
+      .addCommand('many-commands', (cmd) => {
+        return cmd.setDescription('Many commands!').setAction(() => {
+          console.log('Wow many commands!')
+        })
+      })
   })
+
+async function main() {
+  if (process.argv.length === 2) {
+    // await runInteractive(cli)
+    await runInteractive2(cli)
+  }
+
+  await cli
+    .parseArgv()
+    .execute()
+    .catch((error) => {
+      console.error(error)
+      process.exit(1)
+    })
+}
+
+void main()

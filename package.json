@@ -47,7 +47,8 @@
     "wss": "node scripts/wss.mjs",
     "ws": "node scripts/ws.mjs",
     "ts": "tsx --import 'tsconfig-paths/register' --import 'scripts/enablePrettyStackTrace.ts' --import 'dotenv/config'",
-    "dk": "tsx --import 'tsconfig-paths/register' --import 'scripts/enablePrettyStackTrace.ts' --import 'dotenv/config' apps/devkit/src/main.ts"
+    "dk": "tsx --import 'tsconfig-paths/register' --import 'scripts/enablePrettyStackTrace.ts' --import 'dotenv/config' apps/devkit/src/main.ts",
+    "script:npmEnsureLoggedIn": "node scripts/npmEnsureLoggedIn.mjs"
   },
   "devDependencies": {
     "@bemoje/devkit": "3.2.0",
@@ -129,6 +130,7 @@
     "puppeteer": "^24.37.4",
     "source-map-support": "^0.5.21",
     "stacktrace-parser": "^0.1.11",
+    "string-argv": "^0.3.2",
     "strip-comments": "2.0.1",
     "type-fest": "^5.4.4",
     "upath": "^2.0.1",

@@ -1,5 +1,5 @@
 import type { Logger } from '@mono/node'
-import ansiColors from 'ansi-colors'
+import colors from 'ansi-colors'
 import { importLibs } from '../lib/importLibs'
 import { inspect } from 'util'
 
@@ -8,14 +8,14 @@ export async function listLibModuleExportsAction(_opts: unknown, { logger: log }
   log.log(
     libs
       .map(([lib, modules]) => {
-        return `${ansiColors.magenta(lib)}: ${inspect(modules, { colors: false, depth: 0, breakLength: 1 })
+        return `${colors.magenta(lib)}: ${inspect(modules, { colors: false, depth: 0, breakLength: 1 })
           .replace(/\[Module: null prototype\] /g, '')
           .replace(/\[Function: (\w+)\]/g, '[Function]')
           .replace(/\[AsyncFunction: (\w+)\]/g, '[AsyncFunction]')
           .replace(/\[GeneratorFunction: (\w+)\]/g, '[GeneratorFunction]')
           .replace(/\[class [\w ]+\]/g, '[Class]')
           .replace(/: \[([\w ]+)\]/g, (m, type) => {
-            return `: ${ansiColors.yellow.dim(`[${type}]`)}`
+            return `: ${colors.yellow.dim(`[${type}]`)}`
           })}`
       })
       .join('\n\n')

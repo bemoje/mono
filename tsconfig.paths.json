@@ -3,6 +3,7 @@
     "paths": {
       "@mono/stacktrace": ["./libs/stacktrace/src/index.ts"],
       "@mono/profiler": ["./libs/profiler/src/index.ts"],
+      "@mono/prompt": ["./libs/prompt/src/index.ts"],
       "@mono/array": ["./libs/array/src/index.ts"],
       "@mono/number": ["./libs/number/src/index.ts"],
       "@mono/decorators": ["./libs/decorators/src/index.ts"],

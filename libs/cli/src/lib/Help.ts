@@ -205,9 +205,10 @@ export class Help implements IHelp {
     const extraInfo: string[] = []
 
     if (option.choices) {
+      const choices = option.choices.length > 5 ? option.choices.slice(0, 5).concat(['...']) : option.choices
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${option.choices
+        `choices: ${choices
           .map((choice: string) => {
             return String(choice)
           })
@@ -238,9 +239,10 @@ export class Help implements IHelp {
   argumentDescription(argument: Argument): string {
     const extraInfo: string[] = []
     if (argument.choices) {
+      const choices = argument.choices.length > 5 ? argument.choices.slice(0, 5).concat(['...']) : argument.choices
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${argument.choices
+        `choices: ${choices
           .map((choice: string) => {
             return String(choice)
           })
