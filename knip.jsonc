@@ -16,10 +16,7 @@
   "ignoreBinaries": ["cls", "apps/devkit/src/main.ts"],
 
   "workspaces": {
-    "apps/*": {
-      "entry": ["src/*.ts", "**/*.examples.ts"],
-      "includeEntryExports": true,
-    },
+    "apps/*": { "entry": ["src/*.ts", "**/*.examples.ts"], "includeEntryExports": true },
     "libs/*": {
       "entry": ["src/index.ts", "src/**/*.examples.ts"],
       "includeEntryExports": false,

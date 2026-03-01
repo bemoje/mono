@@ -21,13 +21,7 @@ function mockOption(overrides: Partial<Option> = {}): Option {
 }
 
 function mockArgument(overrides: Partial<Argument> = {}): Argument {
-  return {
-    usage: '<file>',
-    name: 'file',
-    description: 'File to process',
-    required: true,
-    ...overrides,
-  }
+  return { usage: '<file>', name: 'file', description: 'File to process', required: true, ...overrides }
 }
 
 function mockCmd(overrides: Partial<ICommand> = {}): ICommand {
@@ -91,9 +85,7 @@ describe(Help.name, () => {
     })
 
     it('should sort subcommands by name', () => {
-      const cmd = mockCmd({
-        commands: { beta: mockCmd({ name: 'beta' }), alpha: mockCmd({ name: 'alpha' }) },
-      })
+      const cmd = mockCmd({ commands: { beta: mockCmd({ name: 'beta' }), alpha: mockCmd({ name: 'alpha' }) } })
       const help = new Help(cmd)
       const result = help.visibleCommands()
       expect(result[0].name).toBe('alpha')
@@ -101,9 +93,7 @@ describe(Help.name, () => {
     })
 
     it('should not sort when sortSubcommands is false', () => {
-      const cmd = mockCmd({
-        commands: { beta: mockCmd({ name: 'beta' }), alpha: mockCmd({ name: 'alpha' }) },
-      })
+      const cmd = mockCmd({ commands: { beta: mockCmd({ name: 'beta' }), alpha: mockCmd({ name: 'alpha' }) } })
       const help = new Help(cmd)
       help.sortSubcommands = false
       const result = help.visibleCommands()
@@ -233,33 +223,25 @@ describe(Help.name, () => {
     })
 
     it('should format required arg', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ name: 'file', required: true, variadic: false })],
-      })
+      const cmd = mockCmd({ arguments: [mockArgument({ name: 'file', required: true, variadic: false })] })
       const help = new Help(cmd)
       expect(help.commandUsage()).toContain('<file>')
     })
 
     it('should format required variadic arg', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ name: 'files', required: true, variadic: true })],
-      })
+      const cmd = mockCmd({ arguments: [mockArgument({ name: 'files', required: true, variadic: true })] })
       const help = new Help(cmd)
       expect(help.commandUsage()).toContain('<files...>')
     })
 
     it('should format optional arg', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ name: 'file', required: false, variadic: false })],
-      })
+      const cmd = mockCmd({ arguments: [mockArgument({ name: 'file', required: false, variadic: false })] })
       const help = new Help(cmd)
       expect(help.commandUsage()).toContain('[file]')
     })
 
     it('should format optional variadic arg', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ name: 'files', required: false, variadic: true })],
-      })
+      const cmd = mockCmd({ arguments: [mockArgument({ name: 'files', required: false, variadic: true })] })
       const help = new Help(cmd)
       expect(help.commandUsage()).toContain('[files...]')
     })
@@ -329,7 +311,7 @@ describe(Help.name, () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
       const result = help.optionDescription(
-        mockOption({ description: 'Output', defaultValue: '/tmp', defaultValueDescription: 'temp dir' }),
+        mockOption({ description: 'Output', defaultValue: '/tmp', defaultValueDescription: 'temp dir' })
       )
       expect(result).toContain('default: temp dir')
     })
@@ -388,7 +370,7 @@ describe(Help.name, () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
       const result = help.argumentDescription(
-        mockArgument({ description: 'Port', defaultValue: '3000', defaultValueDescription: 'default port' }),
+        mockArgument({ description: 'Port', defaultValue: '3000', defaultValueDescription: 'default port' })
       )
       expect(result).toContain('default: default port')
     })
@@ -588,17 +570,13 @@ describe(Help.name, () => {
     })
 
     it('longestOptionTermLength should measure option flags', () => {
-      const cmd = mockCmd({
-        options: [mockOption({ flags: '-v, --verbose' })],
-      })
+      const cmd = mockCmd({ options: [mockOption({ flags: '-v, --verbose' })] })
       const help = new Help(cmd)
       expect(help.longestOptionTermLength()).toBeGreaterThan(0)
     })
 
     it('longestArgumentTermLength should measure argument names', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ name: 'filename', description: 'The file' })],
-      })
+      const cmd = mockCmd({ arguments: [mockArgument({ name: 'filename', description: 'The file' })] })
       const help = new Help(cmd)
       expect(help.longestArgumentTermLength()).toBeGreaterThan(0)
     })

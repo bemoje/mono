@@ -14,11 +14,7 @@ describe(mapObjectKeys.name, () => {
         return key.toUpperCase()
       })
 
-      assert.deepStrictEqual(result, {
-        FIRSTNAME: 'John',
-        LASTNAME: 'Doe',
-        AGE: 30,
-      })
+      assert.deepStrictEqual(result, { FIRSTNAME: 'John', LASTNAME: 'Doe', AGE: 30 })
     }).not.toThrow()
   })
 
@@ -29,11 +25,7 @@ describe(mapObjectKeys.name, () => {
         return `prefix_${key}`
       })
 
-      expect(result).toEqual({
-        prefix_a: 1,
-        prefix_b: 2,
-        prefix_c: 3,
-      })
+      expect(result).toEqual({ prefix_a: 1, prefix_b: 2, prefix_c: 3 })
     })
 
     it('should allow access to values during key transformation', () => {
@@ -42,11 +34,7 @@ describe(mapObjectKeys.name, () => {
         return `${key}_${value > 10 ? 'big' : 'small'}`
       })
 
-      expect(result).toEqual({
-        small_small: 5,
-        medium_big: 15,
-        large_big: 25,
-      })
+      expect(result).toEqual({ small_small: 5, medium_big: 15, large_big: 25 })
     })
 
     it('should handle string keys', () => {
@@ -55,10 +43,7 @@ describe(mapObjectKeys.name, () => {
         return key.split('').reverse().join('')
       })
 
-      expect(result).toEqual({
-        olleh: 'world',
-        oof: 'bar',
-      })
+      expect(result).toEqual({ olleh: 'world', oof: 'bar' })
     })
   })
 
@@ -78,12 +63,7 @@ describe(mapObjectKeys.name, () => {
         return `${key}_${typeof value}`
       })
 
-      expect(result).toEqual({
-        str_string: 'text',
-        num_number: 42,
-        bool_boolean: true,
-        arr_object: [1, 2],
-      })
+      expect(result).toEqual({ str_string: 'text', num_number: 42, bool_boolean: true, arr_object: [1, 2] })
     })
   })
 
@@ -94,11 +74,7 @@ describe(mapObjectKeys.name, () => {
         return key.replace(/([A-Z])/g, '_$1').toLowerCase()
       })
 
-      expect(result).toEqual({
-        first_name: 'John',
-        last_name: 'Doe',
-        phone_number: '123-456-7890',
-      })
+      expect(result).toEqual({ first_name: 'John', last_name: 'Doe', phone_number: '123-456-7890' })
     })
 
     it('should handle value-dependent key transformations', () => {
@@ -113,11 +89,7 @@ describe(mapObjectKeys.name, () => {
         return `large_${key}`
       })
 
-      expect(result).toEqual({
-        small_a: 1,
-        medium_b: 10,
-        large_c: 100,
-      })
+      expect(result).toEqual({ small_a: 1, medium_b: 10, large_c: 100 })
     })
 
     it('should preserve complex value types', () => {

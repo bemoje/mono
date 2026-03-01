@@ -35,7 +35,7 @@ Profiler.class(MonoRepo)
 Object.fromEntries(
   new MonoRepo().workspaces.map((ws) => {
     return [ws.name, ws.importedDependenciesRecursive]
-  }),
+  })
 )
 // )
 

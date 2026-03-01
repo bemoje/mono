@@ -40,13 +40,8 @@ const packageJson = new Template({
     private: true,
     module: 'src/index.ts',
     sideEffects: false,
-    scripts: {
-      indexts: 'devkit fix-index-ts',
-      build: 'node esbuild.mjs',
-    },
-    devDependencies: {
-      eslint: getRepoRootPkg().devDependencies?.eslint,
-    },
+    scripts: { indexts: 'devkit fix-index-ts', build: 'node esbuild.mjs' },
+    devDependencies: { eslint: getRepoRootPkg().devDependencies?.eslint },
   },
 })
 

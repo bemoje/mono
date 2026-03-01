@@ -48,37 +48,37 @@ export function createLibsWorkspaceAction(workspaceName: string, options: Create
   // Create eslint.config.mjs
   fs.outputFileSync(
     eslintConfigJsPath, //
-    templates.files.eslintConfigJs.renderString(),
+    templates.files.eslintConfigJs.renderString()
   )
 
   // Create package.json
   fs.outputFileSync(
     packageJsonPath, //
-    templates.files.packageJson.renderString({ libraryName: scopedLibraryName }),
+    templates.files.packageJson.renderString({ libraryName: scopedLibraryName })
   )
 
   // Create esbuild.mjs
   fs.outputFileSync(
     esbuildMjsPath, //
-    templates.files.esbuild.renderString({}),
+    templates.files.esbuild.renderString({})
   )
 
   // Create README.md
   fs.outputFileSync(
     readmeMdPath, //
-    templates.files.readmeMd.renderString({ libraryName: scopedLibraryName }),
+    templates.files.readmeMd.renderString({ libraryName: scopedLibraryName })
   )
 
   // Create tsconfig.json
   fs.outputFileSync(
     tsconfigJsonPath, //
-    templates.files.tsconfigJson.renderString(),
+    templates.files.tsconfigJson.renderString()
   )
 
   // Create index.ts
   fs.outputFileSync(
     indexTsPath, //
-    templates.files.indexTs.renderString(),
+    templates.files.indexTs.renderString()
   )
 
   cliExecSync(`yarn install`, { ...options, cwd: rootPath })

@@ -11,7 +11,7 @@ import { isNamedFunctionArray } from './isNamedFunctionArray'
  */
 export function IsArrayWhereEach<O>(
   validators: ((value: O) => boolean)[],
-  name?: string,
+  name?: string
 ): (array: unknown) => boolean {
   if (!name) {
     ensureThat(validators, isNamedFunctionArray)
@@ -23,8 +23,8 @@ export function IsArrayWhereEach<O>(
   }
   const result = function (array: unknown): boolean {
     return (
-      Array.isArray(array) &&
-      array.every((value) => {
+      Array.isArray(array)
+      && array.every((value) => {
         return validators.every((isValid) => {
           return isValid(value)
         })

@@ -29,7 +29,7 @@ describe(formatTableForTerminal.name, () => {
         ['1', '2'],
         ['3', '4'],
       ],
-      ['Col1', 'Col2'],
+      ['Col1', 'Col2']
     )
     expect(result).toContain('Col1')
     expect(result).toContain('Col2')

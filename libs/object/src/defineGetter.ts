@@ -7,12 +7,7 @@ export function defineGetter<T extends object, V = object>(
   obj: T,
   key: PropertyKey,
   get: () => V,
-  des: Omit<AccessorDescriptor<V>, 'get'> = {},
+  des: Omit<AccessorDescriptor<V>, 'get'> = {}
 ) {
-  return Object.defineProperty<T>(obj, key, {
-    configurable: true,
-    enumerable: false,
-    get,
-    ...des,
-  })
+  return Object.defineProperty<T>(obj, key, { configurable: true, enumerable: false, get, ...des })
 }

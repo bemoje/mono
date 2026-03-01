@@ -19,7 +19,7 @@
  */
 export function semverVersionBump(
   version: string | string[] | number[],
-  level: 'major' | 'minor' | 'patch',
+  level: 'major' | 'minor' | 'patch'
 ): string {
   const arr = (typeof version === 'string' ? version.split('.') : version).map(Number)
   if (level === 'major') {

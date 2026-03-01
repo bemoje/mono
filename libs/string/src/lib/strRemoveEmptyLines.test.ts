@@ -18,7 +18,7 @@ describe('strRemoveEmptyLines', () => {
       ' ',
     ].join('\n')
     expect(strRemoveEmptyLines(str)).toBe(
-      ['list:', ' 1. some text', ' 2. some text', '   a. some text', '   b. some text'].join('\n'),
+      ['list:', ' 1. some text', ' 2. some text', '   a. some text', '   b. some text'].join('\n')
     )
   })
 

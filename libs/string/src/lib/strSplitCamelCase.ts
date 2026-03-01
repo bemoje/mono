@@ -49,11 +49,11 @@ const regSpecial = /[^\w]+/g
 
 function isWordSplitIndex(word: string, index: number) {
   return (
-    strIsLowerCase(word[index - 1]) &&
-    strIsUpperCase(word[index]) &&
-    !regInteger.test(word[index - 1]) &&
-    !regInteger.test(word[index]) &&
-    !regSpecial.test(word[index - 1]) &&
-    !regSpecial.test(word[index])
+    strIsLowerCase(word[index - 1])
+    && strIsUpperCase(word[index])
+    && !regInteger.test(word[index - 1])
+    && !regInteger.test(word[index])
+    && !regSpecial.test(word[index - 1])
+    && !regSpecial.test(word[index])
   )
 }

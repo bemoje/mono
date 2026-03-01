@@ -10,8 +10,9 @@ export type RemoveArrayElements<
   T extends any[],
   Indices extends number[],
   Offset extends number = 0,
-> = Indices extends [infer First extends number, ...infer Rest extends number[]]
-  ? RemoveArrayElements<
+> =
+  Indices extends [infer First extends number, ...infer Rest extends number[]] ?
+    RemoveArrayElements<
       RemoveArrayElement<T, Subtract<First, Offset>>,
       Rest,
       Offset extends number ? Increment<Offset> : never

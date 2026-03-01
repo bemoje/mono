@@ -9,12 +9,7 @@ import { vi } from 'vitest'
 
 // Mock fs-extra
 vi.mock('fs-extra', () => {
-  return {
-    default: {
-      readJsonSync: vi.fn(),
-      outputJsonSync: vi.fn(),
-    },
-  }
+  return { default: { readJsonSync: vi.fn(), outputJsonSync: vi.fn() } }
 })
 
 const mockFs = fs as any
@@ -66,7 +61,7 @@ describe(updateJsonFileSync.name, () => {
       (data) => {
         return { ...data, count: data.count + 1 }
       },
-      defaultValue,
+      defaultValue
     )
 
     expect(result).toEqual({ default: true, count: 1 })
@@ -86,7 +81,7 @@ describe(updateJsonFileSync.name, () => {
       (data) => {
         return { ...data, fixed: true }
       },
-      defaultValue,
+      defaultValue
     )
 
     expect(result).toEqual({ recovered: true, fixed: true })
@@ -103,21 +98,12 @@ describe(updateJsonFileSync.name, () => {
     const result = updateJsonFileSync(
       testFile,
       (data) => {
-        return {
-          ...data,
-          timestamp: Date.now(),
-          items: ['a', 'b', 'c'],
-          nested: { deep: { value: 123 } },
-        }
+        return { ...data, timestamp: Date.now(), items: ['a', 'b', 'c'], nested: { deep: { value: 123 } } }
       },
-      { version: 1 },
+      { version: 1 }
     )
 
-    expect(result).toMatchObject({
-      version: 1,
-      items: ['a', 'b', 'c'],
-      nested: { deep: { value: 123 } },
-    })
+    expect(result).toMatchObject({ version: 1, items: ['a', 'b', 'c'], nested: { deep: { value: 123 } } })
     expect(typeof result.timestamp).toBe('number')
     expect(mockFs.outputJsonSync).toHaveBeenCalledWith(testFile, result)
   })

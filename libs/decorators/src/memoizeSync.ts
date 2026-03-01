@@ -10,7 +10,7 @@ import { ms } from 'enhanced-ms'
  * @param maxAge The maximum age of the memoized value as number (ms) or descriptive string (e.g. '10 min'). Uses 'ms' library: https://github.com/zeit/ms
  */
 export function memoizeSync(
-  maxAge?: number | string,
+  maxAge?: number | string
 ): (target: object, key: string, descriptor: PropertyDescriptor) => PropertyDescriptor
 
 /**
@@ -18,7 +18,7 @@ export function memoizeSync(
  * @param options The options for memoization.
  */
 export function memoizeSync(
-  options: MemoizeSyncOptions,
+  options: MemoizeSyncOptions
 ): (target: object, key: string, descriptor: PropertyDescriptor) => PropertyDescriptor
 
 //

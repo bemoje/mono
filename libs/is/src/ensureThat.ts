@@ -26,7 +26,7 @@ import { isString } from 'es-toolkit/predicate'
 export function ensureThat<T extends Validator, V extends Parameters<T>[0]>(
   value: V,
   validator: T | T[],
-  options?: { message?: string; negate?: boolean },
+  options?: { message?: string; negate?: boolean }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> extends ReturnType<T> ? Promise<V> : V {
   const validators = [validator].flat(2) as T[]
@@ -39,7 +39,7 @@ export function ensureThat<T extends Validator, V extends Parameters<T>[0]>(
     return Promise.all(
       retvals.map(async (r) => {
         return await r
-      }),
+      })
     ).then((awaited) => {
       return handleResult(validators, awaited, value, options)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,7 +53,7 @@ function handleResult<T extends Validator, V extends Parameters<T>[0]>(
   validators: T[],
   retvals: ValidatorResult[],
   value: V,
-  opts?: { message?: string; negate?: boolean },
+  opts?: { message?: string; negate?: boolean }
 ) {
   const negate = !!opts?.negate
   const expected = !negate
@@ -77,8 +77,8 @@ function handleResult<T extends Validator, V extends Parameters<T>[0]>(
   }
 
   const message =
-    opts?.message?.trim() ||
-    [
+    opts?.message?.trim()
+    || [
       `Expected [${validators
         .map((o, i) => {
           return o.name || `[${i}]`
@@ -90,9 +90,5 @@ function handleResult<T extends Validator, V extends Parameters<T>[0]>(
       .filter(Boolean)
       .join(' ')
 
-  throw new ValidatorError(message, {
-    input: value,
-    negate: negate,
-    cause: Object.fromEntries(causeEntries),
-  })
+  throw new ValidatorError(message, { input: value, negate: negate, cause: Object.fromEntries(causeEntries) })
 }

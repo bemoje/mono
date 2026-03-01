@@ -4,7 +4,7 @@
 export function reduceIterableEntries<K, V, T>(
   mapLike: Iterable<[K, V]>,
   reducer: (accumulator: T, value: V, key: K) => T,
-  initialValue: T,
+  initialValue: T
 ): T {
   for (const [key, value] of mapLike) {
     initialValue = reducer(initialValue, value, key)

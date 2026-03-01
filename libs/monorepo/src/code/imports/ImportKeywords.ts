@@ -8,9 +8,7 @@ import { Parenting } from '@mono/composition'
  */
 @Parenting.compose
 export class ImportKeywords<P extends ImportStatement = ImportStatement> extends CodeBlock<P> {
-  static readonly inspector = Inspector.compose(ImportKeywords, {
-    keys: ['code'],
-  })
+  static readonly inspector = Inspector.compose(ImportKeywords, { keys: ['code'] })
 
   get keywords() {
     return this.code

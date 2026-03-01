@@ -1,8 +1,6 @@
 type AcceptedTypes = number | string | boolean | Date | undefined
 
-type UnformattedIndexSignature = {
-  [key: string]: AcceptedTypes
-}
+type UnformattedIndexSignature = { [key: string]: AcceptedTypes }
 
 type From<T> = (value: T) => string
 

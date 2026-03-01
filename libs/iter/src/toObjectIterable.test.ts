@@ -72,10 +72,7 @@ describe(toObjectIterable.name, () => {
       ['user2', { id: 2, name: 'Jane' }],
     ]
     const result = toObjectIterable(entries)
-    expect(result).toEqual({
-      user1: { id: 1, name: 'John' },
-      user2: { id: 2, name: 'Jane' },
-    })
+    expect(result).toEqual({ user1: { id: 1, name: 'John' }, user2: { id: 2, name: 'Jane' } })
   })
 
   it('should preserve value references', () => {

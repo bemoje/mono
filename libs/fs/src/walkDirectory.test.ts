@@ -10,11 +10,7 @@ import walkdir from 'walkdir'
 
 // Mock walkdir
 vi.mock('walkdir', () => {
-  return {
-    default: {
-      sync: vi.fn(),
-    },
-  }
+  return { default: { sync: vi.fn() } }
 })
 // Mock upath
 vi.mock('upath', () => {
@@ -56,12 +52,7 @@ describe(walkDirectory.name, () => {
       const result = walkDirectory('/test', {})
 
       expect(result).toEqual(['/test/file1.txt', '/test/file2.txt'])
-      expect(mockSync).toHaveBeenCalledWith(
-        '/test',
-        expect.objectContaining({
-          return_object: false,
-        }),
-      )
+      expect(mockSync).toHaveBeenCalledWith('/test', expect.objectContaining({ return_object: false }))
     })
 
     it('should normalize paths', () => {
@@ -92,10 +83,7 @@ describe(walkDirectory.name, () => {
     } as Stats
 
     it('should return array of [path, stats] tuples when stats is true', () => {
-      mockSync.mockReturnValue({
-        '/test/file1.txt': mockFileStats,
-        '/test/dir1': mockDirStats,
-      })
+      mockSync.mockReturnValue({ '/test/file1.txt': mockFileStats, '/test/dir1': mockDirStats })
 
       const result = walkDirectory('/test', { stats: true })
 
@@ -103,12 +91,7 @@ describe(walkDirectory.name, () => {
         ['/test/file1.txt', mockFileStats],
         ['/test/dir1', mockDirStats],
       ])
-      expect(mockSync).toHaveBeenCalledWith(
-        '/test',
-        expect.objectContaining({
-          return_object: true,
-        }),
-      )
+      expect(mockSync).toHaveBeenCalledWith('/test', expect.objectContaining({ return_object: true }))
     })
   })
 
@@ -155,10 +138,7 @@ describe(walkDirectory.name, () => {
     })
 
     it('should return stats when both only and stats options are used', () => {
-      mockSync.mockReturnValue({
-        '/test/file1.txt': mockFileStats,
-        '/test/dir1': mockDirStats,
-      })
+      mockSync.mockReturnValue({ '/test/file1.txt': mockFileStats, '/test/dir1': mockDirStats })
 
       const result = walkDirectory('/test', { only: 'files', stats: true })
 
@@ -172,12 +152,7 @@ describe(walkDirectory.name, () => {
 
       walkDirectory('/test', { maxDepth: 2 })
 
-      expect(mockSync).toHaveBeenCalledWith(
-        '/test',
-        expect.objectContaining({
-          max_depth: 2,
-        }),
-      )
+      expect(mockSync).toHaveBeenCalledWith('/test', expect.objectContaining({ max_depth: 2 }))
     })
 
     it('should convert followSymlinks option', () => {
@@ -185,12 +160,7 @@ describe(walkDirectory.name, () => {
 
       walkDirectory('/test', { followSymlinks: true })
 
-      expect(mockSync).toHaveBeenCalledWith(
-        '/test',
-        expect.objectContaining({
-          follow_symlinks: true,
-        }),
-      )
+      expect(mockSync).toHaveBeenCalledWith('/test', expect.objectContaining({ follow_symlinks: true }))
     })
 
     it('should convert ignoreInodes option', () => {
@@ -198,12 +168,7 @@ describe(walkDirectory.name, () => {
 
       walkDirectory('/test', { ignoreInodes: true })
 
-      expect(mockSync).toHaveBeenCalledWith(
-        '/test',
-        expect.objectContaining({
-          track_inodes: false,
-        }),
-      )
+      expect(mockSync).toHaveBeenCalledWith('/test', expect.objectContaining({ track_inodes: false }))
     })
 
     it('should convert filter option', () => {

@@ -8,9 +8,7 @@ import { vi } from 'vitest'
 
 // Mock child_process module
 vi.mock('child_process', () => {
-  return {
-    execSync: vi.fn(),
-  }
+  return { execSync: vi.fn() }
 })
 
 const mockedExecSync = vi.mocked(execSync)

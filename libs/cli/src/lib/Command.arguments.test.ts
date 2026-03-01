@@ -19,12 +19,7 @@ describe(Command.name, () => {
 
         expect(result).toBe(cmd) // Should return this for chaining
         expect(cmd.arguments).toHaveLength(1)
-        expect(cmd.arguments[0]).toEqual({
-          name: 'input',
-          usage: '<input>',
-          required: true,
-          variadic: false,
-        })
+        expect(cmd.arguments[0]).toEqual({ name: 'input', usage: '<input>', required: true, variadic: false })
       })
 
       it('should add argument without description', () => {

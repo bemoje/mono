@@ -15,9 +15,5 @@ export function isValueDescriptor<T>(des?: TypedPropertyDescriptor<T>): des is V
 }
 
 export type DescriptorValue<V> = { value?: V }
-export type ValueDescriptorAttributes = {
-  configurable?: boolean
-  enumerable?: boolean
-  writable?: boolean
-}
+export type ValueDescriptorAttributes = { configurable?: boolean; enumerable?: boolean; writable?: boolean }
 export type ValueDescriptor<T> = ValueDescriptorAttributes & DescriptorValue<T>

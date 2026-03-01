@@ -5,7 +5,7 @@ import type { ValueOf } from '@mono/types'
  */
 export function objSortKeys<T extends object>(
   o: T,
-  compare?: (a: [string, ValueOf<T>], b: [string, ValueOf<T>]) => number,
+  compare?: (a: [string, ValueOf<T>], b: [string, ValueOf<T>]) => number
 ): T {
   const entries = Object.entries(o)
   if (compare) {

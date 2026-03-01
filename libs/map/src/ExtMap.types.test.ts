@@ -86,7 +86,7 @@ describe('ExtMap type compatibility', () => {
     expect(
       keysArrayResult.every((k) => {
         return typeof k === 'string'
-      }),
+      })
     ).toBe(true)
 
     const utilKeysArrayResult = keysArray(map)
@@ -95,7 +95,7 @@ describe('ExtMap type compatibility', () => {
     expect(
       utilKeysArrayResult.every((k) => {
         return typeof k === 'string'
-      }),
+      })
     ).toBe(true)
 
     const valuesArrayResult = map.valuesArray()
@@ -104,7 +104,7 @@ describe('ExtMap type compatibility', () => {
     expect(
       valuesArrayResult.every((v) => {
         return typeof v === 'number'
-      }),
+      })
     ).toBe(true)
 
     const utilValuesArrayResult = valuesArray(map)
@@ -113,7 +113,7 @@ describe('ExtMap type compatibility', () => {
     expect(
       utilValuesArrayResult.every((v) => {
         return typeof v === 'number'
-      }),
+      })
     ).toBe(true)
 
     const entriesArrayResult = map.entriesArray()

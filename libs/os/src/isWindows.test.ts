@@ -7,10 +7,7 @@ import { it } from 'vitest'
 import { vi } from 'vitest'
 
 // Mock process globally for each test
-const mockProcess = {
-  platform: 'win32',
-  env: {},
-}
+const mockProcess = { platform: 'win32', env: {} }
 
 describe('isWindows', () => {
   let isWindows: any

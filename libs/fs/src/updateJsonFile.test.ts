@@ -9,12 +9,7 @@ import { vi } from 'vitest'
 
 // Mock fs-extra
 vi.mock('fs-extra', () => {
-  return {
-    default: {
-      readJson: vi.fn(),
-      outputJson: vi.fn(),
-    },
-  }
+  return { default: { readJson: vi.fn(), outputJson: vi.fn() } }
 })
 
 const mockFs = fs as any
@@ -62,7 +57,7 @@ describe(updateJsonFile.name, () => {
       (data) => {
         return { ...data, count: data.count + 1 }
       },
-      defaultValue,
+      defaultValue
     )
 
     expect(result).toEqual({ default: true, count: 1 })
@@ -80,7 +75,7 @@ describe(updateJsonFile.name, () => {
       (data) => {
         return { ...data, fixed: true }
       },
-      defaultValue,
+      defaultValue
     )
 
     expect(result).toEqual({ recovered: true, fixed: true })
@@ -100,7 +95,7 @@ describe(updateJsonFile.name, () => {
         })
         return { ...data, async: true }
       },
-      { initial: true },
+      { initial: true }
     )
 
     expect(result).toEqual({ initial: true, async: true })

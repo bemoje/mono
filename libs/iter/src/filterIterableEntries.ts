@@ -5,7 +5,7 @@ import { filter } from 'iter-tools'
  */
 export function filterIterableEntries<K, V>(
   mapLike: Iterable<[K, V]>,
-  predicate: (value: V, key: K) => boolean,
+  predicate: (value: V, key: K) => boolean
 ): Iterable<[K, V]> {
   return filter(([k, v]: [K, V]) => {
     return predicate(v, k)

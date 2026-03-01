@@ -20,10 +20,7 @@ import { arrObjectsUniqueKeys } from './arrObjectsUniqueKeys'
  */
 export function arrObjectsToTable<T, E>(
   objects: Record<string, T | undefined>[],
-  options: {
-    headers?: string[]
-    emptyCell?: E
-  } = {},
+  options: { headers?: string[]; emptyCell?: E } = {}
 ): Array<Array<string | T | E>> {
   const headers = options?.headers?.slice() || arrObjectsUniqueKeys(objects)
   const table: Array<Array<string | T | E>> = [headers]

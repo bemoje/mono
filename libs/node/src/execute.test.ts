@@ -12,18 +12,11 @@ import { vi } from 'vitest'
 
 // Mock dependencies
 vi.mock('child_process', () => {
-  return {
-    execSync: vi.fn(),
-  }
+  return { execSync: vi.fn() }
 })
 
 vi.mock('upath', () => {
-  return {
-    default: {
-      relative: vi.fn(),
-      basename: vi.fn(),
-    },
-  }
+  return { default: { relative: vi.fn(), basename: vi.fn() } }
 })
 
 const mockExecSync = vi.mocked(execSync)
@@ -64,12 +57,7 @@ describe(execute.name, () => {
       assert(typeof optionsResult === 'string', 'should handle options')
 
       // Command with all options
-      const fullOptionsResult = execute('pwd', {
-        cwd: '/custom',
-        silent: false,
-        fadedOutput: true,
-        noEcho: false,
-      })
+      const fullOptionsResult = execute('pwd', { cwd: '/custom', silent: false, fadedOutput: true, noEcho: false })
       assert(typeof fullOptionsResult === 'string', 'should handle all options')
     }).not.toThrow()
   })
@@ -82,10 +70,7 @@ describe(execute.name, () => {
       const result = execute('echo "Hello World"')
 
       expect(result).toBe(output)
-      expect(mockExecSync).toHaveBeenCalledWith('echo "Hello World"', {
-        stdio: 'inherit',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('echo "Hello World"', { stdio: 'inherit', cwd: process.cwd() })
     })
 
     it('should log command before execution', () => {
@@ -125,7 +110,7 @@ describe(execute.name, () => {
       const result = execute(['cmd1', 'cmd2', 'cmd3'])
 
       expect(result).toBe(
-        'output1\n-------------------------------\noutput2\n-------------------------------\noutput3',
+        'output1\n-------------------------------\noutput2\n-------------------------------\noutput3'
       )
       expect(mockExecSync).toHaveBeenCalledTimes(3)
       expect(mockExecSync).toHaveBeenNthCalledWith(1, 'cmd1', expect.any(Object))
@@ -156,19 +141,13 @@ describe(execute.name, () => {
 
       execute('test', { cwd: customCwd })
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'inherit',
-        cwd: customCwd,
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'inherit', cwd: customCwd })
     })
 
     it('should use current working directory by default', () => {
       execute('test')
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'inherit',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'inherit', cwd: process.cwd() })
     })
 
     it('should handle silent option', () => {
@@ -177,10 +156,7 @@ describe(execute.name, () => {
       const result = execute('test', { silent: true })
 
       expect(result).toBe('silent output')
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'pipe', cwd: process.cwd() })
     })
 
     it('should handle fadedOutput option', () => {
@@ -188,10 +164,7 @@ describe(execute.name, () => {
 
       execute('test', { fadedOutput: true })
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'pipe', cwd: process.cwd() })
     })
 
     it('should handle noEcho option', () => {
@@ -204,10 +177,7 @@ describe(execute.name, () => {
     it('should combine silent and fadedOutput options', () => {
       execute('test', { silent: true, fadedOutput: true })
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'pipe', cwd: process.cwd() })
     })
   })
 
@@ -301,28 +271,19 @@ describe(execute.name, () => {
     it('should use inherit stdio by default', () => {
       execute('test')
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'inherit',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'inherit', cwd: process.cwd() })
     })
 
     it('should use pipe stdio when silent', () => {
       execute('test', { silent: true })
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'pipe', cwd: process.cwd() })
     })
 
     it('should use pipe stdio when fadedOutput', () => {
       execute('test', { fadedOutput: true })
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'pipe', cwd: process.cwd() })
     })
   })
 

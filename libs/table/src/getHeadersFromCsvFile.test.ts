@@ -7,9 +7,7 @@ import { readFileFirstLine } from '@mono/fs'
 import { vi } from 'vitest'
 
 vi.mock('@mono/fs', () => {
-  return {
-    readFileFirstLine: vi.fn(),
-  }
+  return { readFileFirstLine: vi.fn() }
 })
 
 describe(getHeadersFromCsvFile.name, () => {

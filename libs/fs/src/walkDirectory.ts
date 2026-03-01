@@ -14,7 +14,7 @@ export function walkDirectory(dirpath: string, options: WalkDirectoryOptionsWith
  */
 export function walkDirectory(
   dirpath: string,
-  options: WalkDirectoryOptionsWithStats,
+  options: WalkDirectoryOptionsWithStats
 ): [path: string, stats: Stats][]
 
 /**
@@ -95,11 +95,7 @@ export interface WalkDirectoryOptions {
 }
 
 function convertToWalkdirOptions(options: WalkDirectoryOptions): WalkOptions {
-  const result: WalkOptions = {
-    fs: fs,
-    sync: true,
-    return_object: true,
-  }
+  const result: WalkOptions = { fs: fs, sync: true, return_object: true }
   if (options.maxDepth !== undefined) {
     result.max_depth = options.maxDepth
   }

@@ -20,10 +20,7 @@ export async function scrapeProjects(browser: Browser, options: CliOptions, logg
 
   try {
     const username = userConfigFile.load().username
-    await page.goto(getPageUrl(username, 'projects'), {
-      waitUntil: 'domcontentloaded',
-      timeout: 20000,
-    })
+    await page.goto(getPageUrl(username, 'projects'), { waitUntil: 'domcontentloaded', timeout: 20000 })
 
     try {
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
@@ -58,11 +55,7 @@ export async function scrapeProjects(browser: Browser, options: CliOptions, logg
           return !mediaTextSet.has(text)
         })
 
-        return {
-          spans,
-          logoUrl: li.querySelector('img')?.src ?? '',
-          mediaLinks,
-        }
+        return { spans, logoUrl: li.querySelector('img')?.src ?? '', mediaLinks }
       })
     })
 
@@ -109,8 +102,9 @@ export async function scrapeProjects(browser: Browser, options: CliOptions, logg
       const endDate = rawEnd === 'Present' ? '' : parseDate(rawEnd)
 
       // Keywords from skills
-      const skills = skillsStr
-        ? skillsStr
+      const skills =
+        skillsStr ?
+          skillsStr
             .replace(/^Skills:\s*/, '')
             .split(' · ')
             .map((s) => {

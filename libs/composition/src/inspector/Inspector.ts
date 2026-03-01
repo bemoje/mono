@@ -44,7 +44,7 @@ export class Inspector extends View<InspectorTarget> {
         inspect.custom,
         function (this: InspectorTarget, depth?: number, options?: NativeInspectOptions) {
           return this.inspector.inspect(depth, options)
-        },
+        }
       )
     }
 

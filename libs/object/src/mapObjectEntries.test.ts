@@ -14,11 +14,7 @@ describe(mapObjectEntries.name, () => {
         return [key.toUpperCase(), String(value)]
       })
 
-      assert.deepStrictEqual(result, {
-        NAME: 'John',
-        AGE: '30',
-        CITY: 'NYC',
-      })
+      assert.deepStrictEqual(result, { NAME: 'John', AGE: '30', CITY: 'NYC' })
     }).not.toThrow()
   })
 
@@ -29,11 +25,7 @@ describe(mapObjectEntries.name, () => {
         return [`new_${key}`, value * 2]
       })
 
-      expect(result).toEqual({
-        new_a: 2,
-        new_b: 4,
-        new_c: 6,
-      })
+      expect(result).toEqual({ new_a: 2, new_b: 4, new_c: 6 })
     })
 
     it('should handle string transformations', () => {
@@ -42,10 +34,7 @@ describe(mapObjectEntries.name, () => {
         return [key.toUpperCase(), value.toUpperCase()]
       })
 
-      expect(result).toEqual({
-        FIRST: 'HELLO',
-        SECOND: 'WORLD',
-      })
+      expect(result).toEqual({ FIRST: 'HELLO', SECOND: 'WORLD' })
     })
 
     it('should preserve type relationships', () => {
@@ -54,10 +43,7 @@ describe(mapObjectEntries.name, () => {
         return [`coord_${key}`, value + 100]
       })
 
-      expect(result).toEqual({
-        coord_x: 110,
-        coord_y: 120,
-      })
+      expect(result).toEqual({ coord_x: 110, coord_y: 120 })
     })
   })
 
@@ -94,11 +80,7 @@ describe(mapObjectEntries.name, () => {
         return [value, key]
       })
 
-      expect(result).toEqual({
-        x: 'a',
-        y: 'b',
-        z: 'c',
-      })
+      expect(result).toEqual({ x: 'a', y: 'b', z: 'c' })
     })
 
     it('should handle conditional transformations', () => {
@@ -107,11 +89,7 @@ describe(mapObjectEntries.name, () => {
         return [key, value > 10 ? 'big' : 'small']
       })
 
-      expect(result).toEqual({
-        small: 'small',
-        medium: 'big',
-        large: 'big',
-      })
+      expect(result).toEqual({ small: 'small', medium: 'big', large: 'big' })
     })
   })
 })

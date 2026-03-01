@@ -23,10 +23,7 @@ describe(Inspector.name, () => {
     }
 
     class B extends A {
-      static inspector = Inspector.compose(B, {
-        keys: ['three', 'b'],
-        ignoreKeys: ['a'],
-      })
+      static inspector = Inspector.compose(B, { keys: ['three', 'b'], ignoreKeys: ['a'] })
 
       get two() {
         return 2
@@ -212,10 +209,7 @@ describe(Inspector.name, () => {
       }
 
       class WithBooleans extends BooleanBase {
-        static inspector = Inspector.compose(WithBooleans, {
-          keys: ['name'],
-          autoAddBooleanKeys: true,
-        })
+        static inspector = Inspector.compose(WithBooleans, { keys: ['name'], autoAddBooleanKeys: true })
         name = 'test'
         isActive = true
         hasData = false

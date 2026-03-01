@@ -6,7 +6,7 @@ import type { Constructor } from 'type-fest'
 export function inheritStaticMembers<T extends Constructor<object>>(
   target: T,
   source: Constructor<object>,
-  ignoreKeys: PropertyKey[] = [],
+  ignoreKeys: PropertyKey[] = []
 ): T {
   const ignore: Set<PropertyKey> = new Set([...ignoreKeys, 'prototype', 'name'])
   for (const key of Reflect.ownKeys(source)) {

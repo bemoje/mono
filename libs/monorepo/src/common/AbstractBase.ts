@@ -17,13 +17,7 @@ export abstract class AbstractBase<P extends object | null = object | null> impl
     keys: [],
     autoAddBooleanKeys: true,
     ignoreKeys: [],
-    ignoreValues: {
-      noEmptyArray: true,
-      noEmptyObject: true,
-      noNull: true,
-      noUndefined: true,
-      noFalse: true,
-    },
+    ignoreValues: { noEmptyArray: true, noEmptyObject: true, noNull: true, noUndefined: true, noFalse: true },
     inspect: {
       customInspect: true,
       maxStringLength: 500,

@@ -13,7 +13,7 @@ import { setNameAndLength } from './setNameAndLength'
 export function functionSpy<T, Data>(
   func: TFunction,
   spy: IFunctionSpyStrategy<T, Data>,
-  options: FunctionSpyOptions<T, Data> = {},
+  options: FunctionSpyOptions<T, Data> = {}
 ) {
   if (options.async === false) {
     return wrapSync(func, spy, options)
@@ -61,7 +61,7 @@ export interface IFunctionSpyStrategy<T, Data> {
 function wrapMaybeAsync<T, Data>(
   func: TFunction,
   spy: IFunctionSpyStrategy<T, Data>,
-  options: { ignore?: IgnorePredicate<T, Data> } = {},
+  options: { ignore?: IgnorePredicate<T, Data> } = {}
 ) {
   const ignore = options.ignore
   if (ignore && ignore(func, spy)) {
@@ -86,7 +86,7 @@ function wrapMaybeAsync<T, Data>(
 function wrapSync<T, Data>(
   func: TFunction,
   spy: IFunctionSpyStrategy<T, Data>,
-  options: { ignore?: IgnorePredicate<T, Data> } = {},
+  options: { ignore?: IgnorePredicate<T, Data> } = {}
 ) {
   const ignore = options.ignore
   if (ignore && ignore(func, spy)) {
@@ -105,7 +105,7 @@ function wrapSync<T, Data>(
 function wrapAsync<T, Data>(
   func: AnyAsyncFunction,
   spy: IFunctionSpyStrategy<T, Data>,
-  options: { ignore?: IgnorePredicate<T, Data> } = {},
+  options: { ignore?: IgnorePredicate<T, Data> } = {}
 ) {
   const ignore = options.ignore
   if (ignore && ignore(func, spy)) {
@@ -124,5 +124,5 @@ function wrapAsync<T, Data>(
 export type IgnorePredicate<T, Data> = (
   func: TFunction,
   spy: IFunctionSpyStrategy<T, Data>,
-  thisContext?: T,
+  thisContext?: T
 ) => boolean

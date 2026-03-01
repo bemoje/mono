@@ -4,7 +4,7 @@ import { isEnumerable } from './isEnumerable'
  * Creates a preset function for getting object keys with specific filtering options.
  */
 export function getKeysPreset<K extends OptsKeysVariants, KT extends OptsKeyTypeVariants>(
-  options?: GetKeysOptions<K, KT>,
+  options?: GetKeysOptions<K, KT>
 ): (o: object) => KeysPrimitiveTypeFrom<KT>[] {
   const ignore = new Set(options?.ignore ?? [])
   if (options?.ignoreSymbols) {
@@ -139,8 +139,7 @@ interface IOptsStringAndSymbolKeys extends IOptsKeyType {
 export type OptsKeysVariants = IOptsEnumerableKeys | IOptsNonEnumerableKeys | IOptsEnumerableAndNonEnumerableKeys
 export type OptsKeyTypeVariants = IOptsStringKeys | IOptsSymbolKeys | IOptsStringAndSymbolKeys
 export type GetKeysOptions<K extends OptsKeysVariants, KT extends OptsKeyTypeVariants> = K & KT
-export type KeysPrimitiveTypeFrom<P extends OptsKeyTypeVariants> = P extends IOptsStringKeys
-  ? string
-  : P extends IOptsSymbolKeys
-    ? symbol
-    : string | symbol
+export type KeysPrimitiveTypeFrom<P extends OptsKeyTypeVariants> =
+  P extends IOptsStringKeys ? string
+  : P extends IOptsSymbolKeys ? symbol
+  : string | symbol

@@ -10,9 +10,7 @@ import { vi } from 'vitest'
 
 // Mock the spawnChildProcess function
 vi.mock('./spawnChildProcess', () => {
-  return {
-    spawnChildProcess: vi.fn(),
-  }
+  return { spawnChildProcess: vi.fn() }
 })
 
 const mockSpawnChildProcess = vi.mocked(spawnChildProcess)
@@ -57,7 +55,7 @@ describe(spawnNodeProcess.name, () => {
         expect.any(String), // node executable path
         [],
         {},
-        undefined,
+        undefined
       )
 
       const exitCode = await result
@@ -115,30 +113,15 @@ describe(spawnNodeProcess.name, () => {
     })
 
     afterEach(() => {
-      Object.defineProperty(process, 'platform', {
-        value: originalPlatform,
-        writable: true,
-      })
-      Object.defineProperty(process, 'execPath', {
-        value: originalExecPath,
-        writable: true,
-      })
-      Object.defineProperty(process, 'argv', {
-        value: originalArgv,
-        writable: true,
-      })
+      Object.defineProperty(process, 'platform', { value: originalPlatform, writable: true })
+      Object.defineProperty(process, 'execPath', { value: originalExecPath, writable: true })
+      Object.defineProperty(process, 'argv', { value: originalArgv, writable: true })
     })
 
     it('should use process.execPath on Windows', async () => {
       mockSpawnChildProcess.mockResolvedValue(0)
-      Object.defineProperty(process, 'platform', {
-        value: 'win32',
-        writable: true,
-      })
-      Object.defineProperty(process, 'execPath', {
-        value: 'C:\\Program Files\\nodejs\\node.exe',
-        writable: true,
-      })
+      Object.defineProperty(process, 'platform', { value: 'win32', writable: true })
+      Object.defineProperty(process, 'execPath', { value: 'C:\\Program Files\\nodejs\\node.exe', writable: true })
 
       await spawnNodeProcess()
 
@@ -147,14 +130,8 @@ describe(spawnNodeProcess.name, () => {
 
     it('should use process.argv[0] on non-Windows platforms', async () => {
       mockSpawnChildProcess.mockResolvedValue(0)
-      Object.defineProperty(process, 'platform', {
-        value: 'linux',
-        writable: true,
-      })
-      Object.defineProperty(process, 'argv', {
-        value: ['/usr/bin/node', 'script.js'],
-        writable: true,
-      })
+      Object.defineProperty(process, 'platform', { value: 'linux', writable: true })
+      Object.defineProperty(process, 'argv', { value: ['/usr/bin/node', 'script.js'], writable: true })
 
       await spawnNodeProcess()
 
@@ -163,14 +140,8 @@ describe(spawnNodeProcess.name, () => {
 
     it('should use process.argv[0] on macOS', async () => {
       mockSpawnChildProcess.mockResolvedValue(0)
-      Object.defineProperty(process, 'platform', {
-        value: 'darwin',
-        writable: true,
-      })
-      Object.defineProperty(process, 'argv', {
-        value: ['/usr/local/bin/node', 'app.js'],
-        writable: true,
-      })
+      Object.defineProperty(process, 'platform', { value: 'darwin', writable: true })
+      Object.defineProperty(process, 'argv', { value: ['/usr/local/bin/node', 'app.js'], writable: true })
 
       await spawnNodeProcess()
 

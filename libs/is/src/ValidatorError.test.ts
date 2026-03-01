@@ -6,11 +6,7 @@ import { it } from 'vitest'
 describe(ValidatorError.name, () => {
   it('examples', () => {
     // should set properties from constructor
-    const err = new ValidatorError('fail', {
-      input: 123,
-      negate: true,
-      cause: { foo: false, bar: 'bad' },
-    })
+    const err = new ValidatorError('fail', { input: 123, negate: true, cause: { foo: false, bar: 'bad' } })
     assert.equal(err.message, 'fail', 'message')
     assert.equal(err.input, 123, 'input')
     assert.equal(err.expected, false, 'expected')

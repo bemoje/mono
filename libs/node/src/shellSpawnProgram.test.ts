@@ -9,9 +9,7 @@ import { vi } from 'vitest'
 
 // Mock child_process
 vi.mock('child_process', () => {
-  return {
-    spawn: vi.fn(),
-  }
+  return { spawn: vi.fn() }
 })
 
 const mockSpawn = vi.mocked(spawn)
@@ -22,11 +20,7 @@ describe(shellSpawnProgram.name, () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    mockChild = {
-      on: vi.fn(),
-      stdout: { on: vi.fn() },
-      stderr: { on: vi.fn() },
-    }
+    mockChild = { on: vi.fn(), stdout: { on: vi.fn() }, stderr: { on: vi.fn() } }
 
     mockSpawn.mockReturnValue(mockChild)
   })

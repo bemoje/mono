@@ -20,7 +20,7 @@ describe(reduce.name, () => {
           void _value
           return acc + value
         },
-        0,
+        0
       )
       expect(result).toBe(6)
     })
@@ -35,7 +35,7 @@ describe(reduce.name, () => {
         (acc, _value, key) => {
           return [...acc, key]
         },
-        [] as string[],
+        [] as string[]
       )
       expect(keys).toEqual(['x', 'y'])
     })
@@ -52,7 +52,7 @@ describe(reduce.name, () => {
           void _key
           return acc + value
         },
-        '',
+        ''
       )
       expect(result).toBe('onetwo')
     })
@@ -68,7 +68,7 @@ describe(reduce.name, () => {
           void _value
           return acc + value
         },
-        0,
+        0
       )
       expect(result).toBe(6)
     })
@@ -80,7 +80,7 @@ describe(reduce.name, () => {
         (acc, value) => {
           return acc + value
         },
-        '',
+        ''
       )
       expect(result).toBe('abc')
     })
@@ -92,7 +92,7 @@ describe(reduce.name, () => {
         (acc, v) => {
           return acc + v
         },
-        99,
+        99
       )
       expect(result).toBe(99)
     })
@@ -110,7 +110,7 @@ describe(reduce.name, () => {
           void _index
           return { ...acc, [index]: value }
         },
-        {} as Record<number, string>,
+        {} as Record<number, string>
       )
       expect(result).toEqual({ 0: 'a', 1: 'b', 2: 'c' })
     })
@@ -121,7 +121,7 @@ describe(reduce.name, () => {
         (acc, _value, index) => {
           return [...acc, index]
         },
-        [] as number[],
+        [] as number[]
       )
       expect(indices).toEqual([0, 1, 2])
     })
@@ -133,7 +133,7 @@ describe(reduce.name, () => {
         (acc, value) => {
           return acc + value
         },
-        0,
+        0
       )
       expect(result).toBe(6)
     })
@@ -144,7 +144,7 @@ describe(reduce.name, () => {
         (acc, value) => {
           return acc + value
         },
-        0,
+        0
       )
       expect(result).toBe(6)
     })
@@ -162,7 +162,7 @@ describe(reduce.name, () => {
           void _value
           return acc + value
         },
-        0,
+        0
       )
       expect(result).toBe(6)
     })
@@ -174,7 +174,7 @@ describe(reduce.name, () => {
         (acc, _value, key) => {
           return [...acc, key]
         },
-        [] as string[],
+        [] as string[]
       )
       expect(keys).toEqual(['x', 'y'])
     })
@@ -185,7 +185,7 @@ describe(reduce.name, () => {
         (acc, value) => {
           return acc + value
         },
-        0,
+        0
       )
       expect(result).toBe(3)
     })
@@ -203,7 +203,7 @@ describe(reduce.name, () => {
         (acc, value) => {
           return acc + value
         },
-        0,
+        0
       )
       expect(result).toBe(6)
     })
@@ -220,7 +220,7 @@ describe(reduce.name, () => {
         (acc, value) => {
           return acc + value
         },
-        0,
+        0
       )
       expect(result).toBe(30)
     })
@@ -236,7 +236,7 @@ describe(reduce.name, () => {
         (acc, value, key) => {
           return acc + key + value
         },
-        '',
+        ''
       )
       expect(mapResult).toBe('a1')
 
@@ -245,7 +245,7 @@ describe(reduce.name, () => {
         (acc, value) => {
           return acc + value
         },
-        0,
+        0
       )
       expect(setResult).toBe(1)
     })
@@ -257,7 +257,7 @@ describe(reduce.name, () => {
         (acc, value, index) => {
           return [...acc, { value, index }]
         },
-        [] as { value: number; index: number }[],
+        [] as { value: number; index: number }[]
       )
       expect(result).toEqual([
         { value: 10, index: 0 },

@@ -7,14 +7,10 @@ import { vi } from 'vitest'
 
 // Mock dependencies
 vi.mock('./getOS', () => {
-  return {
-    getOS: vi.fn(),
-  }
+  return { getOS: vi.fn() }
 })
 vi.mock('./getDefaultBrowserWindows', () => {
-  return {
-    getDefaultBrowserWindows: vi.fn(),
-  }
+  return { getDefaultBrowserWindows: vi.fn() }
 })
 
 describe('openInDefaultBrowserCommand', () => {

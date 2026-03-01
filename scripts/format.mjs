@@ -12,7 +12,7 @@ if (
   })
 ) {
   console.error(
-    `Error: You must provide either --check or --write (or their short versions -c or -w) as an argument.`,
+    `Error: You must provide either --check or --write (or their short versions -c or -w) as an argument.`
   )
   process.exit(1)
 }

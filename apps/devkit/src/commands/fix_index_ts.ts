@@ -9,7 +9,7 @@ import upath from 'upath'
 export async function fixIndexTsAction(
   dirnames: string[],
   opts: { ignore?: string[] },
-  { logger }: { logger: Logger },
+  { logger }: { logger: Logger }
 ) {
   const repoRoot = getRepoRootDirpath()
 
@@ -114,6 +114,6 @@ export async function fixIndexTsAction(
       await outputFileIfChanged(upath.joinSafe(WS_ROOT, OUTFILE), lines.join('\n'), logger)
       await outputFileIfChanged(upath.joinSafe(WS_ROOT, TEST_OUTFILE), testLines.join('\n'), logger)
     },
-    { concurrency: 10 },
+    { concurrency: 10 }
   )
 }

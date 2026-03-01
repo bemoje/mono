@@ -17,9 +17,7 @@ import upath from 'upath'
  * @template P - The type of parent workspace this file belongs to, extends Workspace by default
  */
 export class File<P extends Workspace = Workspace> extends AbstractBase<P> {
-  static readonly inspector = Inspector.compose(File, {
-    keys: ['relative'],
-  })
+  static readonly inspector = Inspector.compose(File, { keys: ['relative'] })
 
   readonly path: string
 

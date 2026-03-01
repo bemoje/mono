@@ -10,7 +10,7 @@ import { ms } from 'enhanced-ms'
  * @param maxAge The maximum age of the memoized value as number (ms) or descriptive string (e.g. '10 min'). Uses 'ms' library: https://github.com/zeit/ms
  */
 export function memoizeAsync(
-  maxAge?: number | string,
+  maxAge?: number | string
 ): (target: object, key: string, descriptor: PropertyDescriptor) => PropertyDescriptor
 
 /**
@@ -18,7 +18,7 @@ export function memoizeAsync(
  * @param options The options for memoization.
  */
 export function memoizeAsync(
-  options: MemoizeAsyncOptions,
+  options: MemoizeAsyncOptions
 ): (target: object, key: string, descriptor: PropertyDescriptor) => PropertyDescriptor
 
 //
@@ -31,11 +31,7 @@ export function memoizeAsync(arg: (number | string) | MemoizeAsyncOptions = {}) 
     }
     const orig = descriptor.value
     assertDescriptorValueIsFunction(key, descriptor)
-    const options = {
-      length: false,
-      ...opts,
-      promise: true,
-    } as memoizee.Options<SomeAsyncFunction>
+    const options = { length: false, ...opts, promise: true } as memoizee.Options<SomeAsyncFunction>
 
     if (opts.instancesShareCache) {
       Reflect.deleteProperty(options, 'instancesShareCache')

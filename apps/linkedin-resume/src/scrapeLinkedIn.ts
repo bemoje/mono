@@ -31,7 +31,7 @@ export async function scrapeLinkedIn(options: CliOptions, logger: Logger): Promi
     await Promise.all(
       scrapers.map((fn) => {
         return fn(browser, options, logger)
-      }),
+      })
     )
   } finally {
     if (!options.keepOpen) {

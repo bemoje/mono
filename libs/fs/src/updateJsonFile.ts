@@ -8,7 +8,7 @@ import fs from 'fs-extra'
 export async function updateJsonFile<T extends object, R extends object>(
   filepath: string,
   update: (parsedFileContent: T) => R | Promise<R>,
-  defaultValue: T = {} as T,
+  defaultValue: T = {} as T
 ): Promise<R> {
   let content = defaultValue
   try {

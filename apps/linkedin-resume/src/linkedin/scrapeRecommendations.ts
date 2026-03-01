@@ -18,10 +18,7 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
 
   try {
     const username = userConfigFile.load().username
-    await page.goto(getPageUrl(username, 'recommendations'), {
-      waitUntil: 'domcontentloaded',
-      timeout: 20000,
-    })
+    await page.goto(getPageUrl(username, 'recommendations'), { waitUntil: 'domcontentloaded', timeout: 20000 })
 
     try {
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
@@ -52,10 +49,7 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
       }
 
       return topLevelItems.map((li) => {
-        return {
-          spans: getVisibleSpans(li),
-          logoUrl: li.querySelector('img')?.src ?? '',
-        }
+        return { spans: getVisibleSpans(li), logoUrl: li.querySelector('img')?.src ?? '' }
       })
     })
 
@@ -118,13 +112,7 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
         }
       }
 
-      recommendations.push({
-        name,
-        headline,
-        date,
-        relationship,
-        logoUrl,
-      })
+      recommendations.push({ name, headline, date, relationship, logoUrl })
     }
   } catch (e) {
     onScrapeError(e, 'recommendations', options, logger)

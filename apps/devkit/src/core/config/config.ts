@@ -24,22 +24,10 @@ export const ConfigSchema = Type.Object(
           indexTs: templates.files.indexTs.createSchema(),
         }),
       },
-      {
-        default: {
-          commands: {},
-          files: {},
-        },
-      },
+      { default: { commands: {}, files: {} } }
     ),
   },
-  {
-    default: {
-      templates: {
-        commands: {},
-        files: {},
-      },
-    },
-  },
+  { default: { templates: { commands: {}, files: {} } } }
 )
 
 export type ConfigSchema = Static<typeof ConfigSchema>

@@ -18,7 +18,7 @@ function example1() {
         default: () => {
           return 'WA'
         },
-      }),
+      })
     ),
     disabled: Type.Optional(Type.Boolean()),
   }
@@ -54,7 +54,7 @@ function example2() {
         default: () => {
           return 'WA'
         },
-      }),
+      })
     ),
     disabled: Type.Optional(Type.Boolean()),
   })

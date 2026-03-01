@@ -12,9 +12,9 @@ export function getRepoRootDirpath(): string {
   }
   // Try import.meta.dirname first (ESM), then __dirname (CJS), then process.cwd()
   const raw =
-    (typeof import.meta !== 'undefined' && import.meta.dirname) ||
-    (typeof __dirname !== 'undefined' && __dirname) ||
-    process.cwd()
+    (typeof import.meta !== 'undefined' && import.meta.dirname)
+    || (typeof __dirname !== 'undefined' && __dirname)
+    || process.cwd()
   const path = upath.normalizeSafe(raw)
   const parts = path.split('/')
   const repoRootIndex = parts.findLastIndex((part) => {

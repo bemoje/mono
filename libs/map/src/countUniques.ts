@@ -12,8 +12,8 @@ export function countUniques<V>(input: Iterable<V>) {
       (acc, imp) => {
         return acc.add(imp)
       },
-      input,
-    ).multiplicities(),
+      input
+    ).multiplicities()
   ).sortByValues((a, b) => {
     return b - a
   })

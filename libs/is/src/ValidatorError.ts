@@ -21,7 +21,7 @@ export class ValidatorError<T extends Validator> extends Error {
 
   constructor(
     message: string,
-    data?: { input?: Parameters<T>[0]; negate?: boolean; cause?: Record<string, string | boolean> },
+    data?: { input?: Parameters<T>[0]; negate?: boolean; cause?: Record<string, string | boolean> }
   ) {
     super(message)
     this.name = 'ValidationError'

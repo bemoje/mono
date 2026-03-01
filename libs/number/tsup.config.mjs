@@ -13,9 +13,6 @@ export default defineConfig({
   dts: 'src/index.ts',
 
   outExtension() {
-    return {
-      js: '.mjs',
-    }
+    return { js: '.mjs' }
   },
 })
-

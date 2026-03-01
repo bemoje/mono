@@ -20,14 +20,14 @@ import upath from 'upath'
  */
 export function parseImportStatement(
   statement: string,
-  options?: { isWorkspacePath?: (p: string) => boolean },
+  options?: { isWorkspacePath?: (p: string) => boolean }
 ): ImportStatement {
   const code = statement
   const oneliner = importStatementToFormattedOneLiner(code)
 
   const groups = rexec(
     /^(?<keywords>import +(?<type>type)? *)(?<specifiers>(?:.*?) ?)?(?<mod>(?:from ?)?(?<quote>['"`])(?<path>.*?)\5(?<semi>;?))$/g,
-    oneliner,
+    oneliner
   )[0].groups!
 
   const keywords: ImportKeywords = {
@@ -62,7 +62,7 @@ export function parseImportStatement(
               name: code.replace('* as ', '').trim(),
               isType: keywords.hasTypeKeyword || /\btype /.test(code),
             }
-          }),
+          })
       )
 
       children.push(
@@ -84,7 +84,7 @@ export function parseImportStatement(
               o.name = `type ${o.name}`
             }
             return o
-          }),
+          })
       )
 
       return children
@@ -95,33 +95,30 @@ export function parseImportStatement(
     code: groups.mod!,
     type: ((): ImportPathType => {
       const p = groups.path!
-      return options?.isWorkspacePath?.(p)
-        ? 'workspace'
-        : upath.isAbsolute(p)
-          ? 'absolute'
-          : p.startsWith('.')
-            ? 'relative'
-            : isBuiltin(p)
-              ? 'builtin'
-              : 'package'
+      return (
+        options?.isWorkspacePath?.(p) ? 'workspace'
+        : upath.isAbsolute(p) ? 'absolute'
+        : p.startsWith('.') ? 'relative'
+        : isBuiltin(p) ? 'builtin'
+        : 'package'
+      )
     })(),
     quote: groups.quote!,
     path: groups.path!,
   }
 
   const type =
-    specifiers.children.length === 0
-      ? 'sideEffect'
-      : specifiers.children.length === 1 && specifiers.children[0].type === 'default'
-        ? 'default'
-        : specifiers.children.length === 1 && specifiers.children[0].type === 'namespace'
-          ? 'namespace'
-          : specifiers.children.length > 0 &&
-              specifiers.children.filter((s) => {
-                return s.type === 'named'
-              }).length === specifiers.children.length
-            ? 'named'
-            : 'mixed'
+    specifiers.children.length === 0 ? 'sideEffect'
+    : specifiers.children.length === 1 && specifiers.children[0].type === 'default' ? 'default'
+    : specifiers.children.length === 1 && specifiers.children[0].type === 'namespace' ? 'namespace'
+    : (
+      specifiers.children.length > 0
+      && specifiers.children.filter((s) => {
+        return s.type === 'named'
+      }).length === specifiers.children.length
+    ) ?
+      'named'
+    : 'mixed'
 
   const semi = groups.semi || ''
 
@@ -136,7 +133,7 @@ class ImportStatementParser implements ImportStatement {
     readonly keywords: ImportKeywords,
     readonly specifiers: ImportSpecifiers,
     readonly modulePath: ImportModulePath,
-    readonly semi: string,
+    readonly semi: string
   ) {}
 
   /**
@@ -146,8 +143,8 @@ class ImportStatementParser implements ImportStatement {
     return this.splitBySpecifier(options).flatMap((ins) => {
       return ins.specifiers.children
         .map((s) => {
-          return s.type === 'named' && options?.unaliasNamedImports
-            ? s.code.replace(/ as \w+/g, '')
+          return s.type === 'named' && options?.unaliasNamedImports ?
+              s.code.replace(/ as \w+/g, '')
             : s.code.replace(/[\w*]+ as /g, '')
         })
         .filter(Boolean)
@@ -158,16 +155,16 @@ class ImportStatementParser implements ImportStatement {
    * Split the import statement into as many individual import statements as possible.
    */
   splitBySpecifier(options?: { unaliasNamedImports?: boolean }): ImportStatementParser[] {
-    return this.type === 'sideEffect'
-      ? [this]
+    return this.type === 'sideEffect' ?
+        [this]
       : this.specifiers.children.map((s) => {
           const code = s.type === 'named' && options?.unaliasNamedImports ? s.code.replace(/ as \w+/g, '') : s.code
           return parseImportStatement(
             importStatementToFormattedOneLiner(
               this.oneliner
                 .replace(this.specifiers.code, s.type === 'named' ? `{ ${code} } ` : `${code} `)
-                .replace(/\{ *type /, this.keywords.hasTypeKeyword ? '{ ' : 'type { '),
-            ).replace('type { ', '{ type '),
+                .replace(/\{ *type /, this.keywords.hasTypeKeyword ? '{ ' : 'type { ')
+            ).replace('type { ', '{ type ')
           )
         })
   }

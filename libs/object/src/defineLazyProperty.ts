@@ -9,7 +9,7 @@ export function defineLazyProperty<T extends object, V = object>(
   obj: T,
   key: PropertyKey,
   get: () => V,
-  des: Omit<AccessorDescriptor<V>, 'get'> = {},
+  des: Omit<AccessorDescriptor<V>, 'get'> = {}
 ) {
   function getter(this: T) {
     const value = get.call(this)

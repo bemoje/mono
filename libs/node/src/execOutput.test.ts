@@ -9,9 +9,7 @@ import { it } from 'vitest'
 import { vi } from 'vitest'
 
 vi.mock('child_process', () => {
-  return {
-    exec: vi.fn(),
-  }
+  return { exec: vi.fn() }
 })
 
 describe('execOutput', () => {
@@ -31,7 +29,7 @@ describe('execOutput', () => {
         if (cb) {
           cb(null, 'out', '')
         }
-      }) as never,
+      }) as never
     )
     const { stdout, stderr } = await execOutput('some command')
     expect(mock).toBeCalledTimes(1)
@@ -45,7 +43,7 @@ describe('execOutput', () => {
         if (cb) {
           cb(new Error('oops'), '', 'error happened')
         }
-      }) as never,
+      }) as never
     )
     const { stdout, stderr } = await execOutput('some command')
     expect(mock).toBeCalledTimes(1)
@@ -59,7 +57,7 @@ describe('execOutput', () => {
         if (cb) {
           cb(new Error('oops'), '', '')
         }
-      }) as never,
+      }) as never
     )
     const { stdout, stderr } = await execOutput('some command')
     expect(mock).toBeCalledTimes(1)

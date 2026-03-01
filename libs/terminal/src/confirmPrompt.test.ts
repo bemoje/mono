@@ -10,26 +10,16 @@ import { vi } from 'vitest'
 
 // Mock readline module
 vi.mock('readline', () => {
-  return {
-    default: {
-      createInterface: vi.fn(),
-    },
-  }
+  return { default: { createInterface: vi.fn() } }
 })
 
 const mockedReadline = vi.mocked(readline)
 
 describe(confirmPrompt.name, () => {
-  let mockRl: {
-    question: ReturnType<typeof vi.fn>
-    close: ReturnType<typeof vi.fn>
-  }
+  let mockRl: { question: ReturnType<typeof vi.fn>; close: ReturnType<typeof vi.fn> }
 
   beforeEach(() => {
-    mockRl = {
-      question: vi.fn(),
-      close: vi.fn(),
-    }
+    mockRl = { question: vi.fn(), close: vi.fn() }
     mockedReadline.createInterface.mockReturnValue(mockRl as any)
   })
 
@@ -63,10 +53,7 @@ describe(confirmPrompt.name, () => {
 
       await confirmPrompt('Test message')
 
-      expect(mockedReadline.createInterface).toHaveBeenCalledWith({
-        input: process.stdin,
-        output: process.stdout,
-      })
+      expect(mockedReadline.createInterface).toHaveBeenCalledWith({ input: process.stdin, output: process.stdout })
     })
 
     it('should close readline interface after getting answer', async () => {
@@ -226,7 +213,7 @@ describe(confirmPrompt.name, () => {
 
       expect(mockRl.question).toHaveBeenCalledWith(
         'Delete file "test.txt" with símböls & émojis 🚀? (y/n): ',
-        expect.any(Function),
+        expect.any(Function)
       )
     })
 

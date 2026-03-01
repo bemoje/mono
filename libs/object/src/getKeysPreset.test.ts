@@ -19,7 +19,7 @@ describe(getKeysPreset.name, () => {
       assert(
         !stringKeys.some((k) => {
           return typeof k === 'symbol'
-        }),
+        })
       )
     }).not.toThrow()
   })
@@ -33,7 +33,7 @@ describe(getKeysPreset.name, () => {
     expect(
       keys.every((k) => {
         return typeof k === 'string'
-      }),
+      })
     ).toBe(true)
   })
 
@@ -47,7 +47,7 @@ describe(getKeysPreset.name, () => {
     expect(
       keys.every((k) => {
         return typeof k === 'symbol'
-      }),
+      })
     ).toBe(true)
   })
 

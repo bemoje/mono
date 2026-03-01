@@ -15,14 +15,14 @@ export function lazyProp(target: object, key: string, descriptor: PropertyDescri
  * @param maxAge The maximum age of the memoized value as number (ms) or descriptive string (e.g. '10 min'). Uses 'ms' library: https://github.com/zeit/ms
  */
 export function lazyProp(
-  maxAge: number | string,
+  maxAge: number | string
 ): (target: object, key: string, descriptor: PropertyDescriptor) => PropertyDescriptor
 
 //
 export function lazyProp(
   targetOrTimeout: object | number | string,
   key?: string,
-  descriptor?: PropertyDescriptor,
+  descriptor?: PropertyDescriptor
 ) {
   if (typeof targetOrTimeout === 'number' || typeof targetOrTimeout === 'string') {
     const maxAge = typeof targetOrTimeout === 'number' ? targetOrTimeout : ms(targetOrTimeout)

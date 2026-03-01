@@ -8,7 +8,7 @@ import { toCwdRelative } from '@mono/path'
 export async function outputFileIfChanged(
   filepath: string,
   content: string,
-  logger: Logger,
+  logger: Logger
 ): Promise<string | undefined> {
   if (await fs.pathExists(filepath)) {
     const cur = await fs.readFile(filepath, 'utf8')

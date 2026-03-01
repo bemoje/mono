@@ -169,7 +169,7 @@ export interface IHelp {
   groupItems<T extends ICommand | Option>(
     unsortedItems: T[],
     visibleItems: T[],
-    getGroup: (item: T) => string,
+    getGroup: (item: T) => string
   ): Map<string, T[]>
   /**
    * Return display width of string, ignoring ANSI escape sequences. Used in padding and wrapping calculations.
@@ -311,11 +311,7 @@ export type HookDefinition<
   A extends Arguments = Arguments,
   O extends Options = Options,
   Subs extends SubCommands = SubCommands,
-> = {
-  name: keyof O
-  predicate: HookPredicate<A, O, Subs>
-  action: HookActionHandler<A, O, Subs>
-}
+> = { name: keyof O; predicate: HookPredicate<A, O, Subs>; action: HookActionHandler<A, O, Subs> }
 
 /**
  * @see Command.prototype.parseArgv
@@ -367,13 +363,11 @@ export type ArgumentUsage =
 
 /** Helper type to infer allowed argument usage patterns based on the command's existing argument types */
 type InferArgumentUsage<T extends Command<any, any, any>> =
-  T extends Command<infer A, any>
-    ? A extends string[]
-      ? ArgumentUsage
-      : A extends (string | (string | undefined))[]
-        ? OptionalArgumentUsage | OptionalVariadicArgumentUsage
-        : never
+  T extends Command<infer A, any> ?
+    A extends string[] ? ArgumentUsage
+    : A extends (string | (string | undefined))[] ? OptionalArgumentUsage | OptionalVariadicArgumentUsage
     : never
+  : never
 
 /** Helper type to infer allowed argument usage patterns based on the command's existing argument types */
 export type AllowedArgumentUsage<T extends Command<any, any, any>, Usage extends ArgumentUsage> =
@@ -454,9 +448,7 @@ export type BooleanOptionOptions = ExtendAddOptionOptionsBase<{
 }>
 
 /** Required string option. Usage: `-f, --file <path>` */
-export type RequiredOptionOptions = ExtendAddOptionOptionsBase<{
-  env?: undefined
-}>
+export type RequiredOptionOptions = ExtendAddOptionOptionsBase<{ env?: undefined }>
 
 /** Optional string option with default. Usage: `-o, --output [path]` */
 export type OptionalOptionOptions = ExtendAddOptionOptionsBase<{
@@ -465,9 +457,7 @@ export type OptionalOptionOptions = ExtendAddOptionOptionsBase<{
 }>
 
 /** Required option accepting variadic values. Usage: `-i, --include <patterns...>` */
-export type RequiredVariadicOptionOptions = ExtendAddOptionOptionsBase<{
-  env?: undefined
-}>
+export type RequiredVariadicOptionOptions = ExtendAddOptionOptionsBase<{ env?: undefined }>
 
 /** Optional option accepting variadic values with defaults. Usage: `-e, --exclude [patterns...]` */
 export type OptionalVariadicOptionOptions = ExtendAddOptionOptionsBase<{

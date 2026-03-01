@@ -16,7 +16,7 @@ export abstract class AbstractMethodIdentifier<
   constructor(
     target: T,
     readonly key: string | symbol,
-    readonly type: MethodType = 'method',
+    readonly type: MethodType = 'method'
   ) {
     super(target)
     setNonEnumerable(this, 'type', 'key')

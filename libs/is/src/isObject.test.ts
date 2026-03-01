@@ -39,7 +39,7 @@ describe(isObject.name, () => {
     expect(
       isObject(() => {
         return 1
-      }),
+      })
     ).toBe(false)
   })
 

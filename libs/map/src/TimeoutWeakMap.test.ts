@@ -118,10 +118,7 @@ describe(TimeoutWeakMap.name, () => {
       const map = new TimeoutWeakMap<object, string>(1000)
       const key = {}
       const unrefSpy = vi.spyOn(global, 'setTimeout').mockImplementation(((callback: () => void) => {
-        const timeout = {
-          unref: vi.fn().mockReturnThis(),
-          refresh: vi.fn(),
-        }
+        const timeout = { unref: vi.fn().mockReturnThis(), refresh: vi.fn() }
         return timeout as any
       }) as any)
 
@@ -148,10 +145,7 @@ describe(TimeoutWeakMap.name, () => {
 
       // Mock setTimeout to capture the timeout object
       vi.spyOn(global, 'setTimeout').mockImplementation(((callback: () => void) => {
-        const timeout = {
-          unref: vi.fn().mockReturnThis(),
-          refresh: refreshSpy,
-        }
+        const timeout = { unref: vi.fn().mockReturnThis(), refresh: refreshSpy }
         return timeout as any
       }) as any)
 
@@ -238,10 +232,7 @@ describe(TimeoutWeakMap.name, () => {
 
       // Mock setTimeout to capture the timeout object
       vi.spyOn(global, 'setTimeout').mockImplementation(((callback: () => void) => {
-        const timeout = {
-          unref: vi.fn().mockReturnThis(),
-          refresh: refreshSpy,
-        }
+        const timeout = { unref: vi.fn().mockReturnThis(), refresh: refreshSpy }
         return timeout as any
       }) as any)
 
@@ -364,10 +355,7 @@ describe(TimeoutWeakMap.name, () => {
 
       // Mock setTimeout to capture the timeout object
       vi.spyOn(global, 'setTimeout').mockImplementation(((callback: () => void) => {
-        const timeout = {
-          unref: vi.fn().mockReturnThis(),
-          refresh: refreshSpy,
-        }
+        const timeout = { unref: vi.fn().mockReturnThis(), refresh: refreshSpy }
         return timeout as any
       }) as any)
 
@@ -402,7 +390,7 @@ describe(TimeoutWeakMap.name, () => {
         () => {
           return 'created'
         },
-        2000,
+        2000
       )
 
       // Should not expire after default timeout
@@ -528,11 +516,7 @@ describe(TimeoutWeakMap.name, () => {
 
       const map = new TimeoutWeakMap<object, ComplexValue>(1000)
       const key = {}
-      const value: ComplexValue = {
-        id: 42,
-        data: ['a', 'b', 'c'],
-        nested: { flag: true },
-      }
+      const value: ComplexValue = { id: 42, data: ['a', 'b', 'c'], nested: { flag: true } }
 
       map.set(key, value)
       const retrieved = map.get(key)

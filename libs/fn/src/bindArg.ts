@@ -17,6 +17,6 @@ export function bindArg<
     (...args: ParametersWithout<T, Index>) => {
       return fn(...args.slice(0, boundArgIndex), boundArgValue, ...args.slice(boundArgIndex))
     },
-    -1,
+    -1
   ) as Ret
 }

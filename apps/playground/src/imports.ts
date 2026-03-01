@@ -47,11 +47,11 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
       })
       .filter((line) => {
         return (
-          line.includes(' from ') &&
-          !isRelativeImport(line) &&
-          !isOtherRepoOwnPath(line) &&
-          !line.includes("from 'lodash/") &&
-          !line.includes("from 'mnemonist/")
+          line.includes(' from ')
+          && !isRelativeImport(line)
+          && !isOtherRepoOwnPath(line)
+          && !line.includes("from 'lodash/")
+          && !line.includes("from 'mnemonist/")
         )
       })
       .map((imp) => {
@@ -71,7 +71,11 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
           .replace(/\s{2,}/g, ' ')
       })
       .sort((a, b) => {
-        return b.includes('{') && !a.includes('{') ? -1 : b.includes('{') ? 1 : 0
+        return (
+          b.includes('{') && !a.includes('{') ? -1
+          : b.includes('{') ? 1
+          : 0
+        )
       })
       .flatMap((line) => {
         const strImp = 'import '
@@ -148,8 +152,8 @@ function countUniques<V>(arr: Iterable<V>) {
       (acc, imp) => {
         return acc.add(imp)
       },
-      arr,
-    ).multiplicities(),
+      arr
+    ).multiplicities()
   ).sortByValues((a, b) => {
     return b - a
   })

@@ -22,7 +22,7 @@
 export function arrTableToObjects<T>(
   rows: T[][],
   headers?: string[],
-  ignoreKeys?: Set<string>,
+  ignoreKeys?: Set<string>
 ): Record<string, T>[] {
   if (headers) {
     if (!rows.length) {

@@ -18,6 +18,6 @@ export async function listLibModuleExportsAction(_opts: unknown, { logger: log }
             return `: ${ansiColors.yellow.dim(`[${type}]`)}`
           })}`
       })
-      .join('\n\n'),
+      .join('\n\n')
   )
 }

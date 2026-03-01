@@ -20,7 +20,7 @@ import { getKeysPreset } from './getKeysPreset'
  */
 export function getKeys<K extends OptsKeysVariants, KT extends OptsKeyTypeVariants>(
   o: object,
-  options?: GetKeysOptions<K, KT>,
+  options?: GetKeysOptions<K, KT>
 ): KeysPrimitiveTypeFrom<KT>[] {
   const getter = getKeysPreset(options)
   return getter(o)

@@ -8,9 +8,7 @@ import { lazyProp } from '@mono/decorators'
  */
 @Parenting.compose
 export class CodeBlock<P extends AbstractCode = AbstractCode> extends AbstractCode<P> {
-  static readonly inspector = Inspector.compose(CodeBlock, {
-    keys: [],
-  })
+  static readonly inspector = Inspector.compose(CodeBlock, { keys: [] })
 
   readonly indexRange: { index: number; lastIndex: number }
 

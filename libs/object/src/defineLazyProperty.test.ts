@@ -32,9 +32,7 @@ describe(defineLazyProperty.name, () => {
         () => {
           return { fetched: 'from-api' }
         },
-        {
-          enumerable: true,
-        },
+        { enumerable: true }
       )
       assert.deepStrictEqual(cache.data, { fetched: 'from-api' })
       assert.strictEqual(Object.propertyIsEnumerable.call(cache, 'data'), true)
@@ -191,10 +189,7 @@ describe(defineLazyProperty.name, () => {
         () => {
           return 'value'
         },
-        {
-          enumerable: true,
-          configurable: false,
-        },
+        { enumerable: true, configurable: false }
       )
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')

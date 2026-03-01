@@ -75,12 +75,7 @@ export default [
       'no-useless-computed-key': 'error',
       'prefer-promise-reject-errors': 'error',
       'prefer-template': 'error',
-      'preserve-caught-error': [
-        'error',
-        {
-          requireCatchParameter: false,
-        },
-      ],
+      'preserve-caught-error': ['error', { requireCatchParameter: false }],
     },
   },
 

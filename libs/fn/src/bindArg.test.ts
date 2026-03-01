@@ -91,11 +91,7 @@ describe(bindArg.name, () => {
       }
       const result = boundFn([1, 2, 3], testFn)
 
-      expect(result).toEqual({
-        obj: testObj,
-        arr: [1, 2, 3],
-        fn: testFn,
-      })
+      expect(result).toEqual({ obj: testObj, arr: [1, 2, 3], fn: testFn })
     })
   })
 })

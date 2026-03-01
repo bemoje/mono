@@ -11,14 +11,10 @@
 export function objDefineLazyProperty<T extends Record<string, unknown>>(
   object: T,
   key: string,
-  getValue: (...args: unknown[]) => unknown,
+  getValue: (...args: unknown[]) => unknown
 ): T {
   const set = (value: unknown) => {
-    return Object.defineProperty(object, key, {
-      value,
-      enumerable: true,
-      writable: true,
-    })
+    return Object.defineProperty(object, key, { value, enumerable: true, writable: true })
   }
 
   Object.defineProperty(object, key, {

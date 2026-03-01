@@ -18,8 +18,5 @@ export type DescriptorGetter<V> = { get: () => V }
 export type DescriptorSetter<V> = { set: (value: V) => void }
 export type DescriptorBothAccessors<V> = DescriptorGetter<V> & DescriptorSetter<V>
 export type DescriptorAccessors<V> = DescriptorGetter<V> | DescriptorSetter<V> | DescriptorBothAccessors<V>
-export type AccessorsDescriptorAttributes = {
-  configurable?: boolean
-  enumerable?: boolean
-}
+export type AccessorsDescriptorAttributes = { configurable?: boolean; enumerable?: boolean }
 export type AccessorDescriptor<T> = AccessorsDescriptorAttributes & DescriptorAccessors<T>

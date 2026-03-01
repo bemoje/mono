@@ -25,7 +25,7 @@ describe(defineSetter.name, () => {
         (value: string) => {
           stored = `tracked-${value}`
         },
-        { enumerable: true },
+        { enumerable: true }
       )
 
       obj.tracked = 'test'
@@ -105,31 +105,18 @@ describe(defineSetter.name, () => {
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
 
-      expect(descriptor).toMatchObject({
-        configurable: true,
-        enumerable: false,
-        set: setterFn,
-        get: undefined,
-      })
+      expect(descriptor).toMatchObject({ configurable: true, enumerable: false, set: setterFn, get: undefined })
     })
 
     it('should allow overriding descriptor options', () => {
       const obj: any = {}
       const setterFn = () => {}
 
-      defineSetter(obj, 'prop', setterFn, {
-        enumerable: true,
-        configurable: false,
-      })
+      defineSetter(obj, 'prop', setterFn, { enumerable: true, configurable: false })
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
 
-      expect(descriptor).toMatchObject({
-        configurable: false,
-        enumerable: true,
-        set: setterFn,
-        get: undefined,
-      })
+      expect(descriptor).toMatchObject({ configurable: false, enumerable: true, set: setterFn, get: undefined })
     })
 
     it('should allow adding a getter alongside the setter', () => {
@@ -206,10 +193,7 @@ describe(defineSetter.name, () => {
 
   describe('this context', () => {
     it('should maintain this context when setter is called', () => {
-      const obj: any = {
-        name: 'test-object',
-        values: [],
-      }
+      const obj: any = { name: 'test-object', values: [] }
 
       defineSetter(obj, 'addValue', function (this: any, value) {
         this.values.push(`${this.name}-${value}`)

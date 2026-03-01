@@ -146,18 +146,8 @@ import { a } from 'a'
 const test = 'value'`
 
       const imports = [
-        {
-          start: 0,
-          end: 1,
-          match: "import { b } from 'b'",
-          matchOneLine: "import { b } from 'b'",
-        },
-        {
-          start: 1,
-          end: 2,
-          match: "import { a } from 'a'",
-          matchOneLine: "import { a } from 'a'",
-        },
+        { start: 0, end: 1, match: "import { b } from 'b'", matchOneLine: "import { b } from 'b'" },
+        { start: 1, end: 2, match: "import { a } from 'a'", matchOneLine: "import { a } from 'a'" },
       ]
 
       const result = tsSortImports(code, imports)

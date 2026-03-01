@@ -84,10 +84,10 @@ export class Help implements IHelp {
       })
       .join(' ')
     return (
-      (sub.aliases[0] ? `${sub.aliases[0].padEnd(this.longestSubcommandAliasLength(), ' ')} | ` : '') +
-      sub.name +
-      (sub.options.length ? ` ${this.usageDisplayOptionsAs}` : '') + // simplistic check for non-help option
-      (args ? ` ${args}` : '')
+      (sub.aliases[0] ? `${sub.aliases[0].padEnd(this.longestSubcommandAliasLength(), ' ')} | ` : '')
+      + sub.name
+      + (sub.options.length ? ` ${this.usageDisplayOptionsAs}` : '') // simplistic check for non-help option
+      + (args ? ` ${args}` : '')
     )
   }
 
@@ -114,7 +114,7 @@ export class Help implements IHelp {
       0,
       ...this.visibleCommands().map((c) => {
         return c.aliases[0]?.length || 0
-      }),
+      })
     )
   }
 
@@ -162,13 +162,14 @@ export class Help implements IHelp {
       ...(Object.keys(this.cmd.commands).length ? [this.usageDisplaySubcommandAs] : []),
       ...(this.cmd.options.length ? [this.usageDisplayOptionsAs] : []),
       ...this.cmd.arguments.map((arg) => {
-        return arg.required
-          ? arg.variadic
-            ? `<${arg.name}...>`
+        return (
+          arg.required ?
+            arg.variadic ?
+              `<${arg.name}...>`
             : `<${arg.name}>`
-          : arg.variadic
-            ? `[${arg.name}...]`
-            : `[${arg.name}]`
+          : arg.variadic ? `[${arg.name}...]`
+          : `[${arg.name}]`
+        )
       }),
     ].join(' ')}`.trim()
   }
@@ -192,8 +193,8 @@ export class Help implements IHelp {
    */
   subcommandDescription(sub: ICommand): string {
     return (
-      sub.summary ||
-      (sub.description?.includes('\n') ? sub.description.trim().split('\n')[0] : sub.description.trim())
+      sub.summary
+      || (sub.description?.includes('\n') ? sub.description.trim().split('\n')[0] : sub.description.trim())
     )
   }
 
@@ -210,7 +211,7 @@ export class Help implements IHelp {
           .map((choice: string) => {
             return String(choice)
           })
-          .join(', ')}`,
+          .join(', ')}`
       )
     }
     if (option.defaultValue && !(Array.isArray(option.defaultValue) && option.defaultValue.length === 0)) {
@@ -243,7 +244,7 @@ export class Help implements IHelp {
           .map((choice: string) => {
             return String(choice)
           })
-          .join(', ')}`,
+          .join(', ')}`
       )
     }
     if (argument.defaultValue && !(Array.isArray(argument.defaultValue) && argument.defaultValue.length === 0)) {
@@ -275,7 +276,7 @@ export class Help implements IHelp {
   groupItems<T extends ICommand | Option>(
     unsortedItems: T[],
     visibleItems: T[],
-    getGroup: (item: T) => string,
+    getGroup: (item: T) => string
   ): Map<string, T[]> {
     const result = new Map<string, T[]>()
     // Add groups in order of appearance in unsortedItems.
@@ -452,7 +453,7 @@ export class Help implements IHelp {
     return Math.max(
       this.longestOptionTermLength(),
       this.longestSubcommandTermLength(),
-      this.longestArgumentTermLength(),
+      this.longestArgumentTermLength()
     )
   }
 
@@ -494,10 +495,10 @@ export class Help implements IHelp {
 
     // Construct and overall indent.
     return (
-      itemIndentStr +
-      paddedTerm +
-      ' '.repeat(spacerWidth) +
-      formattedDescription.replace(/\n/g, `\n${itemIndentStr}`)
+      itemIndentStr
+      + paddedTerm
+      + ' '.repeat(spacerWidth)
+      + formattedDescription.replace(/\n/g, `\n${itemIndentStr}`)
     )
   }
 
@@ -561,7 +562,7 @@ export class Help implements IHelp {
       return this.formatItem(
         this.styleArgumentTerm(this.argumentTerm(argument)),
         this.padWidth(),
-        this.styleArgumentDescription(this.argumentDescription(argument)),
+        this.styleArgumentDescription(this.argumentDescription(argument))
       )
     })
     output = output.concat(this.formatItemList('Arguments:', argumentList))
@@ -575,7 +576,7 @@ export class Help implements IHelp {
         return this.formatItem(
           this.styleOptionTerm(this.optionTerm(option)),
           this.padWidth(),
-          this.styleOptionDescription(this.optionDescription(option)),
+          this.styleOptionDescription(this.optionDescription(option))
         )
       })
       output = output.concat(this.formatItemList(group, optionList))
@@ -588,14 +589,14 @@ export class Help implements IHelp {
 
       (sub: ICommand) => {
         return sub.group || 'Commands:'
-      },
+      }
     )
     commandGroups.forEach((commands, group) => {
       const commandList = commands.map((sub: ICommand) => {
         return this.formatItem(
           this.styleSubcommandTerm(this.subcommandTerm(sub)),
           this.padWidth(),
-          this.styleSubcommandDescription(this.subcommandDescription(sub)),
+          this.styleSubcommandDescription(this.subcommandDescription(sub))
         )
       })
       output = output.concat(this.formatItemList(group, commandList))

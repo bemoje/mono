@@ -6,7 +6,7 @@ import type { GenericMap } from '@mono/types'
 export function mapGetOrDefault<K, V, T extends GenericMap<K, V, 'get' | 'has' | 'set'>>(
   map: T,
   key: K,
-  factory: (key: K, map: T) => V,
+  factory: (key: K, map: T) => V
 ): V {
   let value = map.get(key)
   if (value !== undefined || map.has(key)) {

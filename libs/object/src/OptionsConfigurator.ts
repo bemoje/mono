@@ -67,16 +67,16 @@ export function OptionsConfigurator<P extends Record<string, TSchema>>(schemaOrP
         Reflect.set(
           acc,
           key,
-          (typeof prop.default === 'function'
-            ? prop.default
-            : () => {
-                return prop.default
-              }) as () => Options[keyof Options],
+          (typeof prop.default === 'function' ?
+            prop.default
+          : () => {
+              return prop.default
+            }) as () => Options[keyof Options]
         )
       }
       return acc
     },
-    {} as Partial<Record<keyof Options, () => Options[keyof Options]>>,
+    {} as Partial<Record<keyof Options, () => Options[keyof Options]>>
   )
 
   const requiredKeys = schema.required as RequiredKeysOf<Options>[]
@@ -217,9 +217,7 @@ const _t: _T = {} as _T
 type AllAccessors<
   T extends Record<string, any>, //
   O extends Record<keyof T, any>,
-> = {
-  [K in keyof Required<T>]: (value: T[K]) => TConfigurator<Omit<T, K>, SetFieldType<O, K, T[K]>>
-}
+> = { [K in keyof Required<T>]: (value: T[K]) => TConfigurator<Omit<T, K>, SetFieldType<O, K, T[K]>> }
 
 type DoneMethod<
   T extends Record<string, any>, //

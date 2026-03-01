@@ -10,14 +10,14 @@ export function objectsToTable<T extends object>(objects: T[], keys?: string[]) 
     return [keys ?? []] as [K, ...V[]][]
   }
   keys =
-    keys ??
-    (Array.from(
+    keys
+    ?? (Array.from(
       objects.reduce((set, obj) => {
         Object.keys(obj).forEach((key) => {
           return set.add(key as K)
         })
         return set
-      }, new Set<K>()),
+      }, new Set<K>())
     ).sort() as K[])
 
   const rows: V[][] = [keys]

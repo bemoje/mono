@@ -32,7 +32,7 @@ describe(mapReverse.name, () => {
         ['first', '1'],
       ]
         .flat(2)
-        .join(','),
+        .join(',')
     )
   })
 

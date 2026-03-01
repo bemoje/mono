@@ -5,7 +5,7 @@ import type { ValueOf } from '@mono/types'
  */
 export function filterObjectMutable<T extends object>(
   obj: T,
-  predicate: (value: ValueOf<T>, key: keyof T, obj: T) => boolean,
+  predicate: (value: ValueOf<T>, key: keyof T, obj: T) => boolean
 ) {
   for (const k of Reflect.ownKeys(obj)) {
     const key = k as keyof typeof obj

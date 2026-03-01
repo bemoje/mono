@@ -278,10 +278,7 @@ describe(Command.name, () => {
 
     it('should set variadic defaultValue from env', () => {
       process.env.TEST_VAR = 'a, b, c'
-      const cmd = new Command('test').addOption('-t, --tags <vals...>', {
-        description: 'tags',
-        env: 'TEST_VAR',
-      })
+      const cmd = new Command('test').addOption('-t, --tags <vals...>', { description: 'tags', env: 'TEST_VAR' })
       const opt = cmd.options.find((o) => {
         return o.name === 'tags'
       })!
@@ -290,10 +287,7 @@ describe(Command.name, () => {
 
     it('should set string defaultValue from env', () => {
       process.env.TEST_STR = '/tmp/output'
-      const cmd = new Command('test').addOption('-o, --output <path>', {
-        description: 'output',
-        env: 'TEST_STR',
-      })
+      const cmd = new Command('test').addOption('-o, --output <path>', { description: 'output', env: 'TEST_STR' })
       const opt = cmd.options.find((o) => {
         return o.name === 'output'
       })!

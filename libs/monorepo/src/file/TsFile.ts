@@ -10,9 +10,7 @@ import { lazyProp } from '@mono/decorators'
  */
 @Parenting.compose
 export class TsFile<P extends Workspace = Workspace> extends File<P> {
-  static readonly inspector = Inspector.compose(TsFile, {
-    keys: ['tsCode'],
-  })
+  static readonly inspector = Inspector.compose(TsFile, { keys: ['tsCode'] })
 
   @lazyProp(5000)
   get tsCode(): TsCode {

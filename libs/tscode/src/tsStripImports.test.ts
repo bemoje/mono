@@ -108,14 +108,7 @@ describe(tsStripImports.name, () => {
     it('should use provided imports parameter', () => {
       const code = `import { a } from 'a'\nimport { b } from 'b'\n\nconst test = 'value'`
 
-      const imports = [
-        {
-          start: 0,
-          end: 1,
-          match: "import { a } from 'a'",
-          matchOneLine: "import { a } from 'a'",
-        },
-      ]
+      const imports = [{ start: 0, end: 1, match: "import { a } from 'a'", matchOneLine: "import { a } from 'a'" }]
 
       const result = tsStripImports(code, imports)
 

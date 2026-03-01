@@ -5,15 +5,7 @@ import { objDeepFreeze } from './objDeepFreeze'
 
 describe('objDeepFreeze', () => {
   it('should deep freeze an object', () => {
-    const obj = {
-      a: 1,
-      b: {
-        c: 2,
-        d: {
-          e: 3,
-        },
-      },
-    }
+    const obj = { a: 1, b: { c: 2, d: { e: 3 } } }
     const frozenObj = objDeepFreeze(obj)
     expect(Object.isFrozen(frozenObj)).toBe(true)
     expect(Object.isFrozen(frozenObj.b)).toBe(true)

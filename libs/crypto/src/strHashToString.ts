@@ -16,7 +16,7 @@ import { strHashToBuffer } from './strHashToBuffer'
 export function strHashToString(
   string: string,
   algorithm: TCryptoAlgorithm = 'sha256',
-  encoding: crypto.Encoding = 'base64',
+  encoding: crypto.Encoding = 'base64'
 ): string {
   return strHashToBuffer(string, algorithm).toString(encoding)
 }

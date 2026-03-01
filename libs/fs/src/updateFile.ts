@@ -6,7 +6,7 @@ import fs from 'fs-extra'
  */
 export async function updateFile(
   filepath: string,
-  update: (fileContent: string) => string | Promise<string>,
+  update: (fileContent: string) => string | Promise<string>
 ): Promise<void> {
   await fs.ensureFile(filepath)
   const content = await fs.readFile(filepath, 'utf8')

@@ -5,13 +5,8 @@ import type { OptionUsage } from '../types'
  * Parses option flags string into its components
  */
 export function parseOptionFlags<Long extends string>(
-  flags: OptionUsage<Long>,
-): {
-  short: string
-  long: Long
-  name: CamelCase<Long>
-  argName: string | undefined
-} {
+  flags: OptionUsage<Long>
+): { short: string; long: Long; name: CamelCase<Long>; argName: string | undefined } {
   const match = flags.match(/^-(.+?), --([a-zA-Z][\w-]*)(?:\s*(<(.+?)>|\[(.+?)\]))?$/)
   if (!match) {
     throw new Error(`Invalid option format: ${flags}`)

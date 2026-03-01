@@ -13,10 +13,9 @@ export class SchemaValidationError extends Error {
   constructor(errors: TSchema | ValueError[] | ValueErrorIterator, value: unknown, message: string) {
     super(message)
     this.value = value
-    this.errors = Array.isArray(errors)
-      ? errors
-      : errors instanceof ValueErrorIterator
-        ? Array.from(errors)
-        : Array.from(Value.Errors(errors, value))
+    this.errors =
+      Array.isArray(errors) ? errors
+      : errors instanceof ValueErrorIterator ? Array.from(errors)
+      : Array.from(Value.Errors(errors, value))
   }
 }

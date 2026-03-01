@@ -76,7 +76,13 @@ export class ExtMap<K = any, V = any> extends View<Map<K, V>> implements Map<K, 
   constructor(iterable?: Iterable<readonly [K, V]> | null | undefined)
   constructor(obj?: Record<Extract<K, PropertyKey>, V>)
   constructor(arg?: Record<Extract<K, PropertyKey>, V> | Iterable<readonly [K, V]> | null | undefined) {
-    super(new Map(isIterable(arg) ? arg : arg ? entriesOf(arg) : undefined))
+    super(
+      new Map(
+        isIterable(arg) ? arg
+        : arg ? entriesOf(arg)
+        : undefined
+      )
+    )
   }
 
   /**
@@ -135,7 +141,7 @@ export class ExtMap<K = any, V = any> extends View<Map<K, V>> implements Map<K, 
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function thisify<T, Args extends any[], Ret>(
-  fn: (target: T, ...args: Args) => Ret,
+  fn: (target: T, ...args: Args) => Ret
 ): (this: T, ...args: Args) => Ret {
   return function wrapped(this: T, ...args: Args): Ret {
     return fn(this, ...args)
@@ -149,7 +155,7 @@ function thisify<T, Args extends any[], Ret>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformReturnValue<T, Args extends any[], Ret, NewRet>(
   fn: (this: T, ...args: Args) => Ret,
-  transform: (value: Ret) => NewRet,
+  transform: (value: Ret) => NewRet
 ): (this: T, ...args: Args) => NewRet {
   return function wrapped(this: T, ...args: Args): NewRet {
     const result = fn.apply(this, args)

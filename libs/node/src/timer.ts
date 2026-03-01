@@ -9,7 +9,7 @@ import { isPromise } from 'util/types'
  */
 export function timer<T>(
   arg: string | [name: string, description: string],
-  task: (log: Logger, name: string) => T,
+  task: (log: Logger, name: string) => T
 ): T {
   const t0 = process.hrtime.bigint()
   const [name, description] = Array.isArray(arg) ? arg : [arg, '']

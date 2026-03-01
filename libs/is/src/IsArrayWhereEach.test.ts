@@ -47,7 +47,7 @@ describe(IsArrayWhereEach.name, () => {
             return true
           },
         ],
-        'isAnything',
+        'isAnything'
       )
     }).not.toThrow()
   })

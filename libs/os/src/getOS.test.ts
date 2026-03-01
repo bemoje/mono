@@ -11,19 +11,13 @@ import { vi } from 'vitest'
 
 // Mock dependencies
 vi.mock('./isLinux', () => {
-  return {
-    isLinux: vi.fn(),
-  }
+  return { isLinux: vi.fn() }
 })
 vi.mock('./isOSX', () => {
-  return {
-    isOSX: vi.fn(),
-  }
+  return { isOSX: vi.fn() }
 })
 vi.mock('./isWindows', () => {
-  return {
-    isWindows: vi.fn(),
-  }
+  return { isWindows: vi.fn() }
 })
 
 const mockIsLinux = vi.mocked(isLinux)

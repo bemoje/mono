@@ -15,7 +15,7 @@ describe(OptionsConfigurator.name, () => {
           default: () => {
             return 'WA'
           },
-        }),
+        })
       ),
       disabled: Type.Optional(Type.Boolean()),
     }
@@ -26,12 +26,7 @@ describe(OptionsConfigurator.name, () => {
       return o.name('Alice').age(30).city('Seattle').done()
     })
 
-    expect(options).toEqual({
-      name: 'Alice',
-      age: 30,
-      city: 'Seattle',
-      state: 'WA',
-    })
+    expect(options).toEqual({ name: 'Alice', age: 30, city: 'Seattle', state: 'WA' })
   })
 
   it('should apply default values for optional fields', () => {
@@ -42,7 +37,7 @@ describe(OptionsConfigurator.name, () => {
           default: () => {
             return 'CA'
           },
-        }),
+        })
       ),
     }
 
@@ -52,10 +47,7 @@ describe(OptionsConfigurator.name, () => {
       return o.name('Bob').done()
     })
 
-    expect(options).toEqual({
-      name: 'Bob',
-      state: 'CA',
-    })
+    expect(options).toEqual({ name: 'Bob', state: 'CA' })
   })
 
   it('should allow overriding default values for optional fields', () => {
@@ -66,7 +58,7 @@ describe(OptionsConfigurator.name, () => {
           default: () => {
             return 'CA'
           },
-        }),
+        })
       ),
     }
 
@@ -76,17 +68,11 @@ describe(OptionsConfigurator.name, () => {
       return o.name('Charlie').state('NY').done()
     })
 
-    expect(options).toEqual({
-      name: 'Charlie',
-      state: 'NY',
-    })
+    expect(options).toEqual({ name: 'Charlie', state: 'NY' })
   })
 
   it('should handle empty optional fields', () => {
-    const props = {
-      name: Type.String(),
-      disabled: Type.Optional(Type.Boolean()),
-    }
+    const props = { name: Type.String(), disabled: Type.Optional(Type.Boolean()) }
 
     const configurator = OptionsConfigurator(props)
 
@@ -94,16 +80,11 @@ describe(OptionsConfigurator.name, () => {
       return o.name('Dana').done()
     })
 
-    expect(options).toEqual({
-      name: 'Dana',
-    })
+    expect(options).toEqual({ name: 'Dana' })
   })
 
   it('should accept a TObject schema instead of plain props', () => {
-    const schema = Type.Object({
-      name: Type.String(),
-      count: Type.Optional(Type.Integer({ default: 5 })),
-    })
+    const schema = Type.Object({ name: Type.String(), count: Type.Optional(Type.Integer({ default: 5 })) })
 
     const configurator = OptionsConfigurator(schema)
 
@@ -137,7 +118,7 @@ describe(OptionsConfigurator.name, () => {
           default: () => {
             return 'WA'
           },
-        }),
+        })
       ),
     }
     const configurator = OptionsConfigurator(props)
@@ -179,7 +160,7 @@ describe(OptionsConfigurator.name, () => {
           default: () => {
             return 'CA'
           },
-        }),
+        })
       ),
     }
     const configurator = OptionsConfigurator(props)
@@ -192,10 +173,7 @@ describe(OptionsConfigurator.name, () => {
   })
 
   it('should handle passing undefined to an accessor without default (deletes key)', () => {
-    const props = {
-      name: Type.String(),
-      tag: Type.Optional(Type.String()),
-    }
+    const props = { name: Type.String(), tag: Type.Optional(Type.String()) }
     const configurator = OptionsConfigurator(props)
     const create = configurator.getCreate()
     const builder = create()
@@ -208,10 +186,7 @@ describe(OptionsConfigurator.name, () => {
   })
 
   it('should handle a non-function default value', () => {
-    const props = {
-      name: Type.String(),
-      count: Type.Optional(Type.Integer({ default: 42 })),
-    }
+    const props = { name: Type.String(), count: Type.Optional(Type.Integer({ default: 42 })) }
     const configurator = OptionsConfigurator(props)
     const options = configurator((o) => {
       return o.name('test').done()
@@ -227,7 +202,7 @@ describe(OptionsConfigurator.name, () => {
           default: () => {
             return 'WA'
           },
-        }),
+        })
       ),
     }
     const configurator = OptionsConfigurator(props)
@@ -239,10 +214,7 @@ describe(OptionsConfigurator.name, () => {
   })
 
   it('should handle applyDefaults skipping undefined defaults', () => {
-    const props = {
-      name: Type.String(),
-      tag: Type.Optional(Type.String()),
-    }
+    const props = { name: Type.String(), tag: Type.Optional(Type.String()) }
     const configurator = OptionsConfigurator(props)
     const options = configurator((o) => {
       return o.name('test').done()

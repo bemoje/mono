@@ -40,7 +40,7 @@ export async function missingCoverageFilesAction(opts: { check?: boolean }, { lo
   }
 
   const coverageSummary: Record<string, CoverageEntry> = JSON.parse(
-    fs.readFileSync(coverageSummaryJsonFilepath, 'utf-8'),
+    fs.readFileSync(coverageSummaryJsonFilepath, 'utf-8')
   )
 
   const result = Object.entries(coverageSummary)

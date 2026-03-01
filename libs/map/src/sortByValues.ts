@@ -21,15 +21,15 @@ import type { GenericMap } from '@mono/types'
  */
 export function sortByValues<T extends GenericMap<K, V, 'set' | 'clear' | typeof Symbol.iterator>, K, V>(
   ins: T,
-  compare: (a: V, b: V) => number,
+  compare: (a: V, b: V) => number
 ): T
 export function sortByValues<K, V>(
   ins: GenericMap<K, V, 'set' | 'clear' | typeof Symbol.iterator>,
-  compare: (a: V, b: V) => number,
+  compare: (a: V, b: V) => number
 ): GenericMap<K, V, 'set' | 'clear' | typeof Symbol.iterator>
 export function sortByValues<K, V>(
   ins: GenericMap<K, V, 'set' | 'clear' | typeof Symbol.iterator>,
-  compare: (a: V, b: V) => number,
+  compare: (a: V, b: V) => number
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
   const entries = Array.from(ins).sort((a, b) => {

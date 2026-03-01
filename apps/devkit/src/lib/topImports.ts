@@ -11,7 +11,7 @@ export function topImports(
   n: number = 50,
   normalize: (line: string) => string = (line) => {
     return line
-  },
+  }
 ) {
   const imports = _monorepo.getAllImports(repo)
 

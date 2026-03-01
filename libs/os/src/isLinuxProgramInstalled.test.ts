@@ -7,14 +7,10 @@ import { vi } from 'vitest'
 
 // Mock dependencies
 vi.mock('child_process', () => {
-  return {
-    exec: vi.fn(),
-  }
+  return { exec: vi.fn() }
 })
 vi.mock('./getOS', () => {
-  return {
-    getOS: vi.fn(),
-  }
+  return { getOS: vi.fn() }
 })
 
 describe('isLinuxProgramInstalled', () => {

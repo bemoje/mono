@@ -19,23 +19,13 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
 
   const languages: ResumeLanguage[] = []
   const profileData = {
-    social: [
-      {
-        network: 'LinkedIn',
-        username,
-        url: getPageUrl(username, 'profile'),
-      },
-      ...(config.social ?? []),
-    ],
+    social: [{ network: 'LinkedIn', username, url: getPageUrl(username, 'profile') }, ...(config.social ?? [])],
   } as ResumeProfile
 
   const page = await browser.newPage()
 
   try {
-    await page.goto(getPageUrl(username, 'profile'), {
-      waitUntil: 'domcontentloaded',
-      timeout: 20000,
-    })
+    await page.goto(getPageUrl(username, 'profile'), { waitUntil: 'domcontentloaded', timeout: 20000 })
 
     // Wait for the profile top card to load
     await page.waitForSelector('h1', { timeout: 15000 })
@@ -65,33 +55,29 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
 
       // Headline - try multiple selectors
       const headline =
-        document.querySelector('.text-body-medium')?.textContent?.trim() ||
-        document.querySelector('[data-generated-suggestion-target]')?.textContent?.trim() ||
-        ''
+        document.querySelector('.text-body-medium')?.textContent?.trim()
+        || document.querySelector('[data-generated-suggestion-target]')?.textContent?.trim()
+        || ''
 
       // Location - try multiple selectors
       const locationEl =
-        document.querySelector('.text-body-small.inline.t-black--light.break-words') ||
-        document.querySelector('.pv-text-details__left-panel .text-body-small') ||
-        document.querySelector('.text-body-small[class*="break-words"]')
+        document.querySelector('.text-body-small.inline.t-black--light.break-words')
+        || document.querySelector('.pv-text-details__left-panel .text-body-small')
+        || document.querySelector('.text-body-small[class*="break-words"]')
 
       // Parse location string: "Herning, Midtjylland, Denmark" → { city, region, countryCode }
       const locParts = (locationEl?.textContent?.trim() ?? '').split(/\s*,\s*/).map((s) => {
         return s.trim()
       })
-      const location = {
-        city: locParts[0] ?? '',
-        region: locParts[1] ?? '',
-        countryCode: locParts[2] ?? '',
-      }
+      const location = { city: locParts[0] ?? '', region: locParts[1] ?? '', countryCode: locParts[2] ?? '' }
 
       // Profile photo
       const imgEl =
-        document.querySelector('.pv-top-card-profile-picture__image--show') ||
-        document.querySelector('.pv-top-card-profile-picture__image') ||
-        document.querySelector('img.profile-photo-edit__preview') ||
-        document.querySelector('img[class*="profile"][width="200"]') ||
-        document.querySelector('main img[src*="profile"]')
+        document.querySelector('.pv-top-card-profile-picture__image--show')
+        || document.querySelector('.pv-top-card-profile-picture__image')
+        || document.querySelector('img.profile-photo-edit__preview')
+        || document.querySelector('img[class*="profile"][width="200"]')
+        || document.querySelector('main img[src*="profile"]')
       const image = (imgEl as HTMLImageElement | null)?.src ?? ''
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -167,10 +153,7 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
             })
             .filter(Boolean)
           if (spans.length >= 1) {
-            languages.push({
-              language: spans[0],
-              fluency: spans[1] ?? '',
-            })
+            languages.push({ language: spans[0], fluency: spans[1] ?? '' })
           }
         }
       }
@@ -218,15 +201,11 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
     })
 
     const contactInfo = await page.evaluate(() => {
-      const data = {
-        email: '',
-        phone: '',
-        websites: [] as string[],
-      }
+      const data = { email: '', phone: '', websites: [] as string[] }
 
       // Try structured sections
       const sections = document.querySelectorAll(
-        '.pv-contact-info__contact-type, .ci-email, .ci-phone, .ci-vanity-url, [class*="contact-info"] section',
+        '.pv-contact-info__contact-type, .ci-email, .ci-phone, .ci-vanity-url, [class*="contact-info"] section'
       )
 
       for (const section of sections) {
@@ -266,9 +245,9 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
       // Fallback: scan entire modal for email/phone if not found
       if (!data.email || !data.phone) {
         const modal =
-          document.querySelector('.pv-contact-info') ||
-          document.querySelector('.artdeco-modal') ||
-          document.querySelector('[class*="contact-info"]')
+          document.querySelector('.pv-contact-info')
+          || document.querySelector('.artdeco-modal')
+          || document.querySelector('[class*="contact-info"]')
         if (modal) {
           const modalText = modal.textContent!
           if (!data.email) {

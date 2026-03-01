@@ -11,7 +11,7 @@ export async function getAllWorkspacePaths(): Promise<string[]> {
     await Promise.all(
       pkg.workspaces.map((pattern: string) => {
         return glob(pattern)
-      }),
+      })
     )
   )
     .flat()

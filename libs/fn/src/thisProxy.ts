@@ -7,7 +7,7 @@ import { setNameAndLength } from './setNameAndLength'
  */
 export function thisProxy<ThisTarget extends This, This extends object, Args extends AnyArgs, Ret>(
   fn: (this: This, ...args: Args) => Ret,
-  proxy: PropertyKey,
+  proxy: PropertyKey
 ): (this: ThisTarget, ...args: Args) => Ret
 
 /**
@@ -16,7 +16,7 @@ export function thisProxy<ThisTarget extends This, This extends object, Args ext
  */
 export function thisProxy<ThisTarget extends This, This extends object, Args extends AnyArgs, Ret>(
   fn: (this: This, ...args: Args) => Ret,
-  proxy: (object: ThisTarget) => This,
+  proxy: (object: ThisTarget) => This
 ): (this: ThisTarget, ...args: Args) => Ret
 
 /**
@@ -25,7 +25,7 @@ export function thisProxy<ThisTarget extends This, This extends object, Args ext
  */
 export function thisProxy<ThisTarget extends This, This extends object, Args extends AnyArgs, Ret>(
   fn: (this: This, ...args: Args) => Ret,
-  proxy: PropertyKey | ((object: ThisTarget) => This),
+  proxy: PropertyKey | ((object: ThisTarget) => This)
 ) {
   return isFunction(proxy) ? thisProxyCallback(fn, proxy) : thisProxyKey(fn, proxy)
 }
@@ -35,7 +35,7 @@ export function thisProxy<ThisTarget extends This, This extends object, Args ext
  */
 function thisProxyKey<ThisTarget extends This, This extends object, Args extends AnyArgs, Ret>(
   fn: (this: This, ...args: Args) => Ret,
-  proxy: PropertyKey,
+  proxy: PropertyKey
 ): (this: ThisTarget, ...args: Args) => Ret {
   return setNameAndLength(fn, function (this: ThisTarget, ...args: Args): Ret {
     const thisArg = this[proxy as keyof ThisTarget] as This
@@ -48,7 +48,7 @@ function thisProxyKey<ThisTarget extends This, This extends object, Args extends
  */
 function thisProxyCallback<ThisTarget extends This, This extends object, Args extends AnyArgs, Ret>(
   fn: (this: This, ...args: Args) => Ret,
-  proxy: (object: ThisTarget) => This,
+  proxy: (object: ThisTarget) => This
 ): (this: ThisTarget, ...args: Args) => Ret {
   return setNameAndLength(fn, function (this: ThisTarget, ...args: Args): Ret {
     const thisArg = proxy(this)

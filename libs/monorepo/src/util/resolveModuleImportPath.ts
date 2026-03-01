@@ -21,7 +21,7 @@ export function resolveModuleImportPath(filepath: string, importFrom: string) {
       esModuleInterop: true,
       strict: false,
     },
-    createCompilerHost({}, true),
+    createCompilerHost({}, true)
   )
   const f = result.resolvedModule?.resolvedFileName
   if (f) {

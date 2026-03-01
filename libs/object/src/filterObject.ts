@@ -7,7 +7,7 @@ import { keysOf } from './keysOf'
  */
 export function filterObject<T extends object>(
   obj: T,
-  predicate: (value: ValueOf<T>, key: StringKeyOf<T>, obj: T) => boolean,
+  predicate: (value: ValueOf<T>, key: StringKeyOf<T>, obj: T) => boolean
 ) {
   const accum = {} as T
   for (const key of keysOf(obj)) {

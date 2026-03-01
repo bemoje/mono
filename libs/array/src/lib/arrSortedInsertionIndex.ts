@@ -16,7 +16,7 @@
 export function arrSortedInsertionIndex<T>(
   array: readonly T[],
   value: T,
-  comparator: (a: T, b: T) => number,
+  comparator: (a: T, b: T) => number
 ): number {
   let first = 0
   let count = array.length

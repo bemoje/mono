@@ -11,7 +11,7 @@ export class ModuleMethodIdentifier extends AbstractMethodIdentifier<object> {
     readonly parentName: string,
     target: object,
     key: string | symbol,
-    type: MethodType = 'method',
+    type: MethodType = 'method'
   ) {
     super(target, key, type)
     setNonEnumerable(this, 'parentName')

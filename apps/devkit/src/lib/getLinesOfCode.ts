@@ -12,17 +12,17 @@ export async function getLinesOfCode() {
   const source = countLines(
     ts.filter((p) => {
       return !/[./\\](test|examples|benchmark)[./\\]/.test(p)
-    }),
+    })
   )
   const test = countLines(
     ts.filter((p) => {
       return p.endsWith('.test.ts')
-    }),
+    })
   )
   const examples = countLines(
     ts.filter((p) => {
       return /[./\\](examples|benchmark)[./\\]/.test(p)
-    }),
+    })
   )
   const total = {
     files: source.files + test.files + examples.files,

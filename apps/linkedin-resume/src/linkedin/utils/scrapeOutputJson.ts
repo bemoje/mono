@@ -14,7 +14,7 @@ export async function scrapeOutputJson(
   data: object | object[],
   section: ResumeSection,
   logger: Logger,
-  options: CliOptions,
+  options: CliOptions
 ): Promise<void> {
   const filepath = upath.join(SCRAPE_PATH, `${section}-scraped.json`)
   await fs.outputFile(filepath, JSON.stringify(data, null, 2))

@@ -13,7 +13,7 @@ export function formatTableForTerminal(rows: string[][], headers?: string[], opt
     table.push(
       headers.map((s) => {
         return colors.yellow(s)
-      }),
+      })
     )
   }
   for (const row of rows) {

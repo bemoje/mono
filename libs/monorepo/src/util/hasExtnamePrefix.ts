@@ -7,7 +7,7 @@ import SemanticExtnamePrefixes from './SemanticExtnamePrefixes'
  */
 export function hasExtnamePrefix(
   tsFilepath: string,
-  prefixes: Arrayable<SemanticExtnamePrefix> = SemanticExtnamePrefixes as unknown as SemanticExtnamePrefix[],
+  prefixes: Arrayable<SemanticExtnamePrefix> = SemanticExtnamePrefixes as unknown as SemanticExtnamePrefix[]
 ) {
   return new RegExp(`[.](${[prefixes].flat(2).join('|')})[.][^/\\\\]+$`).test(tsFilepath)
 }

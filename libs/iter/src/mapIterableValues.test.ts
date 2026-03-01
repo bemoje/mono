@@ -25,7 +25,7 @@ describe(mapIterableValues.name, () => {
           ['b', 4],
           ['c', 6],
         ],
-        'values transformed',
+        'values transformed'
       )
 
       // use both key and value in transformation
@@ -41,7 +41,7 @@ describe(mapIterableValues.name, () => {
           ['b', 'b:2'],
           ['c', 'c:3'],
         ],
-        'values with keys',
+        'values with keys'
       )
 
       // empty iterable
@@ -154,11 +154,7 @@ describe(mapIterableValues.name, () => {
     ]
     const result = [
       ...mapIterableValues(entries, (value, key) => {
-        return {
-          ...value,
-          count: value.count * 2,
-          key,
-        }
+        return { ...value, count: value.count * 2, key }
       }),
     ]
     expect(result).toEqual([

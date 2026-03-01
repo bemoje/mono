@@ -36,13 +36,13 @@ describe(ensureThat.name, () => {
       // message
       expect.any(String),
       // data
-      expect.objectContaining(data),
+      expect.objectContaining(data)
     )
   }
 
   const expectThrowsWith = (
     f: () => void,
-    data: ConstructorParameters<typeof ValidatorErrorModule.ValidatorError>[1],
+    data: ConstructorParameters<typeof ValidatorErrorModule.ValidatorError>[1]
   ) => {
     expect(f).toThrow()
     expectErrorData(data)
@@ -72,9 +72,7 @@ describe(ensureThat.name, () => {
         () => {
           return ensureThat(-1, isPos)
         },
-        {
-          cause: { isPos: false },
-        },
+        { cause: { isPos: false } }
       )
     })
     it('[validator] => [false] => throws', () => {
@@ -82,9 +80,7 @@ describe(ensureThat.name, () => {
         () => {
           return ensureThat(-1, [isPos])
         },
-        {
-          cause: { isPos: false },
-        },
+        { cause: { isPos: false } }
       )
     })
     it('validator[] => [false, false] => throws', () => {
@@ -92,9 +88,7 @@ describe(ensureThat.name, () => {
         () => {
           return ensureThat(3, [isZero, isNeg])
         },
-        {
-          cause: { isZero: false, isNeg: false },
-        },
+        { cause: { isZero: false, isNeg: false } }
       )
     })
   })
@@ -105,9 +99,7 @@ describe(ensureThat.name, () => {
         () => {
           return ensureThat(0, [isNeg, isZero])
         },
-        {
-          cause: { isNeg: false },
-        },
+        { cause: { isNeg: false } }
       )
     })
     it('validator[] => [true, false] => throws', () => {
@@ -115,9 +107,7 @@ describe(ensureThat.name, () => {
         () => {
           return ensureThat(0, [isZero, isNeg])
         },
-        {
-          cause: { isNeg: false },
-        },
+        { cause: { isNeg: false } }
       )
     })
   })
@@ -129,9 +119,7 @@ describe(ensureThat.name, () => {
         () => {
           return ensureThat(3, isPos, { negate: true })
         },
-        {
-          cause: { isPos: true },
-        },
+        { cause: { isPos: true } }
       )
     })
     it('[validator] => [true], negate => [false] => throws', () => {
@@ -139,9 +127,7 @@ describe(ensureThat.name, () => {
         () => {
           return ensureThat(3, [isPos], { negate: true })
         },
-        {
-          cause: { isPos: true },
-        },
+        { cause: { isPos: true } }
       )
     })
     it('validator[] => [true, true], negate => [false, false] => throws', () => {
@@ -149,9 +135,7 @@ describe(ensureThat.name, () => {
         () => {
           return ensureThat(0, [isZero, isPos], { negate: true })
         },
-        {
-          cause: { isZero: true, isPos: true },
-        },
+        { cause: { isZero: true, isPos: true } }
       )
     })
 
@@ -161,9 +145,7 @@ describe(ensureThat.name, () => {
         () => {
           return ensureThat(0, [isZero, isNeg], { negate: true })
         },
-        {
-          cause: { isZero: true },
-        },
+        { cause: { isZero: true } }
       )
     })
     it('validator[] => [false, true], negate => [true, false] => throws', () => {
@@ -171,9 +153,7 @@ describe(ensureThat.name, () => {
         () => {
           return ensureThat(0, [isNeg, isZero], { negate: true })
         },
-        {
-          cause: { isZero: true },
-        },
+        { cause: { isZero: true } }
       )
     })
 
@@ -238,9 +218,7 @@ describe(ensureThat.name, () => {
           return false
         })
       }).toThrow()
-      expectErrorData({
-        cause: { '[0]': false },
-      })
+      expectErrorData({ cause: { '[0]': false } })
 
       expect(() => {
         return ensureThat(5, [
@@ -250,9 +228,7 @@ describe(ensureThat.name, () => {
           },
         ])
       }).toThrow()
-      expectErrorData({
-        cause: { 'isZero': false, '[1]': false },
-      })
+      expectErrorData({ cause: { 'isZero': false, '[1]': false } })
     })
   })
 
@@ -265,9 +241,7 @@ describe(ensureThat.name, () => {
       expect(() => {
         return ensureThat(1, stringFail)
       }).toThrow()
-      expectErrorData({
-        cause: { stringFail: 'failure reason' },
-      })
+      expectErrorData({ cause: { stringFail: 'failure reason' } })
     })
 
     it('anonymous string-returning validator failure', () => {
@@ -276,9 +250,7 @@ describe(ensureThat.name, () => {
           return 'failure reason' as string | true
         })
       }).toThrow()
-      expectErrorData({
-        cause: { '[0]': 'failure reason' },
-      })
+      expectErrorData({ cause: { '[0]': 'failure reason' } })
     })
 
     it('anonymous mixed boolean and string returning validator failure', () => {
@@ -290,9 +262,7 @@ describe(ensureThat.name, () => {
           },
         ])
       }).toThrow()
-      expectErrorData({
-        cause: { 'isZero': false, '[1]': 'failure reason' },
-      })
+      expectErrorData({ cause: { 'isZero': false, '[1]': 'failure reason' } })
     })
 
     it('string-returning validator with negate', () => {
@@ -310,9 +280,7 @@ describe(ensureThat.name, () => {
       expect(() => {
         return ensureThat(-1, isPos, { message: 'Custom error' })
       }).toThrow()
-      expectErrorData({
-        cause: { isPos: false },
-      })
+      expectErrorData({ cause: { isPos: false } })
       expect(errSpy).toHaveBeenCalledWith('Custom error', expect.any(Object))
     })
   })

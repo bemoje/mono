@@ -10,7 +10,7 @@ describe(reduceIterable.name, () => {
       (acc, v) => {
         return acc + v
       },
-      0,
+      0
     )
     expect(result).toBe(6)
   })
@@ -21,7 +21,7 @@ describe(reduceIterable.name, () => {
       (acc, v: number) => {
         return acc + v
       },
-      42,
+      42
     )
     expect(result).toBe(42)
   })
@@ -37,7 +37,7 @@ describe(reduceIterable.name, () => {
       (acc, v) => {
         return acc + v
       },
-      '',
+      ''
     )
     expect(result).toBe('abc')
   })

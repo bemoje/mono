@@ -14,8 +14,8 @@ export async function importLibs(): Promise<Map<string, Record<string, unknown>>
         })
         .map(async (ws) => {
           return [ws.split('/')[1], await import(ws)]
-        }),
-    ),
+        })
+    )
   )
   const entries = Object.entries(mod) as [string, Record<string, unknown>][]
   return new Map(entries)

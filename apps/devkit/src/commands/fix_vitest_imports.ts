@@ -6,7 +6,7 @@ import upath from 'upath'
 export async function fixVitestImportsAction(
   fileGlob: string,
   _opts: unknown,
-  { logger: log }: { logger: Logger },
+  { logger: log }: { logger: Logger }
 ) {
   const filepaths = globSync(fileGlob, { cwd: process.cwd() }).map((fp) => {
     return upath.normalizeSafe(fp)

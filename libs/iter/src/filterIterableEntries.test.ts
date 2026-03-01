@@ -24,7 +24,7 @@ describe(filterIterableEntries.name, () => {
           ['b', 2],
           ['c', 3],
         ],
-        'filtered by value',
+        'filtered by value'
       )
 
       // filter by key
@@ -39,7 +39,7 @@ describe(filterIterableEntries.name, () => {
           ['a', 1],
           ['c', 3],
         ],
-        'filtered by key',
+        'filtered by key'
       )
 
       // empty result

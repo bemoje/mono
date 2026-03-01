@@ -35,11 +35,7 @@ vi.mock('fs-extra', () => {
   }
 })
 vi.mock('fs-extra/esm', () => {
-  return {
-    default: {
-      readJsonSync: vi.fn(),
-    },
-  }
+  return { default: { readJsonSync: vi.fn() } }
 })
 vi.mock('onetime', () => {
   return {
@@ -49,10 +45,7 @@ vi.mock('onetime', () => {
   }
 })
 vi.mock('typescript', () => {
-  return {
-    resolveModuleName: vi.fn(),
-    createCompilerHost: vi.fn(),
-  }
+  return { resolveModuleName: vi.fn(), createCompilerHost: vi.fn() }
 })
 
 const mockFs = vi.mocked(fs)

@@ -33,7 +33,7 @@ export interface IterateObjectYield<T extends object = object, V = unknown> {
  * - Preserves traversal order
  */
 export function* iterateObject<T extends object = object, V = unknown>(
-  root: T,
+  root: T
 ): Generator<IterateObjectYield<T, V>> {
   const seen = new WeakSet()
   const stack: Pick<IterateObjectYield<T, V>, 'value' | 'propertyPathArray' | 'object'>[] = [
@@ -71,22 +71,14 @@ export function* iterateObject<T extends object = object, V = unknown>(
       if (Array.isArray(current)) {
         // push array elements in reverse order so they're processed in forward order
         for (let i = current.length - 1; i >= 0; i--) {
-          stack.push({
-            value: current[i],
-            propertyPathArray: propertyPathArray.concat(i),
-            object: current,
-          })
+          stack.push({ value: current[i], propertyPathArray: propertyPathArray.concat(i), object: current })
         }
       } else {
         // push object entries in reverse order so they're processed in forward order
         const entries = Object.entries(current)
         for (let i = entries.length - 1; i >= 0; i--) {
           const [key, value] = entries[i]
-          stack.push({
-            value: value,
-            propertyPathArray: propertyPathArray.concat(key),
-            object: current,
-          })
+          stack.push({ value: value, propertyPathArray: propertyPathArray.concat(key), object: current })
         }
       }
     } else {

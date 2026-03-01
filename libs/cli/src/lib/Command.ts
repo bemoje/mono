@@ -148,8 +148,9 @@ export class Command<
 
   /** adds aliases to existing ones */
   addAliases(...aliases: (string | string[])[]): this {
-    const taken = this.parent
-      ? valuesOf(this.parent.commands).flatMap((c) => {
+    const taken =
+      this.parent ?
+        valuesOf(this.parent.commands).flatMap((c) => {
           return [c.name, ...c.aliases]
         })
       : []
@@ -160,7 +161,7 @@ export class Command<
       .forEach((a) => {
         if (taken.includes(a)) {
           throw new Error(
-            `Alias "${a}" is already used by a sibling command: ${findCommand(this.parent!, a)?.name}`,
+            `Alias "${a}" is already used by a sibling command: ${findCommand(this.parent!, a)?.name}`
           )
         }
         this.aliases.push(a)
@@ -182,7 +183,7 @@ export class Command<
         console.log(
           getCommandAndAncestors(cmd).find((c) => {
             return c.version
-          })?.version,
+          })?.version
         )
         process.exitCode = 0
       })
@@ -216,11 +217,11 @@ export class Command<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   command<Name extends string, Sub extends Command<any, any, any> = Command<[], O, {}>>(
     name: Name,
-    cb?: (cmd: Command<[], O, {}>, parent: this) => Sub,
+    cb?: (cmd: Command<[], O, {}>, parent: this) => Sub
   ): Sub {
     if (this.arguments.length) {
       throw new Error(
-        `Cannot add subcommand "${name}" to "${this.name}" because it already has arguments defined.`,
+        `Cannot add subcommand "${name}" to "${this.name}" because it already has arguments defined.`
       )
     }
     const sub = this.createSubcommand(name)
@@ -241,7 +242,7 @@ export class Command<
       throw new Error(
         `Command name "${getCommandAndAncestors(sub).map((c) => {
           return c.name
-        })}" is already used by this command or its aliases: ${taken.join(', ')}`,
+        })}" is already used by this command or its aliases: ${taken.join(', ')}`
       )
     }
     const kebab = kebabCase(name)
@@ -275,7 +276,7 @@ export class Command<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addCommand<Name extends string, Sub extends Command<any, any, any> = Command<[], O, {}>>(
     name: Name,
-    cb: (cmd: Command<[], O, {}>, parent: this) => Sub,
+    cb: (cmd: Command<[], O, {}>, parent: this) => Sub
   ): Command<A, O, (SubCommands extends Subs ? {} : Subs) & { [K in Name]: Sub }> {
     this.command(name, cb)
     return this as never
@@ -284,31 +285,31 @@ export class Command<
   /** add required variadic argument, eg.: `<name...>` */
   addArgument<const Opts extends RequiredVariadicArgumentOptions>(
     usage: AllowedArgumentUsage<this, `<${string}...>`>,
-    options?: Opts,
+    options?: Opts
   ): Command<[...A, InferAddedArgumentType<Opts>[]], O, Subs>
 
   /** add required argument, eg.: `<name>` */
   addArgument<const Opts extends RequiredArgumentOptions>(
     usage: AllowedArgumentUsage<this, `<${string}>`>,
-    options?: Opts,
+    options?: Opts
   ): Command<[...A, InferAddedArgumentType<Opts>], O, Subs>
 
   /** add optional variadic argument with defaults, eg.: `[name...]` */
   addArgument<const Opts extends OptionalVariadicArgumentOptions>(
     usage: AllowedArgumentUsage<this, `[${string}...]`>,
-    options?: Opts,
+    options?: Opts
   ): Command<[...A, InferAddedArgumentType<Opts>[]], O, Subs>
 
   /** add optional argument with default, eg.: `[name]` */
   addArgument<const Opts extends OptionalArgumentOptionsWithDefaultValue>(
     usage: AllowedArgumentUsage<this, `[${string}]`>,
-    options: Opts,
+    options: Opts
   ): Command<[...A, InferAddedArgumentType<Opts>], O, Subs>
 
   /** add optional argument, eg.: `[name]` */
   addArgument<const Opts extends OptionalArgumentOptions>(
     usage: AllowedArgumentUsage<this, `[${string}]`>,
-    options?: Opts,
+    options?: Opts
   ): Command<[...A, InferAddedArgumentType<Opts> | undefined], O, Subs>
 
   // implementation
@@ -333,17 +334,11 @@ export class Command<
 
     if (required && prevArg?.defaultValue) {
       throw new Error(
-        `Cannot add required argument ${usage} after optional argument with default value ${prevArg.usage}`,
+        `Cannot add required argument ${usage} after optional argument with default value ${prevArg.usage}`
       )
     }
 
-    const arg: Argument = {
-      usage,
-      name,
-      required,
-      variadic,
-      ...options,
-    }
+    const arg: Argument = { usage, name, required, variadic, ...options }
 
     if (variadic && !arg.defaultValue) {
       arg.defaultValue = [] as string[]
@@ -356,37 +351,37 @@ export class Command<
   /** add optional string option, eg.: `-o, --output [path]` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} [${string}]`,
-    options?: SetFieldType<OptionalOptionOptions, 'defaultValue', undefined | never>,
+    options?: SetFieldType<OptionalOptionOptions, 'defaultValue', undefined | never>
   ): Command<A, Simplify<{ [K in CamelCase<Long>]?: string } & O>, Subs>
   /** add optional string option with default, eg.: `-o, --output [path]` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} [${string}]`,
-    options: SetFieldType<SetRequired<OptionalOptionOptions, 'defaultValue'>, 'defaultValue', string>,
+    options: SetFieldType<SetRequired<OptionalOptionOptions, 'defaultValue'>, 'defaultValue', string>
   ): Command<A, Simplify<{ [K in CamelCase<Long>]: string } & O>, Subs>
   /** add required variadic option, eg.: `-i, --include <patterns...>` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} <${string}...>`,
-    options?: RequiredVariadicOptionOptions,
+    options?: RequiredVariadicOptionOptions
   ): Command<A, Simplify<{ [K in CamelCase<Long>]: string[] } & O>, Subs>
   /** add optional variadic option with defaults, eg.: `-e, --exclude [patterns...]` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} [${string}...]`,
-    options?: OptionalVariadicOptionOptions,
+    options?: OptionalVariadicOptionOptions
   ): Command<A, Simplify<{ [K in CamelCase<Long>]: string[] } & O>, Subs>
   /** add required string option, eg.: `-f, --file <path>` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long} <${string}>`,
-    options?: RequiredOptionOptions,
+    options?: RequiredOptionOptions
   ): Command<A, Simplify<{ [K in CamelCase<Long>]: string } & O>, Subs>
   /** add boolean flag option with default, eg.: `-v, --verbose` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long}`,
-    options: SetFieldType<SetRequired<BooleanOptionOptions, 'defaultValue'>, 'defaultValue', boolean>,
+    options: SetFieldType<SetRequired<BooleanOptionOptions, 'defaultValue'>, 'defaultValue', boolean>
   ): Command<A, Simplify<{ [K in CamelCase<Long>]: boolean } & O>, Subs>
   /** add boolean flag option, eg.: `-v, --verbose` */
   addOption<Long extends string>(
     flags: `-${string}, --${Long}`,
-    options?: SetFieldType<BooleanOptionOptions, 'defaultValue', undefined | never>,
+    options?: SetFieldType<BooleanOptionOptions, 'defaultValue', undefined | never>
   ): Command<A, Simplify<{ [K in CamelCase<Long>]?: boolean } & O>, Subs>
 
   /**
@@ -475,9 +470,9 @@ export class Command<
       name: optionName,
       predicate: setName(`has${upperFirst(optionName as string)}`, (({ opts }) => {
         return (
-          opts[optionName] !== undefined &&
-          opts[optionName] !== false &&
-          !(Array.isArray(opts[optionName]) && opts[optionName].length === 0)
+          opts[optionName] !== undefined
+          && opts[optionName] !== false
+          && !(Array.isArray(opts[optionName]) && opts[optionName].length === 0)
         )
       }) as HookPredicate<Arguments, Options & O>),
       action: setName(optionName as string, action),
@@ -499,7 +494,7 @@ export class Command<
       options: Object.fromEntries(
         this.options.map((o) => {
           return [o.name, { type: o.type, short: o.short, default: o.defaultValue, multiple: !!o.variadic }]
-        }),
+        })
       ),
       allowPositionals: true,
       tokens: true,
@@ -511,7 +506,13 @@ export class Command<
     mergeOptionDefaults(parsed.values as Record<string, unknown>, this.options)
 
     parsed.values = objSortKeys(parsed.values, (a, b) => {
-      return a[1] === false ? 1 : b[1] === false ? -1 : a[1] === true ? 1 : b[1] === true ? -1 : 0
+      return (
+        a[1] === false ? 1
+        : b[1] === false ? -1
+        : a[1] === true ? 1
+        : b[1] === true ? -1
+        : 0
+      )
     })
 
     const args = resolveArguments(parsed.positionals, this.arguments)

@@ -4,7 +4,7 @@
 export function reduce<K, V, T>(
   map: ReadonlyMap<K, V>,
   reducer: (accumulator: T, value: V, key: K) => T,
-  initialValue: T,
+  initialValue: T
 ): T
 
 /** Reduce a `Set` (or `ReadonlySet`). Callback receives `(accumulator, value)`. */
@@ -14,14 +14,14 @@ export function reduce<V, T>(set: ReadonlySet<V>, reducer: (accumulator: T, valu
 export function reduce<V, T>(
   array: readonly V[],
   reducer: (accumulator: T, value: V, index: number) => T,
-  initialValue: T,
+  initialValue: T
 ): T
 
 /** Reduce a plain object. Callback receives `(accumulator, value, key)`. */
 export function reduce<K extends string, V, T>(
   object: Record<K, V>,
   reducer: (accumulator: T, value: V, key: K) => T,
-  initialValue: T,
+  initialValue: T
 ): T
 
 /** Reduce any `Iterable`. Callback receives `(accumulator, value)`. */

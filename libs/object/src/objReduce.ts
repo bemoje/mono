@@ -11,7 +11,7 @@ import { reduceIterableEntries } from '@mono/iter'
 export function objReduce<A, T extends Record<string, any>>(
   object: T,
   reducer: (accum: A, value: T[keyof T], key: string) => A,
-  accum: A,
+  accum: A
 ): A {
   return reduceIterableEntries(entriesOf(object), reducer, accum)
 }

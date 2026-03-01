@@ -6,7 +6,7 @@ import { entriesOf } from './entriesOf'
  */
 export function mapObjectEntries<T extends object, K extends PropertyKey, V>(
   obj: T,
-  fn: (key: StringKeyOf<T>, value: T[StringKeyOf<T>]) => [K, V],
+  fn: (key: StringKeyOf<T>, value: T[StringKeyOf<T>]) => [K, V]
 ) {
   const accum = {} as Record<K, V>
   for (const [key, value] of entriesOf(obj)) {

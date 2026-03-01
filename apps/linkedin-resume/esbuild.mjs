@@ -51,7 +51,7 @@ void (await (async () => {
   const cmdVersion = cmdVersionSplit[1]
   if (cmdVersion !== pkg.version) {
     console.info(
-      `Version mismatch: src/core/version.ts (${cmdVersion}) vs package.json (${pkg.version}). Updating src/core/version.ts...`,
+      `Version mismatch: src/core/version.ts (${cmdVersion}) vs package.json (${pkg.version}). Updating src/core/version.ts...`
     )
     const cmdVersionSrcNew = cmdVersionSplit
       .map((part, i) => {
@@ -68,7 +68,7 @@ void (await (async () => {
   const cmdDescription = cmdDescriptionSplit[1]
   if (cmdDescription !== pkg.description) {
     console.info(
-      `Description mismatch: src/core/description.ts (${cmdDescription}) vs package.json (${pkg.description}). Updating src/core/description.ts...`,
+      `Description mismatch: src/core/description.ts (${cmdDescription}) vs package.json (${pkg.description}). Updating src/core/description.ts...`
     )
     const cmdDescriptionSrcNew = cmdDescriptionSplit
       .map((part, i) => {

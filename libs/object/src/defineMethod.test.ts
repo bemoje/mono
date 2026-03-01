@@ -22,7 +22,7 @@ describe(defineMethod.name, () => {
         () => {
           return 42
         },
-        { enumerable: true },
+        { enumerable: true }
       )
       assert.strictEqual(obj.compute(), 42)
       assert.strictEqual(Object.propertyIsEnumerable.call(obj, 'compute'), true)
@@ -34,7 +34,7 @@ describe(defineMethod.name, () => {
         () => {
           return 'fixed'
         },
-        { writable: false },
+        { writable: false }
       )
       assert.strictEqual(obj.constant(), 'fixed')
 
@@ -106,12 +106,7 @@ describe(defineMethod.name, () => {
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
 
-      expect(descriptor).toMatchObject({
-        value: methodFn,
-        configurable: true,
-        writable: true,
-        enumerable: false,
-      })
+      expect(descriptor).toMatchObject({ value: methodFn, configurable: true, writable: true, enumerable: false })
     })
 
     it('should allow overriding descriptor options', () => {
@@ -120,20 +115,11 @@ describe(defineMethod.name, () => {
         return 'value'
       }
 
-      defineMethod(obj, 'prop', methodFn, {
-        enumerable: true,
-        writable: false,
-        configurable: false,
-      })
+      defineMethod(obj, 'prop', methodFn, { enumerable: true, writable: false, configurable: false })
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
 
-      expect(descriptor).toMatchObject({
-        value: methodFn,
-        configurable: false,
-        writable: false,
-        enumerable: true,
-      })
+      expect(descriptor).toMatchObject({ value: methodFn, configurable: false, writable: false, enumerable: true })
     })
 
     it('should handle value descriptor options', () => {
@@ -142,10 +128,7 @@ describe(defineMethod.name, () => {
         return 'test'
       }
 
-      defineMethod(obj, 'method', methodFn, {
-        writable: false,
-        enumerable: true,
-      })
+      defineMethod(obj, 'method', methodFn, { writable: false, enumerable: true })
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'method')
       expect(descriptor).toBeDefined()
@@ -223,10 +206,7 @@ describe(defineMethod.name, () => {
 
   describe('this context', () => {
     it('should maintain this context when method is called', () => {
-      const obj: any = {
-        name: 'test-object',
-        value: 42,
-      }
+      const obj: any = { name: 'test-object', value: 42 }
 
       defineMethod(obj, 'getValue', function (this: any) {
         return this.value

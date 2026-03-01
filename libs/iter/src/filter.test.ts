@@ -21,7 +21,7 @@ describe(filter.name, () => {
         new Map([
           ['b', 2],
           ['c', 3],
-        ]),
+        ])
       )
     })
 
@@ -38,7 +38,7 @@ describe(filter.name, () => {
         new Map([
           ['keep', 1],
           ['keep2', 3],
-        ]),
+        ])
       )
     })
   })

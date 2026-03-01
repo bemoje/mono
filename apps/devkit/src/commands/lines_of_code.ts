@@ -9,7 +9,7 @@ export async function linesOfCodeAction(_opts: unknown, { logger: log }: { logge
       Object.entries(counts).map(([k, v]) => {
         return [k, String(v.files), String(v.lines)]
       }),
-      ['file type', 'files', 'lines of code'],
-    )}`,
+      ['file type', 'files', 'lines of code']
+    )}`
   )
 }

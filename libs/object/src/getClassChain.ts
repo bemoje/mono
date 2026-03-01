@@ -8,7 +8,7 @@ import { isConstructor } from '@mono/is'
  */
 export function getClassChain(
   target: object | AnyConstructor,
-  options?: { includeSelf?: boolean },
+  options?: { includeSelf?: boolean }
 ): AnyConstructor[] {
   const ctor = (isConstructor(target) ? target : target.constructor) as AnyConstructor
   const result: AnyConstructor[] = []

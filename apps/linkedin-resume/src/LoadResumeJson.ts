@@ -26,15 +26,15 @@ export async function loadResumeJson(options?: { applyIgnoreRules?: boolean }): 
       }
 
       const filteredSection =
-        rules === true
-          ? undefined
-          : entries.filter((item) => {
-              return !rules.some((rule) => {
-                return entriesOf(rule).every(([key, value]) => {
-                  return item[key] === value
-                })
+        rules === true ? undefined : (
+          entries.filter((item) => {
+            return !rules.some((rule) => {
+              return entriesOf(rule).every(([key, value]) => {
+                return item[key] === value
               })
             })
+          })
+        )
 
       Reflect.set(resume, section, filteredSection)
     }

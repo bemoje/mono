@@ -5,7 +5,7 @@ import { topImports } from '../lib/topImports'
 export async function listTopImportStatementsAction(
   n = '5000',
   _opts: unknown,
-  { logger: log }: { logger: Logger },
+  { logger: log }: { logger: Logger }
 ) {
   const res = topImports(new MonoRepo(), Number(n)).reverse()
   res.forEach((e) => {

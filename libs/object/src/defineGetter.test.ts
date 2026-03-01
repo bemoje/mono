@@ -22,7 +22,7 @@ describe(defineGetter.name, () => {
         () => {
           return 'hello'
         },
-        { enumerable: true },
+        { enumerable: true }
       )
       assert.strictEqual(obj.computed, 'hello')
       assert.strictEqual(Object.propertyIsEnumerable.call(obj, 'computed'), true)
@@ -34,7 +34,7 @@ describe(defineGetter.name, () => {
         () => {
           return 'initial'
         },
-        { configurable: true },
+        { configurable: true }
       )
       defineGetter(obj, 'dynamic', () => {
         return 'updated'
@@ -114,10 +114,7 @@ describe(defineGetter.name, () => {
         () => {
           return 'value'
         },
-        {
-          enumerable: true,
-          configurable: false,
-        },
+        { enumerable: true, configurable: false }
       )
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')

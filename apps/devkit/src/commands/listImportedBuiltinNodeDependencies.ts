@@ -21,8 +21,8 @@ export async function listImportedBuiltinNodeDependencies(_opts: object, { logge
                 return i.module.from
               })
           })
-          .flat(3),
-      ),
+          .flat(3)
+      )
     )
 
     if (deps.length) {

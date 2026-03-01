@@ -4,7 +4,11 @@
 export function arrayToString<T>(array: T[]): string {
   return `[${array
     .map((item: T) => {
-      return item == null ? String(item) : Array.isArray(item) ? arrayToString(item) : item.toString()
+      return (
+        item == null ? String(item)
+        : Array.isArray(item) ? arrayToString(item)
+        : item.toString()
+      )
     })
     .join(',')}]`
 }

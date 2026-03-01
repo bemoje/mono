@@ -76,12 +76,12 @@ describe(ParentRelationTypes.name, () => {
       expect(
         ParentRelationTypes.parentTypesStats
           .get(TestChild as FunctionPrototype)
-          .has(TestParent as FunctionPrototype),
+          .has(TestParent as FunctionPrototype)
       ).toBe(true)
       expect(
         ParentRelationTypes.childTypesStats
           .get(TestParent as FunctionPrototype)
-          .has(TestChild as FunctionPrototype),
+          .has(TestChild as FunctionPrototype)
       ).toBe(true)
     })
 
@@ -93,12 +93,12 @@ describe(ParentRelationTypes.name, () => {
       expect(
         ParentRelationTypes.parentTypesStats
           .get(TestChild as FunctionPrototype)
-          .multiplicity(TestParent as FunctionPrototype),
+          .multiplicity(TestParent as FunctionPrototype)
       ).toBe(2)
       expect(
         ParentRelationTypes.childTypesStats
           .get(TestParent as FunctionPrototype)
-          .multiplicity(TestChild as FunctionPrototype),
+          .multiplicity(TestChild as FunctionPrototype)
       ).toBe(2)
     })
   })

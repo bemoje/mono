@@ -7,7 +7,7 @@ describe('strTrimLinesLeft', () => {
   it('trims all lines', () => {
     const str = ['list:', ' 1. some text', ' 2. some text', '   a. some text', '   b. some text'].join('\n')
     expect(strTrimLinesLeft(str)).toBe(
-      ['list:', '1. some text', '2. some text', 'a. some text', 'b. some text'].join('\n'),
+      ['list:', '1. some text', '2. some text', 'a. some text', 'b. some text'].join('\n')
     )
   })
 

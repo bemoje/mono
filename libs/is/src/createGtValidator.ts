@@ -10,9 +10,6 @@ export function createGtValidator(limit: number) {
     }
     return value > limit
   }
-  Object.defineProperty(func, 'name', {
-    configurable: true,
-    value: `isGt${limit.toString()}`,
-  })
+  Object.defineProperty(func, 'name', { configurable: true, value: `isGt${limit.toString()}` })
   return func
 }

@@ -7,19 +7,12 @@ import { spawnChildProcess } from './spawnChildProcess'
 import { vi } from 'vitest'
 
 const { mockSpawn } = vi.hoisted(() => {
-  return {
-    mockSpawn: vi.fn(),
-  }
+  return { mockSpawn: vi.fn() }
 })
 
 // Mock child_process
 vi.mock('child_process', async () => {
-  return {
-    default: {
-      spawn: mockSpawn,
-    },
-    spawn: mockSpawn,
-  }
+  return { default: { spawn: mockSpawn }, spawn: mockSpawn }
 })
 
 describe(spawnChildProcess.name, () => {
@@ -28,11 +21,7 @@ describe(spawnChildProcess.name, () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    mockChild = {
-      on: vi.fn(),
-      stdout: { on: vi.fn() },
-      stderr: { on: vi.fn() },
-    }
+    mockChild = { on: vi.fn(), stdout: { on: vi.fn() }, stderr: { on: vi.fn() } }
 
     mockSpawn.mockReturnValue(mockChild)
   })
@@ -148,7 +137,7 @@ describe(spawnChildProcess.name, () => {
       exitHandler(1, null)
 
       await expect(promise).rejects.toThrow(
-        'Child node process exited with code: 1, signal: null, argv: [failing-script.js]',
+        'Child node process exited with code: 1, signal: null, argv: [failing-script.js]'
       )
     })
 
@@ -170,7 +159,7 @@ describe(spawnChildProcess.name, () => {
       exitHandler(1, null)
 
       await expect(promise).rejects.toThrow(
-        'Child node process exited with code: 1, signal: null, argv: [script.js, --arg1, value1, --arg2, value2]',
+        'Child node process exited with code: 1, signal: null, argv: [script.js, --arg1, value1, --arg2, value2]'
       )
     })
   })
@@ -275,11 +264,7 @@ describe(spawnChildProcess.name, () => {
     it('should handle complex spawn options', async () => {
       const complexOptions = {
         cwd: '/custom/working/directory',
-        env: {
-          NODE_ENV: 'production',
-          DEBUG: 'app:*',
-          PATH: '/custom/path',
-        },
+        env: { NODE_ENV: 'production', DEBUG: 'app:*', PATH: '/custom/path' },
         stdio: 'pipe' as const,
         detached: true,
         shell: true,

@@ -122,11 +122,7 @@ describe(Command.name, () => {
         ])
 
         expect(result.args).toEqual(['build', 'dist', ['extra1.js', 'extra2.js']])
-        expect(result.opts).toEqual({
-          verbose: true,
-          output: 'build',
-          exclude: ['test', 'docs'],
-        })
+        expect(result.opts).toEqual({ verbose: true, output: 'build', exclude: ['test', 'docs'] })
       })
     })
 
@@ -473,7 +469,7 @@ describe(Command.name, () => {
       expect(
         result.errors!.some((e) => {
           return e.includes('Missing argument')
-        }),
+        })
       ).toBe(true)
     })
 
@@ -484,21 +480,18 @@ describe(Command.name, () => {
       expect(
         result.errors!.some((e) => {
           return e.includes('Missing argument')
-        }),
+        })
       ).toBe(true)
     })
 
     it('should report error for invalid argument choices', () => {
-      const cmd = new Command('test').addArgument('<mode>', {
-        description: 'mode',
-        choices: ['dev', 'prod'],
-      })
+      const cmd = new Command('test').addArgument('<mode>', { description: 'mode', choices: ['dev', 'prod'] })
       const result = cmd.parseArgv(['staging'])
       expect(result.errors).toBeDefined()
       expect(
         result.errors!.some((e) => {
           return e.includes('Invalid argument')
-        }),
+        })
       ).toBe(true)
     })
 
@@ -518,7 +511,7 @@ describe(Command.name, () => {
       expect(
         result.errors!.some((e) => {
           return e.includes('Invalid option value')
-        }),
+        })
       ).toBe(true)
     })
 
@@ -540,7 +533,7 @@ describe(Command.name, () => {
       expect(
         result.errors!.some((e) => {
           return e.includes('Invalid option value')
-        }),
+        })
       ).toBe(true)
     })
 
@@ -551,7 +544,7 @@ describe(Command.name, () => {
       expect(
         result.errors!.some((e) => {
           return e.includes('Unknown option')
-        }),
+        })
       ).toBe(true)
     })
   })

@@ -48,7 +48,7 @@ export function getNamedExportTsDocSummary(name: string, code: string): string |
       .filter((l) => {
         return l && !/^(@|\/\/)/.test(l)
       })
-      .join('\n'),
+      .join('\n')
   )) {
     if (c.nextLine?.startsWith('export default ')) {
       continue

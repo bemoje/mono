@@ -91,11 +91,9 @@ export async function renderLibsExportedModules(): Promise<string> {
       if (!librarySummaries.has(libName)) {
         librarySummaries.set(libName, [])
       }
-      librarySummaries.get(libName)!.push({
-        fileName,
-        functionName: upath.basename(fileName),
-        summary: summary || 'No description available',
-      })
+      librarySummaries
+        .get(libName)!
+        .push({ fileName, functionName: upath.basename(fileName), summary: summary || 'No description available' })
     } catch {
       continue
     }
@@ -126,7 +124,7 @@ export async function renderLibsExportedModules(): Promise<string> {
     const summaryMap = new Map(
       summaries.map((s) => {
         return [s.functionName, s.summary]
-      }),
+      })
     )
 
     for (const exportName of namedExports) {
@@ -175,12 +173,8 @@ export async function renderCoverageSummary(): Promise<string> {
 export async function getNpmPkgDescriptions(placeholders: [string, string][]) {
   return await Promise.all(
     placeholders.map(async ([placeholder, name]) => {
-      return {
-        placeholder,
-        name,
-        description: await getNpmPkgDescription(name),
-      }
-    }),
+      return { placeholder, name, description: await getNpmPkgDescription(name) }
+    })
   )
 }
 

@@ -5,7 +5,7 @@ import fs from 'fs-extra'
  */
 export function updateFileLinesSync(
   filepath: string,
-  update: (fileContentLines: string[]) => string | string[],
+  update: (fileContentLines: string[]) => string | string[]
 ): void {
   fs.ensureFileSync(filepath)
   const content = fs.readFileSync(filepath, 'utf8')

@@ -9,7 +9,7 @@ import upath from 'upath'
  */
 export function prettyStackTrace(
   error: Error,
-  options: { omitStack?: boolean; omitProps?: boolean } = {},
+  options: { omitStack?: boolean; omitProps?: boolean } = {}
 ): string {
   return [renderMessage(error), renderProps(error, options), renderStack(error, options), ''].join('\n')
 }

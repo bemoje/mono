@@ -11,8 +11,8 @@ interface MemoizeExtendedOptions {
 export type SomeSyncFunction = (...args: any[]) => unknown
 export type SomeAsyncFunction = (...args: any[]) => Promise<unknown>
 
-export type MemoizeSyncOptions = Omit<memoizee.Options<SomeSyncFunction>, 'async' | 'promise'> &
-  MemoizeExtendedOptions
+export type MemoizeSyncOptions = Omit<memoizee.Options<SomeSyncFunction>, 'async' | 'promise'>
+  & MemoizeExtendedOptions
 
-export type MemoizeAsyncOptions = Omit<memoizee.Options<SomeAsyncFunction>, 'async' | 'promise'> &
-  MemoizeExtendedOptions
+export type MemoizeAsyncOptions = Omit<memoizee.Options<SomeAsyncFunction>, 'async' | 'promise'>
+  & MemoizeExtendedOptions

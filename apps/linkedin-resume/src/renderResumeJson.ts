@@ -21,15 +21,7 @@ export async function renderResumeJson(logger: Logger): Promise<void> {
   const languages = await scrapeReadJson<ResumeLanguage[]>('languages')
   const profile = await scrapeReadJson<ResumeProfile>('profile')
 
-  const resume: Resume = {
-    basics: profile,
-    work,
-    education,
-    projects,
-    languages,
-    recommendations,
-    skills,
-  }
+  const resume: Resume = { basics: profile, work, education, projects, languages, recommendations, skills }
 
   // render dist html resume
   const distResumeJsonPath = upath.joinSafe(DIST_PATH, 'resume.json')

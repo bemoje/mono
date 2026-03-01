@@ -7,31 +7,16 @@ import { vi } from 'vitest'
 
 // Mock dependencies
 vi.mock('fs-extra', () => {
-  return {
-    default: {
-      exists: vi.fn(),
-      stat: vi.fn(),
-    },
-    exists: vi.fn(),
-    stat: vi.fn(),
-  }
+  return { default: { exists: vi.fn(), stat: vi.fn() }, exists: vi.fn(), stat: vi.fn() }
 })
 vi.mock('child_process', () => {
-  return {
-    spawn: vi.fn(),
-  }
+  return { spawn: vi.fn() }
 })
 vi.mock('util', () => {
-  return {
-    default: {
-      promisify: vi.fn(),
-    },
-  }
+  return { default: { promisify: vi.fn() } }
 })
 vi.mock('./isWindows', () => {
-  return {
-    isWindows: vi.fn(),
-  }
+  return { isWindows: vi.fn() }
 })
 
 describe('winExplorerOpenDirectory', () => {

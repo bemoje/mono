@@ -37,14 +37,14 @@ export class Profiler {
    */
   static class<T extends FunctionPrototype & { profiler?: ProfilerClassOptions }>(
     target: T,
-    options?: ProfilerClassOptions,
+    options?: ProfilerClassOptions
   ): T
 
   /**
    * Class profiling decorator
    */
   static class<T extends FunctionPrototype & { profiler?: ProfilerClassOptions }>(
-    options: ProfilerClassOptions,
+    options: ProfilerClassOptions
   ): (target: T) => T
 
   /**
@@ -52,7 +52,7 @@ export class Profiler {
    */
   static class<T extends FunctionPrototype & { profiler?: ProfilerClassOptions }>(
     targetOrOptions: T | ProfilerClassOptions,
-    options?: ProfilerClassOptions,
+    options?: ProfilerClassOptions
   ) {
     if (isFunction(targetOrOptions)) {
       const target = targetOrOptions
@@ -68,7 +68,7 @@ export class Profiler {
 
   static classStatic<T extends FunctionPrototype & { profiler?: ProfilerClassOptions }>(
     target: T,
-    ignoreKeys?: Iterable<string | symbol>,
+    ignoreKeys?: Iterable<string | symbol>
   ) {
     if (Profiler.enabled) {
       wrapMethods(
@@ -76,7 +76,7 @@ export class Profiler {
         new ProfilerWrapMethodsStrategy(new StaticMethodProfilerFactory(target), [
           ...(ignoreKeys ?? []),
           ...(target.profiler?.ignoreStaticKeys ?? []),
-        ]),
+        ])
       )
     }
     return target
@@ -84,7 +84,7 @@ export class Profiler {
 
   static classPrototype<T extends FunctionPrototype & { profiler?: ProfilerClassOptions }>(
     target: T,
-    ignoreKeys?: Iterable<string | symbol>,
+    ignoreKeys?: Iterable<string | symbol>
   ) {
     if (Profiler.enabled) {
       wrapMethods(
@@ -92,7 +92,7 @@ export class Profiler {
         new ProfilerWrapMethodsStrategy(new PrototypeMethodProfilerFactory(target.prototype), [
           ...(ignoreKeys ?? []),
           ...(target.profiler?.ignorePrototypeKeys ?? []),
-        ]),
+        ])
       )
     }
     return target
@@ -102,7 +102,7 @@ export class Profiler {
     if (Profiler.enabled) {
       wrapMethods(
         target,
-        new ProfilerWrapMethodsStrategy(new ModuleMethodProfilerFactory(moduleName, target), ignoreKeys),
+        new ProfilerWrapMethodsStrategy(new ModuleMethodProfilerFactory(moduleName, target), ignoreKeys)
       )
     }
     return target
@@ -186,9 +186,7 @@ type ProfilerClassOptions = {
   ignorePrototypeKeys?: Iterable<string | symbol>
 }
 
-type GetProfilerResultsOptions = {
-  sortBy?: keyof FunctionProfilerResult
-}
+type GetProfilerResultsOptions = { sortBy?: keyof FunctionProfilerResult }
 
 type PrintProfilerResultsOptions = {
   sortBy?: keyof FunctionProfilerResult

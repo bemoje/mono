@@ -21,10 +21,7 @@ export async function scrapeExperience(browser: Browser, options: CliOptions, lo
 
   try {
     const username = userConfigFile.load().username
-    await page.goto(getPageUrl(username, 'experience'), {
-      waitUntil: 'domcontentloaded',
-      timeout: 20000,
-    })
+    await page.goto(getPageUrl(username, 'experience'), { waitUntil: 'domcontentloaded', timeout: 20000 })
 
     // Wait for the experience list to appear
     try {
@@ -61,11 +58,7 @@ export async function scrapeExperience(browser: Browser, options: CliOptions, lo
         const spans = getVisibleSpans(li).filter((text) => {
           return !mediaTextSet.has(text)
         })
-        return {
-          spans,
-          logoUrl: li.querySelector('img')?.src ?? '',
-          mediaLinks,
-        }
+        return { spans, logoUrl: li.querySelector('img')?.src ?? '', mediaLinks }
       })
     })
 
@@ -108,7 +101,7 @@ export async function scrapeExperience(browser: Browser, options: CliOptions, lo
           const skillsStr = i < spans.length && spans[i]?.startsWith('Skills:') ? spans[i++] : ''
 
           experiences.push(
-            buildEntry(position, companyName, dateStr, location, contentLines, skillsStr, logoUrl, mediaLinks),
+            buildEntry(position, companyName, dateStr, location, contentLines, skillsStr, logoUrl, mediaLinks)
           )
         }
       } else {
@@ -118,7 +111,7 @@ export async function scrapeExperience(browser: Browser, options: CliOptions, lo
         const companyName = companyRaw
           .replace(
             /\s*·\s*(Self-employed|Full-time|Part-time|Contract|Freelance|Internship|Apprenticeship|Seasonal)$/i,
-            '',
+            ''
           )
           .trim()
         const dateStr = spans[2] ?? ''
@@ -133,7 +126,7 @@ export async function scrapeExperience(browser: Browser, options: CliOptions, lo
           }
         }
         experiences.push(
-          buildEntry(position, companyName, dateStr, location, contentLines, skillsStr, logoUrl, mediaLinks),
+          buildEntry(position, companyName, dateStr, location, contentLines, skillsStr, logoUrl, mediaLinks)
         )
       }
     }
@@ -154,7 +147,7 @@ export async function scrapeExperience(browser: Browser, options: CliOptions, lo
       contentLines: string[],
       skillsStr: string,
       logoUrl: string,
-      mediaLinks: { title: string; url: string }[],
+      mediaLinks: { title: string; url: string }[]
     ): ResumeWork {
       const location = locationRaw.replace(/\s*·\s*(Hybrid|Remote|On-site|On site)$/i, '').trim()
 

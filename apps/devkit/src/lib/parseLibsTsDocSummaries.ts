@@ -42,7 +42,7 @@ export const parseLibsTsDocSummaries = onetime(async () => {
   const exportsNotInDedicatedFileSet = new Set(
     libs.map(([wsPath, expName]) => {
       return `${wsPath} => ${expName}.ts`
-    }),
+    })
   )
 
   const repoRoot = getRepoRootDirpath()
@@ -62,7 +62,7 @@ export const parseLibsTsDocSummaries = onetime(async () => {
       const filename = upath.trimExt(upath.basename(filepath))
       const code = await fs.readFile(filepath, 'utf8')
       return { filepath, filename, code }
-    }),
+    })
   )
 
   const summaries = new Map<string, string>()

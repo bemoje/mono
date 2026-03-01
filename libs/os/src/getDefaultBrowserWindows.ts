@@ -10,7 +10,7 @@ export function getDefaultBrowserWindows() {
       ' HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice',
       '/v',
       'ProgId',
-    ].join(' ')}`,
+    ].join(' ')}`
   )
   const match = /ProgId\s*REG_SZ\s*(?<id>\S+)/.exec(result.toString())
   if (!match || !match.groups) {

@@ -8,19 +8,13 @@ import { vi } from 'vitest'
 
 // Mock dependencies first
 vi.mock('./isOSX', () => {
-  return {
-    isOSX: vi.fn(),
-  }
+  return { isOSX: vi.fn() }
 })
 vi.mock('./isVsCodeInstalled', () => {
-  return {
-    isVsCodeInstalled: vi.fn(),
-  }
+  return { isVsCodeInstalled: vi.fn() }
 })
 vi.mock('./isWindows', () => {
-  return {
-    isWindows: vi.fn(),
-  }
+  return { isWindows: vi.fn() }
 })
 
 describe('defaultOpenInEditorCommand', () => {

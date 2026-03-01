@@ -8,12 +8,7 @@ export function defineValue<T extends object, V = object>(
   obj: T,
   key: PropertyKey,
   value: V,
-  des: ValueDescriptor<T> | AccessorDescriptor<T> = {},
+  des: ValueDescriptor<T> | AccessorDescriptor<T> = {}
 ) {
-  return Object.defineProperty<T>(obj, key, {
-    configurable: true,
-    value,
-    enumerable: true,
-    ...des,
-  })
+  return Object.defineProperty<T>(obj, key, { configurable: true, value, enumerable: true, ...des })
 }

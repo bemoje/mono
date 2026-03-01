@@ -55,7 +55,7 @@ describe(arrTableIterateAsObjects.name, () => {
             ['Mark', 'M', '2'],
             ['Anna', 'F'],
           ],
-          headers,
+          headers
         ),
       ]
     }).toThrow()

@@ -17,10 +17,7 @@ export async function scrapeSkills(browser: Browser, options: CliOptions, logger
 
   try {
     const username = userConfigFile.load().username
-    await page.goto(getPageUrl(username, 'skills'), {
-      waitUntil: 'domcontentloaded',
-      timeout: 20000,
-    })
+    await page.goto(getPageUrl(username, 'skills'), { waitUntil: 'domcontentloaded', timeout: 20000 })
 
     try {
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
@@ -44,10 +41,7 @@ export async function scrapeSkills(browser: Browser, options: CliOptions, logger
       const getVisibleSpans = (globalThis as any).__getVisibleSpans as (el: Element) => string[]
 
       return topLevelItems.map((li) => {
-        return {
-          spans: getVisibleSpans(li),
-          logoUrl: li.querySelector('img')?.src ?? '',
-        }
+        return { spans: getVisibleSpans(li), logoUrl: li.querySelector('img')?.src ?? '' }
       })
     })
 

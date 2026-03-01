@@ -17,7 +17,7 @@ vi.mock('cli-table', () => {
         toString: vi
           .fn()
           .mockReturnValue(
-            '│ Header 1 │ Header 2 │\n├──────────┼──────────┤\n│ Row 1    │ Data 1   │\n│ Row 2    │ Data 2   │',
+            '│ Header 1 │ Header 2 │\n├──────────┼──────────┤\n│ Row 1    │ Data 1   │\n│ Row 2    │ Data 2   │'
           ),
       }
     }),
@@ -36,7 +36,7 @@ describe(formatTableForTerminal.name, () => {
       toString: vi
         .fn()
         .mockReturnValue(
-          '│ Header 1 │ Header 2 │\n├──────────┼──────────┤\n│ Row 1    │ Data 1   │\n│ Row 2    │ Data 2   │',
+          '│ Header 1 │ Header 2 │\n├──────────┼──────────┤\n│ Row 1    │ Data 1   │\n│ Row 2    │ Data 2   │'
         ),
     }
     MockTable.mockReturnValue(mockTable)

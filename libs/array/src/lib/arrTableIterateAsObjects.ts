@@ -4,7 +4,7 @@
 export function* arrTableIterateAsObjects<T>(
   rows: T[][],
   headers: string[],
-  ignoreHeaders: Set<string> = new Set(),
+  ignoreHeaders: Set<string> = new Set()
 ) {
   if (!headers.length) {
     throw new Error('No headers provided')

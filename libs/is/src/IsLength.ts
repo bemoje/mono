@@ -10,9 +10,9 @@ export function IsLength(length: number) {
   ensureThat(length, Number.isInteger)
   const func = function (input: unknown): boolean {
     return (
-      input != null &&
-      typeof (input as { length?: unknown }).length === 'number' &&
-      (input as { length: number }).length === length
+      input != null
+      && typeof (input as { length?: unknown }).length === 'number'
+      && (input as { length: number }).length === length
     )
   }
   Object.defineProperty(func, 'name', { value: `isLen${length}` })

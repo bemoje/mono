@@ -18,7 +18,7 @@ describe(reduceIterableEntries.name, () => {
         (acc, value) => {
           return acc + value
         },
-        0,
+        0
       )
       assert.strictEqual(sum, 6, 'sum calculated')
 
@@ -28,7 +28,7 @@ describe(reduceIterableEntries.name, () => {
         (acc, value, key) => {
           return [...acc, key]
         },
-        [] as string[],
+        [] as string[]
       )
       assert.deepStrictEqual(keys, ['a', 'b', 'c'], 'keys collected')
 
@@ -38,7 +38,7 @@ describe(reduceIterableEntries.name, () => {
         (acc, value, key) => {
           return { ...acc, [key]: value }
         },
-        {} as Record<string, number>,
+        {} as Record<string, number>
       )
       assert.deepStrictEqual(obj, { a: 1, b: 2, c: 3 }, 'object created')
     }).not.toThrow()
@@ -55,7 +55,7 @@ describe(reduceIterableEntries.name, () => {
       (acc, value) => {
         return acc + value
       },
-      0,
+      0
     )
     expect(result).toBe(60)
   })
@@ -71,7 +71,7 @@ describe(reduceIterableEntries.name, () => {
       (acc, value, key) => {
         return acc + key.repeat(value)
       },
-      '',
+      ''
     )
     expect(result).toBe('abbccc')
   })
@@ -86,7 +86,7 @@ describe(reduceIterableEntries.name, () => {
       (acc, value, key) => {
         return [...acc, `${key}:${value}`]
       },
-      [] as string[],
+      [] as string[]
     )
     expect(result).toEqual(['first:10', 'second:20'])
   })
@@ -97,7 +97,7 @@ describe(reduceIterableEntries.name, () => {
       (acc: number, value: any) => {
         return acc + value
       },
-      42,
+      42
     )
     expect(result).toBe(42)
   })
@@ -113,7 +113,7 @@ describe(reduceIterableEntries.name, () => {
       (acc, value) => {
         return Math.max(acc, value)
       },
-      0,
+      0
     )
     expect(result).toBe(15)
   })
@@ -134,13 +134,10 @@ describe(reduceIterableEntries.name, () => {
         }
         return acc
       },
-      { activeItems: [] as string[], totalActiveCount: 0 },
+      { activeItems: [] as string[], totalActiveCount: 0 }
     )
 
-    expect(result).toEqual({
-      activeItems: ['item1', 'item3'],
-      totalActiveCount: 20,
-    })
+    expect(result).toEqual({ activeItems: ['item1', 'item3'], totalActiveCount: 20 })
   })
 
   it('should maintain reducer state correctly', () => {
@@ -157,13 +154,9 @@ describe(reduceIterableEntries.name, () => {
         acc.values.push(value)
         return acc
       },
-      { count: 0, keySum: 0, values: [] as string[] },
+      { count: 0, keySum: 0, values: [] as string[] }
     )
 
-    expect(result).toEqual({
-      count: 3,
-      keySum: 6,
-      values: ['first', 'second', 'third'],
-    })
+    expect(result).toEqual({ count: 3, keySum: 6, values: ['first', 'second', 'third'] })
   })
 })

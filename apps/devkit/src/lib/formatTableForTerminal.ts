@@ -7,7 +7,7 @@ import colors from 'ansi-colors'
 export function formatTableForTerminal(
   rows: string[][],
   headers?: string[],
-  options: { noBorders?: boolean } = {},
+  options: { noBorders?: boolean } = {}
 ): string {
   if (!rows.length || !rows[0].length) {
     return ''
@@ -17,7 +17,7 @@ export function formatTableForTerminal(
     table.push(
       headers.map((s) => {
         return colors.yellow(s)
-      }),
+      })
     )
   }
   for (const row of rows) {

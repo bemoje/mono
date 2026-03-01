@@ -60,9 +60,7 @@ export async function userLogin(options: CliOptions, logger: Logger): Promise<vo
       () => {
         return window.location.href.includes('/feed')
       },
-      {
-        timeout: 0,
-      },
+      { timeout: 0 }
     )
 
     logger.info('LinkedIn login detected. You are now logged in.')

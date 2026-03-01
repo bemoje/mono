@@ -15,7 +15,7 @@
 export function objUpdatePropertyDescriptors<V>(
   object: Record<PropertyKey, V>,
   properties: PropertyKey[],
-  update: (descriptor: PropertyDescriptor, property: PropertyKey) => PropertyDescriptor,
+  update: (descriptor: PropertyDescriptor, property: PropertyKey) => PropertyDescriptor
 ): void {
   for (const p of properties) {
     if (!Reflect.has(object, p)) {

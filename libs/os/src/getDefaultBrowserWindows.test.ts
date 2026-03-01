@@ -8,9 +8,7 @@ import { vi } from 'vitest'
 
 // Mock child_process
 vi.mock('child_process', () => {
-  return {
-    execSync: vi.fn(),
-  }
+  return { execSync: vi.fn() }
 })
 
 const mockExecSync = vi.mocked(execSync)
@@ -31,11 +29,7 @@ describe(getDefaultBrowserWindows.name, () => {
 
     const result = getDefaultBrowserWindows()
 
-    expect(result).toEqual({
-      name: 'Chrome',
-      run: 'chrome',
-      id: 'com.google.chrome',
-    })
+    expect(result).toEqual({ name: 'Chrome', run: 'chrome', id: 'com.google.chrome' })
   })
 
   it('should return Edge browser info when MSEdgeHTM is found', () => {
@@ -43,11 +37,7 @@ describe(getDefaultBrowserWindows.name, () => {
 
     const result = getDefaultBrowserWindows()
 
-    expect(result).toEqual({
-      name: 'Edge',
-      run: 'msedge',
-      id: 'com.microsoft.edge',
-    })
+    expect(result).toEqual({ name: 'Edge', run: 'msedge', id: 'com.microsoft.edge' })
   })
 
   it('should return Firefox browser info when FirefoxURL is found', () => {
@@ -55,11 +45,7 @@ describe(getDefaultBrowserWindows.name, () => {
 
     const result = getDefaultBrowserWindows()
 
-    expect(result).toEqual({
-      name: 'Firefox',
-      run: 'firefox',
-      id: 'org.mozilla.firefox',
-    })
+    expect(result).toEqual({ name: 'Firefox', run: 'firefox', id: 'org.mozilla.firefox' })
   })
 
   it('should throw error when no ProgId match is found', () => {
@@ -83,11 +69,7 @@ describe(getDefaultBrowserWindows.name, () => {
 
     const result = getDefaultBrowserWindows()
 
-    expect(result).toEqual({
-      name: 'Brave',
-      run: 'brave',
-      id: 'com.brave.Browser',
-    })
+    expect(result).toEqual({ name: 'Brave', run: 'brave', id: 'com.brave.Browser' })
   })
 
   it('should handle Internet Explorer', () => {
@@ -95,10 +77,6 @@ describe(getDefaultBrowserWindows.name, () => {
 
     const result = getDefaultBrowserWindows()
 
-    expect(result).toEqual({
-      name: 'Internet Explorer',
-      run: 'iexplore',
-      id: 'com.microsoft.ie',
-    })
+    expect(result).toEqual({ name: 'Internet Explorer', run: 'iexplore', id: 'com.microsoft.ie' })
   })
 })

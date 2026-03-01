@@ -9,8 +9,8 @@ export async function findWorkspacePackageName(name: string): Promise<string | u
   return (
     wsPkgNames.find((n) => {
       return n === name
-    }) ||
-    wsPkgNames.find((n) => {
+    })
+    || wsPkgNames.find((n) => {
       return n === `@mono/${name}`
     })
   )

@@ -112,10 +112,7 @@ describe(Profiler.name, () => {
       const classStaticSpy = vitest.spyOn(Profiler, 'classStatic')
       const classPrototypeSpy = vitest.spyOn(Profiler, 'classPrototype')
       class Target {}
-      const options = {
-        ignoreStaticKeys: [],
-        ignorePrototypeKeys: [],
-      }
+      const options = { ignoreStaticKeys: [], ignorePrototypeKeys: [] }
       Profiler.class(Target, options)
       expect(classStaticSpy).toHaveBeenCalledWith(Target, options.ignoreStaticKeys)
       expect(classPrototypeSpy).toHaveBeenCalledWith(Target, options.ignorePrototypeKeys)
@@ -342,7 +339,7 @@ describe(Profiler.name, () => {
             'B', //
             'C', //
             'D', //
-          ].join(', '),
+          ].join(', ')
         ).toBe(names)
       })
 
@@ -386,7 +383,7 @@ describe(Profiler.name, () => {
             'B', //
             'C', //
             'D', //
-          ].join(', '),
+          ].join(', ')
         ).toBe(names)
       })
 
@@ -416,7 +413,7 @@ describe(Profiler.name, () => {
           [
             'A', //
             'B', //
-          ].join(', '),
+          ].join(', ')
         ).toBe(names)
       })
     })

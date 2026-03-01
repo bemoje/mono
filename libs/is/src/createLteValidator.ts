@@ -10,9 +10,6 @@ export function createLteValidator(limit: number) {
     }
     return value <= limit
   }
-  Object.defineProperty(func, 'name', {
-    configurable: true,
-    value: `isLte${limit.toString()}`,
-  })
+  Object.defineProperty(func, 'name', { configurable: true, value: `isLte${limit.toString()}` })
   return func
 }

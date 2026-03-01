@@ -5,7 +5,7 @@ import { forEach } from 'iter-tools'
  */
 export function forEachIterableEntries<K, V>(
   mapLike: Iterable<[K, V]>,
-  callback: (value: V, key: K) => void,
+  callback: (value: V, key: K) => void
 ): void {
   return forEach(([k, v]: [K, V]) => {
     return callback(v, k)

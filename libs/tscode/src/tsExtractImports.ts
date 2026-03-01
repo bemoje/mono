@@ -38,12 +38,7 @@ export function tsExtractImports(code: string): TsExtractImportsResult[] {
       if (isLastLineInMulti.test(line)) {
         const match = impLines.join('\n')
         const matchOneLine = importStatementToOneLiner(match)
-        result.push({
-          start: l - impLines.length + 1,
-          end: l + 1,
-          match,
-          matchOneLine,
-        })
+        result.push({ start: l - impLines.length + 1, end: l + 1, match, matchOneLine })
         impLines = []
         isMulti = false
       }

@@ -28,13 +28,7 @@ describe(ConfigFile.name, () => {
       },
       { default: {} }
     ),
-    database: Type.Optional(
-      Type.Object({
-        host: Type.String(),
-        port: Type.Number(),
-        name: Type.String(),
-      })
-    ),
+    database: Type.Optional(Type.Object({ host: Type.String(), port: Type.Number(), name: Type.String() })),
   })
 
   type AppConfig = Static<typeof appConfigSchema>
@@ -63,11 +57,7 @@ describe(ConfigFile.name, () => {
 
       // Update config
       const updatedConfig = configFile.update((current) => {
-        return {
-          ...current,
-          appName: 'Updated App',
-          port: 8080,
-        }
+        return { ...current, appName: 'Updated App', port: 8080 }
       })
 
       assert.strictEqual(updatedConfig.appName, 'Updated App', 'app name should be updated')
@@ -123,11 +113,7 @@ describe(ConfigFile.name, () => {
         appName: 'My App',
         version: '1.0.0',
         port: 3000,
-        features: {
-          auth: true,
-          logging: true,
-          debug: false,
-        },
+        features: { auth: true, logging: true, debug: false },
       })
 
       // Should also save the defaults to file
@@ -150,11 +136,7 @@ describe(ConfigFile.name, () => {
         appName: 'Existing App',
         version: '1.0.0', // default
         port: 8080,
-        features: {
-          auth: true,
-          logging: true,
-          debug: false,
-        },
+        features: { auth: true, logging: true, debug: false },
       })
 
       // Should save merged config back to file
@@ -166,16 +148,8 @@ describe(ConfigFile.name, () => {
         appName: 'Test App',
         version: '2.0.0',
         port: 4000,
-        features: {
-          auth: false,
-          logging: true,
-          debug: true,
-        },
-        database: {
-          host: 'localhost',
-          port: 5432,
-          name: 'testdb',
-        },
+        features: { auth: false, logging: true, debug: true },
+        database: { host: 'localhost', port: 5432, name: 'testdb' },
       }
       fs.outputJsonSync(testConfigPath, existingConfig)
 
@@ -211,22 +185,14 @@ describe(ConfigFile.name, () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
       const updatedConfig = configFile.update((current) => {
-        return {
-          ...current,
-          appName: 'Updated App',
-          port: 9000,
-        }
+        return { ...current, appName: 'Updated App', port: 9000 }
       })
 
       expect(updatedConfig).toEqual({
         appName: 'Updated App',
         version: '1.0.0',
         port: 9000,
-        features: {
-          auth: true,
-          logging: true,
-          debug: false,
-        },
+        features: { auth: true, logging: true, debug: false },
       })
 
       // Should save updated config to file
@@ -238,36 +204,21 @@ describe(ConfigFile.name, () => {
         appName: 'Initial App',
         version: '1.5.0',
         port: 5000,
-        features: {
-          auth: false,
-          logging: true,
-          debug: true,
-        },
+        features: { auth: false, logging: true, debug: true },
       }
       fs.outputJsonSync(testConfigPath, initialConfig)
 
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
       const updatedConfig = configFile.update((current) => {
-        return {
-          ...current,
-          appName: 'Modified App',
-          features: {
-            ...current.features,
-            debug: false,
-          },
-        }
+        return { ...current, appName: 'Modified App', features: { ...current.features, debug: false } }
       })
 
       expect(updatedConfig).toEqual({
         appName: 'Modified App',
         version: '1.5.0',
         port: 5000,
-        features: {
-          auth: false,
-          logging: true,
-          debug: false,
-        },
+        features: { auth: false, logging: true, debug: false },
       })
     })
 
@@ -275,21 +226,10 @@ describe(ConfigFile.name, () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
       const updatedConfig = configFile.update((current) => {
-        return {
-          ...current,
-          database: {
-            host: 'localhost',
-            port: 5432,
-            name: 'mydb',
-          },
-        }
+        return { ...current, database: { host: 'localhost', port: 5432, name: 'mydb' } }
       })
 
-      expect(updatedConfig.database).toEqual({
-        host: 'localhost',
-        port: 5432,
-        name: 'mydb',
-      })
+      expect(updatedConfig.database).toEqual({ host: 'localhost', port: 5432, name: 'mydb' })
 
       expect(fs.readJsonSync(testConfigPath)).toEqual(updatedConfig)
     })
@@ -311,18 +251,11 @@ describe(ConfigFile.name, () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
       const firstUpdate = configFile.update((current) => {
-        return {
-          ...current,
-          appName: 'First Update',
-        }
+        return { ...current, appName: 'First Update' }
       })
 
       const secondUpdate = configFile.update((current) => {
-        return {
-          ...current,
-          appName: 'Second Update',
-          port: 7000,
-        }
+        return { ...current, appName: 'Second Update', port: 7000 }
       })
 
       expect(firstUpdate.appName).toBe('First Update')
@@ -340,16 +273,8 @@ describe(ConfigFile.name, () => {
         appName: 'Test App',
         version: '1.0.0',
         port: 3000,
-        features: {
-          auth: true,
-          logging: true,
-          debug: false,
-        },
-        database: {
-          host: 'localhost',
-          port: 5432,
-          name: 'testdb',
-        },
+        features: { auth: true, logging: true, debug: false },
+        database: { host: 'localhost', port: 5432, name: 'testdb' },
       }
       fs.outputJsonSync(testConfigPath, initialConfig)
 

@@ -24,7 +24,7 @@ describe(map.name, () => {
           ['a', 2],
           ['b', 4],
           ['c', 6],
-        ]),
+        ])
       )
     })
 
@@ -42,7 +42,7 @@ describe(map.name, () => {
         new Map([
           [1, 'ONE'],
           [2, 'TWO'],
-        ]),
+        ])
       )
     })
   })

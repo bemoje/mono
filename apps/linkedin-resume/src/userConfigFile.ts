@@ -13,9 +13,7 @@ export const UserConfigSchema = Type.Object(
         username: Type.String({ default: '' }),
         url: Type.String({ default: '' }),
       }),
-      {
-        default: [],
-      },
+      { default: [] }
     ),
     ignore: Type.Optional(
       Type.Object(
@@ -34,11 +32,9 @@ export const UserConfigSchema = Type.Object(
                   summary: Type.Optional(Type.String()),
                   logoUrl: Type.Optional(Type.String()),
                 }),
-                {
-                  default: [],
-                },
+                { default: [] }
               ),
-            ]),
+            ])
           ),
           education: Type.Optional(
             Type.Union([
@@ -52,11 +48,9 @@ export const UserConfigSchema = Type.Object(
                   endDate: Type.Optional(Type.String()),
                   logoUrl: Type.Optional(Type.String()),
                 }),
-                {
-                  default: [],
-                },
+                { default: [] }
               ),
-            ]),
+            ])
           ),
           projects: Type.Optional(
             Type.Union([
@@ -72,38 +66,24 @@ export const UserConfigSchema = Type.Object(
                   url: Type.Optional(Type.String()),
                   logoUrl: Type.Optional(Type.String()),
                 }),
-                {
-                  default: [],
-                },
+                { default: [] }
               ),
-            ]),
+            ])
           ),
           skills: Type.Optional(
             Type.Union([
               Type.Literal(true),
-              Type.Array(
-                Type.Object({
-                  name: Type.Optional(Type.String()),
-                }),
-                {
-                  default: [],
-                },
-              ),
-            ]),
+              Type.Array(Type.Object({ name: Type.Optional(Type.String()) }), { default: [] }),
+            ])
           ),
           languages: Type.Optional(
             Type.Union([
               Type.Literal(true),
               Type.Array(
-                Type.Object({
-                  language: Type.Optional(Type.String()),
-                  fluency: Type.Optional(Type.String()),
-                }),
-                {
-                  default: [],
-                },
+                Type.Object({ language: Type.Optional(Type.String()), fluency: Type.Optional(Type.String()) }),
+                { default: [] }
               ),
-            ]),
+            ])
           ),
           recommendations: Type.Optional(
             Type.Union([
@@ -116,22 +96,16 @@ export const UserConfigSchema = Type.Object(
                   relationship: Type.Optional(Type.String()),
                   logoUrl: Type.Optional(Type.String()),
                 }),
-                {
-                  default: [],
-                },
+                { default: [] }
               ),
-            ]),
+            ])
           ),
         },
-        {
-          default: {},
-        },
-      ),
+        { default: {} }
+      )
     ),
   },
-  {
-    default: {},
-  },
+  { default: {} }
 )
 
 export const userConfigFile = new ConfigFile(UserConfigSchema, CONFIG_PATH)

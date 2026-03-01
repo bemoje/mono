@@ -13,12 +13,7 @@ describe(getKeys.name, () => {
   const nonEnumKey = 'nonEnum'
   const enumSym = Symbol('enum')
   const nonEnumSym = Symbol('nonEnum')
-  const obj = {
-    [enumKey]: true,
-    [nonEnumKey]: true,
-    [enumSym]: true,
-    [nonEnumSym]: true,
-  }
+  const obj = { [enumKey]: true, [nonEnumKey]: true, [enumSym]: true, [nonEnumSym]: true }
   Object.defineProperty(obj, nonEnumKey, { enumerable: false })
   Object.defineProperty(obj, nonEnumSym, { enumerable: false })
 

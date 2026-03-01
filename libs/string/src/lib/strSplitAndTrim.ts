@@ -15,8 +15,8 @@ export function strSplitAndTrim(string: string, delimiter: string, removeEmptyLi
   const lines = string.split(delimiter).map((s) => {
     return s.trim()
   })
-  return removeEmptyLines
-    ? lines.filter((s) => {
+  return removeEmptyLines ?
+      lines.filter((s) => {
         return !!s.trim()
       })
     : lines

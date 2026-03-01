@@ -9,7 +9,7 @@ import { ModuleMethodIdentifier } from '../FunctionIdentifier/ModuleMethodIdenti
 export class ModuleMethodProfilerFactory implements IProfilerFactory<object> {
   constructor(
     readonly moduleName: string,
-    readonly target: object,
+    readonly target: object
   ) {}
 
   createProfiler(key: string | symbol, methodType: MethodType): FunctionProfiler<object> {

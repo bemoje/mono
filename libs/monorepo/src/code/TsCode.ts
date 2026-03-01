@@ -39,7 +39,7 @@ export class TsCode<P extends TsFile = TsFile> extends AbstractCode<P> {
     return uniq(
       Array.from(this.code.matchAll(this.requireRegex)).map((o) => {
         return o[1]
-      }),
+      })
     )
   }
 

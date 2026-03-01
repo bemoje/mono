@@ -25,7 +25,7 @@ describe(mapIterableEntries.name, () => {
           ['B', 4],
           ['C', 6],
         ],
-        'both transformed',
+        'both transformed'
       )
 
       // swap key-value
@@ -41,7 +41,7 @@ describe(mapIterableEntries.name, () => {
           ['2', 'b'],
           ['3', 'c'],
         ],
-        'swapped',
+        'swapped'
       )
 
       // empty iterable

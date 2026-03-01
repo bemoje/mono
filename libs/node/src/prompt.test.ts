@@ -8,19 +8,12 @@ import { prompt } from './prompt'
 import { vi } from 'vitest'
 
 const { mockCreateInterface } = vi.hoisted(() => {
-  return {
-    mockCreateInterface: vi.fn(),
-  }
+  return { mockCreateInterface: vi.fn() }
 })
 
 // Mock readline
 vi.mock('readline', async () => {
-  return {
-    default: {
-      createInterface: mockCreateInterface,
-    },
-    createInterface: mockCreateInterface,
-  }
+  return { default: { createInterface: mockCreateInterface }, createInterface: mockCreateInterface }
 })
 
 describe(prompt.name, () => {
@@ -29,10 +22,7 @@ describe(prompt.name, () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    mockRl = {
-      question: vi.fn(),
-      close: vi.fn(),
-    }
+    mockRl = { question: vi.fn(), close: vi.fn() }
 
     mockCreateInterface.mockReturnValue(mockRl)
   })
@@ -73,10 +63,7 @@ describe(prompt.name, () => {
       expect(result).toBe(userInput)
       expect(mockRl.question).toHaveBeenCalledWith('Enter something:', expect.any(Function))
       expect(mockRl.close).toHaveBeenCalled()
-      expect(mockCreateInterface).toHaveBeenCalledWith({
-        input: process.stdin,
-        output: process.stdout,
-      })
+      expect(mockCreateInterface).toHaveBeenCalledWith({ input: process.stdin, output: process.stdout })
     })
 
     it('should trim user input', async () => {
@@ -203,10 +190,7 @@ describe(prompt.name, () => {
 
       await prompt('Test question:')
 
-      expect(mockCreateInterface).toHaveBeenCalledWith({
-        input: process.stdin,
-        output: process.stdout,
-      })
+      expect(mockCreateInterface).toHaveBeenCalledWith({ input: process.stdin, output: process.stdout })
     })
 
     it('should close readline interface after completion', async () => {

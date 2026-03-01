@@ -124,17 +124,10 @@ describe(transformReturnValue.name, () => {
         return { name: 'John', age: 30 }
       }
       const addEmail = transformReturnValue(getUser, (user) => {
-        return {
-          ...user,
-          email: `${user.name.toLowerCase()}@example.com`,
-        }
+        return { ...user, email: `${user.name.toLowerCase()}@example.com` }
       })
 
-      expect(addEmail()).toEqual({
-        name: 'John',
-        age: 30,
-        email: 'john@example.com',
-      })
+      expect(addEmail()).toEqual({ name: 'John', age: 30, email: 'john@example.com' })
     })
 
     it('should handle null and undefined', () => {
@@ -186,17 +179,10 @@ describe(transformReturnValue.name, () => {
       })
 
       const addSummary = transformReturnValue(processItems, (data) => {
-        return {
-          ...data,
-          summary: `${data.metadata.count} items processed`,
-        }
+        return { ...data, summary: `${data.metadata.count} items processed` }
       })
 
-      expect(addSummary()).toEqual({
-        items: [10, 20, 30],
-        metadata: { count: 3 },
-        summary: '3 items processed',
-      })
+      expect(addSummary()).toEqual({ items: [10, 20, 30], metadata: { count: 3 }, summary: '3 items processed' })
     })
 
     it('should handle error transformation', () => {

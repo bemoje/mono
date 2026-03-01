@@ -19,10 +19,7 @@ export async function scrapeEducation(browser: Browser, options: CliOptions, log
 
   try {
     const username = userConfigFile.load().username
-    await page.goto(getPageUrl(username, 'education'), {
-      waitUntil: 'domcontentloaded',
-      timeout: 20000,
-    })
+    await page.goto(getPageUrl(username, 'education'), { waitUntil: 'domcontentloaded', timeout: 20000 })
 
     try {
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
@@ -56,11 +53,7 @@ export async function scrapeEducation(browser: Browser, options: CliOptions, log
         const spans = getVisibleSpans(li).filter((text) => {
           return !mediaTextSet.has(text)
         })
-        return {
-          spans,
-          logoUrl: li.querySelector('img')?.src ?? '',
-          mediaLinks,
-        }
+        return { spans, logoUrl: li.querySelector('img')?.src ?? '', mediaLinks }
       })
     })
 
@@ -117,8 +110,9 @@ export async function scrapeEducation(browser: Browser, options: CliOptions, log
       const endDate = parseEducationDate(dateParts[1]?.trim())
 
       // Skills
-      const skills = skillsStr
-        ? skillsStr
+      const skills =
+        skillsStr ?
+          skillsStr
             .replace(/^Skills:\s*/, '')
             .split(' · ')
             .map((s) => {

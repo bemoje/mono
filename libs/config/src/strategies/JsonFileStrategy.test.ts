@@ -122,15 +122,7 @@ describe(JsonFileStrategy.name, () => {
 
     it('should handle complex nested objects', () => {
       const complexData = {
-        user: {
-          profile: {
-            name: 'John',
-            settings: {
-              theme: 'dark',
-              notifications: true,
-            },
-          },
-        },
+        user: { profile: { name: 'John', settings: { theme: 'dark', notifications: true } } },
         permissions: ['read', 'write'],
         metadata: null,
       }

@@ -12,7 +12,7 @@ export function filter<V>(array: readonly V[], predicate: (value: V, index: numb
 /** Filter a plain object. Predicate receives `(value, key)`. Returns a new partial object. */
 export function filter<K extends string, V>(
   object: Record<K, V>,
-  predicate: (value: V, key: K) => boolean,
+  predicate: (value: V, key: K) => boolean
 ): Partial<Record<K, V>>
 
 /** Filter any `Iterable`. Predicate receives `(value)`. Returns a new array. */

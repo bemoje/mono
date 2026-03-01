@@ -27,12 +27,7 @@ describe(isAccessorDescriptor.name, () => {
   })
 
   it('should return false for descriptor without getter or setter', () => {
-    const descriptor: PropertyDescriptor = {
-      value: 'test',
-      writable: true,
-      enumerable: true,
-      configurable: true,
-    }
+    const descriptor: PropertyDescriptor = { value: 'test', writable: true, enumerable: true, configurable: true }
     expect(isAccessorDescriptor(descriptor)).toBe(false)
   })
 
@@ -60,11 +55,7 @@ describe(isAccessorDescriptor.name, () => {
   })
 
   it('should return true for descriptor with setter only', () => {
-    const descriptor: PropertyDescriptor = {
-      set: () => {},
-      enumerable: true,
-      configurable: true,
-    }
+    const descriptor: PropertyDescriptor = { set: () => {}, enumerable: true, configurable: true }
     expect(isAccessorDescriptor(descriptor)).toBe(true)
   })
 

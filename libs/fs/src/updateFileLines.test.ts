@@ -9,13 +9,7 @@ import { vi } from 'vitest'
 
 // Mock fs-extra
 vi.mock('fs-extra', () => {
-  return {
-    default: {
-      ensureFile: vi.fn(),
-      readFile: vi.fn(),
-      outputFile: vi.fn(),
-    },
-  }
+  return { default: { ensureFile: vi.fn(), readFile: vi.fn(), outputFile: vi.fn() } }
 })
 
 const mockFs = fs as any

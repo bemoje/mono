@@ -6,8 +6,9 @@ import { root } from './root'
 describe(root.name, () => {
   const isWindows = process.platform === 'win32'
 
-  const paths = isWindows
-    ? [
+  const paths =
+    isWindows ?
+      [
         { input: '/home/user/docs', expected: '/' },
         { input: 'C:\\Users\\User\\Documents', expected: 'C:/' },
         { input: 'D:\\Folder\\Subfolder', expected: 'D:/' },

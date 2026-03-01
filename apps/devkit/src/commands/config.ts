@@ -7,7 +7,7 @@ export function configAction() {
   execSync(
     templates.commands.openFileInIDE.renderString({
       filepath: configFile.filepath, //
-    }),
+    })
   )
 }
 

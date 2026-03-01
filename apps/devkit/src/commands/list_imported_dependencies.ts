@@ -5,14 +5,7 @@ export async function listImportedDependenciesAction(_opts: object, { logger: lo
   const repo = new MonoRepo()
   const res = repo.workspaces.map((ws) => {
     return [ws.name, { ...ws.importedDependenciesRecursive, node: [] }]
-  }) as [
-    string,
-    {
-      node: string[]
-      internal: string[]
-      external: string[]
-    },
-  ][]
+  }) as [string, { node: string[]; internal: string[]; external: string[] }][]
 
   new MonoRepo().workspaces.forEach((ws) => {
     const deps = Array.from(
@@ -30,8 +23,8 @@ export async function listImportedDependenciesAction(_opts: object, { logger: lo
                 return i.module.from
               })
           })
-          .flat(3),
-      ),
+          .flat(3)
+      )
     )
 
     const r = res.find(([n]) => {

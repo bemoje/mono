@@ -15,7 +15,7 @@ export function arrTableRemoveColumns(table: string[][], ...removeColumnNames: s
       .map((col) => {
         return arrIndicesOf(table[0], col)
       })
-      .flat(),
+      .flat()
   )
   return table.map((row) => {
     return row.filter((_, i) => {

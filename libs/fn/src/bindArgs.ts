@@ -35,8 +35,8 @@ export function bindArgs<
     const isBound = Object.hasOwn(boundArgs, index)
     const boundIndex = index as keyof BoundArgs
     const unboundIndex = index - (isBound ? offset++ : offset)
-    return isBound
-      ? () => {
+    return isBound ?
+        () => {
           return boundArgs[boundIndex]
         } //
       : (args: NewArgs) => {
@@ -50,9 +50,9 @@ export function bindArgs<
       return fn(
         ...argGetters.map((get) => {
           return get(args)
-        }),
+        })
       )
     },
-    boundIndices.length * -1,
+    boundIndices.length * -1
   )
 }

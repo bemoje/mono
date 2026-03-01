@@ -2,7 +2,7 @@ import { execSync } from 'child_process'
 
 export function cliExecSync(
   command: string,
-  options: { dryRun?: boolean; quiet?: boolean; cwd?: string; silent?: boolean } = {},
+  options: { dryRun?: boolean; quiet?: boolean; cwd?: string; silent?: boolean } = {}
 ) {
   if (options.dryRun) {
     if (!options.quiet) {
@@ -11,8 +11,5 @@ export function cliExecSync(
     return
   }
 
-  execSync(command, {
-    stdio: options.quiet ? 'ignore' : 'inherit',
-    cwd: options.cwd ?? process.cwd(),
-  })
+  execSync(command, { stdio: options.quiet ? 'ignore' : 'inherit', cwd: options.cwd ?? process.cwd() })
 }

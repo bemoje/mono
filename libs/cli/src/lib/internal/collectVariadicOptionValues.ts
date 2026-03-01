@@ -4,7 +4,7 @@ import type { Option } from '../types'
 export function collectVariadicOptionValues(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   parsed: { tokens: any[]; values: any; positionals: string[] },
-  options: Option[],
+  options: Option[]
 ): void {
   for (let i = 0; i < parsed.tokens.length; i++) {
     const token = parsed.tokens[i]
@@ -36,7 +36,7 @@ export function collectVariadicOptionValues(
       token.name,
       values.filter((v): v is string => {
         return v !== undefined
-      }),
+      })
     )
   }
 }

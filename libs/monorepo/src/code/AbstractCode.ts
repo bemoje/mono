@@ -8,14 +8,9 @@ import { Parenting } from '@mono/composition'
  */
 @Parenting.compose
 export abstract class AbstractCode<P extends AbstractBase = AbstractBase> extends AbstractBase<P> {
-  static readonly inspector = Inspector.compose(AbstractCode, {
-    keys: [],
-  })
+  static readonly inspector = Inspector.compose(AbstractCode, { keys: [] })
 
-  static readonly codePreviewOptions = {
-    maxLines: 10,
-    maxLineLength: 90,
-  }
+  static readonly codePreviewOptions = { maxLines: 10, maxLineLength: 90 }
 
   constructor(parent: P) {
     super(parent)

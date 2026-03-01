@@ -19,17 +19,10 @@ vi.mock('upath', () => {
   }
 })
 vi.mock('fs-extra', () => {
-  return {
-    default: {
-      existsSync: vi.fn(),
-      readJsonSync: vi.fn(),
-    },
-  }
+  return { default: { existsSync: vi.fn(), readJsonSync: vi.fn() } }
 })
 vi.mock('glob', () => {
-  return {
-    globSync: vi.fn(),
-  }
+  return { globSync: vi.fn() }
 })
 vi.mock('onetime', () => {
   return {

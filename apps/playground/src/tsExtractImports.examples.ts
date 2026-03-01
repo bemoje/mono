@@ -29,8 +29,8 @@ function example1() {
       new Set(
         arr.map((i) => {
           return i.modulePath.path
-        }),
-      ),
+        })
+      )
     ).sort()
   }
 
@@ -100,11 +100,11 @@ function example2() {
         }),
         (a) => {
           return a.modulePath.path
-        },
+        }
       ).map((i) => {
         return i.modulePath.path
-      }),
-    ),
+      })
+    )
   )
   console.log(result.join('\n'))
   console.log('---------')
@@ -112,8 +112,8 @@ function example2() {
     new Set(
       p.flatMap((i) => {
         return i.getNames({ unaliasNamedImports: true })
-      }),
-    ),
+      })
+    )
   ).sort()
   console.log('---------')
   console.log('result:', result.length)

@@ -27,12 +27,7 @@ describe(tsExtractImports.name, () => {
   it('should correctly extract a single import statement with braces', () => {
     const code = "import module from 'module'"
     const result: TsExtractImportsResult[] = [
-      {
-        start: 0,
-        end: 1,
-        match: "import module from 'module'",
-        matchOneLine: "import module from 'module'",
-      },
+      { start: 0, end: 1, match: "import module from 'module'", matchOneLine: "import module from 'module'" },
     ]
     expect(tsExtractImports(code)).toEqual(result)
   })

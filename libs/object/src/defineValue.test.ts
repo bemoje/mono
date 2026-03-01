@@ -15,10 +15,7 @@ describe(defineValue.name, () => {
       assert.strictEqual(Object.propertyIsEnumerable.call(obj, 'name'), true)
 
       // Value with custom descriptor options
-      defineValue(obj, 'hidden', 'secret', {
-        enumerable: false,
-        writable: false,
-      })
+      defineValue(obj, 'hidden', 'secret', { enumerable: false, writable: false })
       assert.strictEqual(obj.hidden, 'secret')
       assert.strictEqual(Object.propertyIsEnumerable.call(obj, 'hidden'), false)
 
@@ -89,20 +86,11 @@ describe(defineValue.name, () => {
     it('should allow overriding descriptor options', () => {
       const obj: any = {}
 
-      defineValue(obj, 'prop', 'test', {
-        enumerable: false,
-        writable: false,
-        configurable: false,
-      })
+      defineValue(obj, 'prop', 'test', { enumerable: false, writable: false, configurable: false })
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
 
-      expect(descriptor).toMatchObject({
-        value: 'test',
-        configurable: false,
-        writable: false,
-        enumerable: false,
-      })
+      expect(descriptor).toMatchObject({ value: 'test', configurable: false, writable: false, enumerable: false })
     })
   })
 
@@ -152,14 +140,7 @@ describe(defineValue.name, () => {
 
     it('should handle complex objects', () => {
       const obj: any = {}
-      const complexValue = {
-        nested: {
-          deep: {
-            value: 'deeply-nested',
-          },
-        },
-        array: [1, 2, { inner: true }],
-      }
+      const complexValue = { nested: { deep: { value: 'deeply-nested' } }, array: [1, 2, { inner: true }] }
 
       defineValue(obj, 'complex', complexValue)
 
@@ -315,12 +296,7 @@ describe(defineValue.name, () => {
 
       // Check the descriptor was properly set
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'existing')
-      expect(descriptor).toMatchObject({
-        value: 'replaced',
-        configurable: true,
-        enumerable: true,
-        writable: true,
-      })
+      expect(descriptor).toMatchObject({ value: 'replaced', configurable: true, enumerable: true, writable: true })
     })
 
     it('should work with property names that are JavaScript keywords', () => {

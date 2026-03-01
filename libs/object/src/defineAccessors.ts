@@ -6,11 +6,7 @@ import type { AccessorDescriptor } from './isAccessorDescriptor'
 export function defineAccessors<T extends object, V = object>(
   obj: T, //
   key: PropertyKey,
-  des: AccessorDescriptor<V>,
+  des: AccessorDescriptor<V>
 ) {
-  return Object.defineProperty<T>(obj, key, {
-    configurable: true,
-    enumerable: false,
-    ...des,
-  })
+  return Object.defineProperty<T>(obj, key, { configurable: true, enumerable: false, ...des })
 }

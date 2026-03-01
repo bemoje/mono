@@ -9,7 +9,7 @@ export function spawnChildProcess(
   binaryPath: string,
   args: string[] = [],
   spawnOptions: SpawnOptions = {},
-  callback?: (child: cp.ChildProcess) => void,
+  callback?: (child: cp.ChildProcess) => void
 ): Promise<number> {
   return new Promise((resolve, reject) => {
     try {
@@ -20,7 +20,7 @@ export function spawnChildProcess(
           resolve(0)
         }
         reject(
-          new Error(`Child node process exited with code: ${code}, signal: ${signal}, argv: [${args.join(', ')}]`),
+          new Error(`Child node process exited with code: ${code}, signal: ${signal}, argv: [${args.join(', ')}]`)
         )
       })
       if (callback) {

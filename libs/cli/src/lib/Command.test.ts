@@ -126,7 +126,7 @@ describe(Command.name, () => {
         expect(
           cmd.options.filter((option) => {
             return option.name === 'version'
-          }),
+          })
         ).toHaveLength(1)
       })
 
@@ -137,7 +137,7 @@ describe(Command.name, () => {
         expect(
           cmd.options.filter((option) => {
             return option.name === 'version'
-          }),
+          })
         ).toHaveLength(1)
       })
     })

@@ -11,12 +11,7 @@ function lazyProp(target: unknown, key: string | symbol, descriptor: PropertyDes
   descriptor.get = function () {
     const value = orig.call(this)
 
-    Object.defineProperty(this, key, {
-      enumerable: false,
-      writable: false,
-      configurable: true,
-      value,
-    })
+    Object.defineProperty(this, key, { enumerable: false, writable: false, configurable: true, value })
     return value
   }
 

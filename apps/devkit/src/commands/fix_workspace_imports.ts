@@ -17,7 +17,7 @@ export interface FixWorkspaceImportsOptions {
 
 export async function fixWorkspaceImportsAction(
   options: FixWorkspaceImportsOptions,
-  { logger: log }: { logger: Logger },
+  { logger: log }: { logger: Logger }
 ) {
   if (options.debug) {
     log.debug({ options })
@@ -25,9 +25,10 @@ export async function fixWorkspaceImportsAction(
 
   const fixed = { count: 0 }
 
-  const workspaces = options.workspaces
-    ? Array.isArray(options.workspaces)
-      ? options.workspaces
+  const workspaces =
+    options.workspaces ?
+      Array.isArray(options.workspaces) ?
+        options.workspaces
       : [options.workspaces]
     : undefined
 
@@ -41,7 +42,7 @@ export async function fixWorkspaceImportsAction(
     for (const { filepath, replaceValue, withValue } of ws.incorrectlyImportedRepoWorkspaces) {
       if (!options.silent) {
         log.info(
-          `\nIncorrect import in ${colors.magenta(filepath)}. Replace '${colors.red(replaceValue)}' with '${colors.green(withValue)}'`,
+          `\nIncorrect import in ${colors.magenta(filepath)}. Replace '${colors.red(replaceValue)}' with '${colors.green(withValue)}'`
         )
       }
 

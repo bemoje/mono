@@ -7,7 +7,7 @@ import type { ValueDescriptor } from './isValueDescriptor'
 export function defineProperty<T extends object>(
   obj: T, //
   key: PropertyKey,
-  des: ValueDescriptor<T> | AccessorDescriptor<T>,
+  des: ValueDescriptor<T> | AccessorDescriptor<T>
 ) {
   return Object.defineProperty<T>(obj, key, { configurable: true, ...des })
 }

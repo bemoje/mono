@@ -22,7 +22,7 @@ import type { GenericMap } from '@mono/types'
  */
 export function sort<K, V>(
   ins: GenericMap<K, V, 'set' | 'clear' | typeof Symbol.iterator>,
-  compare: (a: [K, V], b: [K, V]) => number,
+  compare: (a: [K, V], b: [K, V]) => number
 ): GenericMap<K, V, 'set' | 'clear' | typeof Symbol.iterator> {
   const entries = Array.from(ins).sort(compare)
   ins.clear()

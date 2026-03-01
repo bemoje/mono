@@ -25,7 +25,7 @@ describe(mapIterableKeys.name, () => {
           ['B', 2],
           ['C', 3],
         ],
-        'keys transformed',
+        'keys transformed'
       )
 
       // use both key and value in transformation
@@ -41,7 +41,7 @@ describe(mapIterableKeys.name, () => {
           ['b_2', 2],
           ['c_3', 3],
         ],
-        'keys with values',
+        'keys with values'
       )
 
       // empty iterable

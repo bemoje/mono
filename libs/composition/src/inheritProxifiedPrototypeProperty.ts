@@ -7,7 +7,7 @@ import type { IView } from './IView'
 export function inheritProxifiedPrototypeProperty<Viewer extends IView<Target>, Target extends object>(
   ViewerClass: Class<Viewer>,
   TargetClass: Class<Target>,
-  key: keyof Target,
+  key: keyof Target
 ) {
   const des = Reflect.getOwnPropertyDescriptor(TargetClass.prototype, key)
   if (!des) {
@@ -28,8 +28,9 @@ export function inheritProxifiedPrototypeProperty<Viewer extends IView<Target>, 
       get(this: Viewer) {
         return this.target[key]
       },
-      set: des.writable
-        ? function set(this: Viewer, value: Target[keyof Target]) {
+      set:
+        des.writable ?
+          function set(this: Viewer, value: Target[keyof Target]) {
             this.target[key] = value
           }
         : undefined,
@@ -38,13 +39,15 @@ export function inheritProxifiedPrototypeProperty<Viewer extends IView<Target>, 
     })
   } else {
     Object.defineProperty(ViewerClass.prototype, key, {
-      get: des.get
-        ? function (this: Viewer) {
+      get:
+        des.get ?
+          function (this: Viewer) {
             return this.target[key]
           }
         : undefined,
-      set: des.set
-        ? function (this: Viewer, value: Target[typeof key]) {
+      set:
+        des.set ?
+          function (this: Viewer, value: Target[typeof key]) {
             this.target[key] = value
           }
         : undefined,

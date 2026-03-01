@@ -15,9 +15,7 @@ import { lazyProp } from '@mono/decorators'
 export class ImportStatement<P extends TsCode = TsCode> extends CodeBlock<P> {
   static readonly inspector = Inspector.compose(ImportStatement, {
     keys: ['keywords', 'specifiers', 'module'],
-    inspect: {
-      compact: true,
-    },
+    inspect: { compact: true },
   })
 
   toOneLine(): string {

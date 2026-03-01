@@ -62,7 +62,7 @@ function renderProfile(resume: Resume): string {
         .map((p) => {
           return `[${p.network}](${p.url})`
         })
-        .join(' | '),
+        .join(' | ')
     )
     lines.push('')
   }
@@ -85,7 +85,7 @@ function renderAbout(resume: Resume): string {
         .map((s) => {
           return `\`${s}\``
         })
-        .join(' - '),
+        .join(' - ')
     )
   }
   return lines.join('\n').trimEnd()
@@ -120,7 +120,7 @@ function renderExperience(resume: Resume): string {
       .map((g) => {
         return renderExperienceGroup(g)
       })
-      .join('\n\n'),
+      .join('\n\n')
   )
   return lines.join('\n').trimEnd()
 }
@@ -151,7 +151,7 @@ function renderExperienceGroup(group: ExperienceGroup): string {
       .map((job) => {
         return renderSubRole(job)
       })
-      .join('\n\n'),
+      .join('\n\n')
   )
   return lines.join('\n').trimEnd()
 }
@@ -191,7 +191,7 @@ function renderJobBody(job: ResumeWork): string {
         .map((s) => {
           return `\`${s}\``
         })
-        .join(' - '),
+        .join(' - ')
     )
   }
   return lines.join('\n')
@@ -228,7 +228,7 @@ function renderEducation(resume: Resume): string {
           .map((s) => {
             return `\`${s}\``
           })
-          .join(' - '),
+          .join(' - ')
       )
     }
     return parts.join('\n').trimEnd()
@@ -249,7 +249,7 @@ function renderSkills(resume: Resume): string {
       .map((skill) => {
         return `\`${skill.name}\``
       })
-      .join(' - '),
+      .join(' - ')
   )
   return lines.join('\n').trimEnd()
 }
@@ -287,7 +287,7 @@ function renderProjects(resume: Resume): string {
           .map((s) => {
             return `\`${s}\``
           })
-          .join(' - '),
+          .join(' - ')
       )
     }
     if (proj.mediaLinks?.length) {
@@ -297,7 +297,7 @@ function renderProjects(resume: Resume): string {
           .map((m) => {
             return `[${m.title}](${m.url})`
           })
-          .join(' | '),
+          .join(' | ')
       )
     }
     return parts.join('\n').trimEnd()

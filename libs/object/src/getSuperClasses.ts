@@ -7,7 +7,7 @@ import { getClassChain } from './getClassChain'
  */
 export function getSuperClasses(
   target: object | AnyConstructor,
-  options?: { includeSelf?: boolean },
+  options?: { includeSelf?: boolean }
 ): AnyConstructor[] {
   return getClassChain(target, { includeSelf: options?.includeSelf ?? false })
 }

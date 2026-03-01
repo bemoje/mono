@@ -40,10 +40,10 @@ cp.execSync(`yarn tsup --config tsup.config.mjs ${externalArgs}`, { cwd: wsDirpa
 
 function depVersion(name) {
   return (
-    pkg.dependencies?.[name] ||
-    pkg.devDependencies?.[name] ||
-    rootPkg.dependencies?.[name] ||
-    rootPkg.devDependencies?.[name]
+    pkg.dependencies?.[name]
+    || pkg.devDependencies?.[name]
+    || rootPkg.dependencies?.[name]
+    || rootPkg.devDependencies?.[name]
   )
 }
 
@@ -87,21 +87,12 @@ await fs.writeJson(
     type: 'module',
     sideEffects: pkg.sideEffects,
     keywords: pkg.keywords,
-    exports: {
-      '.': {
-        types: './index.d.ts',
-        import: './index.mjs',
-        default: './index.mjs',
-      },
-    },
+    exports: { '.': { types: './index.d.ts', import: './index.mjs', default: './index.mjs' } },
     dependencies,
     publishConfig: { access: 'public' },
     license: rootPkg.license,
     author: rootPkg.author,
-    repository: {
-      ...rootPkg.repository,
-      directory: `libs/${wsDirname}`,
-    },
+    repository: { ...rootPkg.repository, directory: `libs/${wsDirname}` },
   },
   { spaces: 2 }
 )

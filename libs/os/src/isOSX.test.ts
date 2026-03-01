@@ -6,9 +6,7 @@ import { it } from 'vitest'
 import { vi } from 'vitest'
 
 // Mock process
-const mockProcess = {
-  platform: 'darwin',
-}
+const mockProcess = { platform: 'darwin' }
 
 vi.stubGlobal('process', mockProcess)
 

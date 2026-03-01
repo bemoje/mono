@@ -88,7 +88,7 @@ describe(TableFormatter.name, () => {
         ['Name', 'Age'],
         ['Alice', 30],
       ],
-      { color: true },
+      { color: true }
     )
     const actual = table.toString()
     expect(actual).toBeDefined()
@@ -107,7 +107,7 @@ describe(TableFormatter.name, () => {
             return `[${s}]`
           },
         },
-      },
+      }
     )
     const actual = table.toString()
     expect(actual).toBeDefined()
@@ -125,7 +125,7 @@ describe(TableFormatter.name, () => {
         grayOutRow: (row) => {
           return row[0] === 'Bob'
         },
-      },
+      }
     )
     const actual = table.toString()
     expect(actual).toBeDefined()
@@ -143,7 +143,7 @@ describe(TableFormatter.name, () => {
         grayOutRow: () => {
           return false
         },
-      },
+      }
     )
     const actual = table.toString()
     expect(actual).toBeDefined()
@@ -155,7 +155,7 @@ describe(TableFormatter.name, () => {
         ['A', 'B'],
         ['1', '2'],
       ],
-      { columnSeparator: ' - ' },
+      { columnSeparator: ' - ' }
     )
     const actual = table.toString()
     expect(actual).toContain(' - ')
@@ -167,7 +167,7 @@ describe(TableFormatter.name, () => {
         ['A', 'B'],
         ['1', '2'],
       ],
-      { headerRowSeparator: '=' },
+      { headerRowSeparator: '=' }
     )
     const actual = table.toString()
     expect(actual).toContain('=====')
@@ -232,7 +232,7 @@ describe(TableFormatter.name, () => {
         grayOutRow: () => {
           return true
         },
-      },
+      }
     )
     const actual = table.toString()
     expect(actual).toBeDefined()

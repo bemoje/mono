@@ -5,7 +5,7 @@ import { map } from 'iter-tools'
  */
 export function mapIterableValues<K, V, U>(
   mapLike: Iterable<[K, V]>,
-  transform: (value: V, key: K) => U,
+  transform: (value: V, key: K) => U
 ): Iterable<[K, U]> {
   return map(([k, v]: [K, V]) => {
     return [k, transform(v, k)]

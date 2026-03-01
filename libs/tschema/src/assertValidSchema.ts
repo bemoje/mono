@@ -9,7 +9,7 @@ import { Value } from '@sinclair/typebox/value'
 export function assertValidSchema<Schema extends TSchema>(
   schema: Schema,
   data: unknown,
-  message: string,
+  message: string
 ): asserts data is Static<Schema> {
   const isValid = Value.Check(schema, data)
   if (!isValid) {

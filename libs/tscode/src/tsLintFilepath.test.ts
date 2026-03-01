@@ -8,9 +8,7 @@ import { vi } from 'vitest'
 
 // Mock execSync to avoid actual command execution in tests
 vi.mock('child_process', () => {
-  return {
-    execSync: vi.fn(),
-  }
+  return { execSync: vi.fn() }
 })
 
 const mockExecSync = vi.mocked(execSync)

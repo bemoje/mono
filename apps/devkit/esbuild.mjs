@@ -51,7 +51,7 @@ void (await (async () => {
   const cmdVersion = cmdVersionSplit[1]
   if (cmdVersion !== pkg.version) {
     console.info(
-      `Version mismatch: src/core/version.ts (${cmdVersion}) vs package.json (${pkg.version}). Updating src/core/version.ts...`,
+      `Version mismatch: src/core/version.ts (${cmdVersion}) vs package.json (${pkg.version}). Updating src/core/version.ts...`
     )
     const cmdVersionSrcNew = cmdVersionSplit
       .map((part, i) => {
@@ -68,7 +68,7 @@ void (await (async () => {
   const cmdDescription = cmdDescriptionSplit[1]
   if (cmdDescription !== pkg.description) {
     console.info(
-      `Description mismatch: src/core/description.ts (${cmdDescription}) vs package.json (${pkg.description}). Updating src/core/description.ts...`,
+      `Description mismatch: src/core/description.ts (${cmdDescription}) vs package.json (${pkg.description}). Updating src/core/description.ts...`
     )
     const cmdDescriptionSrcNew = cmdDescriptionSplit
       .map((part, i) => {
@@ -124,23 +124,13 @@ await fs.outputFile(
       name: `@bemoje/${wsDirname}`,
       bin: './cli.mjs',
       files: ['cli.mjs', `${wsDirname}.cjs`, `${wsDirname}.cjs.map`],
-      publishConfig: {
-        access: 'public',
-      },
-      repository: {
-        type: 'git',
-        url: 'https://github.com/bemoje/mono.git',
-        directory: `apps/${wsDirname}`,
-      },
-      author: {
-        name: 'Benjamin Moller Jensen',
-        email: 'bemoje@bemoje.net',
-        url: 'https://github.com/bemoje/',
-      },
+      publishConfig: { access: 'public' },
+      repository: { type: 'git', url: 'https://github.com/bemoje/mono.git', directory: `apps/${wsDirname}` },
+      author: { name: 'Benjamin Moller Jensen', email: 'bemoje@bemoje.net', url: 'https://github.com/bemoje/' },
       license: 'MIT',
       scripts: [],
     },
     null,
-    2,
-  ),
+    2
+  )
 )

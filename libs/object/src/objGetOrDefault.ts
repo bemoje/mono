@@ -6,7 +6,7 @@ import { hasOwnProperty } from './hasOwnProperty'
 export function objGetOrDefault<K extends PropertyKey, V>(
   object: Record<K, V>,
   key: K,
-  factory: (key: K) => V,
+  factory: (key: K) => V
 ): V {
   const value = object[key]
   if (value !== undefined || hasOwnProperty(object, key)) {

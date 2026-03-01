@@ -25,30 +25,17 @@ vi.mock('@mono/fs')
 vi.mock('child_process')
 vi.mock('util')
 vi.mock('upath', () => {
-  return {
-    default: {
-      normalize: vi.fn(),
-      basename: vi.fn(),
-      dirname: vi.fn(),
-      join: vi.fn(),
-      relative: vi.fn(),
-    },
-  }
+  return { default: { normalize: vi.fn(), basename: vi.fn(), dirname: vi.fn(), join: vi.fn(), relative: vi.fn() } }
 })
 vi.mock('../file/TsFile')
 vi.mock('../file/TestFile')
 vi.mock('../util/resolveModuleImportPath')
 vi.mock('@mono/path', async (importOriginal) => {
   const actual = await importOriginal()
-  return {
-    ...(actual as object),
-    hasParentDirname: vi.fn(),
-  }
+  return { ...(actual as object), hasParentDirname: vi.fn() }
 })
 vi.mock('../util/hasExtnamePrefix', () => {
-  return {
-    hasExtnamePrefix: vi.fn(),
-  }
+  return { hasExtnamePrefix: vi.fn() }
 })
 const mockPath = vi.mocked(path)
 const mockFsExtra = vi.mocked(fsExtra)
@@ -57,9 +44,7 @@ const mockPromisify = vi.mocked(promisify)
 const mockTestFile = vi.mocked(TestFile)
 
 vi.mock('../util/resolveModuleImportPath', () => {
-  return {
-    resolveModuleImportPath: vi.fn(),
-  }
+  return { resolveModuleImportPath: vi.fn() }
 })
 
 const mockResolveModuleImportPath = vi.mocked(resolveModuleImportPath)
@@ -75,25 +60,15 @@ describe(Workspace.name, () => {
   const mockPackageJson: PackageJson = {
     name: '@mono/example',
     version: '1.0.0',
-    dependencies: {
-      'lodash-es': '^4.17.21',
-      '@mono/utils': 'workspace:*',
-    },
-    devDependencies: {
-      'vitest': '^1.0.0',
-      '@types/lodash-es': '^4.17.7',
-    },
+    dependencies: { 'lodash-es': '^4.17.21', '@mono/utils': 'workspace:*' },
+    devDependencies: { 'vitest': '^1.0.0', '@types/lodash-es': '^4.17.7' },
   }
 
   const mockParentPackageJson: PackageJson = {
     name: 'mono',
     version: '1.0.0',
-    dependencies: {
-      'global-dep': '^1.0.0',
-    },
-    devDependencies: {
-      'global-dev-dep': '^1.0.0',
-    },
+    dependencies: { 'global-dep': '^1.0.0' },
+    devDependencies: { 'global-dev-dep': '^1.0.0' },
   }
 
   beforeEach(() => {
@@ -121,12 +96,7 @@ describe(Workspace.name, () => {
     mockFsExtra.readJsonSync.mockReturnValue(mockPackageJson)
 
     // Create mock MonoRepo
-    mockMonoRepo = {
-      packageJson: mockParentPackageJson,
-      tsconfigBasePaths: {
-        '@mono/*': ['libs/*/src'],
-      },
-    } as any
+    mockMonoRepo = { packageJson: mockParentPackageJson, tsconfigBasePaths: { '@mono/*': ['libs/*/src'] } } as any
 
     // Create workspace instance
     workspace = new Workspace(mockMonoRepo, testWorkspacePath)
@@ -472,12 +442,7 @@ describe(Workspace.name, () => {
           {
             path: '/test/repo/libs/example/src/file1.ts',
             tsCode: {
-              imports: [
-                {
-                  module: { from: '@mono/example' },
-                  specifiers: { importedNamesArray: ['utils'] },
-                },
-              ],
+              imports: [{ module: { from: '@mono/example' }, specifiers: { importedNamesArray: ['utils'] } }],
             },
           },
         ] as any
@@ -508,12 +473,7 @@ describe(Workspace.name, () => {
           {
             path: '/test/repo/libs/example/src/file1.ts',
             tsCode: {
-              imports: [
-                {
-                  module: { from: '@mono/example' },
-                  specifiers: { importedNamesArray: ['someExport'] },
-                },
-              ],
+              imports: [{ module: { from: '@mono/example' }, specifiers: { importedNamesArray: ['someExport'] } }],
             },
           },
         ] as any
@@ -551,9 +511,7 @@ describe(Workspace.name, () => {
         const mockFiles = [
           {
             path: '/test/repo/libs/example/src/file1.ts',
-            tsCode: {
-              imports: [{ module: { from: 'lodash-es' } }],
-            },
+            tsCode: { imports: [{ module: { from: 'lodash-es' } }] },
           },
         ] as any
 
@@ -601,11 +559,7 @@ describe(Workspace.name, () => {
 
         const result = workspace.dependencyProblems
 
-        expect(result).toEqual({
-          origin: workspace.origin,
-          workspace: workspace.name,
-          unused: ['unused-dep'],
-        })
+        expect(result).toEqual({ origin: workspace.origin, workspace: workspace.name, unused: ['unused-dep'] })
         expect(result).not.toHaveProperty('missing')
         expect(result).not.toHaveProperty('missingDev')
       })
@@ -630,11 +584,7 @@ describe(Workspace.name, () => {
 
       const result = workspace.dependencyProblems
 
-      expect(result).toEqual({
-        origin: workspace.origin,
-        workspace: workspace.name,
-        unused: ['unused-dep'],
-      })
+      expect(result).toEqual({ origin: workspace.origin, workspace: workspace.name, unused: ['unused-dep'] })
       expect(result).not.toHaveProperty('missing')
       expect(result).not.toHaveProperty('missingDev')
     })
@@ -868,10 +818,7 @@ describe(Workspace.name, () => {
 
   describe('edge cases', () => {
     it('should handle workspace with no package.json dependencies', () => {
-      mockFsExtra.readJsonSync.mockReturnValue({
-        name: '@mono/minimal',
-        version: '1.0.0',
-      } as PackageJson)
+      mockFsExtra.readJsonSync.mockReturnValue({ name: '@mono/minimal', version: '1.0.0' } as PackageJson)
 
       expect(workspace.installedDependencies).toEqual([])
       expect(workspace.installedDevDependencies).toEqual([])

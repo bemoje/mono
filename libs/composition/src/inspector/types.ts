@@ -30,7 +30,7 @@ export type InspectFilter = <T extends InspectorTarget>(
   value: unknown,
   key: string | symbol,
   depth: number,
-  object: T,
+  object: T
 ) => boolean
 
 export type ClassInspectorMixin = typeof Function.prototype & { inspector: InspectorOptions }

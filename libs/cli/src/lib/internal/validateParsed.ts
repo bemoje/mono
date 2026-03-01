@@ -7,7 +7,7 @@ export function validateParsed(
   args: unknown[],
   optionValues: Record<string, unknown>,
   argDefs: Argument[],
-  optionDefs: Option[],
+  optionDefs: Option[]
 ): string[] | undefined {
   return argDefs
     .map((def, index) => {
@@ -52,7 +52,7 @@ export function validateParsed(
               .join(',')}]`
           }
         }
-      }),
+      })
     )
     .filter((s) => {
       return s !== undefined
@@ -61,6 +61,6 @@ export function validateParsed(
       (acc, curr) => {
         return (acc ?? []).concat(curr)
       },
-      undefined as string[] | undefined,
+      undefined as string[] | undefined
     )
 }

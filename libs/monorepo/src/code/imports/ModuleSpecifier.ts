@@ -14,9 +14,7 @@ import { builtinModules } from 'module'
  * @template P - The type of the parent import statement, defaults to ImportStatement
  */
 export class ModuleSpecifier<P extends ImportStatement = ImportStatement> extends CodeBlock<P> {
-  static readonly inspector = Inspector.compose(ModuleSpecifier, {
-    keys: ['from'],
-  })
+  static readonly inspector = Inspector.compose(ModuleSpecifier, { keys: ['from'] })
 
   /**
    * Alias for the `code` property.

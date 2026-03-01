@@ -7,9 +7,7 @@ import { it } from 'vitest'
 import { vi } from 'vitest'
 
 vi.mock('child_process', () => {
-  return {
-    execSync: vi.fn(),
-  }
+  return { execSync: vi.fn() }
 })
 
 describe(cliExecSync.name, () => {
@@ -19,26 +17,17 @@ describe(cliExecSync.name, () => {
 
   it('should execute a command with inherited stdio by default', () => {
     cliExecSync('echo hello')
-    expect(execSync).toHaveBeenCalledWith('echo hello', {
-      stdio: 'inherit',
-      cwd: process.cwd(),
-    })
+    expect(execSync).toHaveBeenCalledWith('echo hello', { stdio: 'inherit', cwd: process.cwd() })
   })
 
   it('should use ignore stdio when quiet is true', () => {
     cliExecSync('echo hello', { quiet: true })
-    expect(execSync).toHaveBeenCalledWith('echo hello', {
-      stdio: 'ignore',
-      cwd: process.cwd(),
-    })
+    expect(execSync).toHaveBeenCalledWith('echo hello', { stdio: 'ignore', cwd: process.cwd() })
   })
 
   it('should use provided cwd', () => {
     cliExecSync('echo hello', { cwd: '/some/path' })
-    expect(execSync).toHaveBeenCalledWith('echo hello', {
-      stdio: 'inherit',
-      cwd: '/some/path',
-    })
+    expect(execSync).toHaveBeenCalledWith('echo hello', { stdio: 'inherit', cwd: '/some/path' })
   })
 
   it('should skip execution and log when dryRun is true', () => {

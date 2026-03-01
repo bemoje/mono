@@ -6,10 +6,7 @@ import readline from 'readline'
  */
 export async function readFileFirstLine(filepath: string) {
   const fileStream = fs.createReadStream(filepath, 'utf8')
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
-  })
+  const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity })
   for await (const line of rl) {
     return line.trim()
   }

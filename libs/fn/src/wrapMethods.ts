@@ -61,7 +61,7 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
 }
 
 function* iterateMethods<T extends object>(
-  target: T,
+  target: T
 ): Generator<[string | symbol, DescriptorMethodType, PropertyDescriptor]> {
   for (const key of Reflect.ownKeys(target)) {
     const des = Object.getOwnPropertyDescriptor(target, key)
@@ -87,25 +87,25 @@ export type MethodFilter<T extends object = object> = (
   target: T,
   key: string | symbol,
   type: DescriptorMethodType,
-  descriptor: PropertyDescriptor,
+  descriptor: PropertyDescriptor
 ) => boolean
 
 export type MethodWrapper<T extends object = object> = (
   target: T,
   key: string | symbol,
-  method: AnyFunction,
+  method: AnyFunction
 ) => AnyFunction | undefined
 
 export type GetterWrapper<T extends object = object> = (
   target: T,
   key: string | symbol,
-  getter: AnyGetter,
+  getter: AnyGetter
 ) => AnyGetter | undefined
 
 export type SetterWrapper<T extends object = object> = (
   target: T,
   key: string | symbol,
-  setter: AnySetter,
+  setter: AnySetter
 ) => AnySetter | undefined
 
 export interface WrapMethodsStrategy<T extends object = object> {

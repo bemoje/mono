@@ -20,13 +20,8 @@
         "private": true,
         "module": "src/index.ts",
         "sideEffects": false,
-        "scripts": {
-          "indexts": "devkit fix-index-ts",
-          "build": "node esbuild.mjs"
-        },
-        "devDependencies": {
-          "eslint": "^8.57.0"
-        }
+        "scripts": { "indexts": "devkit fix-index-ts", "build": "node esbuild.mjs" },
+        "devDependencies": { "eslint": "^8.57.0" }
       },
       "esbuild": [
         "import { execSync } from 'child_process'",
@@ -36,16 +31,9 @@
         "execSync(`npx @bemoje/devkit build lib ${dirname}`, { stdio: 'inherit' })",
         ""
       ],
-      "readmeMd": [
-        "# {{libraryName}}",
-        ""
-      ],
-      "tsconfigJson": {
-        "extends": "../../tsconfig.json"
-      },
-      "indexTs": [
-        ""
-      ]
+      "readmeMd": ["# {{libraryName}}", ""],
+      "tsconfigJson": { "extends": "../../tsconfig.json" },
+      "indexTs": [""]
     }
   }
 }
