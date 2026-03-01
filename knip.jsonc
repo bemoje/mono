@@ -1,6 +1,4 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
-
   "include": ["nsTypes", "nsExports", "classMembers"],
 
   "ignoreExportsUsedInFile": true,

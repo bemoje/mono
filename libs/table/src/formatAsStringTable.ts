@@ -25,7 +25,7 @@ export interface FormatAsStringTableOptions<T extends UnformattedIndexSignature>
  * Formats an array of objects into a string table with customizable column formatters.
  */
 export function formatAsStringTable<T extends UnformattedIndexSignature, U extends object>(
-  opts: FormatAsStringTableOptions<T>,
+  opts: FormatAsStringTableOptions<T>
 ): U[] {
   return opts.data.map((obj) => {
     const objectOfStringVals = getEntriesOnObjectWithStringVal(obj)
@@ -43,7 +43,7 @@ export function formatAsStringTable<T extends UnformattedIndexSignature, U exten
         acc[key as keyof T] = val
         return acc
       },
-      {} as { [K in keyof T]: string },
+      {} as { [K in keyof T]: string }
     )
   }
 
@@ -56,7 +56,7 @@ export function formatAsStringTable<T extends UnformattedIndexSignature, U exten
         acc[key as keyof T] = opts.defaultFormatter!.format(val as T[keyof T])
         return acc
       },
-      {} as { [K in keyof T]: string },
+      {} as { [K in keyof T]: string }
     )
   }
 
@@ -69,7 +69,7 @@ export function formatAsStringTable<T extends UnformattedIndexSignature, U exten
         acc[formatter.key as string] = formatter
         return acc
       },
-      {} as Record<string, ToStringFormatter<T>>,
+      {} as Record<string, ToStringFormatter<T>>
     )
 
     return Object.entries(obj).reduce(
@@ -81,7 +81,7 @@ export function formatAsStringTable<T extends UnformattedIndexSignature, U exten
         acc[key as keyof T] = formatter.format(val as T[keyof T])
         return acc
       },
-      {} as { [K in keyof T]: string },
+      {} as { [K in keyof T]: string }
     )
   }
 }

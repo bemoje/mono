@@ -15,8 +15,8 @@ const externalDeps = Array.from(
       ...rootPkg.devDependencies,
       ...pkg.dependencies,
       ...pkg.devDependencies,
-    }),
-  ),
+    })
+  )
 ).filter((name) => {
   return !name.startsWith('@types/')
 })
@@ -48,7 +48,7 @@ function depVersion(name) {
 }
 
 const outCode = [await fs.readFile('dist/index.d.ts', 'utf8'), await fs.readFile('dist/index.mjs', 'utf8')].join(
-  '\n',
+  '\n'
 )
 
 const dependencies = {
@@ -59,7 +59,7 @@ const dependencies = {
       })
       .map((dep) => {
         return [dep, depVersion(dep)]
-      }),
+      })
   ),
 
   ...pkg.dependencies,
@@ -103,7 +103,7 @@ await fs.writeJson(
       directory: `libs/${wsDirname}`,
     },
   },
-  { spaces: 2 },
+  { spaces: 2 }
 )
 
 console.info(`Built: libs/${wsDirname}`)

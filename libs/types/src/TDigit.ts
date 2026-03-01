@@ -1,3 +1,5 @@
+/** @format */
+
 import type { TChar } from './TChar'
 import type { TDigits } from './TDigits'
 

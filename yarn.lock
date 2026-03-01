@@ -1095,7 +1095,6 @@ __metadata:
   resolution: "@mono/is@workspace:libs/is"
   dependencies:
     tsup: "npm:^8.5.1"
-    type-fest: "npm:latest"
   languageName: unknown
   linkType: soft
 

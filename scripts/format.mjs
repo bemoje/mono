@@ -1,3 +1,5 @@
+/** @format */
+
 import { chunk } from 'es-toolkit/array'
 import cp from 'child_process'
 import fs from 'fs'
@@ -15,21 +17,21 @@ if (
   process.exit(1)
 }
 
-const promises = [
-  `git diff --cached --name-only`, //
+const cmd = [
+  //
+  `git diff --cached --name-only`,
   `git diff --name-only`,
   `git ls-files --others --exclude-standard`,
-].map(async (cmd) => {
-  return cp
-    .execSync(cmd, { encoding: 'utf8' })
-    .trim()
-    .split('\n')
-    .map((f) => {
-      return f.trim()
-    })
-    .filter(Boolean)
-})
-const files = await Promise.all(promises)
+].join(' && ')
+
+const files = cp
+  .execSync(cmd, { encoding: 'utf8' })
+  .trim()
+  .split('\n')
+  .map((f) => {
+    return f.trim()
+  })
+  .filter(Boolean)
 const existentFiles = Array.from(new Set(files))
   .flat()
   .filter((file) => {

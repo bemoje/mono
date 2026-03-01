@@ -16,7 +16,7 @@ describe(SchemaConfigStrategy.name, () => {
         theme: Type.Union([Type.Literal('light'), Type.Literal('dark')], { default: 'light' }),
         notifications: Type.Boolean({ default: true }),
       },
-      { default: {} },
+      { default: {} }
     ),
   })
 

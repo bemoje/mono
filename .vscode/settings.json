@@ -79,6 +79,10 @@
     {
       "fileMatch": ["tsconfig.json", "tsconfig.paths.json"],
       "url": "http://json.schemastore.org/tsconfig"
+    },
+    {
+      "fileMatch": ["knip.jsonc"],
+      "url": "https://unpkg.com/knip@5.85.0/schema.json"
     }
   ],
   "vitest.disableWorkspaceWarning": true,

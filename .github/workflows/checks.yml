@@ -31,7 +31,7 @@ jobs:
         run: yarn lint
 
       - name: prettier
-        run: yarn format-all:check
+        run: yarn format:check
 
       - name: knip
         run: yarn check:knip

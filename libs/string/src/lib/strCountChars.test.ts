@@ -16,7 +16,7 @@ describe('strCountChars', () => {
         ['r', 1],
         ['d', 1],
         ['!', 1],
-      ]),
+      ])
     )
     expect(strCountChars('Hello')).toEqual(
       new Map([
@@ -24,7 +24,7 @@ describe('strCountChars', () => {
         ['e', 1],
         ['l', 2],
         ['o', 1],
-      ]),
+      ])
     )
     expect(strCountChars('')).toEqual(new Map())
   })

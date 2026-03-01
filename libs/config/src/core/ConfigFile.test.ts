@@ -26,14 +26,14 @@ describe(ConfigFile.name, () => {
         logging: Type.Boolean({ default: true }),
         debug: Type.Boolean({ default: false }),
       },
-      { default: {} },
+      { default: {} }
     ),
     database: Type.Optional(
       Type.Object({
         host: Type.String(),
         port: Type.Number(),
         name: Type.String(),
-      }),
+      })
     ),
   })
 
