@@ -21,8 +21,9 @@ export function createSearchPromptObject(
   data: string[],
   options: ISearchPromptOptions
 ): PromptObject {
-  const searchStopSequence = options.searchStopSequence ?? ':'
+  const searchStopSequence = options.searchStopSequence ?? ' -- '
   const keywordDelimiter = options.separator ?? ' '
+  const searchOrUnion = options.searchOrUnion ?? '|'
 
   const meta = new WeakMap<Choice, ISearchPromptChoiceMetaData>()
   const choices = data.map((value) => {
@@ -59,6 +60,7 @@ export function createSearchPromptObject(
   }
 
   const prompt: PromptObjectWithClearFirst = {
+    ...options,
     type: 'autocomplete',
     name: name,
     message: '0',
@@ -68,13 +70,14 @@ export function createSearchPromptObject(
     choices,
     suggest: async (input: string, choices: Choice[]): Promise<Choice[]> => {
       const [beforeStop, afterStop] = input.split(searchStopSequence)
-      const beforeStopSplitOr = beforeStop.split('||')
+      const beforeStopSplitOr = beforeStop.split(searchOrUnion)
 
       const result = new Set<Choice>([choices[0]])
+      const allKeywords: string[] = []
 
       for (const part of beforeStopSplitOr) {
         const partResult = await search(
-          [part, searchStopSequence, afterStop].join(''),
+          afterStop ? [part, searchStopSequence, afterStop].join(' ') : part,
           lastResult,
           choices,
           meta,
@@ -85,19 +88,36 @@ export function createSearchPromptObject(
         partResult.forEach((choice) => {
           result.add(choice)
         })
+        allKeywords.push(...lastResult.keywords)
       }
+
+      lastResult.keywords = allKeywords
+      lastResult.result = Array.from(result)
 
       return Array.from(result)
     },
     onRender: function () {
+      const renderedTitles = new Map<string, string>()
       const choices = this.choices as Choice[]
       choices.forEach((choice: Choice) => {
         const choiceMeta = meta.get(choice)
         if (!choiceMeta) {
           return
         }
-        choice.title = render(choiceMeta.parsed, choiceMeta.preRendered, lastResult.keywords)
+        const title = render(choiceMeta.parsed, choiceMeta.preRendered, lastResult.keywords)
+        choice.title = title
+        renderedTitles.set(choice.value, title)
       })
+      // Also update suggestions since prompts displays from this.suggestions, not this.choices
+      const suggestions = Reflect.get(this, 'suggestions') as Choice[] | undefined
+      if (suggestions) {
+        suggestions.forEach((s) => {
+          const title = renderedTitles.get(s.value)
+          if (title !== undefined) {
+            s.title = title
+          }
+        })
+      }
       Reflect.set(this, 'msg', String(lastResult.result.length))
     },
   }
@@ -163,14 +183,24 @@ async function search(
   const indexOfStopSequence = input.indexOf(searchStopSequence)
   latestData.originalInput = input
   latestData.input = indexOfStopSequence === -1 ? input : input.substring(0, indexOfStopSequence).trim()
-  latestData.inputAfterStop = indexOfStopSequence === -1 ? '' : input.substring(indexOfStopSequence + 1).trim()
+  latestData.inputAfterStop =
+    indexOfStopSequence === -1 ? '' : (input.split(searchStopSequence).pop()?.trim() ?? '')
   latestData.keywords = strSplitBy(latestData.input, keywordDelimiter)
   latestData.result = []
   let temp: Choice[] = []
 
+  // Exact match always from beginning of searched strings/words
+  const exactMatch = choices.find((choice) => {
+    return latestData.keywords.join(' ') === choice.value
+  })
+  if (exactMatch) {
+    latestData.result.push(exactMatch)
+    return latestData.result
+  }
+
   if (!filtering.startsWith && !filtering.includes) {
     latestData.result = choices
-    return Promise.resolve(latestData.result)
+    return latestData.result
   }
 
   if (filtering.startsWith) {
@@ -194,7 +224,7 @@ async function search(
     })
 
     if (latestData.result.length === 1) {
-      return Promise.resolve(latestData.result)
+      return latestData.result
     }
   } else {
     temp = temp.concat(choices)
@@ -214,7 +244,7 @@ async function search(
     })
   }
 
-  return Promise.resolve(latestData.result)
+  return latestData.result
 }
 
 /**

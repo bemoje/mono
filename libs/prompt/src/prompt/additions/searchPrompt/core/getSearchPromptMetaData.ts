@@ -4,6 +4,8 @@ import type { PromptObject } from 'prompts'
 
 export function getSearchPromptMetaData(prompt: PromptObject): ISearchPromptMetaData {
   const result = PROMPT_META_DATA.get(prompt)
-  if (!result) {throw new Error('Prompt meta data not found.')}
+  if (!result) {
+    throw new Error('Prompt meta data not found.')
+  }
   return result
 }

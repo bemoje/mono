@@ -32,9 +32,18 @@ export async function searchPrompt(
   const metadata = getSearchPromptMetaData(prompt)
   const selected = oSelected.search
   const input = metadata.originalInput
-  const matches =
-    metadata.result.map((choice) => {
+  const matches = metadata.result
+    .map((choice) => {
       return choice.value
-    }) || []
+    })
+    .map((s) => {
+      return s.trim()
+    })
+    .filter((m) => {
+      return !!m
+    })
+    .filter((m) => {
+      return m !== '>>'
+    })
   return { input, matches, selected, metadata }
 }

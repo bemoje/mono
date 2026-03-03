@@ -26,7 +26,6 @@ export class SearchPrompt<T extends string = string> extends AbstractUserPrompt<
   /**
    * An array of options/choices for the user to select.
    */
-
   choices(data: string[]) {
     Object.defineProperty(this.data, 'choices', { value: ['>>'].concat(data) })
     return this

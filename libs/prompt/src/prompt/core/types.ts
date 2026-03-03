@@ -37,7 +37,7 @@ export type TValidate<T> = (this: PromptObject, value: T) => boolean | string
 /**
  * state is an object with a snapshot of the current state. The state object has two properties value and aborted. E.g { value: 'This is ', aborted: false }
  */
-export type TStateObject = { value: string; aborted: boolean }
+export type TStateObject = { value: string; aborted: boolean; exited: boolean }
 
 /**
  * Callback for when the state of the current prompt changes. The function signature is (state)

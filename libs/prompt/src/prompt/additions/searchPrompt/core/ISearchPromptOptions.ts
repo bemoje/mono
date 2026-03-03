@@ -24,6 +24,12 @@ export interface ISearchPromptOptions {
   searchStopSequence?: string
 
   /**
+   * When using multiple keyword delimiters, this string can be used to separate keywords that should be treated as an "or" condition instead of "and". For example, if the separator is a space and the searchOrUnion is '|', then the input "foo bar || baz" would search for items that match "foo" AND "bar" OR "baz".
+   * Defaults to '|'
+   */
+  searchOrUnion?: string
+
+  /**
    * Filtering options.
    */
   filtering?: ISearchPromptFilteringOptions

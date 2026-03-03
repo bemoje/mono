@@ -4,6 +4,7 @@ import type { Options as PromptsOptions } from 'prompts'
 import type { TOnState } from './types'
 import type { TStdin } from './types'
 import type { TStdout } from './types'
+import { cloneDeep } from 'es-toolkit'
 import prompts from 'prompts'
 import { setNonEnumerable } from '@bemoje/object'
 
@@ -83,7 +84,7 @@ export abstract class AbstractUserPrompt<Data extends ICommonPromptFields, RVal>
   clone() {
     const ctor = Object.getPrototypeOf(this).constructor
     const clone = new ctor(this.data.message)
-    Object.assign(clone.data, this.data)
+    clone.setData(cloneDeep(this.data))
     return clone
   }
 
