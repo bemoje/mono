@@ -56,8 +56,9 @@ export type IsStrictEqual<T, Target> = StrictEquals<T, Target> extends never ? f
  * Test equality with strict matching strategty.
  * @returns {<T>|never }
  */
- 
+
 export type StrictEquals<T, Target> =
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends any ?
     IsDeepEqual<T, Target> extends true ?
       T
