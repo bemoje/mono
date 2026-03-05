@@ -7,7 +7,8 @@ Advanced TypeScript type definitions and type-level utilities.
 
 ## Description
 
-A collection of utility types that extend TypeScript's standard library to help express more complex constraints, map advanced types, infer deep types, and manipulate functions and structures.
+A collection of utility types that extend TypeScript's standard library to help express more complex constraints,
+map advanced types, infer deep types, and manipulate functions and structures.
 
 ## API Reference
 

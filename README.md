@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7636  | 7636    | 100%       |
+| Lines     | 7553  | 7553    | 100%       |
 | Functions | 769   | 769     | 100%       |
-| Branches  | 2488  | 2488    | 100%       |
+| Branches  | 2493  | 2493    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 580   | 13657         |
-| test      | 430   | 30467         |
+| source    | 624   | 15521         |
+| test      | 431   | 29262         |
 | examples  | 1     | 48            |
-| total     | 1011  | 44172         |
+| total     | 1056  | 44831         |
 
 ## Table of Contents
 
@@ -30,7 +30,6 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
   - [Table of Contents](#table-of-contents)
   - [Apps](#apps)
   - [Scripts](#scripts)
-    - [`package.json`](#packagejson)
     - [`devkit` CLI](#devkit-cli)
   - [Workspaces](#workspaces)
     - [Documentation](#documentation)
@@ -58,15 +57,11 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 - [devkit](./apps/devkit/README.md) - Development utilities for the monorepo.
 - [linkedin-resume](./apps/linkedin-resume/README.md) - A CLI tool to generate a LinkedIn resume in PDF format.
+- [pkg-runner](./apps/pkg-runner/README.md) - A CLI tool to run npm/yarn scripts with an interactive prompt to
+  select which script(s) to run.
 - [playground](./apps/playground/README.md) - Scratch/dev workspace for experimentation.
 
 ## Scripts
-
-### `package.json`
-
-Scripts are defined in the root [`package.json`](/package.json). Each script property has a description via a
-custom JSON schema ([`docs/package.schema.json`](/docs/package.schema.json)), which is shown when hovering over a
-script name in VS Code.
 
 ### `devkit` CLI
 
@@ -781,6 +776,35 @@ describe(ClassToTest.name, () => {
 
 - `Profiler`: A utility class for profiling functions, classes, and modules to measure execution time and other
   performance metrics.
+
+**prompt** (see [README.md](./libs/prompt/README.md))
+
+- `AbstractUserPrompt`: Interactive terminal user prompts.
+- `AutocompleteMultiselectPrompt`: Interactive multiselect user prompts in the terminal.
+- `AutocompletePrompt`: Interactive autocomplete user prompts in the terminal.
+- `ConfirmPrompt`: Interactive confirm user prompts in the terminal.
+- `DatePrompt`: Interactive date user prompts in the terminal.
+- `InvisiblePrompt`: Interactive invisible user prompts in the terminal.
+- `ListPrompt`: Interactive list user prompts in the terminal.
+- `MultiselectPrompt`: Interactive multiselect user prompts in the terminal.
+- `NumberPrompt`: Interactive numner user prompts in the terminal.
+- `PROMPT_META_DATA`: WeakMap storing search prompt meta data associated with each prompt object.
+- `PasswordPrompt`: Interactive password user prompts in the terminal.
+- `SearchPrompt`: Interactive autocomplete user prompts in the terminal.
+- `SelectPrompt`: Interactive select user prompts in the terminal.
+- `TextPrompt`: Interactive text user prompts in the terminal.
+- `TogglePrompt`: Interactive toggle user prompts in the terminal.
+- `createSearchPromptObject`: Create a search prompt object that can be run with `prompts()` from npm package:
+  `prompts`. The point of this would be to run them in series. To run run a prompt directly, use
+- `getSearchPromptMetaData`: Retrieve the search prompt meta data associated with the given prompt object.
+- `initChoices`: Initialize choices for a prompt by attaching meta data to each choice object.
+- `prompt`: Collection of factory functions for creating interactive terminal prompts.
+- `regExact`: Create a regular expression that matches the keyword exactly.
+- `regIncludes`: Create a regular expression that matches strings containing the keyword.
+- `regStartsWith`: Create a regular expression that matches strings starting with the keyword.
+- `searchPrompt`: Start a command-line prompt in which the user can search a provided list.
+- `suggestDefault`: Default suggest function for autocomplete prompts. Filters and highlights choices based on user
+  input.
 
 **regex** (see [README.md](./libs/regex/README.md))
 

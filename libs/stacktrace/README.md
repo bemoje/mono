@@ -1,6 +1,7 @@
 # @bemoje/stacktrace
 
-Beautiful, color-formatted stack trace output for Node.js errors with syntax-highlighted file paths and structured error properties.
+Beautiful, color-formatted stack trace output for Node.js errors with syntax-highlighted file paths and structured
+error properties.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
 [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)

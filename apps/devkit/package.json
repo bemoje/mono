@@ -9,6 +9,7 @@
     "publish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "dependencies": {
+    "prompts": "^2.4.2",
     "tsconfig-paths": "^4.2.0"
   }
 }

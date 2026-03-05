@@ -1,6 +1,7 @@
 # @bemoje/regex
 
-Regular expression utilities for escaping special characters and performing detailed regex execution with match metadata.
+Regular expression utilities for escaping special characters and performing detailed regex execution with match
+metadata.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
 [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)

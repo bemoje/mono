@@ -6,7 +6,7 @@ import type { TStdin } from './types'
 import type { TStdout } from './types'
 import { cloneDeep } from 'es-toolkit'
 import prompts from 'prompts'
-import { setNonEnumerable } from '@bemoje/object'
+import { setNonEnumerable } from '@mono/object'
 
 /**
  * Interactive terminal user prompts.

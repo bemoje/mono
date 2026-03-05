@@ -1,32 +1,23 @@
 {
-  "include": ["nsTypes", "nsExports", "classMembers"],
+  "include": ["nsTypes", "nsExports"],
 
   "ignoreExportsUsedInFile": true,
-  "ignore": [".github/copilot/refactoring.mts"],
-  "ignoreDependencies": [
-    "@mono/*",
-    "@bemoje/*",
-    "tsconfig-paths",
-    "source-map-support",
-    "@swc/core",
-    "tsup",
-    "@bemoje/devkit",
-  ],
+  "ignore": [".github/copilot/refactoring.mts", "libs/prompt/examples/**/*"],
+  "ignoreDependencies": ["@mono/*", "tsconfig-paths", "source-map-support", "@swc/core", "tsup", "@bemoje/devkit"],
 
   "ignoreBinaries": ["cls", "apps/devkit/src/main.ts"],
 
   "workspaces": {
-    "apps/*": { "entry": ["src/*.ts", "**/*.examples.ts"], "includeEntryExports": true },
+    "apps/*": { "entry": ["src/*.ts", "**/*.examples.ts", "src/**/*.examples.ts"], "includeEntryExports": true },
     "libs/*": {
-      "entry": ["src/index.ts", "src/**/*.examples.ts"],
+      "entry": ["src/index.ts", "**/*.examples.ts", "src/**/*.examples.ts"],
       "includeEntryExports": false,
-      "ignoreMembers": ["depth"],
     },
   },
 
   "rules": {
-    // "nsTypes": "warn",
-    // "nsExports": "warn",
+    "nsTypes": "warn",
+    "nsExports": "warn",
     // "classMembers": "warn",
     // "files": "error",
     // "dependencies": "error",

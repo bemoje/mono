@@ -37,9 +37,7 @@
   "eslint.nodePath": ".yarn/sdks",
   "types-autoinstaller.useYarn": true,
   "markdown-preview-enhanced.previewTheme": "github-light.css",
-  "chat.instructionsFilesLocations": {
-    ".github/copilot/instructions": true
-  },
+  "chat.instructionsFilesLocations": { ".github/copilot/instructions": true },
   "chat.tools.terminal.autoApprove": {
     "/^yarn (test|lint|build|precommit|typecheck|format|ts)/": true,
     "/^git (status|log)$/": true,
@@ -68,22 +66,9 @@
     "gh": true
   },
   "json.schemas": [
-    {
-      "url": "https://json.schemastore.org/package.json",
-      "fileMatch": ["package.json", "**/package.json"]
-    },
-    {
-      "url": "./docs/package.schema.json",
-      "fileMatch": ["./package.json"]
-    },
-    {
-      "fileMatch": ["tsconfig.json", "tsconfig.paths.json"],
-      "url": "http://json.schemastore.org/tsconfig"
-    },
-    {
-      "fileMatch": ["knip.jsonc"],
-      "url": "https://unpkg.com/knip@5.85.0/schema.json"
-    }
+    { "url": "https://json.schemastore.org/package.json", "fileMatch": ["package.json", "**/package.json"] },
+    { "fileMatch": ["tsconfig.json", "tsconfig.paths.json"], "url": "http://json.schemastore.org/tsconfig" },
+    { "fileMatch": ["knip.jsonc"], "url": "https://unpkg.com/knip@5.85.0/schema.json" }
   ],
   "vitest.disableWorkspaceWarning": true,
   "markdown.extension.toc.levels": "1..6"

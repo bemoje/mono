@@ -12,8 +12,7 @@
   },
   "devDependencies": {
     "@types/prompts": "^2.4.9",
-    "tsup": "^8.5.1",
-    "type-fest": "^5.4.4"
+    "tsup": "^8.5.1"
   },
   "scripts": {
     "build": "node --import '../../scripts/build-lib.mjs'",

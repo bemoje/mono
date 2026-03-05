@@ -66,6 +66,9 @@ function search(message: string) {
   return new SearchPrompt(message)
 }
 
+/**
+ * Collection of factory functions for creating interactive terminal prompts.
+ */
 export const prompt = {
   text,
   number,
@@ -82,4 +85,4 @@ export const prompt = {
   search,
 }
 
-export default prompt
+// export default prompt

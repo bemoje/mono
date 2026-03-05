@@ -9,7 +9,8 @@ Monorepo workspace management, package discovery, and TypeScript code processing
 
 ### Managing the Repository & Workspaces
 
-The `MonoRepo` class allows structured, automated tasks against packages and workspaces in a typical monorepo environment (e.g. yarn, npm, pnpm workspaces).
+The `MonoRepo` class allows structured, automated tasks against packages and workspaces in a typical monorepo
+environment (e.g. yarn, npm, pnpm workspaces).
 
 ```ts
 import { MonoRepo } from '@mono/monorepo'

@@ -5,32 +5,15 @@
     "Copilot": {
       "additionalProperties": false,
       "properties": {
-        "categories": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "type": "object"
-        },
+        "categories": { "additionalProperties": { "type": "string" }, "type": "object" },
         "problemsFound": {
           "items": {
             "additionalProperties": false,
             "properties": {
-              "categoryId": {
-                "type": ["string"]
-              },
-              "fileAndLineNum": {
-                "type": "string"
-              },
-              "impact": {
-                "enum": ["low", "medium", "high"],
-                "type": "string"
-              },
-              "todo": {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              }
+              "categoryId": { "type": ["string"] },
+              "fileAndLineNum": { "type": "string" },
+              "impact": { "enum": ["low", "medium", "high"], "type": "string" },
+              "todo": { "items": { "type": "string" }, "type": "array" }
             },
             "required": ["fileAndLineNum", "categoryId", "impact", "todo"],
             "type": "object"
@@ -41,25 +24,11 @@
           "items": {
             "additionalProperties": false,
             "properties": {
-              "approvedByUser": {
-                "type": "boolean"
-              },
-              "categoryId": {
-                "type": ["string"]
-              },
-              "fileAndLineNum": {
-                "type": "string"
-              },
-              "impact": {
-                "enum": ["low", "medium", "high"],
-                "type": "string"
-              },
-              "todo": {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              }
+              "approvedByUser": { "type": "boolean" },
+              "categoryId": { "type": ["string"] },
+              "fileAndLineNum": { "type": "string" },
+              "impact": { "enum": ["low", "medium", "high"], "type": "string" },
+              "todo": { "items": { "type": "string" }, "type": "array" }
             },
             "required": ["approvedByUser", "categoryId", "fileAndLineNum", "impact", "todo"],
             "type": "object"

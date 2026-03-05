@@ -18,8 +18,7 @@ Do the same thing for the remaining 'assert' functions in that dir.
 
 ### publish
 
-finish up `libs/cli`
-Compare with `~/repos/tsmono` and take any good stuff from there.
+finish up `libs/cli` Compare with `~/repos/tsmono` and take any good stuff from there.
 
 Publish to npm. Find a good name.
 
@@ -31,7 +30,8 @@ Publish to npm. Find a good name.
 
 Continue work on `libs/stacktrace/bin/enablePrettyStackTrace.cjs`
 
-Should be possible to set it up so you can require it with no like `-r @mono/stacktrace/enablePrettyStackTrace` and it will enable the pretty stack trace globally for the process. This will be useful for the CLI and other tools.
+Should be possible to set it up so you can require it with no like `-r @mono/stacktrace/enablePrettyStackTrace` and
+it will enable the pretty stack trace globally for the process. This will be useful for the CLI and other tools.
 
 ---
 
@@ -47,8 +47,7 @@ Set up keybinds, eg. add selection to chat, etc.
 
 Find good stuff in .dist and convert it to fit into repos/mono
 
-**ts.ps1**
-check out, eg. `C:/Users/bemoj/repos/.dist/ts.ps1`
+**ts.ps1** check out, eg. `C:/Users/bemoj/repos/.dist/ts.ps1`
 
 ```bash
 tsx -r tsconfig-paths/register -r dotenv/config -r source-map-support/register -r ./scripts/enablePrettyStackTrace.cjs @args

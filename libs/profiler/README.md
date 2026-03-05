@@ -80,10 +80,7 @@ import { Profiler } from '@bemoje/profiler'
 Profiler.enabled = false
 
 // Ignore specific keys when profiling a class
-Profiler.class(MyClass, {
-  ignoreStaticKeys: ['create'],
-  ignorePrototypeKeys: ['toString'],
-})
+Profiler.class(MyClass, { ignoreStaticKeys: ['create'], ignorePrototypeKeys: ['toString'] })
 
 // Sort results by total time
 Profiler.printResults({ sortBy: 'totalTimeUs' })

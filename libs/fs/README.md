@@ -30,10 +30,7 @@ entries.forEach(([path, stats]) => {
 })
 
 // Filter directories and limit depth
-const shallow = walkDirectory('./src', {
-  maxDepth: 2,
-  filter: (dirpath, basename) => basename !== 'node_modules',
-})
+const shallow = walkDirectory('./src', { maxDepth: 2, filter: (dirpath, basename) => basename !== 'node_modules' })
 ```
 
 ### Update Files

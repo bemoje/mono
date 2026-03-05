@@ -1,6 +1,7 @@
 # @bemoje/cli
 
-A type-safe CLI framework for building command-line interfaces with typed arguments, options, subcommands, and auto-generated help - without execution coupling.
+A type-safe CLI framework for building command-line interfaces with typed arguments, options, subcommands, and
+auto-generated help - without execution coupling.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
 [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
@@ -13,19 +14,28 @@ npm install @bemoje/cli
 
 ## Features
 
-- **Full type inference** - Arguments, options, and parsed results are fully typed. The types update as you chain `.addArgument()` and `.addOption()` calls.
+- **Full type inference** - Arguments, options, and parsed results are fully typed. The types update as you chain
+  `.addArgument()` and `.addOption()` calls.
 - **Declarative, chainable API** - Build commands fluently with method chaining; each call returns a narrowed type.
-- **Subcommand hierarchies** - Nest commands arbitrarily deep. Options are inherited by subcommands. Aliases are auto-generated.
-- **Auto-generated help** - Colorized, grouped, and wrapped help output from your command definitions. Fully customizable via the `Help` class.
+- **Subcommand hierarchies** - Nest commands arbitrarily deep. Options are inherited by subcommands. Aliases are
+  auto-generated.
+- **Auto-generated help** - Colorized, grouped, and wrapped help output from your command definitions. Fully
+  customizable via the `Help` class.
 - **Built-in `--help`, `--debug`, and `--version` flags** - Automatically added to root commands.
-- **Option hooks** - Register side-effect actions that trigger when specific options are set (e.g., `--help` prints help and sets `process.exitCode`).
-- **Parse-only design** - `parseArgv()` returns a result object with `args`, `opts`, `errors`, `hooks`, and an `execute()` method. You control when and whether execution happens.
-- **Validation** - Missing required arguments, unknown options, and invalid choices are reported as errors on the result.
-- **Variadic arguments and options** - Both arguments and options support variadic (`...`) syntax to collect multiple values into arrays.
+- **Option hooks** - Register side-effect actions that trigger when specific options are set (e.g., `--help` prints
+  help and sets `process.exitCode`).
+- **Parse-only design** - `parseArgv()` returns a result object with `args`, `opts`, `errors`, `hooks`, and an
+  `execute()` method. You control when and whether execution happens.
+- **Validation** - Missing required arguments, unknown options, and invalid choices are reported as errors on the
+  result.
+- **Variadic arguments and options** - Both arguments and options support variadic (`...`) syntax to collect
+  multiple values into arrays.
 - **Environment variable defaults** - Options can fall back to environment variables via the `env` option.
-- **Argument and option choices** - Restrict allowed values with `choices` arrays; violations are reported as validation errors.
+- **Argument and option choices** - Restrict allowed values with `choices` arrays; violations are reported as
+  validation errors.
 - **Negatable boolean flags** - Pass `--no-<flag>` to set a boolean option to `false`.
-- **kebab-case to camelCase mapping** - Multi-word option names like `--output-dir` are automatically available as `opts.outputDir`.
+- **kebab-case to camelCase mapping** - Multi-word option names like `--output-dir` are automatically available as
+  `opts.outputDir`.
 - **Hidden commands and options** - Exclude items from help output while keeping them functional.
 - **Grouped help sections** - Organize options and subcommands into named groups in the help output.
 
@@ -50,7 +60,8 @@ cli.parseArgv(process.argv.slice(2))
 
 ### Arguments
 
-Arguments are positional values parsed from `argv`. They support required (`<name>`), optional (`[name]`), and variadic (`<name...>`, `[name...]`) forms.
+Arguments are positional values parsed from `argv`. They support required (`<name>`), optional (`[name]`), and
+variadic (`<name...>`, `[name...]`) forms.
 
 ```ts
 const cmd = new Command('copy')
@@ -64,7 +75,8 @@ cmd.parseArgv(['file.txt'])
 // args: ['file.txt', '.']
 ```
 
-**Variadic arguments** collect all remaining positional values into an array. Only the last argument may be variadic.
+**Variadic arguments** collect all remaining positional values into an array. Only the last argument may be
+variadic.
 
 ```ts
 const cmd = new Command('concat').addArgument('<files...>').setAction((files, opts) => {
@@ -173,9 +185,11 @@ cmd.parseArgv(['--output-dir', '/tmp'])
 
 ### Subcommands
 
-Use `.command()` to create a subcommand and get it back, or `.addCommand()` to add one via callback and get the parent back for chaining.
+Use `.command()` to create a subcommand and get it back, or `.addCommand()` to add one via callback and get the
+parent back for chaining.
 
-Options defined on the parent are automatically inherited by subcommands. Aliases are auto-generated from subcommand name initials (e.g., `build-project` gets alias `bp`).
+Options defined on the parent are automatically inherited by subcommands. Aliases are auto-generated from
+subcommand name initials (e.g., `build-project` gets alias `bp`).
 
 ```ts
 const cli = new Command('git')
@@ -190,7 +204,7 @@ const cli = new Command('git')
       .setAction((url, opts) => {
         // opts.verbose is inherited from parent
         console.log(`Cloning ${url} with depth ${opts.depth ?? 'full'}`)
-      }),
+      })
   )
 
   .addCommand('status', (sub) =>
@@ -199,7 +213,7 @@ const cli = new Command('git')
       .addOption('-s, --short', { description: 'Short format output' })
       .setAction((opts) => {
         console.log('Status:', opts.short ? 'clean' : 'On branch main...')
-      }),
+      })
   )
 
 cli.parseArgv(['clone', 'https://github.com/user/repo', '-d', '1'])
@@ -251,11 +265,13 @@ if (result.errors) {
 }
 ```
 
-When `execute()` is called, hooks run first (in order). If any hook sets `process.exitCode`, execution stops. Then the main action runs inside a timer that provides a logger.
+When `execute()` is called, hooks run first (in order). If any hook sets `process.exitCode`, execution stops. Then
+the main action runs inside a timer that provides a logger.
 
 ### Option Hooks
 
-Hooks let you attach side-effect actions that run when a specific option is set. The built-in `--help`, `--debug`, and `--version` flags are all implemented as hooks.
+Hooks let you attach side-effect actions that run when a specific option is set. The built-in `--help`, `--debug`,
+and `--version` flags are all implemented as hooks.
 
 ```ts
 const cli = new Command('tool')
@@ -269,7 +285,8 @@ const cli = new Command('tool')
   })
 ```
 
-Hooks are evaluated in registration order. If a hook sets `process.exitCode`, subsequent hooks and the main action are skipped.
+Hooks are evaluated in registration order. If a hook sets `process.exitCode`, subsequent hooks and the main action
+are skipped.
 
 ### Help Output
 
@@ -314,7 +331,8 @@ The `Help` class exposes many styleable and overridable methods for full control
 
 ### Type Safety
 
-The `Command` class tracks argument and option types through generics that update with each chained call. This means your action handler receives correctly typed parameters:
+The `Command` class tracks argument and option types through generics that update with each chained call. This
+means your action handler receives correctly typed parameters:
 
 ```ts
 const cmd = new Command('example')
@@ -327,7 +345,8 @@ const cmd = new Command('example')
   })
 ```
 
-Invalid argument orderings (e.g., required after optional, anything after variadic) are caught at the **type level** - TypeScript will reject the code before it runs.
+Invalid argument orderings (e.g., required after optional, anything after variadic) are caught at the **type
+level** - TypeScript will reject the code before it runs.
 
 ### Helpers
 
@@ -388,7 +407,8 @@ getCommandAndAncestors(sub) // [self, parent, grandparent, ...]
 | ------------------------------- | -------------- | ------------------------- |
 | `.addArgument(usage, options?)` | `Command<...>` | Add a positional argument |
 
-Argument usage patterns: `<name>` (required), `[name]` (optional), `<name...>` (required variadic), `[name...]` (optional variadic).
+Argument usage patterns: `<name>` (required), `[name]` (optional), `<name...>` (required variadic), `[name...]`
+(optional variadic).
 
 Argument options: `description`, `choices`, `defaultValue`, `defaultValueDescription`.
 
@@ -398,7 +418,8 @@ Argument options: `description`, `choices`, `defaultValue`, `defaultValueDescrip
 | ----------------------------- | -------------- | -------------------------------------- |
 | `.addOption(flags, options?)` | `Command<...>` | Add a named option with type inference |
 
-Option flag patterns: `-s, --long` (boolean), `-s, --long <val>` (required string), `-s, --long [val]` (optional string), `-s, --long <val...>` (required variadic), `-s, --long [val...]` (optional variadic).
+Option flag patterns: `-s, --long` (boolean), `-s, --long <val>` (required string), `-s, --long [val]` (optional
+string), `-s, --long <val...>` (required variadic), `-s, --long [val...]` (optional variadic).
 
 Option properties: `description`, `defaultValue`, `defaultValueDescription`, `choices`, `env`, `hidden`, `group`.
 
@@ -435,7 +456,8 @@ Option properties: `description`, `defaultValue`, `defaultValueDescription`, `ch
 
 ### `Help` Class
 
-Renders formatted, colorized help text. Instantiated automatically by `Command`. Override style methods by subclassing or via `helpConfiguration()`.
+Renders formatted, colorized help text. Instantiated automatically by `Command`. Override style methods by
+subclassing or via `helpConfiguration()`.
 
 Key properties: `helpWidth`, `sortSubcommands`, `sortOptions`, `minWidthToWrap`.
 

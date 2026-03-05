@@ -9,16 +9,14 @@ TypeScript schema validation utilities based on TypeBox.
 
 ### Assertion & Validation
 
-Assert that unknown data conforms to a [TypeBox](https://github.com/sinclairzx81/typebox) schema. Throws a structured validation error containing individual violation details.
+Assert that unknown data conforms to a [TypeBox](https://github.com/sinclairzx81/typebox) schema. Throws a
+structured validation error containing individual violation details.
 
 ```ts
 import { Type } from '@sinclair/typebox'
 import { assertValidSchema, SchemaValidationError } from '@mono/tschema'
 
-const userSchema = Type.Object({
-  name: Type.String(),
-  age: Type.Number(),
-})
+const userSchema = Type.Object({ name: Type.String(), age: Type.Number() })
 
 const data = { name: 'Alice', age: 'thirty' }
 

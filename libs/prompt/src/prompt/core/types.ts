@@ -1,6 +1,6 @@
 import type { IChoice } from '../additions/searchPrompt/core/IChoice'
-import type { LocalesMonths } from '@bemoje/types'
-import type { LocalesWeeks } from '@bemoje/types'
+import type { LocalesMonths } from '@mono/types'
+import type { LocalesWeeks } from '@mono/types'
 import type { PromptObject } from 'prompts'
 import type { PromptType } from 'prompts'
 import { Readable } from 'stream'
@@ -15,7 +15,7 @@ export type {
   LocalesWeeks,
   LocaleWeekDayFullNames,
   LocaleWeekDayShortNames,
-} from '@bemoje/types'
+} from '@mono/types'
 
 /**
  * Use to define custom locales. More info:

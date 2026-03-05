@@ -4,11 +4,17 @@ import type { PromptObject } from './types'
 import type { StyleFunction } from 'ansi-colors'
 import type { SuggestOptions } from './common'
 import colors from 'ansi-colors'
-import { initChoices } from './common'
-import { regExact } from './common'
-import { regIncludes } from './common'
-import { regStartsWith } from './common'
+import { initChoices } from './initChoices'
+import { regExact } from './regExact'
+import { regIncludes } from './regIncludes'
+import { regStartsWith } from './regStartsWith'
 
+/**
+ * Default suggest function for autocomplete prompts. Filters and highlights choices based on user input.
+ *
+ * @param input - The current user input string.
+ * @param choices - The available choices to filter.
+ */
 export async function suggestDefault(this: PromptObject, input: string, choices: IChoice<string>[]) {
   const opts: SuggestOptions = { caseInsensitive: true, regexMode: false }
   const keywords = input.split(' ')

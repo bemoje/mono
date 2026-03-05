@@ -40,11 +40,7 @@ const data = config.load()
 // => { port: 3000, host: 'localhost', debug: false }
 
 // Update config
-config.update((current) => ({
-  ...current,
-  port: 8080,
-  debug: true,
-}))
+config.update((current) => ({ ...current, port: 8080, debug: true }))
 ```
 
 ### Custom Strategies
@@ -64,10 +60,7 @@ dataStrategy.save({ port: 3000 })
 import { SchemaConfigStrategy } from '@bemoje/config'
 import { Type } from '@sinclair/typebox'
 
-const schema = Type.Object({
-  name: Type.String(),
-  version: Type.String({ default: '1.0.0' }),
-})
+const schema = Type.Object({ name: Type.String(), version: Type.String({ default: '1.0.0' }) })
 
 const validation = new SchemaConfigStrategy(schema)
 

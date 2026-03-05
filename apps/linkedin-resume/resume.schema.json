@@ -8,10 +8,7 @@
       "description": "Core personal and contact details displayed in the profile header of the resume.",
       "type": "object",
       "properties": {
-        "name": {
-          "description": "Full name of the candidate.",
-          "type": "string"
-        },
+        "name": { "description": "Full name of the candidate.", "type": "string" },
         "headline": {
           "description": "Primary professional title or role, displayed as the headline beneath the name (e.g., 'Full Stack Software Developer').",
           "type": "string"
@@ -20,11 +17,7 @@
           "description": "Filename of the profile photo located in the '.dist/' output directory (e.g., 'profile.jpeg').",
           "type": "string"
         },
-        "email": {
-          "description": "Primary contact email address.",
-          "type": "string",
-          "format": "email"
-        },
+        "email": { "description": "Primary contact email address.", "type": "string", "format": "email" },
         "phone": {
           "description": "Primary contact phone number, including country code (e.g., '+4525113899').",
           "type": "string",
@@ -37,18 +30,13 @@
         "skills": {
           "description": "A short list of top-level headline skills displayed as pills in the 'About' section. Keep this concise (3-5 items) to highlight key strengths. Distinct from the root-level 'skills' array, which is the comprehensive list.",
           "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "items": { "type": "string" }
         },
         "location": {
           "description": "Current geographic location of the candidate, shown in the profile header.",
           "type": "object",
           "properties": {
-            "city": {
-              "description": "City of residence.",
-              "type": "string"
-            },
+            "city": { "description": "City of residence.", "type": "string" },
             "region": {
               "description": "State, province, or region (e.g., 'Central Denmark Region').",
               "type": "string"
@@ -74,11 +62,7 @@
                 "description": "Username or handle on the platform. Also used to construct URLs (e.g., LinkedIn recommendations link).",
                 "type": "string"
               },
-              "url": {
-                "description": "Full URL to the profile page.",
-                "type": "string",
-                "format": "uri"
-              }
+              "url": { "description": "Full URL to the profile page.", "type": "string", "format": "uri" }
             },
             "required": ["network", "username", "url"]
           }
@@ -112,10 +96,7 @@
             "description": "End date of the position in 'YYYY-MM' format, or an empty string if the position is current (renders as 'Present').",
             "type": "string"
           },
-          "duration": {
-            "description": "Human-readable duration string (e.g., '2 yrs 4 mos').",
-            "type": "string"
-          },
+          "duration": { "description": "Human-readable duration string (e.g., '2 yrs 4 mos').", "type": "string" },
           "summary": {
             "description": "Brief free-text description of the role. Rendered as a paragraph. Can be empty if highlights cover the role sufficiently.",
             "type": "string"
@@ -123,16 +104,12 @@
           "highlights": {
             "description": "Key accomplishments and responsibilities, rendered as a bulleted list.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "skills": {
             "description": "Technologies, tools, and competencies used in this role, rendered as skill pills.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "mediaLinks": {
             "description": "Attached media items (images, documents, links) from the LinkedIn entry.",
@@ -140,14 +117,8 @@
             "items": {
               "type": "object",
               "properties": {
-                "title": {
-                  "description": "Display text for the link.",
-                  "type": "string"
-                },
-                "url": {
-                  "description": "Full URL of the linked resource.",
-                  "type": "string"
-                }
+                "title": { "description": "Display text for the link.", "type": "string" },
+                "url": { "description": "Full URL of the linked resource.", "type": "string" }
               },
               "required": ["title", "url"]
             }
@@ -189,16 +160,12 @@
           "courses": {
             "description": "List of notable courses completed during the program, rendered as a comma-separated list.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "skills": {
             "description": "Skills and technologies acquired during the education, rendered as skill pills.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "mediaLinks": {
             "description": "Attached media items (images, documents, links) from the LinkedIn entry.",
@@ -206,14 +173,8 @@
             "items": {
               "type": "object",
               "properties": {
-                "title": {
-                  "description": "Display text for the link.",
-                  "type": "string"
-                },
-                "url": {
-                  "description": "Full URL of the linked resource.",
-                  "type": "string"
-                }
+                "title": { "description": "Display text for the link.", "type": "string" },
+                "url": { "description": "Full URL of the linked resource.", "type": "string" }
               },
               "required": ["title", "url"]
             }
@@ -232,10 +193,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "name": {
-            "description": "Name of the project.",
-            "type": "string"
-          },
+          "name": { "description": "Name of the project.", "type": "string" },
           "description": {
             "description": "Brief description of the project's purpose and scope.",
             "type": "string"
@@ -243,21 +201,14 @@
           "highlights": {
             "description": "Key features or accomplishments, rendered as a bulleted list.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "skills": {
             "description": "Technologies and skills used in the project, rendered as skill pills.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
-          "startDate": {
-            "description": "Start date of the project in 'YYYY-MM' format.",
-            "type": "string"
-          },
+          "startDate": { "description": "Start date of the project in 'YYYY-MM' format.", "type": "string" },
           "endDate": {
             "description": "End date of the project in 'YYYY-MM' format, or empty string if ongoing.",
             "type": "string"
@@ -265,9 +216,7 @@
           "roles": {
             "description": "Roles held within the project (e.g., 'Lead Developer', 'Maintainer').",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "entity": {
             "description": "Company or organization the project is associated with, rendered as 'Associated with <entity>'. Empty for personal projects.",
@@ -292,11 +241,7 @@
                   "description": "Display text for the link (e.g., 'GitHub - bemoje/mono', 'Spotify').",
                   "type": "string"
                 },
-                "url": {
-                  "description": "Full URL of the linked resource.",
-                  "type": "string",
-                  "format": "uri"
-                }
+                "url": { "description": "Full URL of the linked resource.", "type": "string", "format": "uri" }
               },
               "required": ["title", "url"]
             }
@@ -315,10 +260,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "language": {
-            "description": "Name of the language (e.g., 'Danish', 'English').",
-            "type": "string"
-          },
+          "language": { "description": "Name of the language (e.g., 'Danish', 'English').", "type": "string" },
           "fluency": {
             "description": "Proficiency level (e.g., 'Native or bilingual proficiency', 'Professional working proficiency').",
             "type": "string"
@@ -333,10 +275,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "name": {
-            "description": "Full name of the person who gave the recommendation.",
-            "type": "string"
-          },
+          "name": { "description": "Full name of the person who gave the recommendation.", "type": "string" },
           "headline": {
             "description": "Professional headline or job title of the recommender (e.g., 'Delivery Director FO at Evidi').",
             "type": "string"
@@ -370,9 +309,7 @@
           "associations": {
             "description": "Contexts where the skill was demonstrated or acquired - work positions, education, projects, endorsements, or LinkedIn skill assessments.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           }
         },
         "required": ["name"]

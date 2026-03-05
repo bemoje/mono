@@ -1,6 +1,7 @@
 # @bemoje/object
 
-Comprehensive object manipulation utilities for property definition, traversal, filtering, mapping, prototype chains, and descriptor management.
+Comprehensive object manipulation utilities for property definition, traversal, filtering, mapping, prototype
+chains, and descriptor management.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
 [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)

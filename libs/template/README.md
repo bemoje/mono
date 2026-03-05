@@ -14,9 +14,7 @@ import { StringTemplateStrategy } from '@mono/template'
 const strategy = new StringTemplateStrategy()
 const template = new Template({
   strategy,
-  optionsSchema: Type.Object({
-    user: Type.String({ default: 'Anonymous' }),
-  }),
+  optionsSchema: Type.Object({ user: Type.String({ default: 'Anonymous' }) }),
   template: 'Welcome {{user}}!',
 })
 ```
@@ -29,11 +27,7 @@ For structured JSON templates with pretty-printing:
 import { JsonFileTemplateStrategy } from '@mono/template'
 
 const strategy = new JsonFileTemplateStrategy(
-  Type.Object({
-    name: Type.String(),
-    version: Type.String(),
-    author: Type.String(),
-  }),
+  Type.Object({ name: Type.String(), version: Type.String(), author: Type.String() })
 )
 
 const template = new Template({
@@ -43,11 +37,7 @@ const template = new Template({
     version: Type.String({ default: '1.0.0' }),
     author: Type.String({ default: 'Unknown' }),
   }),
-  template: {
-    name: '{{packageName}}',
-    version: '{{version}}',
-    author: '{{author}}',
-  },
+  template: { name: '{{packageName}}', version: '{{version}}', author: '{{author}}' },
 })
 
 const result = template.render({ packageName: 'my-package' })
@@ -64,10 +54,7 @@ import { TextFileTemplateStrategy } from '@mono/template'
 const strategy = new TextFileTemplateStrategy()
 const template = new Template({
   strategy,
-  optionsSchema: Type.Object({
-    className: Type.String(),
-    author: Type.String({ default: 'Developer' }),
-  }),
+  optionsSchema: Type.Object({ className: Type.String(), author: Type.String({ default: 'Developer' }) }),
   template: [
     '/**',
     ' * {{className}} class',
@@ -122,10 +109,7 @@ The template engine performs validation at multiple levels:
 // This will throw an error because {{name}} is missing from template
 const invalidTemplate = new Template({
   strategy: new StringTemplateStrategy(),
-  optionsSchema: Type.Object({
-    name: Type.String(),
-    age: Type.Number(),
-  }),
+  optionsSchema: Type.Object({ name: Type.String(), age: Type.Number() }),
   template: 'Hello {{age}}', // Missing {{name}}!
 })
 ```

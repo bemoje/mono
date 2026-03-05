@@ -300,6 +300,16 @@ describe(Help.name, () => {
       expect(result).toContain('choices: a, b')
     })
 
+    it('should truncate choices when more than 5', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.optionDescription(
+        mockOption({ description: 'Pick', choices: ['a', 'b', 'c', 'd', 'e', 'f', 'g'] })
+      )
+      expect(result).toContain('choices: a, b, c, d, e, ...')
+      expect(result).not.toContain('f')
+    })
+
     it('should include default value', () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
@@ -359,6 +369,16 @@ describe(Help.name, () => {
       expect(result).toContain('choices: dev, prod')
     })
 
+    it('should truncate choices when more than 5', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.argumentDescription(
+        mockArgument({ description: 'Pick', choices: ['a', 'b', 'c', 'd', 'e', 'f', 'g'] })
+      )
+      expect(result).toContain('choices: a, b, c, d, e, ...')
+      expect(result).not.toContain('f')
+    })
+
     it('should include default value', () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
@@ -373,6 +393,13 @@ describe(Help.name, () => {
         mockArgument({ description: 'Port', defaultValue: '3000', defaultValueDescription: 'default port' })
       )
       expect(result).toContain('default: default port')
+    })
+
+    it('should skip empty array as defaultValue', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.argumentDescription(mockArgument({ description: 'Tags', defaultValue: [] }))
+      expect(result).not.toContain('default:')
     })
 
     it('should return only extra info when no description', () => {
@@ -541,6 +568,14 @@ describe(Help.name, () => {
       const result = help.styleSubcommandTerm('serve [opts] <port> [host]')
       expect(result).toContain('serve')
       expect(result).toContain('[opts]')
+    })
+
+    it('should style alias prefix green when term contains pipe separator', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.styleSubcommandTerm('s | serve [opts]')
+      expect(result).toContain('|')
+      expect(result).toContain('serve')
     })
   })
 
