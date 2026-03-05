@@ -102,9 +102,11 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
    */
   get importedDependenciesRecursive(): { internal: string[]; external: string[] } {
     const repo = this.parent
-    const wsNames = new Set(repo.workspaces.map((w) => {
-      return w.name
-    }))
+    const wsNames = new Set(
+      repo.workspaces.map((w) => {
+        return w.name
+      })
+    )
     const allDeps = recurse(
       this.tsFiles.filter((f) => {
         return f.isSourceFile

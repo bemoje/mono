@@ -158,7 +158,8 @@ class ImportStatementParser implements ImportStatement {
     return this.type === 'sideEffect' ?
         [this]
       : this.specifiers.children.map((s) => {
-          const code = s.type === 'named' && options?.unaliasNamedImports ? s.code.replaceAll(/ as \w+/g, '') : s.code
+          const code =
+            s.type === 'named' && options?.unaliasNamedImports ? s.code.replaceAll(/ as \w+/g, '') : s.code
           return parseImportStatement(
             importStatementToFormattedOneLiner(
               this.oneliner
