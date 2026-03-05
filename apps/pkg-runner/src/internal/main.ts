@@ -72,9 +72,5 @@ export async function main() {
 
   const selections = await prompt.start()
 
-  if (isCancel(selections)) {
-    await onCancel(prompt)
-  } else {
-    await executeScripts(selections, pkgManRun)
-  }
+  await (isCancel(selections) ? onCancel(prompt) : executeScripts(selections, pkgManRun));
 }

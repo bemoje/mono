@@ -22,7 +22,7 @@ export async function userLogin(options: CliOptions, logger: Logger): Promise<vo
       const page = await headlessBrowser.newPage()
       await page.goto('https://www.linkedin.com/feed/?locale=en_US', {
         waitUntil: 'domcontentloaded',
-        timeout: 20000,
+        timeout: 20_000,
       })
       const url = page.url()
       isLoggedIn = !url.includes('/login') && !url.includes('/authwall')
@@ -53,12 +53,12 @@ export async function userLogin(options: CliOptions, logger: Logger): Promise<vo
     const page = await browser.newPage()
     await page.goto('https://www.linkedin.com/feed/?locale=en_US', {
       waitUntil: 'domcontentloaded',
-      timeout: 20000,
+      timeout: 20_000,
     })
 
     await page.waitForFunction(
       () => {
-        return window.location.href.includes('/feed')
+        return globalThis.location.href.includes('/feed')
       },
       { timeout: 0 }
     )

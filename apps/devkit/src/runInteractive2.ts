@@ -13,7 +13,7 @@ async function promptOptionValue(opt: Option, argv: string[]) {
   console.log(
     colors.blue(opt.flags),
     colors.gray(opt.description ?? ''),
-    opt.defaultValue !== undefined ? colors.gray(`(default: ${opt.defaultValue})`) : ''
+    opt.defaultValue === undefined ? '' : colors.gray(`(default: ${opt.defaultValue})`)
   )
 
   if (opt.variadic && opt.choices?.length) {

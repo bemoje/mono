@@ -5,7 +5,7 @@ function lazyProp(target: unknown, key: string | symbol, descriptor: PropertyDes
   const orig = descriptor.get
 
   if (typeof orig !== 'function') {
-    throw new Error('"get" not a function')
+    throw new TypeError('"get" not a function')
   }
 
   descriptor.get = function () {

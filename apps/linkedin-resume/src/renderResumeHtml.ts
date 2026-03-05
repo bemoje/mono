@@ -36,7 +36,7 @@ export async function renderResumeHtml(logger: Logger): Promise<void> {
 
   const html = lines
     .join('\n')
-    .replace(/[>] *[<]/g, '>\n<')
+    .replaceAll(/> *</g, '>\n<')
     .split('\n')
     .map((line) => {
       return line.trimStart()
@@ -375,11 +375,11 @@ function renderRecommendations(resume: Resume): string {
 
 function esc(s: string): string {
   return (s ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
 }
 
 function formatDate(d: string | undefined): string {

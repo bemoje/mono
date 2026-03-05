@@ -17,7 +17,7 @@ export async function missingCoverageFilesAction(opts: { check?: boolean }, { lo
     .find((line) => {
       return line.includes('reportsDirectory:')
     })
-    ?.match(/reportsDirectory:\s*['"`](.+?)['"`]/)?.[1]
+    ?.match(/reportsDirectory:\s*["'`](.+?)["'`]/)?.[1]
     ?.trim()
 
   if (!coverageDirectory) {
@@ -56,7 +56,7 @@ export async function missingCoverageFilesAction(opts: { check?: boolean }, { lo
       })
     })
     .map(([filepath]) => {
-      return filepath.replace(/\\+/g, '/').replace(repoRoot, '')
+      return filepath.replaceAll(/\\+/g, '/').replace(repoRoot, '')
     })
 
   result.forEach((filepath) => {

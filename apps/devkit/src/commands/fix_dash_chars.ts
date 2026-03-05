@@ -13,7 +13,7 @@ export async function fixDashCharsAction(_opts: unknown, { logger: log }: { logg
 
   const promises = filepaths.map(async (filepath) => {
     const src = await fs.readFile(filepath, 'utf-8')
-    const res = src.replace(regex, '-')
+    const res = src.replaceAll(regex, '-')
     if (src !== res) {
       await fs.writeFile(filepath, res, 'utf-8')
       log.info(`Replaced bad dash char in ${filepath}`)

@@ -1,5 +1,5 @@
 import type { Logger } from '@mono/node'
-import cp from 'child_process'
+import cp from 'node:child_process'
 import fs from 'fs-extra'
 import { renderReadme } from '../lib/renderReadme'
 

@@ -19,7 +19,7 @@ function example1() {
     return p.startsWith(`${repoLibScope}/`)
   }
   const getWsDirname = (p: string) => {
-    return p.split(/[\\/]/)[1]
+    return p.split(/[/\\]/)[1]
   }
   const getImportType = (i: ImportStatement) => {
     return i.modulePath.type

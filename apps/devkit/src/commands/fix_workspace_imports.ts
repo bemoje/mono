@@ -57,7 +57,7 @@ export async function fixWorkspaceImportsAction(
 
       try {
         const code = await fs.readFile(filepath, 'utf8')
-        await fs.writeFile(filepath, code.replace(RegExp(replaceValue, 'g'), withValue))
+        await fs.writeFile(filepath, code.replaceAll(new RegExp(replaceValue, 'g'), withValue))
         fixed.count++
       } catch (error) {
         log.error(error)

@@ -1,7 +1,7 @@
 import { CONFIG_PATH } from './constants'
 import type { CliOptions } from './types/CliOptions'
 import { Command } from 'commander'
-import cp from 'child_process'
+import cp from 'node:child_process'
 import description from './core/description'
 import { loadUserConfig } from './loadUserConfig'
 import { renderPdfFromHtml } from './renderPdfFromHtml'

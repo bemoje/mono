@@ -17,10 +17,10 @@ export async function scrapeSkills(browser: Browser, options: CliOptions, logger
 
   try {
     const username = userConfigFile.load().username
-    await page.goto(getPageUrl(username, 'skills'), { waitUntil: 'domcontentloaded', timeout: 20000 })
+    await page.goto(getPageUrl(username, 'skills'), { waitUntil: 'domcontentloaded', timeout: 20_000 })
 
     try {
-      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
+      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15_000 })
     } catch {
       logger.warn('No skills section found or it took too long to load.')
       // eslint-disable-next-line no-throw-literal

@@ -1,5 +1,5 @@
 import { arrayTableToMarkdown } from './arrayTableToMarkdown'
-import cp from 'child_process'
+import cp from 'node:child_process'
 import fs from 'fs-extra'
 import { getLinesOfCode } from './getLinesOfCode'
 import { getRepoPackageJson } from './getRepoPackageJson'
@@ -51,7 +51,7 @@ export async function renderReadme(): Promise<string> {
 
 export async function renderTOC(readmeMarkdown: string): Promise<string> {
   return readmeMarkdown
-    .replace(/\n```\w+\n[^`]+\n```\n/gs, '\n')
+    .replaceAll(/\n```\w+\n[^`]+\n```\n/gs, '\n')
     .split('\n')
     .filter((line) => {
       return /^#+ /.test(line)
@@ -63,8 +63,8 @@ export async function renderTOC(readmeMarkdown: string): Promise<string> {
       const id = line
         .replace(/^#+ /, '')
         .toLowerCase()
-        .replace(/ /g, '-')
-        .replace(/[^a-z-0-9]/gi, '')
+        .replaceAll(' ', '-')
+        .replaceAll(/[^\da-z-]/gi, '')
       return `${indent}- [${title}](#${id})`
     })
     .join('\n')

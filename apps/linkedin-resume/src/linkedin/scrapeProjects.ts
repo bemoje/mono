@@ -20,10 +20,10 @@ export async function scrapeProjects(browser: Browser, options: CliOptions, logg
 
   try {
     const username = userConfigFile.load().username
-    await page.goto(getPageUrl(username, 'projects'), { waitUntil: 'domcontentloaded', timeout: 20000 })
+    await page.goto(getPageUrl(username, 'projects'), { waitUntil: 'domcontentloaded', timeout: 20_000 })
 
     try {
-      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
+      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15_000 })
     } catch {
       logger.warn('No projects section found or it took too long to load.')
       // eslint-disable-next-line no-throw-literal

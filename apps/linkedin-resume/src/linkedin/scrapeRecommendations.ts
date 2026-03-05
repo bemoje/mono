@@ -18,10 +18,10 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
 
   try {
     const username = userConfigFile.load().username
-    await page.goto(getPageUrl(username, 'recommendations'), { waitUntil: 'domcontentloaded', timeout: 20000 })
+    await page.goto(getPageUrl(username, 'recommendations'), { waitUntil: 'domcontentloaded', timeout: 20_000 })
 
     try {
-      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
+      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15_000 })
     } catch {
       logger.warn('No recommendations section found or it took too long to load.')
       // eslint-disable-next-line no-throw-literal
@@ -103,7 +103,7 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
           date = dateMatch[1]
           const after = s
             .slice(dateMatch[0].length)
-            .replace(/^[,\s]+/, '')
+            .replace(/^[\s,]+/, '')
             .trim()
           if (after) {
             relationship = after

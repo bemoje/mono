@@ -89,6 +89,7 @@ export default [
       'unicorn/no-static-only-class': 'off',
       'unicorn/prefer-string-slice': 'off',
       'unicorn/prevent-abbreviations': 'off',
+      'unicorn/no-immediate-mutation': 'off',
       //
 
       'unicorn/consistent-empty-array-spread': ['error'],
@@ -97,7 +98,6 @@ export default [
       'unicorn/new-for-builtins': ['error'],
       'unicorn/no-for-loop': ['error'],
       'unicorn/no-hex-escape': ['error'],
-      'unicorn/no-immediate-mutation': ['error'],
       'unicorn/no-instanceof-builtins': ['error'],
       'unicorn/no-lonely-if': ['error'],
       'unicorn/no-named-default': ['error'],
@@ -154,7 +154,8 @@ export default [
   },
 
   {
-    files: ['**/*.test.ts', 'apps/playground/src/**/*.{ts,tsx,js,mjs}', '**/dist/**/*'],
+    files: ['**/*.test.ts', 'apps/playground/src/**/*.ts', '**/dist/**'],
+    plugins: { unicorn: eslintPluginUnicorn },
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-explicit-any': 'off',

@@ -110,7 +110,7 @@ export async function injectBrowserHelpers(page: Page): Promise<void> {
       const cutIdx = allSpans.findIndex((s: string) => {
         return FILENAME_RE.test(s)
       })
-      const mediaTexts = cutIdx !== -1 ? allSpans.slice(cutIdx) : []
+      const mediaTexts = cutIdx === -1 ? [] : allSpans.slice(cutIdx)
 
       // Also mark the common noise label that appears in media sections
       if (!mediaTexts.includes('Other contributors')) {

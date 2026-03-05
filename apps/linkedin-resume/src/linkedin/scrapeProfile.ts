@@ -25,10 +25,10 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
   const page = await browser.newPage()
 
   try {
-    await page.goto(getPageUrl(username, 'profile'), { waitUntil: 'domcontentloaded', timeout: 20000 })
+    await page.goto(getPageUrl(username, 'profile'), { waitUntil: 'domcontentloaded', timeout: 20_000 })
 
     // Wait for the profile top card to load
-    await page.waitForSelector('h1', { timeout: 15000 })
+    await page.waitForSelector('h1', { timeout: 15_000 })
 
     // Expand all "...see more" buttons so truncated sections (About, etc.) are fully visible
     await page.evaluate(() => {
@@ -114,7 +114,7 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
       summary = summary.replace(/^About\n/, '').trim()
 
       const split = summary.split(/\s+top skills\s/i)
-      summary = (split[0]?.trim() || '').replace(/\n{3,}/g, '\n\n')
+      summary = (split[0]?.trim() || '').replaceAll(/\n{3,}/g, '\n\n')
 
       const topSkills =
         split[1]
@@ -221,7 +221,7 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
         }
 
         // Email by content
-        const emailMatch = text.match(/[\w.+-]+@[\w.-]+\.\w{2,}/)
+        const emailMatch = text.match(/[\w+.-]+@[\w.-]+\.\w{2,}/)
         if (emailMatch && !data.email) {
           data.email = emailMatch[0]
           continue
@@ -251,7 +251,7 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
         if (modal) {
           const modalText = modal.textContent!
           if (!data.email) {
-            const m = modalText.match(/[\w.+-]+@[\w.-]+\.\w{2,}/)
+            const m = modalText.match(/[\w+.-]+@[\w.-]+\.\w{2,}/)
             if (m) {
               data.email = m[0]
             }

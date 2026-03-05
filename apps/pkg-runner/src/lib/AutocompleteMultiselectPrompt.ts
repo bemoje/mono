@@ -1,6 +1,6 @@
 import type { AutocompleteMultiSelectOptions } from '@clack/prompts'
 import { AutocompletePrompt } from '@clack/core'
-import type { Key } from 'readline'
+import type { Key } from 'node:readline'
 import type { Option } from '@clack/prompts'
 import { S_BAR } from '@clack/prompts'
 import { S_BAR_END } from '@clack/prompts'
@@ -8,7 +8,7 @@ import { S_CHECKBOX_INACTIVE } from '@clack/prompts'
 import { S_CHECKBOX_SELECTED } from '@clack/prompts'
 import colors from 'ansi-colors'
 import { limitOptions } from '@clack/prompts'
-import { styleText } from 'util'
+import { styleText } from 'node:util'
 import { symbol } from '@clack/prompts'
 
 export class AutocompleteMultiselectPrompt<Value> extends AutocompletePrompt<Option<Value>> {
@@ -47,8 +47,7 @@ export class AutocompleteMultiselectPrompt<Value> extends AutocompletePrompt<Opt
 
   protected addCtrlAKeypressListener() {
     this.input.on('keypress', (_, key: Key) => {
-      if (key.name === 'a') {
-        if (key.ctrl) {
+      if (key.name === 'a' && key.ctrl) {
           const allSelected = this.filteredOptions.every((option) => {
             return this.selectedValues.includes(option.value)
           })
@@ -64,14 +63,12 @@ export class AutocompleteMultiselectPrompt<Value> extends AutocompletePrompt<Opt
             })
           }
         }
-      }
     })
   }
 
   protected addReturnKeypressListener() {
     this.input.on('keypress', (_, key: Key) => {
-      if (key.name === 'return') {
-        if (this.selectedValues.length === 0) {
+      if (key.name === 'return' && this.selectedValues.length === 0) {
           if (this.isNavigating) {
             if (this.focusedValue) {
               this.toggleSelected(this.focusedValue)
@@ -84,7 +81,6 @@ export class AutocompleteMultiselectPrompt<Value> extends AutocompletePrompt<Opt
             })
           }
         }
-      }
     })
   }
 }

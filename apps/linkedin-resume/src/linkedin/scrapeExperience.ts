@@ -21,11 +21,11 @@ export async function scrapeExperience(browser: Browser, options: CliOptions, lo
 
   try {
     const username = userConfigFile.load().username
-    await page.goto(getPageUrl(username, 'experience'), { waitUntil: 'domcontentloaded', timeout: 20000 })
+    await page.goto(getPageUrl(username, 'experience'), { waitUntil: 'domcontentloaded', timeout: 20_000 })
 
     // Wait for the experience list to appear
     try {
-      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
+      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15_000 })
     } catch {
       logger.warn('No experience section found or it took too long to load.')
       // eslint-disable-next-line no-throw-literal
@@ -66,8 +66,8 @@ export async function scrapeExperience(browser: Browser, options: CliOptions, lo
     const DATE_RANGE_RE = /^[A-Z][a-z]{2}\s+\d{4}\s*-\s*([A-Z][a-z]{2}\s+\d{4}|Present)\s*·/
     const DURATION_ONLY_RE = /^\d+\s*(yrs?|mos?)\b/
     const WORK_TYPE_RE =
-      /^(Full-time|Part-time|Self-employed|Contract|Freelance|Internship|Apprenticeship|Seasonal)$/i
-    const ARRANGEMENT_RE = /^(Hybrid|Remote|On-site|On site)$/i
+      /^(full-time|part-time|self-employed|contract|freelance|internship|apprenticeship|seasonal)$/i
+    const ARRANGEMENT_RE = /^(hybrid|remote|on-site|on site)$/i
 
     for (const { spans, logoUrl, mediaLinks } of rawEntries) {
       if (spans.length < 3) {
@@ -110,7 +110,7 @@ export async function scrapeExperience(browser: Browser, options: CliOptions, lo
         const companyRaw = spans[1] ?? ''
         const companyName = companyRaw
           .replace(
-            /\s*·\s*(Self-employed|Full-time|Part-time|Contract|Freelance|Internship|Apprenticeship|Seasonal)$/i,
+            /\s*·\s*(self-employed|full-time|part-time|contract|freelance|internship|apprenticeship|seasonal)$/i,
             ''
           )
           .trim()
@@ -149,7 +149,7 @@ export async function scrapeExperience(browser: Browser, options: CliOptions, lo
       logoUrl: string,
       mediaLinks: { title: string; url: string }[]
     ): ResumeWork {
-      const location = locationRaw.replace(/\s*·\s*(Hybrid|Remote|On-site|On site)$/i, '').trim()
+      const location = locationRaw.replace(/\s*·\s*(hybrid|remote|on-site|on site)$/i, '').trim()
 
       // Parse date range: "Mon YYYY - Mon YYYY · X yrs Y mos"
       const timeInfoParts = dateStr.split(/\s*·\s*/g).map((s) => {

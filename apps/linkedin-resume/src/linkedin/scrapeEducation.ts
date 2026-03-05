@@ -19,10 +19,10 @@ export async function scrapeEducation(browser: Browser, options: CliOptions, log
 
   try {
     const username = userConfigFile.load().username
-    await page.goto(getPageUrl(username, 'education'), { waitUntil: 'domcontentloaded', timeout: 20000 })
+    await page.goto(getPageUrl(username, 'education'), { waitUntil: 'domcontentloaded', timeout: 20_000 })
 
     try {
-      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
+      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15_000 })
     } catch {
       logger.warn('No education section found or it took too long to load.')
       // eslint-disable-next-line no-throw-literal

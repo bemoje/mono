@@ -1,7 +1,7 @@
 import { DefaultMap } from 'mnemonist'
 import { ExtMap } from '@mono/map'
 import { MultiSet } from 'mnemonist'
-import cp from 'child_process'
+import cp from 'node:child_process'
 import fs from 'fs-extra'
 import { globSync } from 'glob'
 import { reduce } from 'iter-tools'
@@ -12,15 +12,15 @@ function parseNameFromImportStatement(line: string): string {
     .replace(/import /, '')
     .replace(/ from '.*$/, '')
     .replace('* as ', '')
-    .replace(/[{}]/g, '')
+    .replaceAll(/[{}]/g, '')
     .trim()
 }
 
 function isRelativeImport(line: string) {
-  return / from '[.]/.test(line)
+  return / from '\./.test(line)
 }
 function isOtherRepoOwnPath(line: string) {
-  return /from '@(dn|bmj|bemoje|rfmain|mono)[/]/.test(line)
+  return /from '@(dn|bmj|bemoje|rfmain|mono)\//.test(line)
 }
 
 const defaultImports = new DefaultMap<string, MultiSet<string>>(() => {
@@ -41,9 +41,9 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
     return imports
       .map((imp) => {
         return imp.matchOneLine
-          .replace(/"/g, "'")
+          .replaceAll('"', "'")
           .replace(/;$/, '')
-          .replace(/\s{2,}/g, ' ')
+          .replaceAll(/\s{2,}/g, ' ')
       })
       .filter((line) => {
         return (
@@ -56,9 +56,9 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
       })
       .map((imp) => {
         return imp
-          .replace(/[*] as /, '')
-          .replace(/ as [^\s]+ /g, '')
-          .replace(/type /g, '')
+          .replace(/\* as /, '')
+          .replaceAll(/ as \S+ /g, '')
+          .replaceAll('type ', '')
           .replace("from 'ms'", "from 'enhanced-ms'")
           .replace("from '@commander-js/extra-typings'", "from 'commander'")
           .replace("from 'node:fs'", "from 'fs-extra'")
@@ -68,7 +68,7 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
           .replace(" ems from 'enhanced-ms'", " ms from 'enhanced-ms'")
           .replace(" child_process from 'child_process'", " cp from 'child_process'")
           .replace(" path from '@mono/path'", " mpath from '@mono/path'")
-          .replace(/\s{2,}/g, ' ')
+          .replaceAll(/\s{2,}/g, ' ')
       })
       .sort((a, b) => {
         return (
@@ -82,14 +82,14 @@ const lines = globSync('{libs,apps,packages}/*/src/**/*.ts')
         const [specifiers, modulePath] = line.replace(strImp, '').split(' from ')
         if (!line.includes('{')) {
           const name = parseNameFromImportStatement(line)
-          const tempName = `__${modulePath.replace(/['"@/]/g, '').replace(/-/g, '_')}`
+          const tempName = `__${modulePath.replaceAll(/["'/@]/g, '').replaceAll('-', '_')}`
           const tempLine = line.replace(name, tempName)
           defaultImports.get(tempLine).add(line)
           return [tempLine]
         }
         return specifiers
           .replace(/import /, '')
-          .replace(/[{}]/g, '')
+          .replaceAll(/[{}]/g, '')
           .split(',')
           .map((s) => {
             return s.trim()
