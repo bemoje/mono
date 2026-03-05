@@ -23,15 +23,17 @@ export function formatTableForTerminal(
   for (const row of rows) {
     table.push(row)
   }
-  return options?.noBorders ? table
-      .toString()
-      .replaceAll(/[─│┌┐└┘├┤┬┴┼]/g, '')
-      .split('\n')
-      .map((line) => {
-        return line.trim()
-      })
-      .filter((line) => {
-        return line !== '\u001B[90m\u001B[39m'
-      })
-      .join('\n') : table.toString();
+  return options?.noBorders ?
+      table
+        .toString()
+        .replaceAll(/[─│┌┐└┘├┤┬┴┼]/g, '')
+        .split('\n')
+        .map((line) => {
+          return line.trim()
+        })
+        .filter((line) => {
+          return line !== '\u001B[90m\u001B[39m'
+        })
+        .join('\n')
+    : table.toString()
 }

@@ -10,24 +10,24 @@ export function getAppDataPath(...paths: string[]) {
   if (!result) {
     const OS = getOS()
     switch (OS) {
-    case 'windows': {
-      result = upath.join(os.homedir(), 'AppData', 'Roaming')
-    
-    break;
-    }
-    case 'osx': {
-      result = upath.join(os.homedir(), 'Library', 'Application Support')
-    
-    break;
-    }
-    case 'linux': {
-      result = upath.join(os.homedir(), '.config')
-    
-    break;
-    }
-    default: {
-      throw new Error('Could not find an appropriate app data path')
-    }
+      case 'windows': {
+        result = upath.join(os.homedir(), 'AppData', 'Roaming')
+
+        break
+      }
+      case 'osx': {
+        result = upath.join(os.homedir(), 'Library', 'Application Support')
+
+        break
+      }
+      case 'linux': {
+        result = upath.join(os.homedir(), '.config')
+
+        break
+      }
+      default: {
+        throw new Error('Could not find an appropriate app data path')
+      }
     }
   }
   if (!paths.length) {

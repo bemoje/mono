@@ -14,58 +14,58 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
       continue
     }
     switch (type) {
-    case 'method': {
-      if (!strat.onMethod) {
-        continue
+      case 'method': {
+        if (!strat.onMethod) {
+          continue
+        }
+        const orig = des.value!
+        const wrapped = strat.onMethod(target, key, orig)
+        if (!wrapped) {
+          continue
+        }
+        Object.defineProperty(target, key, {
+          value: setNameAndLength(orig, wrapped),
+          configurable: des.configurable,
+          enumerable: des.enumerable,
+        })
+
+        break
       }
-      const orig = des.value!
-      const wrapped = strat.onMethod(target, key, orig)
-      if (!wrapped) {
-        continue
+      case 'get': {
+        if (!strat.onGetter) {
+          continue
+        }
+        const orig = des.get!
+        const wrapped = strat.onGetter(target, key, orig)
+        if (!wrapped) {
+          continue
+        }
+        Object.defineProperty(target, key, {
+          get: setNameAndLength(orig, wrapped),
+          configurable: des.configurable,
+          enumerable: des.enumerable,
+        })
+
+        break
       }
-      Object.defineProperty(target, key, {
-        value: setNameAndLength(orig, wrapped),
-        configurable: des.configurable,
-        enumerable: des.enumerable,
-      })
-    
-    break;
-    }
-    case 'get': {
-      if (!strat.onGetter) {
-        continue
+      case 'set': {
+        if (!strat.onSetter) {
+          continue
+        }
+        const orig = des.set!
+        const wrapped = strat.onSetter(target, key, orig)
+        if (!wrapped) {
+          continue
+        }
+        Object.defineProperty(target, key, {
+          set: setNameAndLength(orig, wrapped),
+          configurable: des.configurable,
+          enumerable: des.enumerable,
+        })
+
+        break
       }
-      const orig = des.get!
-      const wrapped = strat.onGetter(target, key, orig)
-      if (!wrapped) {
-        continue
-      }
-      Object.defineProperty(target, key, {
-        get: setNameAndLength(orig, wrapped),
-        configurable: des.configurable,
-        enumerable: des.enumerable,
-      })
-    
-    break;
-    }
-    case 'set': {
-      if (!strat.onSetter) {
-        continue
-      }
-      const orig = des.set!
-      const wrapped = strat.onSetter(target, key, orig)
-      if (!wrapped) {
-        continue
-      }
-      Object.defineProperty(target, key, {
-        set: setNameAndLength(orig, wrapped),
-        configurable: des.configurable,
-        enumerable: des.enumerable,
-      })
-    
-    break;
-    }
-    // No default
+      // No default
     }
   }
   return target

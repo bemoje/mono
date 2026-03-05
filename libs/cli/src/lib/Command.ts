@@ -417,9 +417,9 @@ export class Command<
           ins.required = true
         }
       } else if (flags.endsWith(']') && flags.endsWith('...]')) {
-          ins.variadic = true
-          ins.defaultValue = (opts.defaultValue ?? []) as string[]
-        }
+        ins.variadic = true
+        ins.defaultValue = (opts.defaultValue ?? []) as string[]
+      }
     } else {
       ins.type = 'boolean'
     }

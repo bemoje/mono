@@ -1,4 +1,4 @@
-import cp from 'child_process'
+import cp from 'node:child_process'
 import fs from 'fs-extra'
 import upath from 'upath'
 

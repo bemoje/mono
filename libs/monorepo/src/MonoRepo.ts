@@ -94,17 +94,16 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
 
   @lazyProp(5000)
   get workspacePaths() {
-    return this.workspacesRootPaths
-      .flatMap((workspacePath: string) => {
-        return fs
-          .readdirSync(workspacePath, { withFileTypes: true })
-          .filter((dirent: fs.Dirent) => {
-            return dirent.isDirectory()
-          })
-          .map((dirent: fs.Dirent) => {
-            return path.join(workspacePath, dirent.name)
-          })
-      })
+    return this.workspacesRootPaths.flatMap((workspacePath: string) => {
+      return fs
+        .readdirSync(workspacePath, { withFileTypes: true })
+        .filter((dirent: fs.Dirent) => {
+          return dirent.isDirectory()
+        })
+        .map((dirent: fs.Dirent) => {
+          return path.join(workspacePath, dirent.name)
+        })
+    })
   }
 
   @lazyProp

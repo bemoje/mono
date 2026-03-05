@@ -1,4 +1,4 @@
-import cp from 'child_process'
+import cp from 'node:child_process'
 import fs from 'fs-extra'
 
 const ws = fs.existsSync(`libs/${process.argv[2] ?? ''}`) ? `@mono/${process.argv[2]}` : process.argv[2]

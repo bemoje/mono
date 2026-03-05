@@ -1,5 +1,3 @@
-
-
 /**
  * Round a number to a specified number of decimal places.
  * @param num The number to round.
@@ -15,5 +13,4 @@
  * ```
  */
 
-
-export {round} from 'es-toolkit'
+export { round } from 'es-toolkit'

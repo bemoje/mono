@@ -23,25 +23,25 @@ export function semverVersionBump(
 ): string {
   const arr = (typeof version === 'string' ? version.split('.') : version).map(Number)
   switch (level) {
-  case 'major': {
-    arr[0] += 1
-    arr[1] = 0
-    arr[2] = 0
-  
-  break;
-  }
-  case 'minor': {
-    arr[1] += 1
-    arr[2] = 0
-  
-  break;
-  }
-  case 'patch': {
-    arr[2] += 1
-  
-  break;
-  }
-  // No default
+    case 'major': {
+      arr[0] += 1
+      arr[1] = 0
+      arr[2] = 0
+
+      break
+    }
+    case 'minor': {
+      arr[1] += 1
+      arr[2] = 0
+
+      break
+    }
+    case 'patch': {
+      arr[2] += 1
+
+      break
+    }
+    // No default
   }
   return arr.join('.')
 }

@@ -67,7 +67,7 @@ function createColoredArgs(colorFn: (str: string) => string) {
   return (args: unknown[]) => {
     return args.map((arg) => {
       if (isString(arg)) {
-        return arg === colors.stripColor(arg) ? colorFn(arg) : arg;
+        return arg === colors.stripColor(arg) ? colorFn(arg) : arg
       } else if (isPrimitive(arg)) {
         return colorFn(String(arg))
       } else {

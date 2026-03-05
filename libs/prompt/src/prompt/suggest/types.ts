@@ -1,8 +1,4 @@
-
 import type { IChoice } from '../additions/searchPrompt/core/IChoice'
-
-
-
 
 export interface Meta {
   index: number
@@ -18,4 +14,4 @@ export interface FsMeta extends Meta {
 
 export type FsChoiceMeta = IChoice<string> & { meta: FsMeta }
 
-export {type Choice, type PromptObject} from 'prompts'
+export { type Choice, type PromptObject } from 'prompts'

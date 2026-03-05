@@ -1,4 +1,4 @@
-import cp from 'child_process'
+import cp from 'node:child_process'
 
 try {
   const whoami = cp.execSync(`npm whoami`, { shell: true, stdio: 'pipe', encoding: 'utf-8' }).trim()

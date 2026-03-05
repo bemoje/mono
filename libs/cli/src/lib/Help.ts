@@ -208,9 +208,7 @@ export class Help implements IHelp {
       const choices = option.choices.length > 5 ? option.choices.slice(0, 5).concat(['...']) : option.choices
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${choices
-          .map(String)
-          .join(', ')}`
+        `choices: ${choices.map(String).join(', ')}`
       )
     }
     if (option.defaultValue && !(Array.isArray(option.defaultValue) && option.defaultValue.length === 0)) {
@@ -240,9 +238,7 @@ export class Help implements IHelp {
       const choices = argument.choices.length > 5 ? argument.choices.slice(0, 5).concat(['...']) : argument.choices
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${choices
-          .map(String)
-          .join(', ')}`
+        `choices: ${choices.map(String).join(', ')}`
       )
     }
     if (argument.defaultValue && !(Array.isArray(argument.defaultValue) && argument.defaultValue.length === 0)) {

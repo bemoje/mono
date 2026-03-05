@@ -13,19 +13,21 @@ export function validateParsed(
     .map((def, index) => {
       const value = args[index]
       if (def.required && (def.variadic ? Array.isArray(value) && value.length === 0 : value === undefined)) {
-          return `Missing argument [${index}] ${def.usage}`
-        }
-      if (def.choices && value !== undefined && 
-          ![value].flat().every((v) => {
-            return def.choices!.includes(v as string)
+        return `Missing argument [${index}] ${def.usage}`
+      }
+      if (
+        def.choices
+        && value !== undefined
+        && ![value].flat().every((v) => {
+          return def.choices!.includes(v as string)
+        })
+      ) {
+        return `Invalid argument [${index}] ${def.usage}: Got \`${value}\`. Accepted values: [${def.choices
+          .map((c) => {
+            return `\`${c}\``
           })
-        ) {
-          return `Invalid argument [${index}] ${def.usage}: Got \`${value}\`. Accepted values: [${def.choices
-            .map((c) => {
-              return `\`${c}\``
-            })
-            .join(',')}]`
-        }
+          .join(',')}]`
+      }
     })
     .concat(
       entriesOf(optionValues).map(([key, value]) => {
@@ -35,17 +37,19 @@ export function validateParsed(
         if (!def) {
           return `Unknown option --${key}`
         }
-        if (def.choices && value !== undefined && 
-            !((def.variadic ? value : [value]) as string[]).every((v) => {
-              return def.choices!.includes(v)
+        if (
+          def.choices
+          && value !== undefined
+          && !((def.variadic ? value : [value]) as string[]).every((v) => {
+            return def.choices!.includes(v)
+          })
+        ) {
+          return `Invalid option value ${def.flags}: Got \`${value}\`. Accepted values: [${def.choices
+            .map((c) => {
+              return `\`${c}\``
             })
-          ) {
-            return `Invalid option value ${def.flags}: Got \`${value}\`. Accepted values: [${def.choices
-              .map((c) => {
-                return `\`${c}\``
-              })
-              .join(',')}]`
-          }
+            .join(',')}]`
+        }
       })
     )
     .filter((s) => {

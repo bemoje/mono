@@ -48,39 +48,39 @@ export class AutocompleteMultiselectPrompt<Value> extends AutocompletePrompt<Opt
   protected addCtrlAKeypressListener() {
     this.input.on('keypress', (_, key: Key) => {
       if (key.name === 'a' && key.ctrl) {
-          const allSelected = this.filteredOptions.every((option) => {
-            return this.selectedValues.includes(option.value)
+        const allSelected = this.filteredOptions.every((option) => {
+          return this.selectedValues.includes(option.value)
+        })
+        if (allSelected) {
+          this.selectedValues.forEach((value) => {
+            this.toggleSelected(value)
           })
-          if (allSelected) {
-            this.selectedValues.forEach((value) => {
-              this.toggleSelected(value)
-            })
-          } else {
-            this.filteredOptions.forEach((option) => {
-              if (!this.selectedValues.includes(option.value)) {
-                this.toggleSelected(option.value)
-              }
-            })
-          }
+        } else {
+          this.filteredOptions.forEach((option) => {
+            if (!this.selectedValues.includes(option.value)) {
+              this.toggleSelected(option.value)
+            }
+          })
         }
+      }
     })
   }
 
   protected addReturnKeypressListener() {
     this.input.on('keypress', (_, key: Key) => {
       if (key.name === 'return' && this.selectedValues.length === 0) {
-          if (this.isNavigating) {
-            if (this.focusedValue) {
-              this.toggleSelected(this.focusedValue)
-            }
-          } else {
-            this.filteredOptions.forEach((option) => {
-              if (!this.selectedValues.includes(option.value)) {
-                this.toggleSelected(option.value)
-              }
-            })
+        if (this.isNavigating) {
+          if (this.focusedValue) {
+            this.toggleSelected(this.focusedValue)
           }
+        } else {
+          this.filteredOptions.forEach((option) => {
+            if (!this.selectedValues.includes(option.value)) {
+              this.toggleSelected(option.value)
+            }
+          })
         }
+      }
     })
   }
 }

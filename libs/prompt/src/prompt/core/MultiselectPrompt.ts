@@ -57,7 +57,9 @@ export class MultiselectPrompt extends AbstractUserPrompt<IMultiselectPrompt<num
   choices(choices: IChoice<number>[]): this
   choices(choices: string[] | IChoice<number>[]) {
     this.data.choices = choices.map((choice, i) => {
-      return typeof choice === 'string' ? { title: choice, value: i, disabled: false, selected: false, description: `[${i}] ${choice}` } : { value: i, disabled: false, selected: false, description: `[${i}] ${choice.title}`, ...choice };
+      return typeof choice === 'string' ?
+          { title: choice, value: i, disabled: false, selected: false, description: `[${i}] ${choice}` }
+        : { value: i, disabled: false, selected: false, description: `[${i}] ${choice.title}`, ...choice }
     })
     return this
   }
