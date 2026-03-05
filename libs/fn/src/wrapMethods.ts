@@ -13,7 +13,8 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
     if (strat.filter && !strat.filter(target, key, type, des)) {
       continue
     }
-    if (type === 'method') {
+    switch (type) {
+    case 'method': {
       if (!strat.onMethod) {
         continue
       }
@@ -27,7 +28,10 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
         configurable: des.configurable,
         enumerable: des.enumerable,
       })
-    } else if (type === 'get') {
+    
+    break;
+    }
+    case 'get': {
       if (!strat.onGetter) {
         continue
       }
@@ -41,7 +45,10 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
         configurable: des.configurable,
         enumerable: des.enumerable,
       })
-    } else if (type === 'set') {
+    
+    break;
+    }
+    case 'set': {
       if (!strat.onSetter) {
         continue
       }
@@ -55,6 +62,10 @@ export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrat
         configurable: des.configurable,
         enumerable: des.enumerable,
       })
+    
+    break;
+    }
+    // No default
     }
   }
   return target

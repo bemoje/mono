@@ -49,13 +49,9 @@ export function walkDirectory(dirpath: string, options: WalkDirectoryOptions) {
     return [upath.normalizeSafe(fspath), stats]
   })
 
-  if (options.stats) {
-    return entries
-  } else {
-    return entries.map(([fspath]) => {
+  return options.stats ? entries : entries.map(([fspath]) => {
       return fspath
-    })
-  }
+    });
 }
 
 /**

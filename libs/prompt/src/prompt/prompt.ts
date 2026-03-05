@@ -12,20 +12,6 @@ import { SelectPrompt } from './core/SelectPrompt'
 import { TextPrompt } from './core/TextPrompt'
 import { TogglePrompt } from './core/TogglePrompt'
 
-export { AutocompleteMultiselectPrompt }
-export { AutocompletePrompt }
-export { ConfirmPrompt }
-export { DatePrompt }
-export { InvisiblePrompt }
-export { ListPrompt }
-export { MultiselectPrompt }
-export { NumberPrompt }
-export { PasswordPrompt }
-export { SearchPrompt }
-export { SelectPrompt }
-export { TextPrompt }
-export { TogglePrompt }
-
 function text(message: string) {
   return new TextPrompt(message)
 }
@@ -86,3 +72,17 @@ export const prompt = {
 }
 
 // export default prompt
+
+export * from './core/AutocompleteMultiselectPrompt'
+export * from './core/AutocompletePrompt'
+export * from './core/ConfirmPrompt'
+export * from './core/DatePrompt'
+export * from './core/InvisiblePrompt'
+export * from './core/ListPrompt'
+export * from './core/MultiselectPrompt'
+export * from './core/NumberPrompt'
+export * from './core/PasswordPrompt'
+export * from './core/SearchPrompt'
+export * from './core/SelectPrompt'
+export * from './core/TextPrompt'
+export * from './core/TogglePrompt'

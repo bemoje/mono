@@ -3,8 +3,8 @@ import type { LocalesMonths } from '@mono/types'
 import type { LocalesWeeks } from '@mono/types'
 import type { PromptObject } from 'prompts'
 import type { PromptType } from 'prompts'
-import { Readable } from 'stream'
-import { Writable } from 'stream'
+import { Readable } from 'node:stream'
+import { Writable } from 'node:stream'
 
 export type {
   LocaleMonthNames,

@@ -12,4 +12,4 @@ export function isWindows(): boolean {
   return isWin
 }
 
-let isWin: boolean | undefined = undefined
+let isWin: boolean | undefined

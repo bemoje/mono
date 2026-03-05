@@ -11,7 +11,7 @@ describe(ValidatorError.name, () => {
     assert.equal(err.input, 123, 'input')
     assert.equal(err.expected, false, 'expected')
     assert.deepEqual(err.cause, { foo: false, bar: 'bad' }, 'cause')
-    assert.equal(err.name, 'ValidationError', 'name')
+    assert.equal(err.name, 'ValidatorError', 'name')
   })
 
   it('defaults expected to true if negate is not set', () => {

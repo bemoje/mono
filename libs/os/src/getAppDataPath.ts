@@ -1,5 +1,5 @@
 import { getOS } from './getOS'
-import os from 'os'
+import os from 'node:os'
 import upath from 'upath'
 
 /**
@@ -9,14 +9,25 @@ export function getAppDataPath(...paths: string[]) {
   let result = process.env.APPDATA
   if (!result) {
     const OS = getOS()
-    if (OS === 'windows') {
+    switch (OS) {
+    case 'windows': {
       result = upath.join(os.homedir(), 'AppData', 'Roaming')
-    } else if (OS === 'osx') {
+    
+    break;
+    }
+    case 'osx': {
       result = upath.join(os.homedir(), 'Library', 'Application Support')
-    } else if (OS === 'linux') {
+    
+    break;
+    }
+    case 'linux': {
       result = upath.join(os.homedir(), '.config')
-    } else {
+    
+    break;
+    }
+    default: {
       throw new Error('Could not find an appropriate app data path')
+    }
     }
   }
   if (!paths.length) {

@@ -16,14 +16,13 @@ export function tsExtractImports(code: string): TsExtractImportsResult[] {
   code = replaceImportStatementsInsideLiteralStrings(code)
   code = replaceImportStatementsInsideBlockComments(code)
   const isFirstLine = /^import /
-  const isFirstLineInMulti = /\{\s*$/
-  const isLastLineInMulti = /^\} from ['"]/
+  const isFirstLineInMulti = /{\s*$/
+  const isLastLineInMulti = /^} from ["']/
   const result: TsExtractImportsResult[] = []
   let isMulti = false
   let impLines = []
   const lines = code.split(/\r?\n/)
-  for (let l = 0; l < lines.length; l++) {
-    const line = lines[l]
+  for (const [l, line] of lines.entries()) {
     if (isFirstLine.test(line)) {
       if (isFirstLineInMulti.test(line)) {
         impLines.push(line)
@@ -48,14 +47,14 @@ export function tsExtractImports(code: string): TsExtractImportsResult[] {
 }
 
 function replaceImportStatementsInsideLiteralStrings(code: string) {
-  return code.replace(/(['"`])(.*?)\1/gs, (match) => {
-    return match.replace(/\nimport /gs, '\nIMPORT ')
+  return code.replaceAll(/(["'`])(.*?)\1/gs, (match) => {
+    return match.replaceAll(/\nimport /gs, '\nIMPORT ')
   })
 }
 
 function replaceImportStatementsInsideBlockComments(code: string) {
-  return code.replace(/\/\*(.*?)\*\//gs, (match) => {
-    return match.replace(/\nimport /gs, '\nIMPORT ')
+  return code.replaceAll(/\/\*(.*?)\*\//gs, (match) => {
+    return match.replaceAll(/\nimport /gs, '\nIMPORT ')
   })
 }
 

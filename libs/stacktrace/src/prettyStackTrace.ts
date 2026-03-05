@@ -1,6 +1,6 @@
 import type { StackFrame } from 'stacktrace-parser'
 import colors from 'ansi-colors'
-import { inspect } from 'util'
+import { inspect } from 'node:util'
 import { parse } from 'stacktrace-parser'
 import upath from 'upath'
 
@@ -32,7 +32,7 @@ function renderStack(error: Error, options: { omitStack?: boolean; omitProps?: b
 
   const stack = frames.map((frame) => {
     if (frame.file) {
-      frame.file = upath.relative(process.cwd(), frame.file.replace(/^file:[\\/]+/, ''))
+      frame.file = upath.relative(process.cwd(), frame.file.replace(/^file:[/\\]+/, ''))
     }
     const { methodName, file, lineNumber, column } = frame
     let s = '  '
@@ -65,9 +65,9 @@ function renderProps(error: Error, options: { omitStack?: boolean; omitProps?: b
   if (options.omitProps) {
     return ''
   }
-  const ignore = ['name', 'message', 'frames', 'stack']
+  const ignore = new Set(['name', 'message', 'frames', 'stack'])
   const keys = Object.getOwnPropertyNames(error).filter((key) => {
-    return !ignore.includes(key)
+    return !ignore.has(key)
   })
   if (!keys.length) {
     return ''

@@ -37,6 +37,6 @@ export function tsSortImports(code: string, imports?: ReturnType<typeof tsExtrac
   })
   return `${[sortedImports.join('\n'), withoutImports]
     .join('\n\n')
-    .replace(/\n\n\n+/g, '\n\n')
+    .replaceAll(/\n\n\n+/g, '\n\n')
     .trim()}\n`
 }

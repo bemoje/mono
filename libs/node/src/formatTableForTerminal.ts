@@ -19,19 +19,15 @@ export function formatTableForTerminal(rows: string[][], headers?: string[], opt
   for (const row of rows) {
     table.push(row)
   }
-  if (options?.noBorders) {
-    return table
+  return options?.noBorders ? table
       .toString()
-      .replace(/[├┼┤┐┘└┌┬┴│─]/g, '')
+      .replaceAll(/[─│┌┐└┘├┤┬┴┼]/g, '')
       .split('\n')
       .map((line) => {
         return line.trim()
       })
       .filter((line) => {
-        return line !== '\x1B[90m\x1B[39m'
+        return line !== '\u001B[90m\u001B[39m'
       })
-      .join('\n')
-  } else {
-    return table.toString()
-  }
+      .join('\n') : table.toString();
 }

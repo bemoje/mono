@@ -267,13 +267,13 @@ describe(argvHasHelpFlag.name, () => {
 
   describe('array methods behavior', () => {
     it('should use array.find method correctly', () => {
-      const findSpy = vi.spyOn(Array.prototype, 'find')
+      const someSpy = vi.spyOn(Array.prototype, 'some')
       const args = ['node', 'script.js', '--help']
 
       argvHasHelpFlag(args)
 
-      expect(findSpy).toHaveBeenCalled()
-      findSpy.mockRestore()
+      expect(someSpy).toHaveBeenCalled()
+      someSpy.mockRestore()
     })
 
     it('should handle arrays with non-string elements gracefully', () => {
@@ -297,15 +297,15 @@ describe(argvHasHelpFlag.name, () => {
 
   describe('performance considerations', () => {
     it('should stop searching after finding first match', () => {
-      const findSpy = vi.spyOn(Array.prototype, 'find')
+      const someSpy = vi.spyOn(Array.prototype, 'some')
       const args = ['node', 'script.js', '--help', '--config', '--help', '-h']
 
       const result = argvHasHelpFlag(args)
 
       expect(result).toBe(true)
-      // find() should stop at first match
-      expect(findSpy).toHaveBeenCalledTimes(1)
-      findSpy.mockRestore()
+      // some() should stop at first match
+      expect(someSpy).toHaveBeenCalledTimes(1)
+      someSpy.mockRestore()
     })
 
     it('should handle very large argument arrays efficiently', () => {

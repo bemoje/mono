@@ -3,8 +3,8 @@
  */
 export function stringLineCount(str: string): number {
   let count = 1
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === '\n') {
+  for (const element of str) {
+    if (element === '\n') {
       count++
     }
   }

@@ -12,5 +12,5 @@
  * ```
  */
 export function isHex(s: string): boolean {
-  return /^(0x|0h|(\\?u)|#)?[0-9A-F]+$/i.test(s)
+  return /^(0x|0h|(\\?u)|#)?[\da-f]+$/i.test(s)
 }

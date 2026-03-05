@@ -20,7 +20,7 @@ import { isString } from 'es-toolkit/predicate'
  * ensureThat(42, Number.isInteger)
  * //=> 42
  * ensureThat(-3.142, [Number.isInteger, (n) => n > 0 ? true : 'Must be positive'])
- * // => throws ValidationError { cause: { isInteger: false, [1]: false } }
+ * // => throws ValidatorError { cause: { isInteger: false, [1]: false } }
  * ```
  */
 export function ensureThat<T extends Validator, V extends Parameters<T>[0]>(
@@ -35,6 +35,7 @@ export function ensureThat<T extends Validator, V extends Parameters<T>[0]>(
   })
   const isAsync = retvals.some(isPromise)
 
+  // eslint-disable-next-line unicorn/prefer-ternary
   if (isAsync) {
     return Promise.all(
       retvals.map(async (r) => {

@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 
 /**
  * Whether a path is a relative string, ie. not absolute.

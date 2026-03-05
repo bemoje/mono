@@ -49,11 +49,7 @@ export class SelectPrompt extends AbstractUserPrompt<ISelectPrompt<number>, stri
   choices(choices: IChoice<number>[]): this
   choices(choices: string[] | IChoice<number>[]) {
     this.data.choices = choices.map((choice, i) => {
-      if (typeof choice === 'string') {
-        return { title: choice, value: i, disabled: false, selected: false, description: `[${i}] ${choice}` }
-      } else {
-        return { value: i, disabled: false, selected: false, description: `[${i}] ${choice.title}`, ...choice }
-      }
+      return typeof choice === 'string' ? { title: choice, value: i, disabled: false, selected: false, description: `[${i}] ${choice}` } : { value: i, disabled: false, selected: false, description: `[${i}] ${choice.title}`, ...choice };
     })
     return this
   }

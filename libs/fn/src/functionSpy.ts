@@ -1,7 +1,7 @@
 import type { Any } from '@mono/types'
 import type { AnyAsyncFunction } from '@mono/types'
 import type { TFunction } from '@mono/types'
-import { isAsyncFunction } from 'util/types'
+import { isAsyncFunction } from 'node:util/types'
 import { setNameAndLength } from './setNameAndLength'
 
 /**
@@ -73,13 +73,9 @@ function wrapMaybeAsync<T, Data>(
     }
     const data = spy.onInvoke(this, args)
     const retval = func.apply(this, args)
-    if (retval instanceof Promise) {
-      return retval.then((retval) => {
+    return retval instanceof Promise ? retval.then((retval) => {
         return spy.onReturn(data, retval)
-      })
-    } else {
-      return spy.onReturn(data, retval)
-    }
+      }) : spy.onReturn(data, retval);
   })
 }
 

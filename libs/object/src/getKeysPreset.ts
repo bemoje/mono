@@ -6,7 +6,7 @@ import { isEnumerable } from './isEnumerable'
 export function getKeysPreset<K extends OptsKeysVariants, KT extends OptsKeyTypeVariants>(
   options?: GetKeysOptions<K, KT>
 ): (o: object) => KeysPrimitiveTypeFrom<KT>[] {
-  const ignore = new Set(options?.ignore ?? [])
+  const ignore = new Set(options?.ignore)
   if (options?.ignoreSymbols) {
     if (options?.ignoreEnumerable) {
       return (o: object) => {

@@ -264,8 +264,7 @@ function someWordStartsWithEveryKw(
     })
   }
   let lastP = 0
-  for (let k = 0; k < keywords.length; k++) {
-    const kw = keywords[k]
+  for (const kw of keywords) {
     let match = false
     for (let p = lastP; p < parsed.length; p++) {
       const cmd = parsed[p]

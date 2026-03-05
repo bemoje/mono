@@ -1,4 +1,4 @@
-import readline from 'readline'
+import readline from 'node:readline'
 
 /**
  * Prompt the user for input.
@@ -11,10 +11,10 @@ export async function prompt(question: string, callback?: (input: string) => str
   while (!answer) {
     answer = await new Promise((resolve) => {
       rl.question(question, (input: string) => {
-        if (!callback) {
-          resolve(input.trim())
-        } else {
+        if (callback) {
           resolve(callback(input.trim()))
+        } else {
+          resolve(input.trim())
         }
       })
     })

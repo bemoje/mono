@@ -1,5 +1,5 @@
 import colors from 'ansi-colors'
-import { execSync } from 'child_process'
+import { execSync } from 'node:child_process'
 import upath from 'upath'
 
 /**
@@ -25,7 +25,7 @@ export function execute(commands: string[] | string, options: IExecuteCommandOpt
   if (!noEcho) {
     const relative = upath
       .relative(process.cwd(), cwd)
-      .replace(/\\/g, '/')
+      .replaceAll('\\', '/')
       .replace(upath.basename(cwd), colors.bold(colors.magenta(upath.basename(cwd))))
     const out = `${colors.green(command)}${cwd === process.cwd() ? '' : ` in ${colors.bold(colors.magenta(relative))}`}`
     console.log(silent && fadedOutput ? `  ${colors.dim(out)}` : out)

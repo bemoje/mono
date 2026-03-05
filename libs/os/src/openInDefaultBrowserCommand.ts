@@ -7,14 +7,25 @@ import { getOS } from './getOS'
 export function openInDefaultBrowserCommand(url?: string): string {
   const OS = getOS()
   let run
-  if (OS === 'windows') {
+  switch (OS) {
+  case 'windows': {
     run = getDefaultBrowserWindows().run
-  } else if (OS === 'osx') {
+  
+  break;
+  }
+  case 'osx': {
     run = 'open safari'
-  } else if (OS === 'linux') {
+  
+  break;
+  }
+  case 'linux': {
     run = 'xdg-open'
-  } else {
+  
+  break;
+  }
+  default: {
     throw new Error(`Unknown OS: ${OS}`)
+  }
   }
   return url ? `${run} "${url}"` : run
 }

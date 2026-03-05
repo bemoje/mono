@@ -10,5 +10,5 @@
  * ```
  */
 export function tsCrlfToLf(code: string) {
-  return code.replace(/\r+\n/g, '\n')
+  return code.replaceAll(/\r+\n/g, '\n')
 }

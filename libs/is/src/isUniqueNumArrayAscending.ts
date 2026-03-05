@@ -12,8 +12,8 @@ export const isUniqueNumArrayAscending = (v: unknown) => {
   if (!Array.isArray(v)) {
     return false
   }
-  for (let i = 0; i < v.length; i++) {
-    if (typeof v[i] !== 'number' || !Number.isFinite(v[i])) {
+  for (const element of v) {
+    if (typeof element !== 'number' || !Number.isFinite(element)) {
       return false
     }
   }

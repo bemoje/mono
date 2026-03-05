@@ -45,7 +45,7 @@ export function strSplitCamelCase(word: string): string[] {
 }
 
 const regInteger = /\d+/g
-const regSpecial = /[^\w]+/g
+const regSpecial = /\W+/g
 
 function isWordSplitIndex(word: string, index: number) {
   return (

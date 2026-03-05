@@ -103,7 +103,7 @@ export class NumberFormatter {
     string = string
       .replaceAll(this.thousandSeparator, '')
       .replace(this.decimalSeparator, '.')
-      .replace(/[^\d.-]/g, '')
+      .replaceAll(/[^\d.-]/g, '')
       .split('.')
       .map((s) => {
         return parseInt(s)

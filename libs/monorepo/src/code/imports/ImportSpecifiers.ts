@@ -20,7 +20,7 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
   })
 
   get codeWithoutTypeKeyword() {
-    return this.code.replace(/[\s]*\btype\b[\s]*/g, ' ')
+    return this.code.replaceAll(/\s*\btype\b\s*/g, ' ')
   }
 
   get type(): 'default' | 'named' | 'mixed' | 'namespace' {
@@ -37,26 +37,26 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
   }
 
   get isDefaultImport() {
-    return /[a-zA-Z_$][\w$]*/.test(this.codeWithoutTypeKeyword) && !this.isNamespaceImport
+    return /[$A-Z_a-z][\w$]*/.test(this.codeWithoutTypeKeyword) && !this.isNamespaceImport
   }
 
   get isNamedImport() {
-    return /\{[^}]+\}/.test(this.codeWithoutTypeKeyword)
+    return /{[^}]+}/.test(this.codeWithoutTypeKeyword)
   }
 
   get isMixedImport() {
-    return /([a-zA-Z_$][\w$]*),\s*\{[^}]+\}/.test(this.codeWithoutTypeKeyword)
+    return /([$A-Z_a-z][\w$]*),\s*{[^}]+}/.test(this.codeWithoutTypeKeyword)
   }
 
   get isNamespaceImport() {
-    return /\*\s+as\s+([a-zA-Z_$][\w$]*)/.test(this.codeWithoutTypeKeyword)
+    return /\*\s+as\s+([$A-Z_a-z][\w$]*)/.test(this.codeWithoutTypeKeyword)
   }
 
   get namedImportsArray(): string[] {
     return (
       this.code
         .replace('\n', ' ')
-        .match(/\{([^}]+)\}/)?.[1]
+        .match(/{([^}]+)}/)?.[1]
         .split(',')
         .map((specifier) => {
           return specifier.trim()
@@ -87,7 +87,7 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
       .replace(/[\w*]+ as \w+/, (m) => {
         return m.split(' as ')[1]
       })
-      .replace(/[{}]/g, ' ')
+      .replaceAll(/[{}]/g, ' ')
       .split(',')
       .map((s) => {
         return s.trim()
@@ -96,11 +96,11 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
   }
 
   get defaultImport() {
-    return this.codeWithoutTypeKeyword.match(/^([a-zA-Z_$][\w$]*)\s*(,|)/)?.[1] || undefined
+    return this.codeWithoutTypeKeyword.match(/^([$A-Z_a-z][\w$]*)\s*(,|)/)?.[1] || undefined
   }
 
   get namespaceImport() {
-    return this.codeWithoutTypeKeyword.match(/^\*\s+as\s+([a-zA-Z_$][\w$]*)/)?.[1] || undefined
+    return this.codeWithoutTypeKeyword.match(/^\*\s+as\s+([$A-Z_a-z][\w$]*)/)?.[1] || undefined
   }
 
   get hasNamedImport() {

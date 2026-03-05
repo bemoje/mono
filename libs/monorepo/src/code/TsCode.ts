@@ -71,6 +71,6 @@ export class TsCode<P extends TsFile = TsFile> extends AbstractCode<P> {
   }
 
   private get requireRegex() {
-    return /require\(['"](.+)['"]\)/g
+    return /require\(["'](.+)["']\)/g
   }
 }

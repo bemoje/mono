@@ -6,7 +6,7 @@ import { Parenting } from '@mono/composition'
 import type { SetFieldType } from 'type-fest'
 import type { TsConfigJson } from 'type-fest'
 import { Workspace } from './repo/Workspace'
-import fs from 'fs'
+import fs from 'node:fs'
 import { getRepoRootDirpath } from './util/getRepoRootDirpath'
 import { lazyProp } from '@mono/decorators'
 import path from 'upath'
@@ -95,7 +95,7 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
   @lazyProp(5000)
   get workspacePaths() {
     return this.workspacesRootPaths
-      .map((workspacePath: string) => {
+      .flatMap((workspacePath: string) => {
         return fs
           .readdirSync(workspacePath, { withFileTypes: true })
           .filter((dirent: fs.Dirent) => {
@@ -105,7 +105,6 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
             return path.join(workspacePath, dirent.name)
           })
       })
-      .flat()
   }
 
   @lazyProp

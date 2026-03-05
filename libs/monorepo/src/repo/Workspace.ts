@@ -8,12 +8,12 @@ import { SemanticExtnamePrefix } from '../util/SemanticExtnamePrefix'
 import { TestFile } from '../file/TestFile'
 import { TsFile } from '../file/TsFile'
 import { difference } from 'es-toolkit/array'
-import { exec } from 'child_process'
+import { exec } from 'node:child_process'
 import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
 import { hasParentDirname } from '@mono/path'
 import { lazyProp } from '@mono/decorators'
 import path from 'upath'
-import { promisify } from 'util'
+import { promisify } from 'node:util'
 import { readJsonSync } from 'fs-extra/esm'
 import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
 import { union } from 'es-toolkit/array'
@@ -102,9 +102,9 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
    */
   get importedDependenciesRecursive(): { internal: string[]; external: string[] } {
     const repo = this.parent
-    const wsNames = repo.workspaces.map((w) => {
+    const wsNames = new Set(repo.workspaces.map((w) => {
       return w.name
-    })
+    }))
     const allDeps = recurse(
       this.tsFiles.filter((f) => {
         return f.isSourceFile
@@ -112,16 +112,12 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
     )
     const internal = [...allDeps]
       .filter((d) => {
-        return wsNames.some((name) => {
-          return name === d
-        })
+        return wsNames.has(d)
       })
       .sort()
     const external = [...allDeps]
       .filter((d) => {
-        return !wsNames.some((name) => {
-          return name === d
-        })
+        return !wsNames.has(d)
       })
       .sort()
 

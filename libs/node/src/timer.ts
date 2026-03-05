@@ -2,7 +2,7 @@ import type { Logger } from './createLogger'
 import colors from 'ansi-colors'
 import { createLogger } from './createLogger'
 import humanizeDuration from 'humanize-duration'
-import { isPromise } from 'util/types'
+import { isPromise } from 'node:util/types'
 
 /**
  * Executes a task and logs the execution time.
@@ -34,7 +34,7 @@ export function timer<T>(
       return retval
     }
     const ns = process.hrtime.bigint() - t0
-    const ms = Math.floor(Number(ns) / 1000000)
+    const ms = Math.floor(Number(ns) / 1_000_000)
     log.done(colors.dim(humanizeDuration(ms)))
     return retval
   }

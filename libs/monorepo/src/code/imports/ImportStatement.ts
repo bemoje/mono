@@ -22,11 +22,11 @@ export class ImportStatement<P extends TsCode = TsCode> extends CodeBlock<P> {
     return (
       this.code
         // remove newlines
-        .replace(/\r?\n/g, ' ')
+        .replaceAll(/\r?\n/g, ' ')
         // remove consecutive whitespace
-        .replace(/\s{2,}/g, ' ')
+        .replaceAll(/\s{2,}/g, ' ')
         // remove trailing commas
-        .replace(/,\s+\}/, ' }')
+        .replace(/,\s+}/, ' }')
     )
   }
 
@@ -39,17 +39,17 @@ export class ImportStatement<P extends TsCode = TsCode> extends CodeBlock<P> {
 
   @lazyProp
   get specifiers() {
-    const match = this.code.match(/import\s+([^'"]+)\s+from\s+/)
+    const match = this.code.match(/import\s+([^"']+)\s+from\s+/)
     const code = match ? match[1].trim() : ''
     if (!code) {
-      return undefined
+      return
     }
     return new ImportSpecifiers(this, this.codeIndexRangeOf(code))
   }
 
   @lazyProp
   get module() {
-    const match = this.code.match(/(?:from|import)\s+['"]([^'"]+)['"]/)
+    const match = this.code.match(/(?:from|import)\s+["']([^"']+)["']/)
     const code = match![1].trim()
     return new ModuleSpecifier(this, this.codeIndexRangeOf(code))
   }

@@ -50,6 +50,7 @@ export function reduce(target: any, reducer: any, initialValue: any) {
     // Array - use indexed loop so we can pass index to reducer
     if (Array.isArray(target)) {
       let acc = initialValue
+      // eslint-disable-next-line unicorn/no-for-loop
       for (let i = 0; i < target.length; i++) {
         acc = reducer(acc, target[i], i)
       }

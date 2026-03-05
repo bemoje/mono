@@ -16,10 +16,10 @@ import { importStatementToOneLiner } from './importStatementToOneLiner'
  */
 export function importStatementToFormattedOneLiner(code: string) {
   return importStatementToOneLiner(code)
-    .replace(/[{}]|\bfrom\b|\*|\bas\b/g, (m) => {
+    .replaceAll(/[{}]|\bfrom\b|\*|\bas\b/g, (m) => {
       return ` ${m} `
     })
-    .replace(/\s+,\s*/g, ', ')
-    .replace(/\s\s+/g, ' ')
+    .replaceAll(/\s+,\s*/g, ', ')
+    .replaceAll(/\s\s+/g, ' ')
     .trim()
 }

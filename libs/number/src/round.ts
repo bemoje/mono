@@ -1,4 +1,4 @@
-import { round as _round } from 'es-toolkit'
+
 
 /**
  * Round a number to a specified number of decimal places.
@@ -14,4 +14,6 @@ import { round as _round } from 'es-toolkit'
  * //=> 3.1416
  * ```
  */
-export const round = _round
+
+
+export {round} from 'es-toolkit'

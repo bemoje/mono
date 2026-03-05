@@ -15,7 +15,7 @@ export function isClass(value: unknown): value is AnyConstructor {
   if (!isConstructor(value)) {
     return false
   }
-  const re = /^[\s]*(\w+[\s]+)?class([\s]+\w+)?[\s]*\{/
+  const re = /^\s*(\w+\s+)?class(\s+\w+)?\s*{/
   if (!re.test(value.toString())) {
     return false
   }

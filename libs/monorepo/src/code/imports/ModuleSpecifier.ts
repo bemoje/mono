@@ -4,7 +4,7 @@ import { Inspector } from '@mono/composition'
 import { MonoRepo } from '../../MonoRepo'
 import { Parenting } from '@mono/composition'
 import { Workspace } from '../../repo/Workspace'
-import { builtinModules } from 'module'
+import { builtinModules } from 'node:module'
 
 @Parenting.compose
 /**

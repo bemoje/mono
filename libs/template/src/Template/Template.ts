@@ -71,7 +71,7 @@ export class Template<TemplateSchema extends TSchema, OptionsSchema extends TObj
     const stringTemplate = this.strategy.templateToString(this.template)
     const merged = Value.Cast(this.optionsSchema, data)
     assertValidSchema(this.optionsSchema, merged, 'Invalid options')
-    const populated = stringTemplate.replace(/{{(\w+)}}/g, (_, key) => {
+    const populated = stringTemplate.replaceAll(/{{(\w+)}}/g, (_, key) => {
       return String(merged[key])
     })
     return this.strategy.render(populated)

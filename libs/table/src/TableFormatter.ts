@@ -65,7 +65,7 @@ export class TableFormatter {
     return this.table.reduce((acc: (number | undefined)[], row) => {
       return row.map((cell, c) => {
         if (typeof cell !== 'number') {
-          return undefined
+          return
         }
         if (Number.isInteger(cell)) {
           return 0
@@ -161,9 +161,9 @@ export class TableFormatter {
       options.headerRowSeparator = TableFormatter.defaults.headerRowSeparator
     }
     options.color =
-      !options.color ? defaultColorsNoop
-      : options.color === true ? TableFormatter.defaults.color
+      options.color ? options.color === true ? TableFormatter.defaults.color
       : { ...TableFormatter.defaults.color, ...options.color }
+      : defaultColorsNoop
     return options as FormatTableOptionsMerged
   }
 

@@ -9,5 +9,5 @@
  * @param ext - The file extension to check.
  */
 export function isExtValid(ext: string): boolean {
-  return !!ext && ext !== '.' && !/[<>"|?*:]/.test(ext)
+  return !!ext && ext !== '.' && !/["*:<>?|]/.test(ext)
 }

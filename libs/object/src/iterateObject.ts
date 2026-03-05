@@ -62,7 +62,7 @@ export function* iterateObject<T extends object = object, V = unknown>(
               return typeof s === 'string' ? s : `[${s}]`
             })
             .join('.')
-            .replace(/\.\[/g, '['),
+            .replaceAll('.[', '['),
           isLeaf: false,
           nodeType: Array.isArray(current) ? 'array' : 'object',
         }
@@ -94,7 +94,7 @@ export function* iterateObject<T extends object = object, V = unknown>(
             return typeof s === 'string' ? s : `[${s}]`
           })
           .join('.')
-          .replace(/\.\[/g, '['),
+          .replaceAll('.[', '['),
         isLeaf: true,
         nodeType: 'object',
       }

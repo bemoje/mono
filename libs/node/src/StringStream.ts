@@ -1,4 +1,4 @@
-import { Readable } from 'stream'
+import { Readable } from 'node:stream'
 
 /**
  * Extension of Node's native Readable class for converting a string into a Readable stream.

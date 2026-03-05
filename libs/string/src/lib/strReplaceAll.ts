@@ -16,5 +16,5 @@ export function strReplaceAll(input: string, replace: string, replaceWith: strin
   if (!input || !replace) {
     return input
   }
-  return input.replace(new RegExp(replace.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags), replaceWith)
+  return input.replace(new RegExp(replace.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&'), flags), replaceWith)
 }

@@ -1,5 +1,5 @@
 import { importStatementToFormattedOneLiner } from './importStatementToFormattedOneLiner'
-import { isBuiltin } from 'module'
+import { isBuiltin } from 'node:module'
 import { rexec } from '@mono/regex'
 import upath from 'upath'
 
@@ -26,7 +26,7 @@ export function parseImportStatement(
   const oneliner = importStatementToFormattedOneLiner(code)
 
   const groups = rexec(
-    /^(?<keywords>import +(?<type>type)? *)(?<specifiers>(?:.*?) ?)?(?<mod>(?:from ?)?(?<quote>['"`])(?<path>.*?)\5(?<semi>;?))$/g,
+    /^(?<keywords>import +(?<type>type)? *)(?<specifiers>.*? ?)?(?<mod>(?:from ?)?(?<quote>["'`])(?<path>.*?)\5(?<semi>;?))$/g,
     oneliner
   )[0].groups!
 
@@ -47,7 +47,7 @@ export function parseImportStatement(
 
       children.push(
         ...specifiers
-          .replace(/\{[^}]+\}/, '')
+          .replace(/{[^}]+}/, '')
           .split(',')
           .map((s) => {
             return s.trim()
@@ -66,7 +66,7 @@ export function parseImportStatement(
       )
 
       children.push(
-        ...(specifiers.match(/\{([^}]+)\}/)?.[1] || '')
+        ...(specifiers.match(/{([^}]+)}/)?.[1] || '')
           .split(',')
           .filter((s) => {
             return !!s.trim()
@@ -144,8 +144,8 @@ class ImportStatementParser implements ImportStatement {
       return ins.specifiers.children
         .map((s) => {
           return s.type === 'named' && options?.unaliasNamedImports ?
-              s.code.replace(/ as \w+/g, '')
-            : s.code.replace(/[\w*]+ as /g, '')
+              s.code.replaceAll(/ as \w+/g, '')
+            : s.code.replaceAll(/[\w*]+ as /g, '')
         })
         .filter(Boolean)
     })
@@ -158,12 +158,12 @@ class ImportStatementParser implements ImportStatement {
     return this.type === 'sideEffect' ?
         [this]
       : this.specifiers.children.map((s) => {
-          const code = s.type === 'named' && options?.unaliasNamedImports ? s.code.replace(/ as \w+/g, '') : s.code
+          const code = s.type === 'named' && options?.unaliasNamedImports ? s.code.replaceAll(/ as \w+/g, '') : s.code
           return parseImportStatement(
             importStatementToFormattedOneLiner(
               this.oneliner
                 .replace(this.specifiers.code, s.type === 'named' ? `{ ${code} } ` : `${code} `)
-                .replace(/\{ *type /, this.keywords.hasTypeKeyword ? '{ ' : 'type { ')
+                .replace(/{ *type /, this.keywords.hasTypeKeyword ? '{ ' : 'type { ')
             ).replace('type { ', '{ type ')
           )
         })

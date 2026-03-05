@@ -13,5 +13,5 @@
  * ```
  */
 export function strRemoveNewLines(string: string, replaceWith = ''): string {
-  return string.replace(/\r*\n/g, replaceWith)
+  return string.replaceAll(/\r*\n/g, replaceWith)
 }

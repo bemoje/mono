@@ -10,9 +10,5 @@ export function profilerWrap<T extends object>(func: TFunction, profiler: Functi
   const ignore = () => {
     return !Profiler.enabled
   }
-  if (profiler.id.type === 'get' || profiler.id.type === 'set') {
-    return functionSpy(func, profiler, { ignore, async: false })
-  } else {
-    return functionSpy(func, profiler, { ignore })
-  }
+  return profiler.id.type === 'get' || profiler.id.type === 'set' ? functionSpy(func, profiler, { ignore, async: false }) : functionSpy(func, profiler, { ignore });
 }
