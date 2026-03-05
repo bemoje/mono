@@ -22,7 +22,7 @@ export function arrTableToCsv<T>(input: T[][], delimiter = ';', replaceLinebreak
     .map((row) => {
       return row
         .map((item) => {
-          return String(item).replace(new RegExp(';', 'g'), '').replace(/\r*\n/g, replaceLinebreakWith)
+          return String(item).replaceAll(new RegExp(';', 'g'), '').replaceAll(/\r*\n/g, replaceLinebreakWith)
         })
         .join(delimiter)
     })

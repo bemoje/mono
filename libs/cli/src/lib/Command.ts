@@ -38,13 +38,13 @@ import { findCommand } from './helpers/findCommand'
 import { findOption } from './helpers/findOption'
 import { getCommandAncestors } from './helpers/getCommandAncestors'
 import { getCommandAndAncestors } from './helpers/getCommandAndAncestors'
-import { inspect } from 'util'
+import { inspect } from 'node:util'
 import { kebabCase } from 'es-toolkit/string'
 import { lazyProp } from '@mono/decorators'
 import { mergeOptionDefaults } from './internal/mergeOptionDefaults'
 import { normalizeArgv } from './internal/normalizeArgv'
 import { objSortKeys } from '@mono/object'
-import { parseArgs } from 'util'
+import { parseArgs } from 'node:util'
 import { parseOptionFlags } from './helpers/parseOptionFlags'
 import { resolveArguments } from './internal/resolveArguments'
 import { setName } from '@mono/fn'
@@ -252,9 +252,7 @@ export class Command<
         return s[0]
       })
       .join('')
-    if (!taken.includes(initials)) {
-      sub.addAliases(initials)
-    } else {
+    if (taken.includes(initials)) {
       const initials = words
         .map((s) => {
           return s[0] + s[1]
@@ -263,6 +261,8 @@ export class Command<
       if (!taken.includes(initials)) {
         sub.addAliases(initials)
       }
+    } else {
+      sub.addAliases(initials)
     }
 
     // asd
@@ -314,11 +314,11 @@ export class Command<
 
   // implementation
   addArgument(usage: ArgumentUsage, options: ArgumentOptions = {}) {
-    if (!/^<(.*?)>$|^\[(.*?)\]$/.test(usage)) {
+    if (!/^<(.*?)>$|^\[(.*?)]$/.test(usage)) {
       throw new Error(`Invalid argument format: ${usage}`)
     }
 
-    const name = usage.slice(1, -1).replace(/\.\.\.$/, '')
+    const name = usage.slice(1, -1).replace(/\.{3}$/, '')
     const required = usage.startsWith('<')
     const variadic = usage.slice(0, -1).endsWith('...')
 
@@ -406,9 +406,7 @@ export class Command<
     ins.long = long
     ins.name = name
     ins.description = ''
-    if (!argName) {
-      ins.type = 'boolean'
-    } else {
+    if (argName) {
       ins.type = 'string'
       ins.argName = argName
       if (flags.endsWith('>')) {
@@ -418,12 +416,12 @@ export class Command<
         } else {
           ins.required = true
         }
-      } else if (flags.endsWith(']')) {
-        if (flags.endsWith('...]')) {
+      } else if (flags.endsWith(']') && flags.endsWith('...]')) {
           ins.variadic = true
           ins.defaultValue = (opts.defaultValue ?? []) as string[]
         }
-      }
+    } else {
+      ins.type = 'boolean'
     }
 
     // assign options
@@ -440,7 +438,7 @@ export class Command<
       if (ins.type === 'boolean') {
         ins.defaultValue = /^(t(rue)?|y(es)?|1)$/i.test(process.env[ins.env]!)
       } else if (ins.variadic) {
-        ins.defaultValue = process.env[ins.env]!.replace(/\]|\[/, '')
+        ins.defaultValue = process.env[ins.env]!.replace(/\[]/, '')
           .split(',')
           .map((v) => {
             return v.trim()
@@ -463,7 +461,7 @@ export class Command<
    */
   addOptionHook(optionName: keyof O, action: HookActionHandler<Arguments, O>): this {
     const def = findOption(this, optionName as string)!
-    if (!def.group && /process\.exitCode ?= ?.+;?\s*\}$/.test(action.toString())) {
+    if (!def.group && /process\.exitCode ?= ?.+;?\s*}$/.test(action.toString())) {
       def.group = 'Command Options'
     }
     this.hooks.push({

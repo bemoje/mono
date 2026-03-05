@@ -27,7 +27,7 @@ export function arrObjectsToTable<T, E>(
   for (const o of objects) {
     const row = headers.map((header) => {
       const value = o[header]
-      return value !== undefined ? value : (options.emptyCell as E)
+      return value === undefined ? (options.emptyCell as E) : value
     })
     table.push(row)
   }

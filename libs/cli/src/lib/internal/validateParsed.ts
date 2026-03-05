@@ -12,13 +12,10 @@ export function validateParsed(
   return argDefs
     .map((def, index) => {
       const value = args[index]
-      if (def.required) {
-        if (def.variadic ? Array.isArray(value) && value.length === 0 : value === undefined) {
+      if (def.required && (def.variadic ? Array.isArray(value) && value.length === 0 : value === undefined)) {
           return `Missing argument [${index}] ${def.usage}`
         }
-      }
-      if (def.choices && value !== undefined) {
-        if (
+      if (def.choices && value !== undefined && 
           ![value].flat().every((v) => {
             return def.choices!.includes(v as string)
           })
@@ -29,7 +26,6 @@ export function validateParsed(
             })
             .join(',')}]`
         }
-      }
     })
     .concat(
       entriesOf(optionValues).map(([key, value]) => {
@@ -39,8 +35,7 @@ export function validateParsed(
         if (!def) {
           return `Unknown option --${key}`
         }
-        if (def.choices && value !== undefined) {
-          if (
+        if (def.choices && value !== undefined && 
             !((def.variadic ? value : [value]) as string[]).every((v) => {
               return def.choices!.includes(v)
             })
@@ -51,7 +46,6 @@ export function validateParsed(
               })
               .join(',')}]`
           }
-        }
       })
     )
     .filter((s) => {

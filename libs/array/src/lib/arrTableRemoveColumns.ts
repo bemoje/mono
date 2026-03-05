@@ -11,11 +11,9 @@ export function arrTableRemoveColumns(table: string[][], ...removeColumnNames: s
     return table
   }
   const set = new Set(
-    removeColumnNames
-      .map((col) => {
-        return arrIndicesOf(table[0], col)
-      })
-      .flat()
+    removeColumnNames.flatMap((col) => {
+      return arrIndicesOf(table[0], col)
+    })
   )
   return table.map((row) => {
     return row.filter((_, i) => {

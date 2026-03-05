@@ -6,8 +6,8 @@
  */
 export function arrFindIndicesOf<T>(input: Array<T>, predicate: (value: T) => boolean): number[] {
   const result: number[] = []
-  for (let i = 0; i < input.length; i++) {
-    if (predicate(input[i])) {
+  for (const [i, element] of input.entries()) {
+    if (predicate(element)) {
       result.push(i)
     }
   }

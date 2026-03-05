@@ -40,8 +40,7 @@ export function arrTableToObjects<T>(
   const _headers = headers
   return rows.map((row: T[]) => {
     const o: Record<string, T> = {}
-    for (let i = 0; i < _headers.length; i++) {
-      const header = _headers[i]
+    for (const [i, header] of _headers.entries()) {
       if (ignoreKeys && ignoreKeys.has(header)) {
         continue
       }

@@ -209,9 +209,7 @@ export class Help implements IHelp {
       extraInfo.push(
         // use stringify to match the display of the default value
         `choices: ${choices
-          .map((choice: string) => {
-            return String(choice)
-          })
+          .map(String)
           .join(', ')}`
       )
     }
@@ -243,9 +241,7 @@ export class Help implements IHelp {
       extraInfo.push(
         // use stringify to match the display of the default value
         `choices: ${choices
-          .map((choice: string) => {
-            return String(choice)
-          })
+          .map(String)
           .join(', ')}`
       )
     }
@@ -304,8 +300,8 @@ export class Help implements IHelp {
    */
   displayWidth(str: string): number {
     // eslint-disable-next-line no-control-regex
-    const sgrPattern = /\x1b\[\d*(;\d*)*m/g
-    return str.replace(sgrPattern, '').length
+    const sgrPattern = /\u001b\[\d*(;\d*)*m/g
+    return str.replaceAll(sgrPattern, '').length
   }
 
   /**
@@ -463,7 +459,7 @@ export class Help implements IHelp {
    * Detect manually wrapped and indented strings by checking for line break followed by whitespace.
    */
   preformatted(str: string): boolean {
-    return /\n[^\S\r\n]/.test(str)
+    return /\n[^\S\n\r]/.test(str)
   }
 
   /**
@@ -492,7 +488,7 @@ export class Help implements IHelp {
       formattedDescription = description
     } else {
       const wrappedDescription = this.boxWrap(description, remainingWidth)
-      formattedDescription = wrappedDescription.replace(/\n/g, `\n${' '.repeat(termWidth + spacerWidth)}`)
+      formattedDescription = wrappedDescription.replaceAll('\n', `\n${' '.repeat(termWidth + spacerWidth)}`)
     }
 
     // Construct and overall indent.
@@ -500,7 +496,7 @@ export class Help implements IHelp {
       itemIndentStr
       + paddedTerm
       + ' '.repeat(spacerWidth)
-      + formattedDescription.replace(/\n/g, `\n${itemIndentStr}`)
+      + formattedDescription.replaceAll('\n', `\n${itemIndentStr}`)
     )
   }
 
@@ -515,7 +511,7 @@ export class Help implements IHelp {
 
     const rawLines = str.split(/\r\n|\n/)
     // split up text by whitespace
-    const chunkPattern = /[\s]*[^\s]+/g
+    const chunkPattern = /\s*\S+/g
     const wrappedLines: string[] = []
     rawLines.forEach((line: string) => {
       const chunks = line.match(chunkPattern)

@@ -1,7 +1,7 @@
 import type { ClassInspectorMixin } from './types'
 import type { IgnoreValuesOptions } from './types'
 import type { InspectorOptions } from './types'
-import type { InspectOptions as NativeInspectOptions } from 'util'
+import type { InspectOptions as NativeInspectOptions } from 'node:util'
 import { View } from '../View'
 import { cloneDeep } from 'es-toolkit/object'
 import colors from 'ansi-colors'
@@ -12,7 +12,7 @@ import { getClassChain } from '@mono/object'
 import { hasOwnProperty } from '@mono/object'
 import { hasProperty } from '@mono/object'
 import { ignoreValuesFilterDefaults } from './defaults/ignoreValuesFilterDefaults'
-import { inspect } from 'util'
+import { inspect } from 'node:util'
 import { inspectorDefaults } from './defaults/inspectorDefaults'
 import { isObjectLike } from 'es-toolkit/compat'
 import { mapValues } from 'es-toolkit/object'
@@ -97,7 +97,7 @@ export class Inspector extends View<InspectorTarget> {
     const { output, inspectOptions } = this.compile(depth)
     Object.assign(inspectOptions, options)
     const result = inspect(output, options)
-    return result.replace(/Object \[\w+\] \{/gm, (match) => {
+    return result.replaceAll(/Object \[\w+] {/gm, (match) => {
       match = match.substring(8, match.length - 3)
       return `[${inspectOptions.colors ? colors.magenta(match) : match}] {`
     })

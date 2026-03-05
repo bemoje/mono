@@ -1,5 +1,5 @@
 import type { TCryptoAlgorithm } from './TCryptoAlgorithm'
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 import { strHashToBuffer } from './strHashToBuffer'
 
 /**

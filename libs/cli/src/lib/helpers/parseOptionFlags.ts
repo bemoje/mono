@@ -7,7 +7,7 @@ import type { OptionUsage } from '../types'
 export function parseOptionFlags<Long extends string>(
   flags: OptionUsage<Long>
 ): { short: string; long: Long; name: CamelCase<Long>; argName: string | undefined } {
-  const match = flags.match(/^-(.+?), --([a-zA-Z][\w-]*)(?:\s*(<(.+?)>|\[(.+?)\]))?$/)
+  const match = flags.match(/^-(.+?), --([A-Za-z][\w-]*)(?:\s*(<(.+?)>|\[(.+?)]))?$/)
   if (!match) {
     throw new Error(`Invalid option format: ${flags}`)
   }
@@ -18,7 +18,7 @@ export function parseOptionFlags<Long extends string>(
   }
 
   const long = match[2] as Long
-  const argName = (match[4] || match[5])?.replace(/\.\.\.$/, '') || undefined
+  const argName = (match[4] || match[5])?.replace(/\.{3}$/, '') || undefined
   const name = long.split('-').reduce((str, word) => {
     return str + word[0].toUpperCase() + word.slice(1)
   }) as CamelCase<Long>
