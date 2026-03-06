@@ -1,4 +1,5 @@
 export * from './IView'
+export * from './OptionsConfigurator'
 export * from './View'
 export * from './inheritProxifiedPrototype'
 export * from './inheritProxifiedPrototypeProperty'

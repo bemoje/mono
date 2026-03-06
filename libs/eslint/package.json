@@ -1,23 +1,24 @@
 {
-  "name": "@mono/composition",
-  "version": "2.0.1",
+  "name": "@mono/eslint",
+  "version": "1.0.1",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
-  "dependencies": {
-    "type-fest": "5.4.4"
-  },
-  "description": "composition",
+  "private": true,
+  "description": "eslint",
   "keywords": [
-    "composition"
+    "eslint"
   ],
   "scripts": {
     "build": "node --import '../../scripts/build-lib.mjs'",
     "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
+    "@typescript-eslint/rule-tester": "^8.56.1",
     "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "@typescript-eslint/utils": "^8.56.1"
   }
 }

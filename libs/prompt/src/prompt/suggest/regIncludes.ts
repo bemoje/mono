@@ -1,5 +1,5 @@
 import type { SuggestOptions } from './common'
-import { escapeRegExp } from 'es-toolkit'
+import { escapeRegExp } from 'es-toolkit/string'
 
 /**
  * Create a regular expression that matches strings containing the keyword.

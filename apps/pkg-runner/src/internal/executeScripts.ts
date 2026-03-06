@@ -7,15 +7,17 @@ export async function executeScripts(selections: string[], pkgManRun: string) {
     return arg.startsWith('-') ? arg : `'${arg}'`
   })
 
-  const confirmed = await confirm({
-    message: [
-      selections.length > 1 ? `Run all of the below commands?` : `Run the below command?`,
-      ...selections.map((selection) => {
-        return ['    ', pkgManRun, colors.green(selection), ...formattedArgs].join(' ')
-      }), //
-    ].join('\n'),
-    initialValue: true,
-  })
+  const confirmed =
+    selections.length === 1
+    || (await confirm({
+      message: [
+        selections.length > 1 ? `Run all of the below commands?` : `Run the below command?`,
+        ...selections.map((selection) => {
+          return ['    ', pkgManRun, colors.green(selection), ...formattedArgs].join(' ')
+        }), //
+      ].join('\n'),
+      initialValue: true,
+    }))
 
   if (confirmed === true) {
     for (const selection of selections) {

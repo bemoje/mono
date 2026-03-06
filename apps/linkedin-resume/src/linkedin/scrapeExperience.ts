@@ -14,6 +14,9 @@ import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { scrapeOutputJson } from './utils/scrapeOutputJson'
 import { userConfigFile } from '../userConfigFile'
 
+/**
+ * Scrape LinkedIn experience section.
+ */
 export async function scrapeExperience(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const page = await browser.newPage()
 

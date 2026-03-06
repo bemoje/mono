@@ -42,7 +42,17 @@ export class AutocompleteMultiselectPrompt<Value> extends AutocompletePrompt<Opt
     this.addReturnKeypressListener()
     this.addCtrlAKeypressListener()
 
-    return this.prompt() as Promise<symbol | string[]>
+    const result = this.prompt() as Promise<symbol | string[]>
+    if (Array.isArray(result)) {
+      return result
+        .map((v) => {
+          return v.trim()
+        })
+        .filter((v): v is string => {
+          return !!v
+        })
+    }
+    return result
   }
 
   protected addCtrlAKeypressListener() {

@@ -23,9 +23,6 @@
  * - Ideal for enforcing exact, whole-type equality.
  * - Helpful for avoiding unintended distribution, especially in complex types.
  * ------------
- */
-
-/**
  * Deep equality aka. structuraæ equality aka. exacy matching
  *
  *  Deep equality
@@ -36,7 +33,6 @@
 export type IsDeepEqual<T, U> = (<G>() => G extends T ? 1 : 2) extends <G>() => G extends U ? 1 : 2 ? true : false
 
 /**
- *
  * Deep equality aka. structuraæ equality aka. exacy matching
  * @returns {<T>|never }
  */
@@ -56,7 +52,6 @@ export type IsStrictEqual<T, Target> = StrictEquals<T, Target> extends never ? f
  * Test equality with strict matching strategty.
  * @returns {<T>|never }
  */
-
 export type StrictEquals<T, Target> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends any ?

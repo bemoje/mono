@@ -1,4 +1,4 @@
-import { pull } from 'es-toolkit'
+import { pull } from 'es-toolkit/array'
 
 /**
  * Remove elements in-place from an array.

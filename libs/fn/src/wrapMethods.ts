@@ -7,7 +7,6 @@ import { setNameAndLength } from './setNameAndLength'
 /**
  * Wrap methods, getters and setters of an object with custom logic.
  */
-
 export function wrapMethods<T extends object>(target: T, strat: WrapMethodsStrategy<T>) {
   for (const [key, type, des] of iterateMethods(target)) {
     if (strat.filter && !strat.filter(target, key, type, des)) {

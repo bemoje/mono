@@ -1,4 +1,5 @@
 import eslintConfigPrettier from 'eslint-config-prettier'
+import { eslintPluginBemoje } from '@bemoje/eslint'
 import eslintPluginUnicorn from 'eslint-plugin-unicorn'
 import globals from 'globals'
 import pluginJs from '@eslint/js'
@@ -20,8 +21,11 @@ export default [
       'split-and-sort-imports': splitAndSortImports,
       'unused-imports': unusedImports,
       'unicorn': eslintPluginUnicorn,
+      'eslint-plugin-bemoje': eslintPluginBemoje(),
     },
     rules: {
+      'eslint-plugin-bemoje/no-blank-line-between-comment-and-declaration': 'error',
+
       // allow {}
       '@typescript-eslint/no-empty-object-type': 'off',
 

@@ -1,4 +1,4 @@
-import { upperFirst } from 'es-toolkit'
+import { upperFirst } from 'es-toolkit/string'
 
 /**
  * Prepend a camelCased string.

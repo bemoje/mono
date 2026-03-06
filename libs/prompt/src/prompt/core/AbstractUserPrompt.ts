@@ -4,7 +4,7 @@ import type { Options as PromptsOptions } from 'prompts'
 import type { TOnState } from './types'
 import type { TStdin } from './types'
 import type { TStdout } from './types'
-import { cloneDeep } from 'es-toolkit'
+import { cloneDeep } from 'es-toolkit/object'
 import prompts from 'prompts'
 import { setNonEnumerable } from '@mono/object'
 

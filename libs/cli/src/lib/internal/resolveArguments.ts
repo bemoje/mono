@@ -1,5 +1,5 @@
 import type { Argument } from '../types'
-import { last } from 'es-toolkit'
+import { last } from 'es-toolkit/array'
 
 /** Map positional strings to argument definitions, trimming trailing undefineds */
 export function resolveArguments(positionals: string[], args: Argument[]): unknown[] {

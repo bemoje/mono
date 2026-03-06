@@ -15,7 +15,7 @@ import { ignoreValuesFilterDefaults } from './defaults/ignoreValuesFilterDefault
 import { inspect } from 'node:util'
 import { inspectorDefaults } from './defaults/inspectorDefaults'
 import { isObjectLike } from 'es-toolkit/compat'
-import { mapValues } from 'es-toolkit/object'
+import { mapValues } from 'es-toolkit'
 import { omit } from 'es-toolkit/compat'
 
 /**

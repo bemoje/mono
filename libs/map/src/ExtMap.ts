@@ -3,19 +3,18 @@ import { View } from '@mono/composition'
 import { defineMethod } from '@mono/object'
 import { entriesArray } from './entriesArray'
 import { entriesOf } from '@mono/object'
-import { filterIterableEntries } from '@mono/iter'
+import { filterIterableValues } from '@mono/iter'
 import { inheritProxifiedPrototype } from '@mono/composition'
 import { inspect } from 'node:util'
 import { isIterable } from 'iter-tools'
 import { keysArray } from './keysArray'
 import { mapGetOrDefault } from './mapGetOrDefault'
-import { mapIterableEntries } from '@mono/iter'
 import { mapIterableKeys } from '@mono/iter'
 import { mapIterableValues } from '@mono/iter'
 import { mapLoad } from './mapLoad'
 import { mapReverse } from './mapReverse'
 import { mapUpdate } from './mapUpdate'
-import { reduceIterableEntries } from '@mono/iter'
+import { reduceIterableValues } from '@mono/iter'
 import { sort } from './sort'
 import { sortByKeys } from './sortByKeys'
 import { sortByValues } from './sortByValues'
@@ -177,8 +176,8 @@ defineMethod(ExtMap.prototype, 'valuesArray', thisify(valuesArray))
 defineMethod(ExtMap.prototype, 'entriesArray', thisify(entriesArray))
 defineMethod(ExtMap.prototype, 'toObject', thisify(toObjectIterable))
 defineMethod(ExtMap.prototype, 'toMap', thisify(toMap))
-defineMethod(ExtMap.prototype, 'reduce', thisify(reduceIterableEntries))
-defineMethod(ExtMap.prototype, 'map', thisify(transformReturnValue(mapIterableEntries, ExtMap.fromIterable)))
+defineMethod(ExtMap.prototype, 'reduce', thisify(reduceIterableValues))
+defineMethod(ExtMap.prototype, 'map', thisify(transformReturnValue(mapIterableValues, ExtMap.fromIterable)))
 defineMethod(ExtMap.prototype, 'mapKeys', thisify(transformReturnValue(mapIterableKeys, ExtMap.fromIterable)))
 defineMethod(ExtMap.prototype, 'mapValues', thisify(transformReturnValue(mapIterableValues, ExtMap.fromIterable)))
-defineMethod(ExtMap.prototype, 'filter', thisify(transformReturnValue(filterIterableEntries, ExtMap.fromIterable)))
+defineMethod(ExtMap.prototype, 'filter', thisify(transformReturnValue(filterIterableValues, ExtMap.fromIterable)))

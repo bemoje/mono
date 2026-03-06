@@ -97,6 +97,8 @@ await fs.writeJson(
   { spaces: 2 }
 )
 
+await fs.copyFile(upath.joinSafe(wsDirpath, 'README.md'), upath.joinSafe(distDir, 'README.md'))
+
 console.info(`Built: libs/${wsDirname}`)
 
 process.exit(0)

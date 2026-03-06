@@ -1,89 +1,66 @@
-import { OptionsConfigurator } from '@mono/object'
+import { OptionsConfigurator } from '@mono/composition'
 import { Type } from '@sinclair/typebox'
 
 ////////////
 
-example1()
-// example2()
-
-////////////
-
-function example1() {
-  const props = {
+const PersonBuilder = OptionsConfigurator(
+  {
     name: Type.String(),
     age: Type.Integer(),
     city: Type.String(),
-    state: Type.Optional(
-      Type.String({
-        default: () => {
-          return 'WA'
-        },
-      })
-    ),
+    state: Type.String({
+      default: () => {
+        return 'N/A'
+      },
+    }),
     disabled: Type.Optional(Type.Boolean()),
+  },
+  ['state']
+)
+
+class Person extends PersonBuilder.createBaseClass() {
+  override initialize() {
+    this.assertValidOptions()
   }
-
-  const configurator = OptionsConfigurator(props)
-
-  const options = configurator((o) => {
-    return o
-      .name('Alice') //
-      .age(2)
-      .city('Seattle')
-      .done()
-  })
-
-  console.log(options)
-  //=> { state: 'WA', name: 'Alice', age: 2, city: 'Seattle' }
-
-  console.log(configurator)
-  console.log(configurator.getSchemaProps())
-  console.log(configurator.getSchema())
-  console.log(configurator.getDefaults())
+  print() {
+    // console.log({ [this.options.name]: this })
+  }
 }
 
-////////////
+new Person((o) => {
+  return o
+    .name('Alice') //
+    .age(2)
+    .city('Seattle')
+    .done()
+}).print()
 
-function example2() {
-  const PersonConfigurator = OptionsConfigurator({
-    name: Type.String(),
-    age: Type.Integer(),
-    city: Type.String(),
-    state: Type.Optional(
-      Type.String({
-        default: () => {
-          return 'WA'
-        },
-      })
-    ),
-    disabled: Type.Optional(Type.Boolean()),
-  })
+new Person({
+  name: 'Charlie', //
+  age: 30,
+  city: 'New York',
+  disabled: false,
+}).print()
 
-  class Person {
-    constructor(readonly options: ReturnType<typeof PersonConfigurator.cast>) {}
+const createPerson = PersonBuilder.createFunction((options) => {
+  console.log('Creating person with options:', options)
+})
 
-    static Configurator(...args: Parameters<typeof PersonConfigurator>) {
-      return new this(PersonConfigurator(...args))
-    }
-  }
+createPerson((o) => {
+  return o
+    .name('Bob') //
+    .age(25)
+    .city('Los Angeles')
 
-  console.log([
-    Person.Configurator((o) => {
-      return o
-        .name('Alice') //
-        .age(2)
-        .city('Seattle')
-        .done()
-    }),
+    .done()
+})
 
-    Person.Configurator((o) => {
-      return o
-        .name('Bob') //
-        .age(16)
-        .city('New York')
-        .state('NY')
-        .disabled(true)
-        .done()
-    }),
-  ])
-}
+createPerson({
+  name: 'Dave', //
+  age: 40,
+  city: 'Chicago',
+})
+
+console.log(createPerson)
+
+console.log(Person)

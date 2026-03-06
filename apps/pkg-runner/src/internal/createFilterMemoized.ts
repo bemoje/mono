@@ -1,5 +1,5 @@
 import colors from 'ansi-colors'
-import { escapeRegExp } from 'es-toolkit'
+import { escapeRegExp } from 'es-toolkit/string'
 import memoizee from 'memoizee'
 
 export function createFilterMemoized(names: string[]) {

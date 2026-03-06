@@ -12,5 +12,4 @@
  * //=> 3.1416
  * ```
  */
-
-export { round } from 'es-toolkit'
+export { round } from 'es-toolkit/math'
