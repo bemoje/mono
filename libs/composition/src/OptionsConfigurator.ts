@@ -1,17 +1,20 @@
+/* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { KindGuard } from '@sinclair/typebox'
 import type { OptionalKeysOf } from 'type-fest'
 import type { RequiredKeysOf } from 'type-fest'
 import { ReturnType } from '@sinclair/typebox'
 import type { SetFieldType } from 'type-fest'
+import type { SetOptional } from 'type-fest'
 import type { Simplify } from 'type-fest'
 import type { Static } from '@sinclair/typebox'
 import type { TObject } from '@sinclair/typebox'
 import type { TSchema } from '@sinclair/typebox'
 import { Type } from '@sinclair/typebox'
-import { entriesOf } from './entriesOf'
-import { keysOf } from './keysOf'
+import { Value } from '@sinclair/typebox/value'
+import { assertValidSchema } from '@mono/tschema'
+import { entriesOf } from '@mono/object'
+import { keysOf } from '@mono/object'
 
 /**
  * A utility function to configure options based on a given schema or properties.
@@ -55,11 +58,17 @@ import { keysOf } from './keysOf'
  * //=> { state: 'WA', name: 'Alice', age: 2, city: 'Seattle' }
  * ```
  */
-export function OptionsConfigurator<P extends Record<string, TSchema>>(schemaOrProps: P | TObject<P>) {
-  const props = KindGuard.IsObject(schemaOrProps) ? schemaOrProps.properties : schemaOrProps
+
+// eslint-disable-next-line max-lines-per-function
+export function OptionsConfigurator<
+  const DefaultKey extends keyof Static<TObject<P>>,
+  P extends Record<string, TSchema>,
+>(schemaOrProps: P | TObject<P>, defaultKeys?: DefaultKey[]) {
+  const props = KindGuard.IsObject(schemaOrProps) ? schemaOrProps.properties : (schemaOrProps as P)
   const schema = KindGuard.IsObject(schemaOrProps) ? schemaOrProps : Type.Object(props)
 
-  type Options = Static<typeof schema>
+  type MergedOptions = Static<typeof schema>
+  type Options = SetOptional<MergedOptions, DefaultKey>
 
   const defaults = entriesOf(props).reduce(
     (acc, [key, prop]) => {
@@ -80,7 +89,7 @@ export function OptionsConfigurator<P extends Record<string, TSchema>>(schemaOrP
   )
 
   const requiredKeys = schema.required as RequiredKeysOf<Options>[]
-  const optionalKeys = Object.keys(props).filter((k) => {
+  const optionalKeys = keysOf(props).filter((k) => {
     return !requiredKeys.includes(k as never)
   }) as OptionalKeysOf<Options>[]
 
@@ -89,7 +98,7 @@ export function OptionsConfigurator<P extends Record<string, TSchema>>(schemaOrP
   const build = (callback: (builder: ReturnType<typeof create>) => Options) => {
     const builder = create()
     const options = callback(builder)
-    return options
+    return options as MergedOptions
   }
 
   build.getSchemaProps = () => {
@@ -101,14 +110,71 @@ export function OptionsConfigurator<P extends Record<string, TSchema>>(schemaOrP
   build.getDefaults = () => {
     return defaults
   }
+  build.getDefaultKeys = () => {
+    return defaultKeys
+  }
   build.cast = (v?: unknown) => {
-    return v as Options
+    return v as MergedOptions
   }
   build.getCreate = () => {
     return create
   }
   build.getBuild = () => {
     return build
+  }
+
+  type Builder = Parameters<typeof build>[0]
+
+  build.createFunction = <Ret>(func: (options: MergedOptions) => Ret) => {
+    function fn(options: Options): Ret
+    function fn(builder: Builder): Ret
+    function fn(arg0: Options | Builder) {
+      const options = (typeof arg0 === 'function' ? build(arg0) : Value.Default(schema, arg0)) as MergedOptions
+      assertValidSchema(schema, options, 'Invalid options')
+      return func(options)
+    }
+    if (func.name) {
+      Object.defineProperty(fn, 'name', { value: func.name, configurable: true })
+    }
+    Object.defineProperty(fn, 'OptionsConfigurator', {
+      get() {
+        return build
+      },
+      enumerable: true,
+    })
+    return fn as typeof fn & { get OptionsConfigurator(): typeof build }
+  }
+
+  build.createBaseClass = () => {
+    return class Base {
+      static get OptionsConfigurator() {
+        return build
+      }
+
+      readonly options: MergedOptions
+
+      constructor(options: Options)
+      constructor(builder: Builder)
+      constructor(arg0: Options | Builder) {
+        this.options = (typeof arg0 === 'function' ? build(arg0) : Value.Default(schema, arg0)) as MergedOptions
+        this.initialize()
+      }
+
+      /**
+       * Called by the constructor
+       */
+      initialize() {
+        this.assertValidOptions()
+      }
+
+      isValidOptions() {
+        return Value.Check(schema, this.options)
+      }
+
+      assertValidOptions() {
+        assertValidSchema(schema, this.options, 'Invalid options')
+      }
+    }
   }
 
   return build

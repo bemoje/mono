@@ -10,14 +10,12 @@ export function inheritStaticMembers<T extends Constructor<object>>(
 ): T {
   const ignore: Set<PropertyKey> = new Set([...ignoreKeys, 'prototype', 'name'])
   for (const key of Reflect.ownKeys(source)) {
-    if (ignore.has(key)) {
-      continue
+    if (!ignore.has(key) && !Object.hasOwn(target, key)) {
+      const des = Object.getOwnPropertyDescriptor(source, key)
+      if (des) {
+        Object.defineProperty(target, key, des)
+      }
     }
-    if (Reflect.has(target, key)) {
-      continue
-    }
-    const des = Object.getOwnPropertyDescriptor(source, key)
-    Object.defineProperty(target, key, des as PropertyDescriptor)
   }
   return target
 }
