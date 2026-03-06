@@ -1,13 +1,22 @@
 import { map } from 'iter-tools'
 
 /**
- * Transform both keys and values of map entries.
+ * Transform each entry in an iterable of key-value pairs using a mapper function.
+ *
+ * @param mapLike - An iterable of key-value tuples to transform
+ * @param mapper - A function that transforms each entry
+ * @returns An iterable containing the transformed entries
+ *
+ * @example
+ * ```ts
+ * const entries: [string, number][] = [['a', 1], ['b', 2], ['c', 3]]
+ * const mapped = mapIterableEntries(entries, ([key, value]) => [key, value * 2])
+ * // mapped: Iterable of [['a', 2], ['b', 4], ['c', 6]]
+ * ```
  */
-export function mapIterableEntries<K, V, U, W>(
+export function mapIterableEntries<K, V, K2, V2>(
   mapLike: Iterable<[K, V]>,
-  transform: (value: V, key: K) => [U, W]
-): Iterable<[U, W]> {
-  return map(([k, v]: [K, V]) => {
-    return transform(v, k)
-  }, mapLike)
+  mapper: (entry: [K, V]) => [K2, V2]
+): Iterable<[K2, V2]> {
+  return map(mapper, mapLike)
 }

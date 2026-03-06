@@ -7,156 +7,89 @@ import { reduceIterableEntries } from './reduceIterableEntries'
 describe(reduceIterableEntries.name, () => {
   it('examples', () => {
     expect(() => {
-      // sum all values
-      const entries: Array<[string, number]> = [
+      const entries = new Map([
         ['a', 1],
         ['b', 2],
         ['c', 3],
-      ]
+      ]).entries()
       const sum = reduceIterableEntries(
         entries,
-        (acc, value) => {
-          return acc + value
+        (acc, [k, v]) => {
+          return acc + v
         },
         0
       )
-      assert.strictEqual(sum, 6, 'sum calculated')
+      assert.strictEqual(sum, 6, 'sum of values')
 
-      // collect all keys
       const keys = reduceIterableEntries(
-        entries,
-        (acc, value, key) => {
-          return [...acc, key]
+        new Map([
+          ['a', 1],
+          ['b', 2],
+        ]).entries(),
+        (acc, [k, v]) => {
+          return acc + k
         },
-        [] as string[]
+        ''
       )
-      assert.deepStrictEqual(keys, ['a', 'b', 'c'], 'keys collected')
-
-      // create object from entries
-      const obj = reduceIterableEntries(
-        entries,
-        (acc, value, key) => {
-          return { ...acc, [key]: value }
-        },
-        {} as Record<string, number>
-      )
-      assert.deepStrictEqual(obj, { a: 1, b: 2, c: 3 }, 'object created')
+      assert.strictEqual(keys, 'ab', 'concatenated keys')
     }).not.toThrow()
   })
 
-  it('should reduce to sum of values', () => {
-    const entries: Array<[string, number]> = [
-      ['x', 10],
-      ['y', 20],
-      ['z', 30],
-    ]
-    const result = reduceIterableEntries(
-      entries,
-      (acc, value) => {
-        return acc + value
-      },
-      0
-    )
-    expect(result).toBe(60)
-  })
-
-  it('should reduce using both keys and values', () => {
-    const entries: Array<[string, number]> = [
+  it('should reduce iterable of entries', () => {
+    const map = new Map([
       ['a', 1],
       ['b', 2],
       ['c', 3],
-    ]
+    ])
     const result = reduceIterableEntries(
-      entries,
-      (acc, value, key) => {
-        return acc + key.repeat(value)
+      map.entries(),
+      (acc, [k, v]) => {
+        return acc + v
+      },
+      0
+    )
+    expect(result).toBe(6)
+  })
+
+  it('should have access to keys', () => {
+    const map = new Map([
+      ['a', 1],
+      ['b', 2],
+      ['c', 3],
+    ])
+    const result = reduceIterableEntries(
+      map.entries(),
+      (acc, [k, v]) => {
+        return acc + k
       },
       ''
     )
-    expect(result).toBe('abbccc')
-  })
-
-  it('should build an array from entries', () => {
-    const entries: Array<[string, number]> = [
-      ['first', 10],
-      ['second', 20],
-    ]
-    const result = reduceIterableEntries(
-      entries,
-      (acc, value, key) => {
-        return [...acc, `${key}:${value}`]
-      },
-      [] as string[]
-    )
-    expect(result).toEqual(['first:10', 'second:20'])
+    expect(result).toBe('abc')
   })
 
   it('should handle empty iterable', () => {
     const result = reduceIterableEntries(
-      [],
-      (acc: number, value: any) => {
-        return acc + value
+      new Map<string, number>().entries(),
+      (acc, [k, v]) => {
+        return acc + v
       },
-      42
+      10
     )
-    expect(result).toBe(42)
+    expect(result).toBe(10)
   })
 
-  it('should work with Map entries', () => {
+  it('should support different return type', () => {
     const map = new Map([
-      ['a', 5],
-      ['b', 10],
-      ['c', 15],
+      ['x', 10],
+      ['y', 20],
     ])
     const result = reduceIterableEntries(
-      map,
-      (acc, value) => {
-        return Math.max(acc, value)
+      map.entries(),
+      (acc, [k, v]) => {
+        return `${acc + k}:${v};`
       },
-      0
+      ''
     )
-    expect(result).toBe(15)
-  })
-
-  it('should build complex objects', () => {
-    const entries: Array<[string, { count: number; active: boolean }]> = [
-      ['item1', { count: 5, active: true }],
-      ['item2', { count: 10, active: false }],
-      ['item3', { count: 15, active: true }],
-    ]
-
-    const result = reduceIterableEntries(
-      entries,
-      (acc, value, key) => {
-        if (value.active) {
-          acc.activeItems.push(key)
-          acc.totalActiveCount += value.count
-        }
-        return acc
-      },
-      { activeItems: [] as string[], totalActiveCount: 0 }
-    )
-
-    expect(result).toEqual({ activeItems: ['item1', 'item3'], totalActiveCount: 20 })
-  })
-
-  it('should maintain reducer state correctly', () => {
-    const entries: Array<[number, string]> = [
-      [1, 'first'],
-      [2, 'second'],
-      [3, 'third'],
-    ]
-    const result = reduceIterableEntries(
-      entries,
-      (acc, value, key) => {
-        acc.count++
-        acc.keySum += key
-        acc.values.push(value)
-        return acc
-      },
-      { count: 0, keySum: 0, values: [] as string[] }
-    )
-
-    expect(result).toEqual({ count: 3, keySum: 6, values: ['first', 'second', 'third'] })
+    expect(result).toBe('x:10;y:20;')
   })
 })

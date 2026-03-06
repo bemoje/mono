@@ -1,50 +1,50 @@
 import assert from 'assert'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
-import { filterIterableEntries } from './filterIterableEntries'
+import { filterIterableKeys } from './filterIterableKeys'
 import { it } from 'vitest'
 
-describe(filterIterableEntries.name, () => {
+describe(filterIterableKeys.name, () => {
   it('examples', () => {
     expect(() => {
-      // filter entries by value
+      // filter by key only
       const entries: Array<[string, number]> = [
-        ['a', 1],
-        ['b', 2],
-        ['c', 3],
+        ['apple', 1],
+        ['banana', 2],
+        ['apricot', 3],
       ]
       const filtered = [
-        ...filterIterableEntries(entries, ([key, value]) => {
-          return value > 1
+        ...filterIterableKeys(entries, (key) => {
+          return key.startsWith('a')
         }),
       ]
       assert.deepStrictEqual(
         filtered,
         [
-          ['b', 2],
-          ['c', 3],
+          ['apple', 1],
+          ['apricot', 3],
         ],
-        'filtered by value'
+        'filtered by key'
       )
 
-      // filter entries by key
+      // filter by key and value
       const filtered2 = [
-        ...filterIterableEntries(entries, ([key, value]) => {
-          return key !== 'b'
+        ...filterIterableKeys(entries, (key, value) => {
+          return key.length > 5 && value > 1
         }),
       ]
       assert.deepStrictEqual(
         filtered2,
         [
-          ['a', 1],
-          ['c', 3],
+          ['banana', 2],
+          ['apricot', 3],
         ],
-        'filtered by key'
+        'filtered by key and value'
       )
 
       // empty result
       const empty = [
-        ...filterIterableEntries(entries, () => {
+        ...filterIterableKeys(entries, () => {
           return false
         }),
       ]
@@ -52,7 +52,7 @@ describe(filterIterableEntries.name, () => {
     }).not.toThrow()
   })
 
-  it('should filter based on value', () => {
+  it('should filter based on key predicate only', () => {
     const entries: Array<[string, number]> = [
       ['a', 1],
       ['b', 2],
@@ -60,30 +60,31 @@ describe(filterIterableEntries.name, () => {
       ['d', 4],
     ]
     const result = [
-      ...filterIterableEntries(entries, ([_, value]) => {
+      ...filterIterableKeys(entries, (key) => {
+        return key > 'b'
+      }),
+    ]
+    expect(result).toEqual([
+      ['c', 3],
+      ['d', 4],
+    ])
+  })
+
+  it('should filter based on value through second parameter', () => {
+    const entries: Array<[string, number]> = [
+      ['a', 1],
+      ['b', 2],
+      ['c', 3],
+      ['d', 4],
+    ]
+    const result = [
+      ...filterIterableKeys(entries, (_, value) => {
         return value % 2 === 0
       }),
     ]
     expect(result).toEqual([
       ['b', 2],
       ['d', 4],
-    ])
-  })
-
-  it('should filter based on key', () => {
-    const entries: Array<[string, number]> = [
-      ['apple', 1],
-      ['banana', 2],
-      ['apricot', 3],
-    ]
-    const result = [
-      ...filterIterableEntries(entries, ([key, _]) => {
-        return key.startsWith('a')
-      }),
-    ]
-    expect(result).toEqual([
-      ['apple', 1],
-      ['apricot', 3],
     ])
   })
 
@@ -94,7 +95,7 @@ describe(filterIterableEntries.name, () => {
       ['c', 30],
     ]
     const result = [
-      ...filterIterableEntries(entries, ([key, value]) => {
+      ...filterIterableKeys(entries, (key, value) => {
         return value > 15 && key !== 'c'
       }),
     ]
@@ -103,7 +104,7 @@ describe(filterIterableEntries.name, () => {
 
   it('should handle empty iterable', () => {
     const result = [
-      ...filterIterableEntries([], () => {
+      ...filterIterableKeys([], () => {
         return true
       }),
     ]
@@ -116,8 +117,8 @@ describe(filterIterableEntries.name, () => {
       ['b', 2],
     ]
     const result = [
-      ...filterIterableEntries(entries, ([_, value]) => {
-        return value > 10
+      ...filterIterableKeys(entries, (key) => {
+        return key === 'z'
       }),
     ]
     expect(result).toEqual([])
@@ -130,8 +131,8 @@ describe(filterIterableEntries.name, () => {
       ['z', 300],
     ])
     const result = [
-      ...filterIterableEntries(map, ([_, value]) => {
-        return value >= 200
+      ...filterIterableKeys(map, (key) => {
+        return key >= 'y'
       }),
     ]
     expect(result).toEqual([
@@ -140,20 +141,41 @@ describe(filterIterableEntries.name, () => {
     ])
   })
 
-  it('should work with different types', () => {
+  it('should work with numeric keys', () => {
     const entries: Array<[number, string]> = [
       [1, 'one'],
       [2, 'two'],
       [3, 'three'],
+      [4, 'four'],
     ]
     const result = [
-      ...filterIterableEntries(entries, ([key, _]) => {
-        return key % 2 === 1
+      ...filterIterableKeys(entries, (key) => {
+        return key > 2
       }),
     ]
     expect(result).toEqual([
-      [1, 'one'],
       [3, 'three'],
+      [4, 'four'],
+    ])
+  })
+
+  it('should work with complex key types', () => {
+    const key1 = { id: 1 }
+    const key2 = { id: 2 }
+    const key3 = { id: 3 }
+    const entries: Array<[{ id: number }, string]> = [
+      [key1, 'one'],
+      [key2, 'two'],
+      [key3, 'three'],
+    ]
+    const result = [
+      ...filterIterableKeys(entries, (key) => {
+        return key.id % 2 === 1
+      }),
+    ]
+    expect(result).toEqual([
+      [key1, 'one'],
+      [key3, 'three'],
     ])
   })
 })
