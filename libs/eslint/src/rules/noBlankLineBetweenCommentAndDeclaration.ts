@@ -21,10 +21,7 @@ export const noBlankLineBetweenCommentAndDeclaration = createRule({
   create(context) {
     return {
       Program(program) {
-        if (!program.comments) {
-          return
-        }
-        program.comments.forEach((comment) => {
+        program.comments?.forEach((comment) => {
           // ignore if not a block comment
           if (comment.type !== AST_TOKEN_TYPES.Block) {
             return

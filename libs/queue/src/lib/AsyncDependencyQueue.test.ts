@@ -264,6 +264,12 @@ describe('AsyncDependencyQueue', () => {
     expect(spy2.mock.invocationCallOrder[0]).toBeLessThan(spy3.mock.invocationCallOrder[0])
     expect(spy4.mock.invocationCallOrder[0]).toBeLessThan(spy2.mock.invocationCallOrder[0])
   })
+
+  it('should throw when task definitions are empty', async () => {
+    const tasks = {} as TaskMap<never>
+    const dependencyQueue = new AsyncDependencyQueue({ concurrency: 1, taskDefinitions: tasks })
+    await expect(dependencyQueue.run()).rejects.toThrow('The task definitions contain a cycle or are empty')
+  })
 })
 
 function flushPromises() {

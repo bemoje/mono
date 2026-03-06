@@ -11,6 +11,16 @@ const ruleTester = new RuleTester()
 
 ruleTester.run('no-blank-line-between-comment-and-declaration', noBlankLineBetweenCommentAndDeclaration, {
   valid: [
+    { name: 'no comments in program', code: `export const a = 1` },
+    { name: 'single line block comment', code: `/* single line block comment */\nexport const a = 1` },
+    {
+      name: 'block comment at end of file',
+      code: [`export const a = 1`, `/**`, ` * Trailing block comment`, ` */`].join('\n'),
+    },
+    {
+      name: 'block comment directly before next token (no gap)',
+      code: [`/**`, ` * Blah`, ` */`, `export const a = 1`].join('\n'),
+    },
     {
       name: 'export function declaration',
       code: [

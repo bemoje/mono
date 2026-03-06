@@ -96,10 +96,7 @@ export class AsyncDependencyQueue<TaskNames extends string> {
     this.completedTasks.add(task)
     const pendingDeps = [...this.pendingDependencies.keys()]
     for (const dependentTask of this.getTaskNamesByPriority(pendingDeps)) {
-      const dependencies = this.pendingDependencies.get(dependentTask)
-      if (!dependencies) {
-        continue
-      }
+      const dependencies = this.pendingDependencies.get(dependentTask) as Set<TaskNames>
       dependencies.delete(task)
       if (dependencies.size === 0) {
         this.pendingDependencies.delete(dependentTask)
