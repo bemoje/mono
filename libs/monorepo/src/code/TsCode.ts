@@ -6,7 +6,7 @@ import type { TsFile } from '../file/TsFile'
 import { lazyProp } from '@mono/decorators'
 import { rexec } from '@mono/regex'
 import { tsExtractImports } from '@mono/tscode'
-import { uniq } from 'es-toolkit'
+import { uniq } from 'es-toolkit/array'
 
 /**
  * Represents TypeScript code with import parsing and manipulation capabilities.

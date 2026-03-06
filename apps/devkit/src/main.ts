@@ -18,6 +18,7 @@ import { listImportStatementsAction } from './commands/list_import_statements'
 import { listImportedBuiltinNodeDependencies } from './commands/listImportedBuiltinNodeDependencies'
 import { listImportedDependenciesAction } from './commands/list_imported_dependencies'
 import { listImportedFilesAction } from './commands/list_imported_files'
+import { listImportsRecursivelyForAction } from './commands/list_imports_recursively_for'
 import { listLibModuleExportsAction } from './commands/list_lib_module_exports'
 import { listTopImportStatementsAction } from './commands/list_top_import_statements'
 import { missingCoverageFilesAction } from './commands/missing_coverage_files'
@@ -158,6 +159,13 @@ const cli = new Command('devkit')
       .setDescription('List the most imported files across the repo.')
       .addArgument('[n]', { description: 'Print top n most frequent import statements', defaultValue: '5000' })
       .setAction(listImportedFilesAction)
+  })
+  .addCommand('list-imports-recursively-for', (cmd) => {
+    return cmd
+      .setGroup('Insight Commands')
+      .setDescription('List imports recursively for specified entry points.')
+      .addArgument('[entryPoints...]', { description: 'Entry points to analyze' })
+      .setAction(listImportsRecursivelyForAction)
   })
 
   .addCommand('list-top-import-statements', (cmd) => {

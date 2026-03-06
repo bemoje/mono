@@ -1,12 +1,12 @@
 {
   "name": "devkit",
   "description": "Development utilities for the monorepo.",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "scripts": {
     "build": "node esbuild.mjs",
-    "publish": "yarn build && cd dist && npm publish && cd ../../"
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "dependencies": {
     "prompts": "^2.4.2",
