@@ -79,7 +79,7 @@ need.
 
 - **Package Manager**: Use `yarn`
 - **Workspaces**: `libs/*`, `apps/*` (Yarn 4.3.1 workspaces)
-- **Build System**: ESBuild with consistent configuration across packages
+- **Build System**: tsup (wrapper around ESBuild) with consistent configuration across packages
 - **Module System**: ESNext modules
 
 ### libs
@@ -91,13 +91,12 @@ are those that are required in every workspace.
 
 ```
 libs/<package-name>/
-├── esbuild.mjs           # Build configuration (standardized)
-├── eslint.config.mjs     # Extends root ESLint config
+├── tsup.config.mjs       # Build configuration (standardized)
 ├── package.json          # Package metadata with build/lint scripts
 ├── README.md             # Package documentation
 ├── tsconfig.json         # Extends ../../tsconfig.json
 └── src/
-    ├── index.ts          # Barrel export file
+    ├── index.ts          # Barrel export file (auto-generated)
     ├── **/*.ts           # Implementation files
     └── **/*.test.ts      # Test files (Vitest)
 ```

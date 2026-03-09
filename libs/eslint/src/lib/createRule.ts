@@ -8,5 +8,5 @@ export const createRule = ESLintUtils.RuleCreator<{
   recommended?: boolean
   requiresTypeChecking?: boolean
 }>((name) => {
-  return `https://github.com/bemoje/mono/libs/eslint/README.md#${name}`
+  return `https://github.com/bemoje/mono/blob/dev/libs/eslint/README.md#${name}`
 })

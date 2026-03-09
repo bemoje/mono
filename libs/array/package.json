@@ -4,7 +4,6 @@
   "description": "Array utils",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
   "scripts": {

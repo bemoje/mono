@@ -1,7 +1,6 @@
 ---
-agent: 'agent'
+agent: agent
 description: 'Finds and fixes gaps in code coverage by identifying files with missing coverage'
-tools: ['edit', 'search', 'execute', 'search', 'read/problems', 'todo']
 ---
 
 ## General Instructions

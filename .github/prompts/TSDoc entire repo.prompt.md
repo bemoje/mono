@@ -1,8 +1,8 @@
 ---
-mode: agent
+agent: agent
 ---
 
-run `yarn clean:indexts && yarn build && yarn insight:checkLibsTsDoc` to get a list of TSDoc summaries for each
+run `yarn dk fix-index-ts && yarn dk build && yarn dk missing-tsdoc-files` to get a list of TSDoc summaries for each
 export of each lib. You have 2 tasks:
 
 **Task 1** The files listed under the 'filesSummariesMissing' currently have no TSDoc.

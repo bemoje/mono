@@ -1,6 +1,6 @@
 # mono
 
-Private for-fun-only mono-repo with TypeScript utility libraries used by other private projects.
+TypeScript utility libraries monorepo. Libraries are published to npm under the @bemoje scope.
 
 This mono-repo also uses various custom repo management CLI tools, scripts and automated tasks.
 
@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7597  | 7597    | 100%       |
-| Functions | 780   | 780     | 100%       |
-| Branches  | 2500  | 2500    | 100%       |
+| Lines     | 7999  | 7999    | 100%       |
+| Functions | 818   | 818     | 100%       |
+| Branches  | 2593  | 2593    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 624   | 15583         |
-| test      | 431   | 29449         |
+| source    | 649   | 16061         |
+| test      | 453   | 31306         |
 | examples  | 1     | 48            |
-| total     | 1056  | 45080         |
+| total     | 1103  | 47415         |
 
 ## Table of Contents
 
@@ -118,7 +118,7 @@ need.
 
 - **Package Manager**: Use `yarn`
 - **Workspaces**: `libs/*`, `apps/*` (Yarn 4.3.1 workspaces)
-- **Build System**: ESBuild with consistent configuration across packages
+- **Build System**: tsup (wrapper around ESBuild) with consistent configuration across packages
 - **Module System**: ESNext modules
 
 ### libs
@@ -130,13 +130,12 @@ are those that are required in every workspace.
 
 ```
 libs/<package-name>/
-├── esbuild.mjs           # Build configuration (standardized)
-├── eslint.config.mjs     # Extends root ESLint config
+├── tsup.config.mjs       # Build configuration (standardized)
 ├── package.json          # Package metadata with build/lint scripts
 ├── README.md             # Package documentation
 ├── tsconfig.json         # Extends ../../tsconfig.json
 └── src/
-    ├── index.ts          # Barrel export file
+    ├── index.ts          # Barrel export file (auto-generated)
     ├── **/*.ts           # Implementation files
     └── **/*.test.ts      # Test files (Vitest)
 ```
@@ -344,6 +343,9 @@ describe(ClassToTest.name, () => {
 
 - `Inspector`: Interface that target objects must implement to be inspectable. Provides standard inspection methods
   for debugging and serialization.
+- `OptionsConfigurator`: A utility function to configure options based on a given schema or properties. This
+  function provides a builder pattern to define and validate options, including handling default values, required
+  keys, and optional keys.
 - `ParentRelationTypes`: Manages parent-child relationships between constructor types, tracking hierarchical
   connections and providing debugging capabilities.
 - `Parenting`: Class that handles the parent-child relationships between objects on their behalf. In order to avoid
@@ -401,6 +403,13 @@ describe(ClassToTest.name, () => {
 - `memoizeAsync`: Decorator to memoize an async method. Uses memoizee library, so if params are objects, the
   decorator needs a normalizer function.
 - `memoizeSync`: Decorator to memoize a sync method.
+
+**eslint** (see [README.md](./libs/eslint/README.md))
+
+- `createRule`: Helper to create an ESLint rule with a consistent format.
+- `eslintPluginBemoje`: ESLint plugin for Bemoje projects.
+- `noBlankLineBetweenCommentAndDeclaration`: Enforce no blank lines between block comments and the next
+  declaration.
 
 **fn** (see [README.md](./libs/fn/README.md))
 
@@ -506,20 +515,38 @@ describe(ClassToTest.name, () => {
 
 **iter** (see [README.md](./libs/iter/README.md))
 
-- `filter`: Filter a `Map` (or `ReadonlyMap`). Predicate receives `(value, key)`. Returns a new `Map`.
-- `filterIterable`: Transform values of an iterable.
-- `filterIterableEntries`: Filter map entries based on a predicate function.
-- `forEach`: Iterate a `Map` (or `ReadonlyMap`). Callback receives `(value, key)`.
-- `forEachIterable`: Iterate over values of an iterable, executing a callback for each.
+- `filterArray`: Filter an array based on a predicate function.
+- `filterIterable`: Filter an iterable based on a predicate function.
+- `filterIterableEntries`: Filter an iterable of key-value entries based on a predicate function.
+- `filterIterableKeys`: Filter an iterable of key-value entries based on a predicate function that tests keys.
+- `filterIterableValues`: Filter an iterable of key-value entries based on a predicate function that tests values.
+- `filterMap`: Filter a Map based on a predicate function.
+- `filterObject`: Filter an object's properties based on a predicate function.
+- `filterSet`: Filter a Set based on a predicate function.
+- `forEachArray`: Execute a callback function for each element in an array.
+- `forEachIterable`: Execute a callback function for each element in an iterable.
 - `forEachIterableEntries`: Execute a callback function for each entry in a map-like iterable.
-- `map`: Map a `Map` (or `ReadonlyMap`). Callback receives `(value, key)`. Returns a new `Map`.
-- `mapIterable`: Transform values of an iterable.
-- `mapIterableEntries`: Transform both keys and values of map entries.
-- `mapIterableKeys`: Transform map keys while preserving values.
-- `mapIterableValues`: Transform map values while preserving keys.
-- `reduce`: Reduce a `Map` (or `ReadonlyMap`). Callback receives `(accumulator, value, key)`.
-- `reduceIterable`: Reduce any iterable to a single value.
-- `reduceIterableEntries`: Reduce a map-like iterable to a single value.
+- `forEachIterableKeys`: Execute a callback function for each key in an iterable of key-value pairs.
+- `forEachIterableValues`: Execute a callback function for each value in an iterable of key-value pairs.
+- `forEachMap`: Execute a callback function for each entry in a Map.
+- `forEachObject`: Execute a callback function for each property in an object.
+- `forEachSet`: Execute a callback function for each value in a Set.
+- `mapArray`: Transform each element in an array using a mapper function.
+- `mapIterable`: Transform each element in an iterable using a mapper function.
+- `mapIterableEntries`: Transform each entry in an iterable of key-value pairs using a mapper function.
+- `mapIterableKeys`: Transform the keys in an iterable of key-value pairs using a mapper function.
+- `mapIterableValues`: Transform the values in an iterable of key-value pairs using a mapper function.
+- `mapMap`: Transform the values in a Map using a mapper function.
+- `mapObject`: Transform the values in an object using a mapper function.
+- `mapSet`: Transform each value in a Set using a mapper function.
+- `reduceArray`: Reduce an array to a single value using a reducer function.
+- `reduceIterable`: Reduce an iterable to a single value using a reducer function.
+- `reduceIterableEntries`: Reduce an iterable of key-value entries to a single value using a reducer function.
+- `reduceIterableKeys`: Reduce an iterable of key-value entries based on keys using a reducer function.
+- `reduceIterableValues`: Reduce an iterable of key-value entries based on values using a reducer function.
+- `reduceMap`: Reduce a Map to a single value using a reducer function.
+- `reduceObject`: Reduce an object to a single value using a reducer function.
+- `reduceSet`: Reduce a Set to a single value using a reducer function.
 - `toObjectIterable`: Convert a map-like iterable to a regular object.
 
 **map** (see [README.md](./libs/map/README.md))
@@ -586,6 +613,8 @@ describe(ClassToTest.name, () => {
 - `getAllWorkspacePackageJsons`: Gets all workspace package.json contents.
 - `getAllWorkspacePackageNames`: Gets all workspace package names.
 - `getAllWorkspacePaths`: Returns an array of all workspace directory paths.
+- `getImportsRecursively`: Recursively retrieves all imports for the given entry points, categorizing them into
+  external, builtin, and internal dependencies.
 - `getRepoPackageJson`: Reads the repository's root package.json file.
 - `getRepoPackageJsonPath`: Gets the absolute path to the repository's package.json file.
 - `getRepoRootDirpath`: Get the root directory path of the monorepo by finding the package.json with workspaces
@@ -639,12 +668,8 @@ describe(ClassToTest.name, () => {
 
 **object** (see [README.md](./libs/object/README.md))
 
-- `OptionsConfigurator`: A utility function to configure options based on a given schema or properties. This
-  function provides a builder pattern to define and validate options, including handling default values, required
-  keys, and optional keys.
 - `arrAssign`: Array assignment function that merges arrays excluding null and undefined values.
 - `className`: Get the class name of an object from its constructor.
-- `classPrototype`: Get the class prototype object relating to an object or class.
 - `constructorOf`: Returns the constructor of the given object.
 - `createArrayMerger`: Creates a function that merges arrays based on a predicate function.
 - `createObjectMerger`: Creates a function that merges objects based on a predicate function.
@@ -699,7 +724,6 @@ describe(ClassToTest.name, () => {
 - `objDefineLazyProperty`: Defines a lazy property on an object. The property will be lazily evaluated on the first
   access and then cached for subsequent accesses. The property is both enumerable and configurable.
 - `objDelete`: Deletes a property from an object and returns the modified object.
-- `objForEach`: Applies a callback function to each key-value pair in an object.
 - `objGet`: Retrieves the value associated with the specified key from an object.
 - `objGetOrDefault`: Gets a property value from an object or creates it using a factory function if it doesn't
   exist.
@@ -708,7 +732,6 @@ describe(ClassToTest.name, () => {
 - `objHas`: Checks if an object has a specific key.
 - `objOmitKeysMutable`: Deletes the specified keys from an object in a mutable way.
 - `objPropertyValueToGetter`: Converts the specified properties of an object into getter functions.
-- `objReduce`: Reduces the values of an object into a single value.
 - `objSet`: Sets a value for a key in an object and returns the value.
 - `objSize`: Returns the number of enumerable keys in an object.
 - `objSortKeys`: Sorts the keys of an object in alphabetical order unless a custom compare function is provided.
@@ -720,7 +743,7 @@ describe(ClassToTest.name, () => {
 - `setNonConfigurable`: Sets the specified properties of an object as non-configurable.
 - `setNonEnumerable`: Sets the specified properties of an object as non-enumerable.
 - `setNonWritable`: Sets the specified properties of an object to be non-writable.
-- `setWritable`: Sets the specified properties of an object to be writable.
+- `setWritable`: Sets the specified properties of an object to be non-writable.
 - `sortKeys`: Sort an object's keys.
 - `sortKeysLike`: Sorts the keys of an object in the given order.
 - `staticClassKeysOf`: Returns the static string-property keys of a class but without the natively built-in keys
@@ -805,6 +828,13 @@ describe(ClassToTest.name, () => {
 - `searchPrompt`: Start a command-line prompt in which the user can search a provided list.
 - `suggestDefault`: Default suggest function for autocomplete prompts. Filters and highlights choices based on user
   input.
+
+**queue** (see [README.md](./libs/queue/README.md))
+
+- `AsyncDependencyQueue`: Represents an asynchronous queue that manages task execution based on dependencies and
+  priority.
+- `hasCircularDependencies`: Depth-first search (DFS) algorithm to detect circular dependencies in our task
+  definition graph.
 
 **regex** (see [README.md](./libs/regex/README.md))
 

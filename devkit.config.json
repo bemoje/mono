@@ -17,7 +17,7 @@
         "version": "0.0.1",
         "packageManager": "yarn@4.3.1",
         "type": "module",
-        "private": true,
+        "private": false,
         "module": "src/index.ts",
         "sideEffects": false,
         "scripts": {

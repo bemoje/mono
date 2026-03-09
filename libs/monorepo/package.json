@@ -5,7 +5,6 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "private": true,
   "dependencies": {
     "fs-extra": "^11.3.4",
     "type-fest": "5.4.4"

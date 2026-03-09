@@ -1,9 +1,8 @@
 {
   "name": "mono",
-  "description": "Private for-fun-only mono-repo with TypeScript utility libraries used by other private projects.",
+  "description": "TypeScript utility libraries monorepo. Libraries are published to npm under the @bemoje scope.",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "private": true,
   "workspaces": [
     "libs/*",
     "apps/*"
