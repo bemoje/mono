@@ -32,19 +32,27 @@ const queue = new AsyncDependencyQueue({
   taskDefinitions: {
     install: {
       dependencies: [],
-      run: async () => { console.log('Installing...') },
+      run: async () => {
+        console.log('Installing...')
+      },
     },
     build: {
       dependencies: ['install'],
-      run: async () => { console.log('Building...') },
+      run: async () => {
+        console.log('Building...')
+      },
     },
     test: {
       dependencies: ['build'],
-      run: async () => { console.log('Testing...') },
+      run: async () => {
+        console.log('Testing...')
+      },
     },
     lint: {
       dependencies: ['install'],
-      run: async () => { console.log('Linting...') },
+      run: async () => {
+        console.log('Linting...')
+      },
       priority: 1, // runs before 'build' if both are ready
     },
   },
@@ -59,20 +67,17 @@ await queue.run()
 ```ts
 import { hasCircularDependencies } from '@bemoje/queue'
 
-const tasks = {
-  a: { dependencies: ['b'], run: async () => {} },
-  b: { dependencies: ['a'], run: async () => {} },
-}
+const tasks = { a: { dependencies: ['b'], run: async () => {} }, b: { dependencies: ['a'], run: async () => {} } }
 
 hasCircularDependencies(tasks) // => true
 ```
 
 ## API Reference
 
-| Export                   | Description                                                       |
-| ------------------------ | ----------------------------------------------------------------- |
-| `AsyncDependencyQueue`   | Main queue class managing task execution with dependency ordering  |
-| `hasCircularDependencies`| Detects cycles in a task dependency graph using DFS               |
-| `TaskMap`                | Type mapping task names to their definitions                      |
-| `TaskDefinition`         | Type for a single task (dependencies, run function, priority)     |
-| `IAsyncDependencyQueueOptions` | Options interface (concurrency, taskDefinitions)            |
+| Export                         | Description                                                       |
+| ------------------------------ | ----------------------------------------------------------------- |
+| `AsyncDependencyQueue`         | Main queue class managing task execution with dependency ordering |
+| `hasCircularDependencies`      | Detects cycles in a task dependency graph using DFS               |
+| `TaskMap`                      | Type mapping task names to their definitions                      |
+| `TaskDefinition`               | Type for a single task (dependencies, run function, priority)     |
+| `IAsyncDependencyQueueOptions` | Options interface (concurrency, taskDefinitions)                  |

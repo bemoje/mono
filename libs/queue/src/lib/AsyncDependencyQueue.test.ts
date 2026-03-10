@@ -65,65 +65,61 @@ describe('AsyncDependencyQueue', () => {
     await expect(dependencyQueue.run()).rejects.toThrow()
   })
 
-  it(
-    'should adhere to the concurrency limit',
-    async () => {
-      const tasks: TaskMap<TaskNames> = {
-        task1: {
-          dependencies: [],
-          run: vi.fn(async () => {
-            return await setTimeout(10)
-          }),
-        },
-        task2: {
-          dependencies: ['task1'],
-          run: vi.fn(async () => {
-            return await setTimeout(10)
-          }),
-          priority: 1,
-        },
-        task3: {
-          dependencies: ['task2'],
-          run: vi.fn(async () => {
-            return await setTimeout(10)
-          }),
-        },
-        task4: {
-          dependencies: ['task1'],
-          run: vi.fn(async () => {
-            return await setTimeout(10)
-          }),
-        },
-      }
+  it('should adhere to the concurrency limit', async () => {
+    const tasks: TaskMap<TaskNames> = {
+      task1: {
+        dependencies: [],
+        run: vi.fn(async () => {
+          return await setTimeout(10)
+        }),
+      },
+      task2: {
+        dependencies: ['task1'],
+        run: vi.fn(async () => {
+          return await setTimeout(10)
+        }),
+        priority: 1,
+      },
+      task3: {
+        dependencies: ['task2'],
+        run: vi.fn(async () => {
+          return await setTimeout(10)
+        }),
+      },
+      task4: {
+        dependencies: ['task1'],
+        run: vi.fn(async () => {
+          return await setTimeout(10)
+        }),
+      },
+    }
 
-      const dependencyQueue = new AsyncDependencyQueue({ concurrency: 1, taskDefinitions: tasks })
+    const dependencyQueue = new AsyncDependencyQueue({ concurrency: 1, taskDefinitions: tasks })
 
-      const runPromise = dependencyQueue.run()
-      await flushPromises()
-      expect(tasks.task1.run).toHaveBeenCalledOnce()
-      expect(tasks.task2.run).not.toHaveBeenCalled()
-      expect(tasks.task3.run).not.toHaveBeenCalled()
-      expect(tasks.task4.run).not.toHaveBeenCalled()
+    const runPromise = dependencyQueue.run()
+    await flushPromises()
+    expect(tasks.task1.run).toHaveBeenCalledOnce()
+    expect(tasks.task2.run).not.toHaveBeenCalled()
+    expect(tasks.task3.run).not.toHaveBeenCalled()
+    expect(tasks.task4.run).not.toHaveBeenCalled()
 
-      await setTimeout(10)
-      await flushPromises()
-      expect(tasks.task2.run).toHaveBeenCalledOnce()
-      expect(tasks.task3.run).not.toHaveBeenCalled()
-      expect(tasks.task4.run).not.toHaveBeenCalled()
+    await setTimeout(10)
+    await flushPromises()
+    expect(tasks.task2.run).toHaveBeenCalledOnce()
+    expect(tasks.task3.run).not.toHaveBeenCalled()
+    expect(tasks.task4.run).not.toHaveBeenCalled()
 
-      await setTimeout(10)
-      await flushPromises()
-      expect(tasks.task3.run).not.toHaveBeenCalled()
-      expect(tasks.task4.run).toHaveBeenCalledOnce()
+    await setTimeout(10)
+    await flushPromises()
+    expect(tasks.task3.run).not.toHaveBeenCalled()
+    expect(tasks.task4.run).toHaveBeenCalledOnce()
 
-      await setTimeout(10)
-      await flushPromises()
-      expect(tasks.task3.run).toHaveBeenCalledOnce()
+    await setTimeout(10)
+    await flushPromises()
+    expect(tasks.task3.run).toHaveBeenCalledOnce()
 
-      await runPromise
-    },
-    { retry: 3 }
-  )
+    await runPromise
+  })
 
   it('should handle tasks with the same dependencies', async () => {
     const { spy1, spy2, spy3, spy4 } = getSpies()

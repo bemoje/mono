@@ -81,26 +81,26 @@ const result = await searchPrompt(['apple', 'banana', 'cherry', 'dragonfruit'])
 
 ### Prompt Factory
 
-| Method                        | Description                            |
-| ----------------------------- | -------------------------------------- |
-| `prompt.text(message)`        | Free-form text input                   |
-| `prompt.number(message)`      | Numeric input                          |
-| `prompt.confirm(message)`     | Yes/no confirmation                    |
-| `prompt.password(message)`    | Masked password input                  |
-| `prompt.invisible(message)`   | Invisible (hidden) input               |
-| `prompt.list(message)`        | Comma-separated list input             |
-| `prompt.toggle(message)`      | Toggle between two values              |
-| `prompt.select(message)`      | Single selection from choices          |
-| `prompt.multiselect(message)` | Multiple selection from choices        |
-| `prompt.autocomplete(message)`| Autocomplete single selection          |
-| `prompt.autocompleteMultiselect(message)` | Autocomplete multi-selection |
-| `prompt.date(message)`        | Date input                             |
-| `prompt.search(message)`      | Searchable list selection              |
+| Method                                    | Description                     |
+| ----------------------------------------- | ------------------------------- |
+| `prompt.text(message)`                    | Free-form text input            |
+| `prompt.number(message)`                  | Numeric input                   |
+| `prompt.confirm(message)`                 | Yes/no confirmation             |
+| `prompt.password(message)`                | Masked password input           |
+| `prompt.invisible(message)`               | Invisible (hidden) input        |
+| `prompt.list(message)`                    | Comma-separated list input      |
+| `prompt.toggle(message)`                  | Toggle between two values       |
+| `prompt.select(message)`                  | Single selection from choices   |
+| `prompt.multiselect(message)`             | Multiple selection from choices |
+| `prompt.autocomplete(message)`            | Autocomplete single selection   |
+| `prompt.autocompleteMultiselect(message)` | Autocomplete multi-selection    |
+| `prompt.date(message)`                    | Date input                      |
+| `prompt.search(message)`                  | Searchable list selection       |
 
 ### Other Exports
 
-| Export                | Description                                                  |
-| --------------------- | ------------------------------------------------------------ |
-| `searchPrompt`        | Standalone search prompt with fuzzy filtering and results    |
-| `AbstractUserPrompt`  | Base class for building custom prompt types                  |
-| `suggestDefault`      | Default suggest/filter function for autocomplete prompts     |
+| Export               | Description                                               |
+| -------------------- | --------------------------------------------------------- |
+| `searchPrompt`       | Standalone search prompt with fuzzy filtering and results |
+| `AbstractUserPrompt` | Base class for building custom prompt types               |
+| `suggestDefault`     | Default suggest/filter function for autocomplete prompts  |
