@@ -35,5 +35,15 @@
   "scripts": {
     "build": "node esbuild.mjs",
     "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.48",
+    "commander": "^14.0.3",
+    "fs-extra": "^11.3.4",
+    "puppeteer": "^24.38.0",
+    "upath": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4"
   }
 }

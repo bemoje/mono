@@ -7,9 +7,7 @@ import upath from 'upath'
 
 function getRepoRoot() {
   const parts = upath.normalizeSafe(import.meta.dirname).split('/')
-  const i = parts.findLastIndex((p) => {
-    return p === 'mono'
-  })
+  const i = parts.lastIndexOf('mono')
   if (i === -1) {
     throw new Error('Could not find repo root directory')
   }
@@ -30,7 +28,12 @@ export default defineConfig({
       enabled: false,
       reporter: ['html', 'json', 'json-summary', 'text-summary'],
       include: ['{libs,apps}/*/src/**/*.ts'],
-      exclude: ['{libs,apps}/*/{src,examples}/**/*{temp,wip,benchmark}*.ts', 'apps/**', 'libs/prompt'],
+      exclude: [
+        '{libs,apps}/*/{src,examples}/**/*{temp,wip,benchmark}*.ts',
+        'apps/**',
+        'libs/prompt',
+        'libs/monorepo',
+      ],
       reportsDirectory: `.coverage/html`,
     },
   },

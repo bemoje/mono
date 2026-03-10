@@ -1,4 +1,4 @@
-import { entriesOf } from '@mono/object'
+import { entriesOf } from '@mono/object/entriesOf'
 
 /**
  * Filter an object's properties based on a predicate function.

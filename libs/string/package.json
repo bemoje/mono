@@ -15,5 +15,8 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "es-toolkit": "^1.45.1"
   }
 }

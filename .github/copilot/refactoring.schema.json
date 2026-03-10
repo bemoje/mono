@@ -5,7 +5,10 @@
     "Copilot": {
       "additionalProperties": false,
       "properties": {
-        "categories": { "additionalProperties": { "type": "string" }, "type": "object" },
+        "categories": {
+          "additionalProperties": { "type": "string" },
+          "type": "object"
+        },
         "problemsFound": {
           "items": {
             "additionalProperties": false,
@@ -30,7 +33,13 @@
               "impact": { "enum": ["low", "medium", "high"], "type": "string" },
               "todo": { "items": { "type": "string" }, "type": "array" }
             },
-            "required": ["approvedByUser", "categoryId", "fileAndLineNum", "impact", "todo"],
+            "required": [
+              "approvedByUser",
+              "categoryId",
+              "fileAndLineNum",
+              "impact",
+              "todo"
+            ],
             "type": "object"
           },
           "type": "array"

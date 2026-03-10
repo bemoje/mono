@@ -22,5 +22,6 @@
   "vueIndentScriptAndStyle": true,
   "embeddedLanguageFormatting": "auto",
   "experimentalOperatorPosition": "start",
-  "experimentalTernaries": true
+  "experimentalTernaries": true,
+  "overrides": [{ "files": ["*.jsonc", "*.json"], "options": { "trailingComma": "none", "printWidth": 80 } }]
 }

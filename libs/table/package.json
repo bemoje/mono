@@ -15,5 +15,8 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "ansi-colors": "^4.1.3"
   }
 }

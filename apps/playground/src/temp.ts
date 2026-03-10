@@ -1,3 +1,8 @@
-console.log('output')
+// import { objGetOrDefault } from '@bemoje/object/objGetOrDefault'
 
-throw new Error('something went wrong')
+// const o = { a: 2 }
+// const res = objGetOrDefault(o, 'b', () => {
+//   return 0
+// })
+
+// console.log(o)

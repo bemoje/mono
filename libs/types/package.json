@@ -14,6 +14,7 @@
     "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
-    "tsup": "^8.5.1"
+    "tsup": "^8.5.1",
+    "type-fest": "^5.4.4"
   }
 }

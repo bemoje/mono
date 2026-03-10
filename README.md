@@ -10,18 +10,18 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 | Metric    | Total | Covered | Percentage |
 | --------- | ----- | ------- | ---------- |
-| Lines     | 7999  | 7999    | 100%       |
-| Functions | 818   | 818     | 100%       |
-| Branches  | 2593  | 2593    | 100%       |
+| Lines     | 6781  | 6781    | 100%       |
+| Functions | 686   | 686     | 100%       |
+| Branches  | 2241  | 2241    | 100%       |
 
 **Lines of Code**
 
 | file type | files | lines of code |
 | --------- | ----- | ------------- |
-| source    | 649   | 16061         |
-| test      | 453   | 31306         |
+| source    | 649   | 16078         |
+| test      | 451   | 31287         |
 | examples  | 1     | 48            |
-| total     | 1103  | 47415         |
+| total     | 1101  | 47413         |
 
 ## Table of Contents
 
@@ -300,17 +300,16 @@ describe(ClassToTest.name, () => {
 
 **array** (see [README.md](./libs/array/README.md))
 
-- `arrEachToString`: Coerce each element of an array to string.
-- `arrFindIndicesOf`: Returns an array of indices where the predicate function returns true for the corresponding
+- `arrFindIndices`: Returns an array of indices where the predicate function returns true for the corresponding
   element in the input array.
 - `arrGetOrDefault`: Get array element at index or create it using factory function if it doesn't exist.
 - `arrHasDuplicates`: Checks if an array has any duplicate elements.
 - `arrIndicesOf`: Returns all indexes at which an element is found.
 - `arrMapMutable`: This function takes an array and a callback function as arguments. It applies the callback
   function to each element of the array, mutating the original array in the process.
+- `arrObjectsCommonKeys`: Returns an array of keys that are common to all objects in the input array.
 - `arrObjectsToTable`: Convert an array of objects to a two-dimensional table.
 - `arrObjectsUniqueKeys`: Returns an array of all unique object keys found in an array of objects.
-- `arrRemoveMutable`: Remove elements in-place from an array.
 - `arrSortNumeric`: Sorts an array of numbers, bigints, or booleans in ascending order.
 - `arrSortedInsertionIndex`: Returns an index in the sorted array where the specified value could be inserted while
   maintaining the sorted order of the array. If the element is already in the array, returns the index after the
@@ -324,8 +323,6 @@ describe(ClassToTest.name, () => {
 - `arrTableRemoveColumns`: Removes specified columns from a 2D array table.
 - `arrTableToCsv`: Converts a 2D array to a CSV string.
 - `arrTableToObjects`: Converts a 2D array representing a table into an array of objects.
-- `arrayToString`: Short and condensed string representation of an array, easy to read for error outputs or
-  similar.
 
 **cli** (see [README.md](./libs/cli/README.md))
 

@@ -1,6 +1,6 @@
 {
   "name": "@mono/iter",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
@@ -15,5 +15,44 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "iter-tools": "^7.5.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./filterArray": "./src/filterArray.ts",
+    "./filterIterable": "./src/filterIterable.ts",
+    "./filterIterableEntries": "./src/filterIterableEntries.ts",
+    "./filterIterableKeys": "./src/filterIterableKeys.ts",
+    "./filterIterableValues": "./src/filterIterableValues.ts",
+    "./filterMap": "./src/filterMap.ts",
+    "./filterObject": "./src/filterObject.ts",
+    "./filterSet": "./src/filterSet.ts",
+    "./forEachArray": "./src/forEachArray.ts",
+    "./forEachIterable": "./src/forEachIterable.ts",
+    "./forEachIterableEntries": "./src/forEachIterableEntries.ts",
+    "./forEachIterableKeys": "./src/forEachIterableKeys.ts",
+    "./forEachIterableValues": "./src/forEachIterableValues.ts",
+    "./forEachMap": "./src/forEachMap.ts",
+    "./forEachObject": "./src/forEachObject.ts",
+    "./forEachSet": "./src/forEachSet.ts",
+    "./mapArray": "./src/mapArray.ts",
+    "./mapIterable": "./src/mapIterable.ts",
+    "./mapIterableEntries": "./src/mapIterableEntries.ts",
+    "./mapIterableKeys": "./src/mapIterableKeys.ts",
+    "./mapIterableValues": "./src/mapIterableValues.ts",
+    "./mapMap": "./src/mapMap.ts",
+    "./mapObject": "./src/mapObject.ts",
+    "./mapSet": "./src/mapSet.ts",
+    "./reduceArray": "./src/reduceArray.ts",
+    "./reduceIterable": "./src/reduceIterable.ts",
+    "./reduceIterableEntries": "./src/reduceIterableEntries.ts",
+    "./reduceIterableKeys": "./src/reduceIterableKeys.ts",
+    "./reduceIterableValues": "./src/reduceIterableValues.ts",
+    "./reduceMap": "./src/reduceMap.ts",
+    "./reduceObject": "./src/reduceObject.ts",
+    "./reduceSet": "./src/reduceSet.ts",
+    "./toObjectIterable": "./src/toObjectIterable.ts"
   }
 }

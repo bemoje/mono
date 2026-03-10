@@ -208,11 +208,13 @@ export class Help implements IHelp {
       const choices = option.choices.length > 5 ? option.choices.slice(0, 5).concat(['...']) : option.choices
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${choices.map(String).join(', ')}`
+        `choices: ${choices.join(', ')}`
       )
     }
     if (option.defaultValue && !(Array.isArray(option.defaultValue) && option.defaultValue.length === 0)) {
-      extraInfo.push(`default: ${option.defaultValueDescription || String(option.defaultValue)}`)
+      extraInfo.push(
+        `default: ${option.defaultValueDescription || JSON.stringify(option.defaultValue).replaceAll('"', '')}`
+      )
     }
 
     if (option.env !== undefined) {
@@ -238,11 +240,13 @@ export class Help implements IHelp {
       const choices = argument.choices.length > 5 ? argument.choices.slice(0, 5).concat(['...']) : argument.choices
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${choices.map(String).join(', ')}`
+        `choices: ${choices.join(', ')}`
       )
     }
     if (argument.defaultValue && !(Array.isArray(argument.defaultValue) && argument.defaultValue.length === 0)) {
-      extraInfo.push(`default: ${argument.defaultValueDescription || String(argument.defaultValue)}`)
+      extraInfo.push(
+        `default: ${argument.defaultValueDescription || JSON.stringify(argument.defaultValue).replaceAll('"', '')}`
+      )
     }
     if (extraInfo.length > 0) {
       const extraDescription = `(${extraInfo.join(', ')})`

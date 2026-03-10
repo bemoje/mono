@@ -1,4 +1,4 @@
-import { entriesOf } from '@mono/object'
+import { entriesOf } from '@mono/object/entriesOf'
 
 /**
  * Reduce an object to a single value using a reducer function.

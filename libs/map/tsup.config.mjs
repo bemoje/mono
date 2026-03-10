@@ -8,7 +8,7 @@ export default defineConfig({
   cjsInterop: true,
   tsconfig: 'tsconfig.json',
   target: 'esnext',
-  noExternal: ['type-fest', '@types/*'],
+  noExternal: ['type-fest', '@types/*', '@mono/*'],
   format: ['esm'],
   dts: 'src/index.ts',
 

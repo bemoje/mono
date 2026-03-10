@@ -14,6 +14,11 @@
     "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
     "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.48",
+    "fs-extra": "^11.3.4"
   }
 }

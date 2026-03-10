@@ -47,4 +47,17 @@ describe('arrTableEachToString', () => {
     const result = arrTableEachToString(table)
     expect(result).toEqual(expected)
   })
+
+  it('should convert undefined values to empty strings', () => {
+    const table = [
+      [1, undefined, 3],
+      [undefined, 5, undefined],
+    ]
+    const expected = [
+      ['1', '', '3'],
+      ['', '5', ''],
+    ]
+    const result = arrTableEachToString(table)
+    expect(result).toEqual(expected)
+  })
 })

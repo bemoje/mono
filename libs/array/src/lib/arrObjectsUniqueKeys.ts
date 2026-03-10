@@ -1,3 +1,5 @@
+import type { AllKeys } from '@mono/types'
+
 /**
  * Returns an array of all unique object keys found in an array of objects.
  * @template T - The type of values in the input objects.
@@ -5,20 +7,19 @@
  * @param objects The array of objects.
  * @example ```ts
  * const objects = [
- *   { name: 'John', age: 25 },
- *   { name: 'Jane', gender: 'female' },
- *   { name: 'Bob', age: 30, gender: 'male' },
+ *   { a: 1, b: 2, d: 4 },
+ *   { a: 1, b: 2, c: 3 },
  * ];
  * arrObjectsUniqueKeys(objects);
- * //=> ['name', 'age', 'gender']
+ * //=> ['a', 'b', 'd', 'c'] // ("a" | "b" | "d" | "c")[]
  * ```
  */
-export function arrObjectsUniqueKeys<T>(objects: Record<string, T>[]): string[] {
+export function arrObjectsUniqueKeys<const T extends object[]>(objects: T) {
   const keys = new Set<string>()
   for (const o of objects) {
     for (const key of Object.keys(o)) {
       keys.add(key)
     }
   }
-  return Array.from(keys)
+  return Array.from(keys) as AllKeys<T>
 }

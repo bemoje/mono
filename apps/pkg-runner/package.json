@@ -32,5 +32,9 @@
     "build": "node esbuild.mjs",
     "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
-  "preferGlobal": true
+  "preferGlobal": true,
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/memoizee": "^0.4.12"
+  }
 }

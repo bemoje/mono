@@ -1,4 +1,4 @@
-import { entriesOf } from '@mono/object'
+import { entriesOf } from '@mono/object/entriesOf'
 
 /**
  * Execute a callback function for each property in an object.

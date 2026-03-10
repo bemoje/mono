@@ -14,6 +14,16 @@
     "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
+    "@types/cli-table": "^0.3.4",
+    "@types/humanize-duration": "^3.27.4",
     "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "ansi-colors": "^4.1.3",
+    "cli-table": "^0.3.11",
+    "es-toolkit": "^1.45.1",
+    "humanize-duration": "^3.33.2",
+    "onetime": "^7.0.0",
+    "upath": "^2.0.1"
   }
 }

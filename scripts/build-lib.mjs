@@ -18,7 +18,7 @@ const externalDeps = Array.from(
     })
   )
 ).filter((name) => {
-  return !name.startsWith('@types/')
+  return !name.startsWith('@types/') && !name.startsWith('@mono/')
 })
 const external = externalDeps
   .flatMap((name) => {
@@ -55,6 +55,9 @@ const dependencies = {
   ...Object.fromEntries(
     externalDeps
       .filter((dep) => {
+        return !dep.startsWith('@mono/')
+      })
+      .filter((dep) => {
         return new RegExp(` from ["']${dep}(["']|[/][^"']+["'])`).test(outCode)
       })
       .map((dep) => {
@@ -63,6 +66,12 @@ const dependencies = {
   ),
 
   ...pkg.dependencies,
+}
+
+for (const dep of Object.keys(dependencies)) {
+  if (dep.startsWith('@mono/')) {
+    delete dependencies[dep]
+  }
 }
 
 const ALL_DEPS = {
@@ -78,7 +87,7 @@ Object.entries(dependencies).forEach(([dep]) => {
   }
 })
 
-await fs.writeJson(
+await fs.outputJson(
   upath.joinSafe(distDir, 'package.json'),
   {
     name: `@bemoje/${wsDirname}`,
@@ -87,7 +96,10 @@ await fs.writeJson(
     type: 'module',
     sideEffects: pkg.sideEffects,
     keywords: pkg.keywords,
-    exports: { '.': { types: './index.d.ts', import: './index.mjs', default: './index.mjs' } },
+    exports: {
+      '.': { types: './index.d.ts', import: './index.mjs', default: './index.mjs' },
+      './*': { types: './index.d.ts', import: './index.mjs', default: './index.mjs' },
+    },
     dependencies,
     publishConfig: { access: 'public' },
     license: rootPkg.license,

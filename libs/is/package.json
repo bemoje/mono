@@ -15,5 +15,8 @@
   "scripts": {
     "build": "node --import '../../scripts/build-lib.mjs'",
     "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+  },
+  "dependencies": {
+    "es-toolkit": "^1.45.1"
   }
 }

@@ -1,4 +1,4 @@
-import { entriesOf } from '@mono/object'
+import { entriesOf } from '@mono/object/entriesOf'
 
 /**
  * Transform the values in an object using a mapper function.

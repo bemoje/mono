@@ -1,3 +1,3 @@
-import { enablePrettyStackTrace } from '@mono/stacktrace'
+import { enablePrettyStackTrace } from '@bemoje/stacktrace'
 
 enablePrettyStackTrace()
