@@ -1,25 +1,27 @@
 import type { InspectOptions } from 'node:util'
 import { View } from '@mono/composition'
-import { defineMethod } from '@mono/object'
+import { defineMethod } from '@mono/object/defineMethod'
 import { entriesArray } from './entriesArray'
-import { entriesOf } from '@mono/object'
-import { filterIterableValues } from '@mono/iter'
+import { entriesOf } from '@mono/object/entriesOf'
+import { filterIterableValues } from '@mono/iter/filterIterableValues'
 import { inheritProxifiedPrototype } from '@mono/composition'
 import { inspect } from 'node:util'
 import { isIterable } from 'iter-tools'
 import { keysArray } from './keysArray'
 import { mapGetOrDefault } from './mapGetOrDefault'
-import { mapIterableKeys } from '@mono/iter'
-import { mapIterableValues } from '@mono/iter'
+import { mapIterableKeys } from '@mono/iter/mapIterableKeys'
+import { mapIterableValues } from '@mono/iter/mapIterableValues'
 import { mapLoad } from './mapLoad'
 import { mapReverse } from './mapReverse'
 import { mapUpdate } from './mapUpdate'
-import { reduceIterableValues } from '@mono/iter'
+import { reduceIterableValues } from '@mono/iter/reduceIterableValues'
 import { sort } from './sort'
 import { sortByKeys } from './sortByKeys'
 import { sortByValues } from './sortByValues'
+import { thisify } from '@mono/fn/thisify'
 import { toMap } from './toMap'
-import { toObjectIterable } from '@mono/iter'
+import { toObjectIterable } from '@mono/iter/toObjectIterable'
+import { transformReturnValue } from '@mono/fn/transformReturnValue'
 import { valuesArray } from './valuesArray'
 
 declare module './ExtMap' {
@@ -131,34 +133,6 @@ export class ExtMap<K = any, V = any> extends View<Map<K, V>> implements Map<K, 
    */
   [inspect.custom](_depth: number, _options: InspectOptions): string {
     return inspect(this.target, { breakLength: 50 })
-  }
-}
-
-/**
- * Identical to libs/fn/src/thisify.ts
- * Copied to avoid circular dependencies between map and fn.
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function thisify<T, Args extends any[], Ret>(
-  fn: (target: T, ...args: Args) => Ret
-): (this: T, ...args: Args) => Ret {
-  return function wrapped(this: T, ...args: Args): Ret {
-    return fn(this, ...args)
-  }
-}
-
-/**
- * Identical to libs/fn/src/transformReturnValue.ts.
- * Copied to avoid circular dependencies between map and fn.
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function transformReturnValue<T, Args extends any[], Ret, NewRet>(
-  fn: (this: T, ...args: Args) => Ret,
-  transform: (value: Ret) => NewRet
-): (this: T, ...args: Args) => NewRet {
-  return function wrapped(this: T, ...args: Args): NewRet {
-    const result = fn.apply(this, args)
-    return transform(result)
   }
 }
 
