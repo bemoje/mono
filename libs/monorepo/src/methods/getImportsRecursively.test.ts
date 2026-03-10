@@ -119,18 +119,18 @@ describe(getImportsRecursively.name, () => {
   })
 
   it('should throw when entry points are in different workspaces', async () => {
-    await expect(getImportsRecursively(['libs/a/src/index.ts', 'libs/b/src/index.ts'])).rejects.toThrow(
+    await expect(getImportsRecursively(['libs/a/src/all.ts', 'libs/b/src/all.ts'])).rejects.toThrow(
       'All entry points must be in the same workspace'
     )
   })
 
   it('should return empty result for entry point with no imports', async () => {
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [], 'ws')
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
-    expect(result.filepaths).toEqual(['libs/ws/src/index.ts'])
+    expect(result.filepaths).toEqual(['libs/ws/src/all.ts'])
     expect(result.local.external).toEqual([])
     expect(result.local.builtin).toEqual([])
     expect(result.local.internal).toEqual([])
@@ -140,27 +140,27 @@ describe(getImportsRecursively.name, () => {
   })
 
   it('should categorize builtin imports', async () => {
-    const imp = createMockImport({ from: 'node:fs', filepath: 'libs/ws/src/index.ts', isBuiltin: true })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: 'node:fs', filepath: 'libs/ws/src/all.ts', isBuiltin: true })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.builtin).toEqual(['node:fs'])
     expect(result.recursive.builtin).toEqual(['node:fs'])
   })
 
   it('should follow relative imports recursively', async () => {
-    const imp = createMockImport({ from: './helper', filepath: 'libs/ws/src/index.ts', isRelative: true })
+    const imp = createMockImport({ from: './helper', filepath: 'libs/ws/src/all.ts', isRelative: true })
     const helperFile = createMockTsFile('libs/ws/src/helper.ts', [], 'ws')
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile, helperFile] })
 
     mockResolve.mockReturnValue({ resolvedFileName: 'libs/ws/src/helper.ts' } as never)
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
-    expect(result.filepaths).toContain('libs/ws/src/index.ts')
+    expect(result.filepaths).toContain('libs/ws/src/all.ts')
     expect(result.filepaths).toContain('libs/ws/src/helper.ts')
   })
 
@@ -189,11 +189,11 @@ describe(getImportsRecursively.name, () => {
   it('should handle repo-scoped imports ending in src/index.ts', async () => {
     const imp = createMockImport({
       from: '@mono/other',
-      filepath: 'libs/ws/src/index.ts',
+      filepath: 'libs/ws/src/all.ts',
       isRepoScoped: true,
       importedNames: ['helperFn'],
     })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     const otherFile = createMockTsFile('libs/other/src/helperFn.ts', [], 'other')
     setupMonoRepo({ ws: [entryFile], other: [otherFile] })
 
@@ -201,7 +201,7 @@ describe(getImportsRecursively.name, () => {
 
     mockFs.readFileSync.mockReturnValue('export function helperFn() {}')
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.internal).toEqual(['@mono/other'])
     expect(result.recursive.internal).toContain('@mono/other')
@@ -210,11 +210,11 @@ describe(getImportsRecursively.name, () => {
   it('should handle repo-scoped imports where files do not contain matching export', async () => {
     const imp = createMockImport({
       from: '@mono/other',
-      filepath: 'libs/ws/src/index.ts',
+      filepath: 'libs/ws/src/all.ts',
       isRepoScoped: true,
       importedNames: ['helperFn'],
     })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     const otherFile = createMockTsFile('libs/other/src/helperFn.ts', [], 'other')
     setupMonoRepo({ ws: [entryFile], other: [otherFile] })
 
@@ -222,15 +222,15 @@ describe(getImportsRecursively.name, () => {
 
     mockFs.readFileSync.mockReturnValue('const x = 1')
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.internal).toEqual(['@mono/other'])
     expect(result.filepaths).not.toContain('libs/other/src/helperFn.ts')
   })
 
   it('should handle external imports with matching packageId', async () => {
-    const imp = createMockImport({ from: 'lodash', filepath: 'libs/ws/src/index.ts' })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: 'lodash', filepath: 'libs/ws/src/all.ts' })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue({
@@ -238,15 +238,15 @@ describe(getImportsRecursively.name, () => {
       packageId: { name: 'lodash', version: '4.17.21' },
     } as never)
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.external).toContain('"lodash": "^4.17.21",')
     expect(result.recursive.external).toContain('"lodash": "^4.17.21",')
   })
 
   it('should handle external imports where depName differs from pkgName and found in rootPkg', async () => {
-    const imp = createMockImport({ from: 'some-alias', filepath: 'libs/ws/src/index.ts' })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: 'some-alias', filepath: 'libs/ws/src/all.ts' })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue({
@@ -256,15 +256,15 @@ describe(getImportsRecursively.name, () => {
 
     mockGetRepoPkg.mockResolvedValue({ dependencies: { 'some-alias': '^1.0.0' }, devDependencies: {} } as never)
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.external).toContain('"actual-pkg": "^1.0.0",')
     expect(result.local.external).toContain('"some-alias": "^1.0.0",')
   })
 
   it('should handle external imports where depName differs from pkgName and found in devDependencies', async () => {
-    const imp = createMockImport({ from: 'some-alias', filepath: 'libs/ws/src/index.ts' })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: 'some-alias', filepath: 'libs/ws/src/all.ts' })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue({
@@ -274,14 +274,14 @@ describe(getImportsRecursively.name, () => {
 
     mockGetRepoPkg.mockResolvedValue({ dependencies: {}, devDependencies: { 'some-alias': '^1.0.0' } } as never)
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.external).toContain('"some-alias": "^1.0.0",')
   })
 
   it('should handle external imports where depName found in allPkgJsons', async () => {
-    const imp = createMockImport({ from: 'dep-alias', filepath: 'libs/ws/src/index.ts' })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: 'dep-alias', filepath: 'libs/ws/src/all.ts' })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue({
@@ -294,15 +294,15 @@ describe(getImportsRecursively.name, () => {
     mockGetAllPkgPaths.mockResolvedValue(['libs/other/package.json'])
     mockFs.readJsonSync.mockReturnValue({ dependencies: { 'dep-alias': '^2.0.0' } })
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.external).toContain('"real-pkg": "^2.0.0",')
     expect(result.local.external).toContain('"dep-alias": "^2.0.0",')
   })
 
   it('should handle external imports where depName found in allPkgJsons devDependencies', async () => {
-    const imp = createMockImport({ from: 'dep-alias', filepath: 'libs/ws/src/index.ts' })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: 'dep-alias', filepath: 'libs/ws/src/all.ts' })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue({
@@ -315,14 +315,14 @@ describe(getImportsRecursively.name, () => {
     mockGetAllPkgPaths.mockResolvedValue(['libs/other/package.json'])
     mockFs.readJsonSync.mockReturnValue({ devDependencies: { 'dep-alias': '^3.0.0' } })
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.external).toContain('"dep-alias": "^3.0.0",')
   })
 
   it('should throw when depName differs from pkgName and version cannot be found', async () => {
-    const imp = createMockImport({ from: 'some-alias', filepath: 'libs/ws/src/index.ts' })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: 'some-alias', filepath: 'libs/ws/src/all.ts' })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue({
@@ -334,26 +334,26 @@ describe(getImportsRecursively.name, () => {
 
     mockGetAllPkgPaths.mockResolvedValue([])
 
-    await expect(getImportsRecursively(['libs/ws/src/index.ts'])).rejects.toThrow(
+    await expect(getImportsRecursively(['libs/ws/src/all.ts'])).rejects.toThrow(
       'Could not find version for dependency "some-alias"'
     )
   })
 
   it('should throw when import cannot be resolved', async () => {
-    const imp = createMockImport({ from: 'nonexistent', filepath: 'libs/ws/src/index.ts' })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: 'nonexistent', filepath: 'libs/ws/src/all.ts' })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue(undefined as never)
 
-    await expect(getImportsRecursively(['libs/ws/src/index.ts'])).rejects.toThrow(
+    await expect(getImportsRecursively(['libs/ws/src/all.ts'])).rejects.toThrow(
       'Could not resolve import "nonexistent"'
     )
   })
 
   it('should handle external imports without version in packageId', async () => {
-    const imp = createMockImport({ from: 'somepkg', filepath: 'libs/ws/src/index.ts' })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: 'somepkg', filepath: 'libs/ws/src/all.ts' })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue({
@@ -361,21 +361,21 @@ describe(getImportsRecursively.name, () => {
       packageId: { name: 'somepkg', version: '' },
     } as never)
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.external).toContain('"somepkg": "",')
   })
 
   it('should handle external imports without packageId at all', async () => {
-    const imp = createMockImport({ from: 'somepkg', filepath: 'libs/ws/src/index.ts' })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: 'somepkg', filepath: 'libs/ws/src/all.ts' })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue({ resolvedFileName: 'node_modules/somepkg/index.js' } as never)
 
     mockGetRepoPkg.mockResolvedValue({ dependencies: { somepkg: '^1.0.0' }, devDependencies: {} } as never)
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     // pkgName is undefined, version is '', depName is 'somepkg'
     // depName !== pkgName so it looks up version from rootPkg
@@ -384,8 +384,8 @@ describe(getImportsRecursively.name, () => {
   })
 
   it('should handle scoped external imports', async () => {
-    const imp = createMockImport({ from: '@scope/pkg', filepath: 'libs/ws/src/index.ts' })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: '@scope/pkg', filepath: 'libs/ws/src/all.ts' })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue({
@@ -393,7 +393,7 @@ describe(getImportsRecursively.name, () => {
       packageId: { name: '@scope/pkg', version: '1.0.0' },
     } as never)
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.external).toContain('"@scope/pkg": "^1.0.0",')
   })
@@ -410,15 +410,15 @@ describe(getImportsRecursively.name, () => {
   })
 
   it('should categorize imports from non-local workspaces as recursive', async () => {
-    const relImp = createMockImport({ from: './util', filepath: 'libs/ws/src/index.ts', isRelative: true })
+    const relImp = createMockImport({ from: './util', filepath: 'libs/ws/src/all.ts', isRelative: true })
     const builtinImp = createMockImport({ from: 'node:path', filepath: 'libs/ws/src/util.ts', isBuiltin: true })
     const utilFile = createMockTsFile('libs/other/src/util.ts', [builtinImp], 'other')
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [relImp], 'ws')
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [relImp], 'ws')
     setupMonoRepo({ ws: [entryFile], other: [utilFile] })
 
     mockResolve.mockReturnValue({ resolvedFileName: 'libs/other/src/util.ts' } as never)
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     // builtin from non-local workspace should only be in recursive
     expect(result.recursive.builtin).toContain('node:path')
@@ -427,21 +427,21 @@ describe(getImportsRecursively.name, () => {
   })
 
   it('should handle repo-scoped imports without specifiers', async () => {
-    const imp = createMockImport({ from: '@mono/other', filepath: 'libs/ws/src/index.ts', isRepoScoped: true })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp], 'ws')
+    const imp = createMockImport({ from: '@mono/other', filepath: 'libs/ws/src/all.ts', isRepoScoped: true })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue({ resolvedFileName: 'libs/other/src/index.ts' } as never)
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.internal).toEqual(['@mono/other'])
   })
 
   it('should merge local into recursive results', async () => {
-    const builtinImp = createMockImport({ from: 'node:fs', filepath: 'libs/ws/src/index.ts', isBuiltin: true })
-    const extImp = createMockImport({ from: 'lodash', filepath: 'libs/ws/src/index.ts' })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [builtinImp, extImp], 'ws')
+    const builtinImp = createMockImport({ from: 'node:fs', filepath: 'libs/ws/src/all.ts', isBuiltin: true })
+    const extImp = createMockImport({ from: 'lodash', filepath: 'libs/ws/src/all.ts' })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [builtinImp, extImp], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
     mockResolve.mockReturnValue({
@@ -449,7 +449,7 @@ describe(getImportsRecursively.name, () => {
       packageId: { name: 'lodash', version: '4.17.21' },
     } as never)
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     // Local values should be duplicated in recursive
     expect(result.recursive.builtin).toEqual(result.local.builtin)
@@ -457,12 +457,12 @@ describe(getImportsRecursively.name, () => {
   })
 
   it('should sort result arrays', async () => {
-    const imp1 = createMockImport({ from: 'node:zlib', filepath: 'libs/ws/src/index.ts', isBuiltin: true })
-    const imp2 = createMockImport({ from: 'node:assert', filepath: 'libs/ws/src/index.ts', isBuiltin: true })
-    const entryFile = createMockTsFile('libs/ws/src/index.ts', [imp1, imp2], 'ws')
+    const imp1 = createMockImport({ from: 'node:zlib', filepath: 'libs/ws/src/all.ts', isBuiltin: true })
+    const imp2 = createMockImport({ from: 'node:assert', filepath: 'libs/ws/src/all.ts', isBuiltin: true })
+    const entryFile = createMockTsFile('libs/ws/src/all.ts', [imp1, imp2], 'ws')
     setupMonoRepo({ ws: [entryFile] })
 
-    const result = await getImportsRecursively(['libs/ws/src/index.ts'])
+    const result = await getImportsRecursively(['libs/ws/src/all.ts'])
 
     expect(result.local.builtin).toEqual(['node:assert', 'node:zlib'])
   })

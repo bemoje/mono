@@ -162,7 +162,27 @@ export async function getImportsRecursively(entryPoints: string[]): Promise<Resu
   }
 
   for (const entryPoint of entryPoints) {
-    recurse(entryPoint, wsDirpath)
+    if (upath.basename(entryPoint) !== 'index.ts') {
+      recurse(toCwdRelative(entryPoint), wsDirpath)
+      continue
+    }
+
+    const code = await fs.readFile(entryPoint, 'utf8')
+    const lines = code.split('\n').filter((line) => {
+      return line.startsWith('export * from ')
+    })
+    for (const line of lines) {
+      const moduleFrom = line
+        .split('export * from ')[1]!
+        .slice(1)
+        .replaceAll(/["';]+$/g, '')
+      const resolvedModule = resolveModuleImportPath(entryPoint, moduleFrom)
+      const resolvedFilepath = resolvedModule?.resolvedFileName
+      if (!resolvedFilepath) {
+        throw new Error(`Could not resolve export "${moduleFrom}" in ${entryPoint}`)
+      }
+      recurse(toCwdRelative(resolvedFilepath), wsDirpath)
+    }
   }
 
   externalsLocal.forEach((v) => {
