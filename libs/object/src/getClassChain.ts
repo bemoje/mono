@@ -1,5 +1,4 @@
 import type { AnyConstructor } from '@mono/types'
-import { isConstructor } from '@mono/is'
 
 /**
  * Get the class constructor chain for any target (constructor, prototype, or instance).
@@ -10,7 +9,7 @@ export function getClassChain(
   target: object | AnyConstructor,
   options?: { includeSelf?: boolean }
 ): AnyConstructor[] {
-  const ctor = (isConstructor(target) ? target : target.constructor) as AnyConstructor
+  const ctor = (typeof target === 'function' ? target : target.constructor) as AnyConstructor
   const result: AnyConstructor[] = []
 
   if (options?.includeSelf) {
