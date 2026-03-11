@@ -5,7 +5,8 @@
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "scripts": {
-    "build": "node esbuild.mjs",
+    "build": "node esbuild.mjs && yarn build:publint",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
     "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "dependencies": {
