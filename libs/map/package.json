@@ -1,23 +1,55 @@
 {
   "name": "@mono/map",
-  "version": "1.1.0",
+  "version": "1.2.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "description": "map",
+  "description": "Extended Map class and utilities for sorting, filtering, mapping, and managing key-value data.",
   "keywords": [
-    "map"
+    "map",
+    "key-value",
+    "sorting",
+    "filtering",
+    "data-structures",
+    "utilities",
+    "typescript"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
+    "@mono/composition": "workspace:^",
+    "@mono/fn": "workspace:^",
+    "@mono/iter": "workspace:^",
+    "@mono/object": "workspace:^",
+    "@mono/types": "workspace:^",
+    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {
     "iter-tools": "^7.5.4",
     "mnemonist": "^0.40.3"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./ExtMap": "./src/ExtMap.ts",
+    "./TimeoutWeakMap": "./src/TimeoutWeakMap.ts",
+    "./countUniques": "./src/countUniques.ts",
+    "./entriesArray": "./src/entriesArray.ts",
+    "./isGenericMap": "./src/isGenericMap.ts",
+    "./keysArray": "./src/keysArray.ts",
+    "./mapGetOrDefault": "./src/mapGetOrDefault.ts",
+    "./mapLoad": "./src/mapLoad.ts",
+    "./mapReverse": "./src/mapReverse.ts",
+    "./mapUpdate": "./src/mapUpdate.ts",
+    "./sort": "./src/sort.ts",
+    "./sortByKeys": "./src/sortByKeys.ts",
+    "./sortByValues": "./src/sortByValues.ts",
+    "./toMap": "./src/toMap.ts",
+    "./valuesArray": "./src/valuesArray.ts"
   }
 }

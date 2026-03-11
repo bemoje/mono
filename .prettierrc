@@ -23,5 +23,8 @@
   "embeddedLanguageFormatting": "auto",
   "experimentalOperatorPosition": "start",
   "experimentalTernaries": true,
-  "overrides": [{ "files": ["*.jsonc", "*.json"], "options": { "trailingComma": "none", "printWidth": 80 } }]
+  "overrides": [
+    { "files": ["*.jsonc", "*.json"], "options": { "trailingComma": "none", "printWidth": 80 } },
+    { "files": ["*.md"], "options": { "proseWrap": "never" } }
+  ]
 }

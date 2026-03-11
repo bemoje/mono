@@ -1,10 +1,16 @@
 # @bemoje/regex
 
-Regular expression utilities for escaping special characters and performing detailed regex execution with match
-metadata.
+Regular expression utilities for escaping special characters and performing detailed regex execution with match metadata.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**rexec**](./src/rexec.ts): Easily perform regex 'exec' on a string. An iterable is returned which steps through the exec process and yields all the details you might need.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -69,11 +75,3 @@ results.forEach((r) => {
 // Found "const" at line 2, col 0
 // Found "const" at line 3, col 0
 ```
-
-## API Reference
-
-| Export              | Description                                                                             |
-| ------------------- | --------------------------------------------------------------------------------------- |
-| `regexEscapeString` | Escape special regex characters in a string                                             |
-| `rexec`             | Execute a regex returning detailed results with index, groups, and line/column location |
-| `RexecResult`       | Type for individual match results                                                       |

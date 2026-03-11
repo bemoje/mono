@@ -2,8 +2,17 @@
 
 TypeScript decorators for lazy property initialization and method memoization.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**lazyProp**](./src/lazyProp.ts): Decorator to memoize a method or getter accessor property.
+- [**memoizeAsync**](./src/memoizeAsync.ts): Decorator to memoize an async method. Uses memoizee library, so if params are objects, the decorator needs a normalizer function.
+- [**memoizeSync**](./src/memoizeSync.ts): Decorator to memoize a sync method.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -91,12 +100,3 @@ const client = new ApiClient()
 await client.fetchUser('123') // fetches from API
 await client.fetchUser('123') // returns cached result
 ```
-
-## API Reference
-
-| Export                            | Description                                                          |
-| --------------------------------- | -------------------------------------------------------------------- |
-| `lazyProp`                        | Decorator for lazy-initialized getters and methods with optional TTL |
-| `memoizeSync`                     | Decorator for caching synchronous method results                     |
-| `memoizeAsync`                    | Decorator for caching async method results with Promise support      |
-| `assertDescriptorValueIsFunction` | Guard asserting a descriptor value is a function                     |

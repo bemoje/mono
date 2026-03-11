@@ -1,7 +1,7 @@
 import { DefaultMap } from 'mnemonist'
 import { ExtMap } from '@mono/map'
 import { MultiSet } from 'mnemonist'
-import cp from 'node:child_process'
+import cp from 'child_process'
 import fs from 'fs-extra'
 import { globSync } from 'glob'
 import { reduce } from 'iter-tools'

@@ -2,8 +2,17 @@
 
 Custom ESLint plugin and rule utilities for consistent code style in TypeScript projects.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**createRule**](./src/lib/createRule.ts): Helper to create an ESLint rule with a consistent format.
+- [**eslintPluginBemoje**](./src/lib/eslintPluginBemoje.ts): ESLint plugin for Bemoje projects.
+- [**noBlankLineBetweenCommentAndDeclaration**](./src/rules/noBlankLineBetweenCommentAndDeclaration.ts): Enforce no blank lines between block comments and the next declaration.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -49,8 +58,7 @@ export default [{ plugins, rules }]
 
 ### no-blank-line-between-comment-and-declaration
 
-Enforces that there are no blank lines between a block comment (JSDoc or multi-line) and the declaration it
-documents. Auto-fixable.
+Enforces that there are no blank lines between a block comment (JSDoc or multi-line) and the declaration it documents. Auto-fixable.
 
 **Incorrect:**
 
@@ -76,11 +84,3 @@ export function add(a: number, b: number) {
 ```
 
 Single-line block comments and line comments between the block comment and the declaration are ignored.
-
-## API Reference
-
-| Export                                    | Description                                                  |
-| ----------------------------------------- | ------------------------------------------------------------ |
-| `eslintPluginBemoje`                      | Returns the ESLint plugin object with rules and configs      |
-| `createRule`                              | Helper for creating ESLint rules with consistent metadata    |
-| `noBlankLineBetweenCommentAndDeclaration` | Rule: no blank lines between block comments and declarations |

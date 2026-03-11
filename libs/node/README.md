@@ -2,8 +2,31 @@
 
 Node.js utilities for process execution, logging, timing, streams, and system monitoring.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**StringStream**](./src/StringStream.ts): Extension of Node's native Readable class for converting a string into a Readable stream.
+- [**argvHasHelpFlag**](./src/argvHasHelpFlag.ts): Checks if the command line arguments contain a help flag (--help or -h).
+- [**createLogger**](./src/createLogger.ts): Creates a logger instance with colored output and consistent formatting.
+- [**execOutput**](./src/execOutput.ts): Helper function to execute a shell command and return stdout and stderr without throwing on error. If there was an error and nothing was sent to stderr, the error.message takes its place.
+- [**execute**](./src/execute.ts): Execute one or multiple shell commands.
+- [**formatTableForTerminal**](./src/formatTableForTerminal.ts): Formats a 2D array of strings as a terminal table with optional headers and styling.
+- [**getCurrentMemoryUsage**](./src/getCurrentMemoryUsage.ts): Get the current heap memory usage in megabytes.
+- [**isTerminalColorSupported**](./src/isTerminalColorSupported.ts): Check if colored terminal output is (probably) supported.
+- [**memoryUsage**](./src/memoryUsage.ts): Returns the memory usage of the Node.js process with values converted from bytes to megabytes and rounded to the specified precision.
+- [**prompt**](./src/prompt.ts): Prompt the user for input.
+- [**shellSpawnProgram**](./src/shellSpawnProgram.ts): Spawns a program using child_process.spawn with promise-based interface and optional stdio inheritance control.
+- [**spawnChildProcess**](./src/spawnChildProcess.ts): Spawn a child process.
+- [**spawnNodeProcess**](./src/spawnNodeProcess.ts): Spawn a child node process.
+- [**startPowerShellScript**](./src/startPowerShellScript.ts): Executes a PowerShell script with arguments and returns stdout/stderr.
+- [**streamToString**](./src/streamToString.ts): Drain a Readable into a string.
+- [**timer**](./src/timer.ts): Executes a task and logs the execution time.
+- [**toError**](./src/toError.ts): Converts the given value to an Error object. If the value is already an Error object, it is returned as is. If the value is not an Error object, it is converted to a string and used as the error message.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -115,25 +138,3 @@ import { spawnChildProcess, spawnNodeProcess } from '@bemoje/node'
 await spawnChildProcess('/usr/bin/python3', ['script.py'])
 await spawnNodeProcess(['--version'])
 ```
-
-## API Reference
-
-| Export                     | Description                                                 |
-| -------------------------- | ----------------------------------------------------------- |
-| `execute`                  | Execute shell commands with logging and output control      |
-| `execOutput`               | Execute a command and return stdout/stderr without throwing |
-| `createLogger`             | Create a colored, prefixed terminal logger                  |
-| `timer`                    | Measure and log task execution time                         |
-| `prompt`                   | Prompt user for terminal input with optional validation     |
-| `streamToString`           | Convert a Readable stream to a string                       |
-| `StringStream`             | Create a Readable stream from a string                      |
-| `memoryUsage`              | Get memory usage in megabytes                               |
-| `getCurrentMemoryUsage`    | Get current heap usage in MB                                |
-| `spawnChildProcess`        | Spawn a child process with promise interface                |
-| `spawnNodeProcess`         | Spawn a Node.js child process                               |
-| `startPowerShellScript`    | Execute a PowerShell script                                 |
-| `shellSpawnProgram`        | Spawn a program with promise interface                      |
-| `formatTableForTerminal`   | Format a 2D array as a terminal table                       |
-| `toError`                  | Convert any value to an Error object                        |
-| `argvHasHelpFlag`          | Check if argv contains --help or -h                         |
-| `isTerminalColorSupported` | Check if terminal supports colors                           |

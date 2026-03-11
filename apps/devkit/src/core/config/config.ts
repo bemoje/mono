@@ -16,9 +16,8 @@ export const ConfigSchema = Type.Object(
           removeDependency: templates.commands.removeDependency.createSchema(),
         }),
         files: Type.Object({
-          eslintConfigJs: templates.files.eslintConfigJs.createSchema(),
           packageJson: templates.files.packageJson.createSchema(),
-          esbuild: templates.files.esbuild.createSchema(),
+          tsup: templates.files.tsup.createSchema(),
           readmeMd: templates.files.readmeMd.createSchema(),
           tsconfigJson: templates.files.tsconfigJson.createSchema(),
           indexTs: templates.files.indexTs.createSchema(),

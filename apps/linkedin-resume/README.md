@@ -1,19 +1,14 @@
 # linkedin-resume
 
-A CLI tool that scrapes your LinkedIn profile and generates a professionally styled resume as PDF, HTML, and
-Markdown.
+A CLI tool that scrapes your LinkedIn profile and generates a professionally styled resume as PDF, HTML, and Markdown.
 
 ## Features
 
-- **Automated LinkedIn scraping** - Extracts your profile, work experience, education, projects, skills,
-  recommendations, and languages using Puppeteer.
-- **HTML resume generation** - Renders a clean, LinkedIn-style HTML resume with grouped work experience, skill
-  pills, and recommendation links.
-- **Markdown resume generation** - Generates a readable, well-structured Markdown resume (`resume.md`) for easy
-  editing or sharing.
+- **Automated LinkedIn scraping** - Extracts your profile, work experience, education, projects, skills, recommendations, and languages using Puppeteer.
+- **HTML resume generation** - Renders a clean, LinkedIn-style HTML resume with grouped work experience, skill pills, and recommendation links.
+- **Markdown resume generation** - Generates a readable, well-structured Markdown resume (`resume.md`) for easy editing or sharing.
 - **PDF output** - Converts the HTML resume to PDF via headless Chrome (Windows).
-- **Configurable** - Control output path, extra profiles (e.g. GitHub), and selectively ignore resume sections or
-  specific entries.
+- **Configurable** - Control output path, extra profiles (e.g. GitHub), and selectively ignore resume sections or specific entries.
 - **Persistent login** - Uses a dedicated Chrome profile so you only need to log in to LinkedIn once.
 
 ## Installation
@@ -90,14 +85,10 @@ linkedin-resume config
 ## How it works
 
 1. **Login check** - Ensures you are logged in to LinkedIn via a persistent Chrome profile.
-2. **Scrape** - Opens multiple LinkedIn pages in parallel (profile, experience, education, projects, skills,
-   recommendations) and saves the scraped data as JSON files.
-3. **Render JSON** - Merges all scraped data into a single `resume.json` conforming to the
-   [Resume schema](./resume.schema.json).
-4. **Render HTML** - Generates a styled `resume.html` from the resume data, applying any ignore filters from your
-   config.
-5. **Render Markdown** - Generates a readable `resume.md` for easy editing, sharing, or conversion to other
-   formats.
+2. **Scrape** - Opens multiple LinkedIn pages in parallel (profile, experience, education, projects, skills, recommendations) and saves the scraped data as JSON files.
+3. **Render JSON** - Merges all scraped data into a single `resume.json` conforming to the [Resume schema](./resume.schema.json).
+4. **Render HTML** - Generates a styled `resume.html` from the resume data, applying any ignore filters from your config.
+5. **Render Markdown** - Generates a readable `resume.md` for easy editing, sharing, or conversion to other formats.
 6. **Render PDF** - Converts the HTML to PDF using headless Chrome and copies it to your configured output path.
 
 ## Configuration
@@ -139,8 +130,7 @@ linkedin-resume config
 Each section in `ignore` accepts either:
 
 - **`true`** - Hides the entire section from the rendered resume.
-- **An array of partial objects** - Hides only entries whose primitive fields match all specified values. For
-  example, `{ "name": "Acme Corp", "position": "Intern" }` ignores only the entry where both fields match.
+- **An array of partial objects** - Hides only entries whose primitive fields match all specified values. For example, `{ "name": "Acme Corp", "position": "Intern" }` ignores only the entry where both fields match.
 
 Supported fields per section:
 

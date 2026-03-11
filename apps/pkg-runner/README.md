@@ -4,17 +4,12 @@ A CLI tool to run npm/yarn scripts with an interactive prompt to select which sc
 
 ## Features
 
-- **Interactive multi-select prompt** - Browse and select one or more scripts from your `package.json` with a
-  searchable, scrollable list.
-- **Fuzzy search with highlighting** - Type to filter scripts by name. Matching keywords are highlighted in the
-  list. Supports multiple keywords (space-separated, AND logic) and alternation (`|` for OR logic).
-- **Script preview as hints** - Each script's command is displayed as a hint next to its name, with automatic
-  line-wrapping to fit the terminal width.
-- **Auto-detects package manager** - Automatically uses `yarn` or `npm run` based on your `package.json`
-  configuration.
+- **Interactive multi-select prompt** - Browse and select one or more scripts from your `package.json` with a searchable, scrollable list.
+- **Fuzzy search with highlighting** - Type to filter scripts by name. Matching keywords are highlighted in the list. Supports multiple keywords (space-separated, AND logic) and alternation (`|` for OR logic).
+- **Script preview as hints** - Each script's command is displayed as a hint next to its name, with automatic line-wrapping to fit the terminal width.
+- **Auto-detects package manager** - Automatically uses `yarn` or `npm run` based on your `package.json` configuration.
 - **Forward CLI arguments** - Any extra arguments passed to `pkg-runner` are forwarded to the selected scripts.
-- **Keyboard shortcuts** - `Space` to toggle selection, `Ctrl+A` to select/deselect all filtered results, `Enter`
-  to confirm (or select-and-confirm when nothing is selected).
+- **Keyboard shortcuts** - `Space` to toggle selection, `Ctrl+A` to select/deselect all filtered results, `Enter` to confirm (or select-and-confirm when nothing is selected).
 - **Sequential execution** - Runs selected scripts one at a time, stopping on the first non-zero exit code.
 
 ## Installation

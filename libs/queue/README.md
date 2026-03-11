@@ -2,8 +2,16 @@
 
 Async task queue with dependency resolution, priority scheduling, and concurrency control.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**AsyncDependencyQueue**](./src/lib/AsyncDependencyQueue.ts): Represents an asynchronous queue that manages task execution based on dependencies and priority.
+- [**hasCircularDependencies**](./src/lib/hasCircularDependencies.ts): Depth-first search (DFS) algorithm to detect circular dependencies in our task definition graph.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -71,13 +79,3 @@ const tasks = { a: { dependencies: ['b'], run: async () => {} }, b: { dependenci
 
 hasCircularDependencies(tasks) // => true
 ```
-
-## API Reference
-
-| Export                         | Description                                                       |
-| ------------------------------ | ----------------------------------------------------------------- |
-| `AsyncDependencyQueue`         | Main queue class managing task execution with dependency ordering |
-| `hasCircularDependencies`      | Detects cycles in a task dependency graph using DFS               |
-| `TaskMap`                      | Type mapping task names to their definitions                      |
-| `TaskDefinition`               | Type for a single task (dependencies, run function, priority)     |
-| `IAsyncDependencyQueueOptions` | Options interface (concurrency, taskDefinitions)                  |

@@ -6,15 +6,6 @@ import fs from 'fs-extra'
 import { repoRootPackageJsonPath } from '../../constants/paths'
 import { tsconfigBaseJsonBasename } from '../../constants/paths'
 
-const eslintConfigJs = new Template({
-  strategy: new TextFileTemplateStrategy(),
-  template: [
-    "import eslintConfig from '../../eslint.config.mjs'", //
-    'export default [...eslintConfig]',
-    '',
-  ],
-})
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let _repoRootPkg: any
 function getRepoRootPkg() {
@@ -35,25 +26,46 @@ const packageJson = new Template({
   template: {
     name: '{{libraryName}}',
     version: '0.0.1',
+    description: '',
+    keywords: [],
     packageManager: getRepoRootPkg().packageManager,
     type: 'module',
     private: true,
     module: 'src/index.ts',
     sideEffects: false,
-    scripts: { indexts: 'devkit fix-index-ts', build: 'node esbuild.mjs' },
-    devDependencies: { eslint: getRepoRootPkg().devDependencies?.eslint },
+    scripts: {
+      build: "node --import '../../scripts/build-lib.mjs'",
+      npmPublish: 'yarn build && cd dist && npm publish && cd ../../',
+    },
+    dependencies: {},
+    devDependencies: { tsup: '^8.5.1' },
+    exports: { '.': './src/index.ts' },
   },
 })
 
-const esbuild = new Template({
+const tsup = new Template({
   strategy: new TextFileTemplateStrategy(),
   optionsSchema: Type.Object({}),
   template: [
-    `import { execSync } from 'child_process'`,
-    `import upath from 'upath'`,
+    `import { defineConfig } from 'tsup'`,
+    `import { parseBarrelExportIndexFile } from '../../scripts/parseBarrelExportIndexFile.mjs'`,
     ``,
-    `const dirname = upath.basename(import.meta.dirname)`,
-    "execSync(`npx @bemoje/devkit build lib ${dirname}`, { stdio: 'inherit' })",
+    `export default defineConfig({`,
+    `  entryPoints: parseBarrelExportIndexFile(),`,
+    `  bundle: false,`,
+    `  platform: 'node',`,
+    `  treeshake: 'recommended',`,
+    `  shims: true,`,
+    `  cjsInterop: true,`,
+    `  tsconfig: 'tsconfig.json',`,
+    `  target: 'esnext',`,
+    `  noExternal: ['type-fest', '@types/*', '@mono/*'],`,
+    `  format: ['esm', 'cjs'],`,
+    `  dts: 'src/index.ts',`,
+    `  dtsResolve: true,`,
+    `  outDir: 'dist/lib',`,
+    `  removeNodeProtocol: false,`,
+    `})`,
     ``,
   ],
 })
@@ -71,4 +83,4 @@ const tsconfigJson = new Template({
 
 const indexTs = new Template({ strategy: new TextFileTemplateStrategy(), template: [''] })
 
-export const files = { eslintConfigJs, packageJson, esbuild, readmeMd, tsconfigJson, indexTs }
+export const files = { packageJson, tsup, readmeMd, tsconfigJson, indexTs }

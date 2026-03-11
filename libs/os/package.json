@@ -1,21 +1,29 @@
 {
   "name": "@mono/os",
-  "version": "1.0.1",
+  "version": "1.1.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "description": "os",
+  "description": "Operating system detection and platform-specific utilities.",
   "keywords": [
-    "os"
+    "os",
+    "operating-system",
+    "platform",
+    "detection",
+    "utilities",
+    "typescript"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
     "@types/command-exists": "^1.2.3",
     "@types/fs-extra": "^11.0.4",
+    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {
@@ -23,5 +31,22 @@
     "fs-extra": "^11.3.4",
     "onetime": "^7.0.0",
     "upath": "^2.0.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./defaultOpenInEditorCommand": "./src/defaultOpenInEditorCommand.ts",
+    "./getAppDataPath": "./src/getAppDataPath.ts",
+    "./getDefaultBrowserWindows": "./src/getDefaultBrowserWindows.ts",
+    "./getHomeDirectory": "./src/getHomeDirectory.ts",
+    "./getOS": "./src/getOS.ts",
+    "./getTempDataPath": "./src/getTempDataPath.ts",
+    "./getTempFilepath": "./src/getTempFilepath.ts",
+    "./isLinux": "./src/isLinux.ts",
+    "./isLinuxProgramInstalled": "./src/isLinuxProgramInstalled.ts",
+    "./isOSX": "./src/isOSX.ts",
+    "./isVsCodeInstalled": "./src/isVsCodeInstalled.ts",
+    "./isWindows": "./src/isWindows.ts",
+    "./openInDefaultBrowserCommand": "./src/openInDefaultBrowserCommand.ts",
+    "./winExplorerOpenDirectory": "./src/winExplorerOpenDirectory.ts"
   }
 }

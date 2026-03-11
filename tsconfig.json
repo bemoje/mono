@@ -20,5 +20,6 @@
     "declaration": true,
     "verbatimModuleSyntax": true,
     "noEmit": true
-  }
+  },
+  "exclude": ["libs/*/dist/**/*"]
 }

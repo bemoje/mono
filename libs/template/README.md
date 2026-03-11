@@ -2,6 +2,17 @@
 
 A TypeScript template engine with schema validation and pluggable rendering strategies.
 
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**JsonFileTemplateStrategy**](./src/strategies/JsonFileTemplateStrategy.ts): Template strategy for handling JSON file templates with structured object schemas. Converts structured objects to formatted JSON strings and parses JSON strings back to typed objects. Uses pretty-printing with 2-space indentation for human-readable output.
+- [**StringTemplateStrategy**](./src/strategies/StringTemplateStrategy.ts): Template strategy for handling simple string templates. Provides pass-through behavior for string templates where the template and rendered output are both plain strings. Useful for text-based templates that don't require parsing or complex structure.
+- [**Template**](./src/Template/Template.ts): A generic template engine that supports variable substitution using the Strategy pattern. Validates templates and options against TypeBox schemas and renders templates with provided data. Supports mustache-style `{{variable}}` syntax for variable substitution.
+- [**TextFileTemplateStrategy**](./src/strategies/TextFileTemplateStrategy.ts): Template strategy for handling multi-line text file templates. Converts arrays of strings to newline-separated text and parses text files back to string arrays by splitting on newlines. Ideal for processing configuration files, scripts, or any line-based text content.
+
+<!-- EXPORTS_END -->
+
 ## Template Strategies
 
 ### StringTemplateStrategy
@@ -66,66 +77,3 @@ const template = new Template({
   ],
 })
 ```
-
-## API Reference
-
-### Template Class
-
-#### Constructor Options
-
-```typescript
-interface TemplateOptions<TemplateSchema, OptionsSchema> {
-  strategy: TemplateStrategy<TemplateSchema>
-  optionsSchema?: OptionsSchema
-  template: Static<TemplateSchema>
-}
-```
-
-#### Methods
-
-- **`render(data?)`** - Renders template with provided data, returns typed result
-- **`renderString(data?)`** - Renders template and returns string representation
-- **`createSchema()`** - Returns the template schema with template as default
-
-### Strategy Interface
-
-```typescript
-interface TemplateStrategy<TemplateSchema extends TSchema> {
-  readonly templateSchema: TemplateSchema
-  templateToString(template: Static<TemplateSchema>): string
-  render(populated: string): Static<TemplateSchema>
-}
-```
-
-## Validation
-
-The template engine performs validation at multiple levels:
-
-1. **Template validation** - Ensures all variables in the options schema are present in the template
-2. **Data validation** - Validates render data against the options schema using TypeBox
-3. **Schema compliance** - Template structure must conform to the strategy's schema
-
-```typescript
-// This will throw an error because {{name}} is missing from template
-const invalidTemplate = new Template({
-  strategy: new StringTemplateStrategy(),
-  optionsSchema: Type.Object({ name: Type.String(), age: Type.Number() }),
-  template: 'Hello {{age}}', // Missing {{name}}!
-})
-```
-
-## Error Handling
-
-The library throws descriptive errors for common issues:
-
-- Missing template variables: `"Template does not include variable: variableName"`
-- Invalid render data: `"Invalid options"` (with TypeBox validation details)
-- Schema mismatches: TypeBox schema validation errors
-
-## Use Cases
-
-- **Configuration file generation** - JSON configs, environment files
-- **Code generation** - Class templates, boilerplate code
-- **Documentation** - README templates, API docs
-- **Build scripts** - Package.json generation, CI/CD configs
-- **Email templates** - HTML/text email content

@@ -1,21 +1,33 @@
 {
   "name": "@mono/node",
-  "version": "1.0.1",
+  "version": "1.1.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "description": "node",
+  "description": "Node.js utilities for process execution, logging, timing, streams, and system monitoring.",
   "keywords": [
-    "node"
+    "node",
+    "process",
+    "execution",
+    "logging",
+    "timing",
+    "streams",
+    "system",
+    "utilities",
+    "typescript"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
+    "@mono/number": "workspace:^",
     "@types/cli-table": "^0.3.4",
     "@types/humanize-duration": "^3.27.4",
+    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {
@@ -25,5 +37,25 @@
     "humanize-duration": "^3.33.2",
     "onetime": "^7.0.0",
     "upath": "^2.0.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./StringStream": "./src/StringStream.ts",
+    "./argvHasHelpFlag": "./src/argvHasHelpFlag.ts",
+    "./createLogger": "./src/createLogger.ts",
+    "./execOutput": "./src/execOutput.ts",
+    "./execute": "./src/execute.ts",
+    "./formatTableForTerminal": "./src/formatTableForTerminal.ts",
+    "./getCurrentMemoryUsage": "./src/getCurrentMemoryUsage.ts",
+    "./isTerminalColorSupported": "./src/isTerminalColorSupported.ts",
+    "./memoryUsage": "./src/memoryUsage.ts",
+    "./prompt": "./src/prompt.ts",
+    "./shellSpawnProgram": "./src/shellSpawnProgram.ts",
+    "./spawnChildProcess": "./src/spawnChildProcess.ts",
+    "./spawnNodeProcess": "./src/spawnNodeProcess.ts",
+    "./startPowerShellScript": "./src/startPowerShellScript.ts",
+    "./streamToString": "./src/streamToString.ts",
+    "./timer": "./src/timer.ts",
+    "./toError": "./src/toError.ts"
   }
 }

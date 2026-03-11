@@ -2,8 +2,25 @@
 
 Higher-order function utilities for argument binding, context manipulation, spying, and method wrapping.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**bindArg**](./src/bindArg.ts): Binds a specified argument to the provided function, returning a new function that requires only the remaining arguments at call time.
+- [**bindArgs**](./src/bindArgs.ts): Binds specified arguments to the provided function, returning a new function that requires only the remaining arguments at call time.
+- [**dethisify**](./src/dethisify.ts): Converts a function from a class method by by making the first argument take the place of the 'this' context. The reverse of
+- [**functionSpy**](./src/functionSpy.ts): Wraps a function so that the given
+- [**setLength**](./src/setLength.ts): Set the length of a function.
+- [**setName**](./src/setName.ts): Set the name of a function.
+- [**setNameAndLength**](./src/setNameAndLength.ts): Preserves the name and length of a function or class constructor
+- [**thisProxy**](./src/thisProxy.ts): Returns a function that redirects or 'proxies' the 'this' context of the input function to a property of a given key.
+- [**thisify**](./src/dethisify.ts): Converts a function to a class method by making the 'this' context the first argument.
+- [**transformReturnValue**](./src/transformReturnValue.ts): Wraps a function to transform its return value using a transform function.
+- [**wrapMethods**](./src/wrapMethods.ts): Wrap methods, getters and setters of an object with custom logic.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -121,19 +138,3 @@ const fn = () => {}
 setName('myFn', fn) // fn.name === 'myFn'
 setLength(3, fn) // fn.length === 3
 ```
-
-## API Reference
-
-| Export                 | Description                                                      |
-| ---------------------- | ---------------------------------------------------------------- |
-| `bindArg`              | Bind a single argument at a specific index                       |
-| `bindArgs`             | Bind multiple arguments by index                                 |
-| `thisify`              | Convert standalone function to method (first arg becomes `this`) |
-| `dethisify`            | Convert method to standalone function (`this` becomes first arg) |
-| `thisProxy`            | Redirect `this` to a property or callback                        |
-| `functionSpy`          | Wrap function with before/after hook strategy                    |
-| `transformReturnValue` | Transform a function's return value                              |
-| `wrapMethods`          | Wrap all methods/getters/setters on an object                    |
-| `setNameAndLength`     | Copy name and length from source to target function              |
-| `setName`              | Set the name of a function                                       |
-| `setLength`            | Set the length of a function                                     |

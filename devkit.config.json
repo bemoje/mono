@@ -3,49 +3,54 @@
     "commands": {
       "openFileInIDE": "code {{filepath}}",
       "addDependency": "yarn add {{dependency}}",
-      "addDevDependency": "yarn add {{dependency}} --dev",
+      "addDevDependency": "yarn add {{dependency}} --D",
       "removeDependency": "yarn workspace {{workspace}} remove {{dependency}}"
     },
     "files": {
-      "eslintConfigJs": [
-        "import eslintConfig from '../../eslint.config.mjs'",
-        "export default [...eslintConfig]",
-        ""
-      ],
       "packageJson": {
         "name": "{{libraryName}}",
         "version": "0.0.1",
+        "description": "",
+        "keywords": [],
         "packageManager": "yarn@4.3.1",
         "type": "module",
-        "private": false,
+        "private": true,
         "module": "src/index.ts",
         "sideEffects": false,
         "scripts": {
-          "indexts": "devkit fix-index-ts",
-          "build": "node esbuild.mjs"
+          "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+          "build": "node '../../scripts/build-lib-bundle.mjs'",
+          "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
         },
-        "devDependencies": {
-          "eslint": "^8.57.0"
-        }
+        "dependencies": {},
+        "devDependencies": { "tsup": "^8.5.1" },
+        "exports": { ".": "./src/index.ts" }
       },
-      "esbuild": [
-        "import { execSync } from 'child_process'",
-        "import upath from 'upath'",
+      "tsup": [
+        "import { defineConfig } from 'tsup'",
+        "import { parseBarrelExportIndexFile } from '../../scripts/parseBarrelExportIndexFile.mjs'",
         "",
-        "const dirname = upath.basename(import.meta.dirname)",
-        "execSync(`npx @bemoje/devkit build lib ${dirname}`, { stdio: 'inherit' })",
+        "export default defineConfig({",
+        "  entryPoints: parseBarrelExportIndexFile(),",
+        "  bundle: false,",
+        "  platform: 'node',",
+        "  treeshake: 'recommended',",
+        "  shims: true,",
+        "  cjsInterop: true,",
+        "  tsconfig: 'tsconfig.json',",
+        "  target: 'esnext',",
+        "  noExternal: ['type-fest', '@types/*', '@mono/*'],",
+        "  format: ['esm', 'cjs'],",
+        "  dts: 'src/index.ts',",
+        "  dtsResolve: true,",
+        "  outDir: 'dist/lib',",
+        "  removeNodeProtocol: false,",
+        "})",
         ""
       ],
-      "readmeMd": [
-        "# {{libraryName}}",
-        ""
-      ],
-      "tsconfigJson": {
-        "extends": "../../tsconfig.json"
-      },
-      "indexTs": [
-        ""
-      ]
+      "readmeMd": ["# {{libraryName}}", ""],
+      "tsconfigJson": { "extends": "../../tsconfig.json" },
+      "indexTs": [""]
     }
   }
 }

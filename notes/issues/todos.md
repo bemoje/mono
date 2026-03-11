@@ -30,8 +30,7 @@ Publish to npm. Find a good name.
 
 Continue work on `libs/stacktrace/bin/enablePrettyStackTrace.cjs`
 
-Should be possible to set it up so you can require it with no like `-r @mono/stacktrace/enablePrettyStackTrace` and
-it will enable the pretty stack trace globally for the process. This will be useful for the CLI and other tools.
+Should be possible to set it up so you can require it with no like `-r @mono/stacktrace/enablePrettyStackTrace` and it will enable the pretty stack trace globally for the process. This will be useful for the CLI and other tools.
 
 ---
 

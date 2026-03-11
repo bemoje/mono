@@ -2,8 +2,16 @@
 
 Terminal utilities for interactive prompts and display management.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**clearTerminal**](./src/clearTerminal.ts): Clears the terminal screen using the system's clear command.
+- [**confirmPrompt**](./src/confirmPrompt.ts): Prompts the user to confirm in the terminal.
+
+<!-- EXPORTS_END -->
 
 ## Usage
 
@@ -26,10 +34,3 @@ import { clearTerminal } from '@mono/terminal'
 // Clears the terminal screen
 clearTerminal()
 ```
-
-## API Reference
-
-| Function        | Description                                               |
-| --------------- | --------------------------------------------------------- |
-| `clearTerminal` | Clears the terminal screen using the system clear command |
-| `confirmPrompt` | Prompts the user to confirm via a (y/n) question          |

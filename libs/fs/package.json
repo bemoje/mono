@@ -1,25 +1,51 @@
 {
   "name": "@mono/fs",
-  "version": "1.0.1",
+  "version": "1.1.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "description": "fs",
+  "description": "File system utilities for reading, updating, and managing files and directories.",
   "keywords": [
-    "fs"
+    "fs",
+    "file-system",
+    "files",
+    "directories",
+    "reading",
+    "writing",
+    "node",
+    "utilities",
+    "typescript"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
+    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {
     "fs-extra": "^11.3.4",
     "upath": "^2.0.1",
     "walkdir": "^0.4.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./deleteOlderThan": "./src/deleteOlderThan.ts",
+    "./getFileAge": "./src/getFileAge.ts",
+    "./getFirstFileInDir": "./src/getFirstFileInDir.ts",
+    "./readFileFirstLine": "./src/readFileFirstLine.ts",
+    "./removeDataUrlSchemePrefix": "./src/removeDataUrlSchemePrefix.ts",
+    "./updateFile": "./src/updateFile.ts",
+    "./updateFileLines": "./src/updateFileLines.ts",
+    "./updateFileLinesSync": "./src/updateFileLinesSync.ts",
+    "./updateFileSync": "./src/updateFileSync.ts",
+    "./updateJsonFile": "./src/updateJsonFile.ts",
+    "./updateJsonFileSync": "./src/updateJsonFileSync.ts",
+    "./walkDirectory": "./src/walkDirectory.ts"
   }
 }

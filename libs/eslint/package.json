@@ -1,23 +1,38 @@
 {
   "name": "@mono/eslint",
-  "version": "1.0.2",
+  "version": "1.1.6",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "description": "eslint",
+  "description": "Custom ESLint plugin and rule utilities for consistent code style in TypeScript projects.",
   "keywords": [
-    "eslint"
+    "eslint",
+    "eslint-plugin",
+    "linting",
+    "rules",
+    "code-style",
+    "utilities",
+    "typescript"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
     "@typescript-eslint/rule-tester": "^8.56.1",
+    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {
     "@typescript-eslint/utils": "^8.56.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./createRule": "./src/lib/createRule.ts",
+    "./eslintPluginBemoje": "./src/lib/eslintPluginBemoje.ts",
+    "./noBlankLineBetweenCommentAndDeclaration": "./src/rules/noBlankLineBetweenCommentAndDeclaration.ts"
   }
 }

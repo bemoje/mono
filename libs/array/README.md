@@ -2,8 +2,31 @@
 
 Array manipulation and table processing utilities for TypeScript.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**arrFindIndices**](./src/arrFindIndices.ts): Returns an array of indices where the predicate function returns true for the corresponding element in the input array.
+- [**arrGetOrDefault**](./src/arrGetOrDefault.ts): Get array element at index or create it using factory function if it doesn't exist.
+- [**arrHasDuplicates**](./src/arrHasDuplicates.ts): Checks if an array has any duplicate elements.
+- [**arrIndicesOf**](./src/arrIndicesOf.ts): Returns all indexes at which an element is found.
+- [**arrMapMutable**](./src/arrMapMutable.ts): This function takes an array and a callback function as arguments. It applies the callback function to each element of the array, mutating the original array in the process.
+- [**arrObjectsCommonKeys**](./src/arrObjectsCommonKeys.ts): Returns an array of keys that are common to all objects in the input array.
+- [**arrObjectsToTable**](./src/arrObjectsToTable.ts): Convert an array of objects to a two-dimensional table.
+- [**arrObjectsUniqueKeys**](./src/arrObjectsUniqueKeys.ts): Returns an array of all unique object keys found in an array of objects.
+- [**arrSortNumeric**](./src/arrSortNumeric.ts): Sorts an array of numbers, bigints, or booleans in ascending order.
+- [**arrSortedInsertionIndex**](./src/arrSortedInsertionIndex.ts): Returns an index in the sorted array where the specified value could be inserted while maintaining the sorted order of the array. If the element is already in the array, returns the index after the last instance of the element.
+- [**arrSwap**](./src/arrSwap.ts): Swaps two elements in an array. This function takes an input array and swaps the elements at the specified indices.
+- [**arrTableAssertRowsSameLength**](./src/arrTableAssertRowsSameLength.ts): Asserts that all rows in a 2D array have the same length.
+- [**arrTableEachToString**](./src/arrTableEachToString.ts): Coerce each value of a 2D array table to string.
+- [**arrTableIterateAsObjects**](./src/arrTableIterateAsObjects.ts): Generator that iterates through a 2D array table, yielding objects with header keys and row values.
+- [**arrTableRemoveColumns**](./src/arrTableRemoveColumns.ts): Removes specified columns from a 2D array table.
+- [**arrTableToCsv**](./src/arrTableToCsv.ts): Converts a 2D array to a CSV string.
+- [**arrTableToObjects**](./src/arrTableToObjects.ts): Converts a 2D array representing a table into an array of objects.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -142,40 +165,3 @@ arrTableRemoveColumns(table, [1])
 // Validate row lengths
 arrTableAssertRowsSameLength(table) // throws if rows differ in length
 ```
-
-## API Reference
-
-### Array Operations
-
-| Function                  | Description                                |
-| ------------------------- | ------------------------------------------ |
-| `arrAverage`              | Calculate the average of a numeric array   |
-| `arrSum`                  | Sum all elements in a numeric array        |
-| `arrLast`                 | Get the last element (throws if empty)     |
-| `arrGetOrDefault`         | Get element at index or create via factory |
-| `arrShuffle`              | Randomize element order in-place           |
-| `arrSwap`                 | Swap two elements by index                 |
-| `arrSortNumeric`          | Sort numbers/bigints/booleans numerically  |
-| `arrSortedInsertionIndex` | Binary search for insertion index          |
-| `arrMapMutable`           | In-place map transformation                |
-| `arrFindIndicesOf`        | Find indices matching a predicate          |
-| `arrIndicesOf`            | Find all indices of a value                |
-| `arrHasDuplicates`        | Check for duplicate values                 |
-| `arrRemoveDuplicates`     | New array with duplicates removed          |
-| `arrRemove`               | New array without a given element          |
-| `arrRemoveMutable`        | Remove all occurrences in-place            |
-| `arrayToString`           | Condensed string representation            |
-| `arrEachToString`         | Coerce each element to string              |
-
-### Table Operations
-
-| Function                       | Description                      |
-| ------------------------------ | -------------------------------- |
-| `arrObjectsToTable`            | Objects array to 2D table        |
-| `arrObjectsUniqueKeys`         | Extract unique keys from objects |
-| `arrTableToObjects`            | 2D table to objects array        |
-| `arrTableIterateAsObjects`     | Iterate rows as keyed objects    |
-| `arrTableToCsv`                | 2D table to CSV string           |
-| `arrTableEachToString`         | Stringify all cells              |
-| `arrTableRemoveColumns`        | Remove columns by index          |
-| `arrTableAssertRowsSameLength` | Assert uniform row length        |

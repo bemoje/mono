@@ -44,6 +44,12 @@
     "upath": "^2.0.1"
   },
   "devDependencies": {
+    "@mono/config": "workspace:^",
+    "@mono/node": "workspace:^",
+    "@mono/object": "workspace:^",
+    "@mono/os": "workspace:^",
+    "@mono/stacktrace": "workspace:^",
+    "@mono/types": "workspace:^",
     "@types/fs-extra": "^11.0.4"
   }
 }

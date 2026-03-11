@@ -2,8 +2,26 @@
 
 File system utilities for reading, updating, and managing files and directories.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**deleteOlderThan**](./src/deleteOlderThan.ts): Delete files older than a given timestamp
+- [**getFileAge**](./src/getFileAge.ts): Retrieves the age of a file in milliseconds.
+- [**getFirstFileInDir**](./src/getFirstFileInDir.ts): Get the name of the first file (not directory) found in a directory.
+- [**readFileFirstLine**](./src/readFileFirstLine.ts): Reads the first line of a file asynchronously.
+- [**removeDataUrlSchemePrefix**](./src/removeDataUrlSchemePrefix.ts): Removes the data URL scheme prefix from a given string.
+- [**updateFile**](./src/updateFile.ts): Updates a file by reading its content, applying a transformation function, and writing back the result. Creates the file and directories if they don't exist.
+- [**updateFileLines**](./src/updateFileLines.ts): Updates a file by applying a transformation function to an array of lines. The transformation can return either a string (the entire new content) or an array of lines. Creates the file and directories if they don't exist.
+- [**updateFileLinesSync**](./src/updateFileLinesSync.ts): Synchronous version of `updateFileLines`.
+- [**updateFileSync**](./src/updateFileSync.ts): Synchronous version of `updateFile`.
+- [**updateJsonFile**](./src/updateJsonFile.ts): Updates a JSON file by applying a transformation function to the parsed content. If the file doesn't exist or can't be parsed, uses the default value. Creates the file and directories if they don't exist.
+- [**updateJsonFileSync**](./src/updateJsonFileSync.ts): Synchronous version of `updateJsonFile`.
+- [**walkDirectory**](./src/walkDirectory.ts): Walk a directory recursively and return an array of paths.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -111,20 +129,3 @@ import { removeDataUrlSchemePrefix } from '@bemoje/fs'
 removeDataUrlSchemePrefix('data:image/png;base64,iVBOR...')
 // 'iVBOR...'
 ```
-
-## API Reference
-
-| Export                      | Description                                           |
-| --------------------------- | ----------------------------------------------------- |
-| `walkDirectory`             | Recursively walk a directory with filtering and stats |
-| `updateFile`                | Async read-transform-write a file                     |
-| `updateFileSync`            | Sync read-transform-write a file                      |
-| `updateFileLines`           | Async read-transform-write a file by lines            |
-| `updateFileLinesSync`       | Sync read-transform-write a file by lines             |
-| `updateJsonFile`            | Async read-transform-write a JSON file                |
-| `updateJsonFileSync`        | Sync read-transform-write a JSON file                 |
-| `deleteOlderThan`           | Delete files older than a given age                   |
-| `getFileAge`                | Get file age in milliseconds                          |
-| `getFirstFileInDir`         | Get the first file name in a directory                |
-| `readFileFirstLine`         | Read only the first line of a file                    |
-| `removeDataUrlSchemePrefix` | Strip data URL scheme prefix from a string            |

@@ -1,7 +1,7 @@
 import type { Logger } from '@mono/node'
 import colors from 'ansi-colors'
 import { importLibs } from '../lib/importLibs'
-import { inspect } from 'node:util'
+import { inspect } from 'util'
 
 export async function listLibModuleExportsAction(_opts: unknown, { logger: log }: { logger: Logger }) {
   const libs = Array.from((await importLibs()).entries())

@@ -13,7 +13,13 @@ export async function importLibs(): Promise<Map<string, Record<string, unknown>>
           return p.startsWith('@mono/')
         })
         .map(async (ws) => {
-          return [ws.split('/')[1], await import(ws)]
+          try {
+            const imps = await import(ws)
+            return [ws.split('/')[1], imps]
+          } catch (error) {
+            console.error(`Error importing ${ws}:`, error)
+            return [ws.split('/')[1], {}]
+          }
         })
     )
   )

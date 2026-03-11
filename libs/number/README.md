@@ -2,8 +2,22 @@
 
 Number formatting, rounding, and mathematical utilities.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**NumberFormatter**](./src/NumberFormatter.ts): A utility class for formatting and parsing numbers with locale-specific separators. This class allows for customizing thousand and decimal separators, setting precision for decimal places, and supports different locales for international number formatting.
+- [**bytesToKilobytes**](./src/bytesToKilobytes.ts): Converts a given number of bytes into kilobytes.
+- [**bytesToMegabytes**](./src/bytesToMegabytes.ts): Converts a given number of bytes into megabytes.
+- [**round**](./src/round.ts): Round a number to a specified number of decimal places.
+- [**roundDown**](./src/roundDown.ts): Round a given number down with a given precision. Shifts with exponential notation to avoid floating-point issues.
+- [**roundToNearest**](./src/roundToNearest.ts): Round a given number to a given nearest whole number.
+- [**roundUp**](./src/roundUp.ts): Round a given number up with a given precision. Shifts with exponential notation to avoid floating-point issues.
+- [**roundWith**](./src/roundWith.ts): Round a given number with a given precision and rounding function. Shifts with exponential notation to avoid floating-point issues.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -65,18 +79,3 @@ import { bytesToKilobytes, bytesToMegabytes } from '@bemoje/number'
 bytesToKilobytes(1024) // 1
 bytesToMegabytes(1048576) // 1
 ```
-
-## API Reference
-
-| Export             | Description                                         |
-| ------------------ | --------------------------------------------------- |
-| `round`            | Round with precision (avoids floating-point issues) |
-| `roundUp`          | Round up (ceiling) with precision                   |
-| `roundDown`        | Round down (floor) with precision                   |
-| `roundWith`        | Round with a custom rounding function               |
-| `roundToNearest`   | Round to the nearest whole number multiple          |
-| `NumberFormatter`  | Locale-aware number formatting and parsing          |
-| `numRange`         | Generate an array of numbers in a range             |
-| `randomIntBetween` | Random integer between min and max (inclusive)      |
-| `bytesToKilobytes` | Convert bytes to kilobytes                          |
-| `bytesToMegabytes` | Convert bytes to megabytes                          |

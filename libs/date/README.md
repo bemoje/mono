@@ -2,8 +2,28 @@
 
 Lightweight date and time utilities for formatting, time-unit conversion, and duration measurement.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**Timer**](./src/Timer.ts): Returns a function that returns the elapsed time since invokation.
+- [**dateString**](./src/dateString.ts): Reutnrs the date formatted as: yyyy-MM-dd
+- [**daysToMs**](./src/daysToMs.ts): Converts days to milliseconds.
+- [**getWeek**](./src/getWeek.ts): Get the week number of the year for a given date using Danish locale.
+- [**hasCooldownElapsed**](./src/hasCooldownElapsed.ts): Determines if a specified cooldown period has elapsed since a given date.
+- [**hoursToMs**](./src/hoursToMs.ts): Converts hours to milliseconds.
+- [**minutesToMs**](./src/minutesToMs.ts): Converts minutes to milliseconds.
+- [**monthNameDa**](./src/monthNameDa.ts): Returns the name, in Danish language, of the month corresponding to the provided month number.
+- [**monthNameDaRelative**](./src/monthNameDaRelative.ts): Get the (Danish) name of the month relative to the current month.
+- [**msSinceDate**](./src/msSinceDate.ts): Calculates the number of milliseconds that have elapsed since the given date.
+- [**secondsToMs**](./src/secondsToMs.ts): Converts seconds to milliseconds.
+- [**stripTime**](./src/stripTime.ts): Remove the time component from a date, returning only the date part.
+- [**today**](./src/today.ts): Get the UTC date today, time stripped
+- [**yesterday**](./src/yesterday.ts): Get the UTC date yesterday, time stripped
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -87,22 +107,3 @@ monthNameDa(new Date('2026-03-15'))
 monthNameDaRelative(new Date())
 // => relative month name in Danish
 ```
-
-## API Reference
-
-| Export                | Description                                  |
-| --------------------- | -------------------------------------------- |
-| `dateString`          | Format date as `yyyy-MM-dd`                  |
-| `today`               | Today's date with time stripped              |
-| `yesterday`           | Yesterday's date                             |
-| `stripTime`           | Remove time component from a Date            |
-| `getWeek`             | ISO week number                              |
-| `msSinceDate`         | Milliseconds elapsed since a date            |
-| `hasCooldownElapsed`  | Check if a cooldown period has passed        |
-| `Timer`               | Returns a function that reports elapsed time |
-| `daysToMs`            | Convert days to milliseconds                 |
-| `hoursToMs`           | Convert hours to milliseconds                |
-| `minutesToMs`         | Convert minutes to milliseconds              |
-| `secondsToMs`         | Convert seconds to milliseconds              |
-| `monthNameDa`         | Danish month name                            |
-| `monthNameDaRelative` | Relative Danish month name                   |

@@ -1,19 +1,29 @@
 {
   "name": "@mono/iter",
-  "version": "1.1.0",
+  "version": "1.2.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "description": "iter",
+  "description": "Utility functions for working with iterables, especially map-like key-value pair structures.",
   "keywords": [
-    "iter"
+    "iter",
+    "iterable",
+    "iterator",
+    "map",
+    "key-value",
+    "utilities",
+    "typescript"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
+    "@mono/object": "workspace:^",
+    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {

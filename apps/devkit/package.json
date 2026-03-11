@@ -1,7 +1,7 @@
 {
   "name": "devkit",
   "description": "Development utilities for the monorepo.",
-  "version": "4.0.0",
+  "version": "4.2.1",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "scripts": {
@@ -24,6 +24,14 @@
     "upath": "^2.0.1"
   },
   "devDependencies": {
+    "@mono/cli": "workspace:^",
+    "@mono/config": "workspace:^",
+    "@mono/map": "workspace:^",
+    "@mono/monorepo": "workspace:^",
+    "@mono/node": "workspace:^",
+    "@mono/path": "workspace:^",
+    "@mono/prompt": "workspace:^",
+    "@mono/template": "workspace:^",
     "@types/cli-table": "^0.3.4",
     "@types/fs-extra": "^11.0.4",
     "@types/prompts": "^2.4.9",

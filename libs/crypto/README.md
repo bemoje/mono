@@ -2,8 +2,20 @@
 
 Encryption, decryption, and string hashing utilities built on Node.js `crypto`.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**decrypt**](./src/decrypt.ts): Decrypts a string that was encrypted using encrypt(). Expects input in format: hexadecimal IV (32 chars) + encrypted data Uses PBKDF2 for key derivation with 100k iterations.
+- [**encrypt**](./src/encrypt.ts): Encrypts a string using AES-256-CBC with a random IV. Uses PBKDF2 for key derivation with 100k iterations.
+- [**strHashToBuffer**](./src/strHashToBuffer.ts): Hash a string into a buffer with a given algorithm
+- [**strHashToString**](./src/strHashToString.ts): Hash a string into a buffer with a given algorithm
+- [**strHashToStringDJB2**](./src/strHashToStringDJB2.ts): Hashes a string using the DJB2 algorithm, returning a numeric hash value.
+- [**strHashToUint32Array**](./src/strHashToUint32Array.ts): Hash a string into an array of unsigned 32-bit integers.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -48,15 +60,3 @@ const buf = strHashToBuffer('hello', 'sha256')
 strHashToStringDJB2('hello')
 // => 261238937
 ```
-
-## API Reference
-
-| Export                 | Description                                                     |
-| ---------------------- | --------------------------------------------------------------- |
-| `encrypt`              | AES-256-CBC encryption with random IV and PBKDF2 key derivation |
-| `decrypt`              | Decrypt strings encrypted with `encrypt()`                      |
-| `strHashToString`      | Hash a string to a hex/base64/binary digest                     |
-| `strHashToBuffer`      | Hash a string and return a raw Buffer                           |
-| `strHashToUint32Array` | Hash a string and return a Uint32Array                          |
-| `strHashToStringDJB2`  | Fast non-cryptographic DJB2 hash                                |
-| `TCryptoAlgorithm`     | Type for supported hash algorithms                              |

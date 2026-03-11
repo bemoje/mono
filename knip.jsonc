@@ -2,6 +2,9 @@
   "include": ["nsTypes", "nsExports"],
 
   "ignoreExportsUsedInFile": true,
+  "ignoreFiles": [
+    "scripts/parseBarrelExportIndexFile.mjs" //
+  ],
   "ignore": [
     ".github/copilot/refactoring.mts",
     "libs/prompt/examples/**/*", //
@@ -9,8 +12,8 @@
   ],
   "ignoreDependencies": [
     "tsconfig-paths", //
-    "@swc/core",
-    "@mono/*"
+    "@swc/core"
+    // "@mono/*"
   ],
 
   "ignoreBinaries": [
@@ -18,7 +21,6 @@
   ],
 
   "workspaces": {
-    ".": {},
     "apps/*": {
       "entry": [
         "src/*.ts", //

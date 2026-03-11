@@ -1,6 +1,6 @@
 {
   "name": "@mono/monorepo",
-  "version": "1.1.1",
+  "version": "1.2.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
@@ -12,20 +12,69 @@
     "glob": "^11.1.0",
     "mnemonist": "^0.40.3",
     "onetime": "^7.0.0",
-    "type-fest": "5.4.4",
     "typescript": "^5.5.4",
     "upath": "^2.0.1"
   },
-  "description": "monorepo",
+  "description": "Monorepo workspace management, package discovery, and TypeScript code processing utilities.",
   "keywords": [
-    "monorepo"
+    "monorepo",
+    "workspace",
+    "package",
+    "yarn",
+    "typescript",
+    "code-processing",
+    "utilities"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
+    "@mono/composition": "workspace:^",
+    "@mono/decorators": "workspace:^",
+    "@mono/fs": "workspace:^",
+    "@mono/path": "workspace:^",
+    "@mono/regex": "workspace:^",
+    "@mono/tscode": "workspace:^",
+    "@mono/types": "workspace:^",
     "@types/fs-extra": "^11.0.4",
-    "tsup": "^8.5.1"
+    "prettier": "^3.3.3",
+    "tsup": "^8.5.1",
+    "type-fest": "5.4.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./MonoRepo": "./src/MonoRepo.ts",
+    "./AbstractCode": "./src/code/AbstractCode.ts",
+    "./CodeBlock": "./src/code/CodeBlock.ts",
+    "./TsCode": "./src/code/TsCode.ts",
+    "./ImportKeywords": "./src/code/imports/ImportKeywords.ts",
+    "./ImportSpecifiers": "./src/code/imports/ImportSpecifiers.ts",
+    "./ImportStatement": "./src/code/imports/ImportStatement.ts",
+    "./ModuleSpecifier": "./src/code/imports/ModuleSpecifier.ts",
+    "./AbstractBase": "./src/common/AbstractBase.ts",
+    "./File": "./src/file/File.ts",
+    "./TestFile": "./src/file/TestFile.ts",
+    "./TsFile": "./src/file/TsFile.ts",
+    "./findWorkspacePackageName": "./src/methods/findWorkspacePackageName.ts",
+    "./getAllImports": "./src/methods/getAllImports.ts",
+    "./getAllWorkspacePackageJsonPaths": "./src/methods/getAllWorkspacePackageJsonPaths.ts",
+    "./getAllWorkspacePackageJsons": "./src/methods/getAllWorkspacePackageJsons.ts",
+    "./getAllWorkspacePackageNames": "./src/methods/getAllWorkspacePackageNames.ts",
+    "./getAllWorkspacePaths": "./src/methods/getAllWorkspacePaths.ts",
+    "./getImportsRecursively": "./src/methods/getImportsRecursively.ts",
+    "./getRepoPackageJson": "./src/methods/getRepoPackageJson.ts",
+    "./getRepoPackageJsonPath": "./src/methods/getRepoPackageJsonPath.ts",
+    "./Workspace": "./src/repo/Workspace.ts",
+    "./SemanticExtnamePrefix": "./src/util/SemanticExtnamePrefix.ts",
+    "./SemanticExtnamePrefixDescriptions": "./src/util/SemanticExtnamePrefixDescriptions.ts",
+    "./SemanticExtnamePrefixes": "./src/util/SemanticExtnamePrefixes.ts",
+    "./getRepoRootDirpath": "./src/util/getRepoRootDirpath.ts",
+    "./getWorkspaceDirpaths": "./src/util/getWorkspaceDirpaths.ts",
+    "./hasExtnamePrefix": "./src/util/hasExtnamePrefix.ts",
+    "./resolveModuleImportPath": "./src/util/resolveModuleImportPath.ts",
+    "./semverVersionBump": "./src/util/semverVersionBump.ts"
   }
 }

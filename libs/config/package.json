@@ -1,24 +1,45 @@
 {
   "name": "@mono/config",
-  "version": "1.0.1",
+  "version": "1.1.4",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "description": "config",
+  "description": "Configuration file management with JSON persistence and TypeBox schema validation.",
   "keywords": [
-    "config"
+    "config",
+    "configuration",
+    "json",
+    "persistence",
+    "typebox",
+    "schema",
+    "validation",
+    "utilities",
+    "typescript"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
+    "@mono/os": "workspace:^",
+    "@mono/tschema": "workspace:^",
     "@types/fs-extra": "^11.0.4",
+    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.34.48",
     "fs-extra": "^11.3.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./ConfigFile": "./src/core/ConfigFile.ts",
+    "./ConfigDataStrategy": "./src/interfaces/ConfigDataStrategy.ts",
+    "./ConfigValidationStrategy": "./src/interfaces/ConfigValidationStrategy.ts",
+    "./JsonFileStrategy": "./src/strategies/JsonFileStrategy.ts",
+    "./SchemaConfigStrategy": "./src/strategies/SchemaConfigStrategy.ts"
   }
 }

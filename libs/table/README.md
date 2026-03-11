@@ -2,8 +2,20 @@
 
 Table formatting and string processing utilities.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**TableFormatter**](./src/TableFormatter.ts): Formats a 2D array representing a table.
+- [**formatAsStringTable**](./src/formatAsStringTable.ts): Formats an array of objects into a string table with customizable column formatters.
+- [**getHeadersFromCsvFile**](./src/getHeadersFromCsvFile.ts): Extracts column headers from the first line of a CSV file.
+- [**iterateTableArrayAsObjects**](./src/iterateTableArrayAsObjects.ts): Generator that iterates through a 2D table array, yielding objects with header keys and row values.
+- [**objectsToTable**](./src/objectsToTable.ts): Convert an array of objects to a table.
+- [**parseCsvHeaderLine**](./src/parseCsvHeaderLine.ts): Takes the first line of a CSV string and returns an array of column names.
+
+<!-- EXPORTS_END -->
 
 ## Usage
 
@@ -54,21 +66,3 @@ const headers = parseCsvHeaderLine('id,name,age', ',')
 // Extract headers directly from a CSV file
 const fileHeaders = await getHeadersFromCsvFile('data.csv', ',')
 ```
-
-## API Reference
-
-### Formatting & Display
-
-| Function / Class      | Description                                   |
-| --------------------- | --------------------------------------------- |
-| `TableFormatter`      | Class to process and format tabular data      |
-| `formatAsStringTable` | Formats an array of objects as a string table |
-
-### Data Operations
-
-| Function                     | Description                                            |
-| ---------------------------- | ------------------------------------------------------ |
-| `objectsToTable`             | Converts an array of objects to a 2D array table       |
-| `iterateTableArrayAsObjects` | Iterate over 2D string-array rows as keyed objects     |
-| `getHeadersFromCsvFile`      | Read a CSV file and return its parsed header line      |
-| `parseCsvHeaderLine`         | Parse a single CSV header string into an array of keys |

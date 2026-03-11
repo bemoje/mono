@@ -1,10 +1,17 @@
 # @bemoje/stacktrace
 
-Beautiful, color-formatted stack trace output for Node.js errors with syntax-highlighted file paths and structured
-error properties.
+Beautiful, color-formatted stack trace output for Node.js errors with syntax-highlighted file paths and structured error properties.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**enablePrettyStackTrace**](./src/enablePrettyStackTrace.ts): Enables pretty stack trace formatting for uncaught exceptions.
+- [**prettyStackTrace**](./src/prettyStackTrace.ts): Formats stack traces with colors and improved readability for debugging.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -69,10 +76,3 @@ console.error(prettyStackTrace(error))
 // stack:
 //   ...
 ```
-
-## API Reference
-
-| Export                   | Description                                                         |
-| ------------------------ | ------------------------------------------------------------------- |
-| `prettyStackTrace`       | Format an Error into a colorized, readable string                   |
-| `enablePrettyStackTrace` | Register a global uncaught exception handler with pretty formatting |

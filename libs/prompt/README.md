@@ -2,8 +2,38 @@
 
 Interactive terminal prompt utilities for Node.js with a fluent builder API.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**AbstractUserPrompt**](./src/prompt/core/AbstractUserPrompt.ts): Interactive terminal user prompts.
+- [**AutocompleteMultiselectPrompt**](./src/prompt/core/AutocompleteMultiselectPrompt.ts): Interactive multiselect user prompts in the terminal.
+- [**AutocompletePrompt**](./src/prompt/core/AutocompletePrompt.ts): Interactive autocomplete user prompts in the terminal.
+- [**ConfirmPrompt**](./src/prompt/core/ConfirmPrompt.ts): Interactive confirm user prompts in the terminal.
+- [**DatePrompt**](./src/prompt/core/DatePrompt.ts): Interactive date user prompts in the terminal.
+- [**InvisiblePrompt**](./src/prompt/core/InvisiblePrompt.ts): Interactive invisible user prompts in the terminal.
+- [**ListPrompt**](./src/prompt/core/ListPrompt.ts): Interactive list user prompts in the terminal.
+- [**MultiselectPrompt**](./src/prompt/core/AutocompleteMultiselectPrompt.ts): Interactive multiselect user prompts in the terminal.
+- [**NumberPrompt**](./src/prompt/core/NumberPrompt.ts): Interactive numner user prompts in the terminal.
+- [**PROMPT_META_DATA**](./src/prompt/additions/searchPrompt/core/PROMPT_META_DATA.ts): WeakMap storing search prompt meta data associated with each prompt object.
+- [**PasswordPrompt**](./src/prompt/core/PasswordPrompt.ts): Interactive password user prompts in the terminal.
+- [**SearchPrompt**](./src/prompt/core/SearchPrompt.ts): Interactive autocomplete user prompts in the terminal.
+- [**SelectPrompt**](./src/prompt/core/SelectPrompt.ts): Interactive select user prompts in the terminal.
+- [**TextPrompt**](./src/prompt/core/TextPrompt.ts): Interactive text user prompts in the terminal.
+- [**TogglePrompt**](./src/prompt/core/TogglePrompt.ts): Interactive toggle user prompts in the terminal.
+- [**createSearchPromptObject**](./src/prompt/additions/searchPrompt/core/createSearchPromptObject.ts): Create a search prompt object that can be run with `prompts()` from npm package: `prompts`. The point of this would be to run them in series. To run run a prompt directly, use
+- [**getSearchPromptMetaData**](./src/prompt/additions/searchPrompt/core/getSearchPromptMetaData.ts): Retrieve the search prompt meta data associated with the given prompt object.
+- [**initChoices**](./src/prompt/suggest/initChoices.ts): Initialize choices for a prompt by attaching meta data to each choice object.
+- [**prompt**](libs/node/src/prompt.ts): Collection of factory functions for creating interactive terminal prompts.
+- [**regExact**](./src/prompt/suggest/regExact.ts): Create a regular expression that matches the keyword exactly.
+- [**regIncludes**](./src/prompt/suggest/regIncludes.ts): Create a regular expression that matches strings containing the keyword.
+- [**regStartsWith**](./src/prompt/suggest/regStartsWith.ts): Create a regular expression that matches strings starting with the keyword.
+- [**searchPrompt**](./src/prompt/additions/searchPrompt/searchPrompt.ts): Start a command-line prompt in which the user can search a provided list.
+- [**suggestDefault**](./src/prompt/suggest/suggestDefault.ts): Default suggest function for autocomplete prompts. Filters and highlights choices based on user input.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -76,31 +106,3 @@ const result = await searchPrompt(['apple', 'banana', 'cherry', 'dragonfruit'])
 // result.input    => the raw text typed
 // result.matches  => all matching items
 ```
-
-## API Reference
-
-### Prompt Factory
-
-| Method                                    | Description                     |
-| ----------------------------------------- | ------------------------------- |
-| `prompt.text(message)`                    | Free-form text input            |
-| `prompt.number(message)`                  | Numeric input                   |
-| `prompt.confirm(message)`                 | Yes/no confirmation             |
-| `prompt.password(message)`                | Masked password input           |
-| `prompt.invisible(message)`               | Invisible (hidden) input        |
-| `prompt.list(message)`                    | Comma-separated list input      |
-| `prompt.toggle(message)`                  | Toggle between two values       |
-| `prompt.select(message)`                  | Single selection from choices   |
-| `prompt.multiselect(message)`             | Multiple selection from choices |
-| `prompt.autocomplete(message)`            | Autocomplete single selection   |
-| `prompt.autocompleteMultiselect(message)` | Autocomplete multi-selection    |
-| `prompt.date(message)`                    | Date input                      |
-| `prompt.search(message)`                  | Searchable list selection       |
-
-### Other Exports
-
-| Export               | Description                                               |
-| -------------------- | --------------------------------------------------------- |
-| `searchPrompt`       | Standalone search prompt with fuzzy filtering and results |
-| `AbstractUserPrompt` | Base class for building custom prompt types               |
-| `suggestDefault`     | Default suggest/filter function for autocomplete prompts  |

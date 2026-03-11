@@ -11,7 +11,7 @@ const addDependency = new Template({
 const addDevDependency = new Template({
   strategy: new StringTemplateStrategy(),
   optionsSchema: Type.Object({ dependency: Type.String() }),
-  template: 'yarn add {{dependency}} --dev',
+  template: 'yarn add {{dependency}} -D',
 })
 
 const removeDependency = new Template({

@@ -94,6 +94,7 @@ export default [
       'unicorn/prefer-string-slice': 'off',
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/no-immediate-mutation': 'off',
+      'unicorn/prefer-node-protocol': 'off',
       //
 
       'unicorn/consistent-empty-array-spread': ['error'],
@@ -138,7 +139,6 @@ export default [
       'unicorn/prefer-math-min-max': ['error'],
       'unicorn/prefer-modern-math-apis': ['error'],
       'unicorn/prefer-native-coercion-functions': ['error'],
-      'unicorn/prefer-node-protocol': ['error'],
       'unicorn/prefer-object-from-entries': ['error'],
       'unicorn/prefer-reflect-apply': ['error'],
       'unicorn/prefer-set-has': ['error'],

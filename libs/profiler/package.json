@@ -1,22 +1,39 @@
 {
   "name": "@mono/profiler",
-  "version": "2.1.0",
+  "version": "2.2.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "description": "profiler",
+  "description": "Performance profiling utilities for measuring execution time of functions, class methods, and modules.",
   "keywords": [
-    "profiler"
+    "profiler",
+    "performance",
+    "profiling",
+    "execution-time",
+    "benchmarking",
+    "utilities",
+    "typescript"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
+    "@mono/fn": "workspace:^",
+    "@mono/object": "workspace:^",
+    "@mono/table": "workspace:^",
+    "@mono/types": "workspace:^",
+    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {
     "es-toolkit": "^1.45.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./Profiler": "./src/Profiler/Profiler.ts"
   }
 }

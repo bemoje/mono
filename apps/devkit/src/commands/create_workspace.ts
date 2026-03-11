@@ -25,9 +25,8 @@ export function createLibsWorkspaceAction(workspaceName: string, options: Create
   const srcPath = upath.join(rootPath, 'src')
 
   // lib filepaths
-  const eslintConfigJsPath = upath.join(rootPath, 'eslint.config.mjs')
+  const tsupConfigMjsPath = upath.join(rootPath, 'tsup.config.mjs')
   const packageJsonPath = upath.join(rootPath, 'package.json')
-  const esbuildMjsPath = upath.join(rootPath, 'esbuild.mjs')
   const readmeMdPath = upath.join(rootPath, 'README.md')
   const tsconfigJsonPath = upath.join(rootPath, 'tsconfig.json')
   const indexTsPath = upath.join(srcPath, 'index.ts')
@@ -45,22 +44,16 @@ export function createLibsWorkspaceAction(workspaceName: string, options: Create
   // Create src folder
   fs.mkdirSync(srcPath, { recursive: true })
 
-  // Create eslint.config.mjs
+  // Create tsup.config.mjs
   fs.outputFileSync(
-    eslintConfigJsPath, //
-    templates.files.eslintConfigJs.renderString()
+    tsupConfigMjsPath, //
+    templates.files.tsup.renderString()
   )
 
   // Create package.json
   fs.outputFileSync(
     packageJsonPath, //
     templates.files.packageJson.renderString({ libraryName: scopedLibraryName })
-  )
-
-  // Create esbuild.mjs
-  fs.outputFileSync(
-    esbuildMjsPath, //
-    templates.files.esbuild.renderString({})
   )
 
   // Create README.md

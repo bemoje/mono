@@ -2,8 +2,17 @@
 
 Configuration file management with JSON persistence and TypeBox schema validation.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
+
+## Exports
+
+<!-- EXPORTS_START -->
+
+- [**ConfigFile**](./src/core/ConfigFile.ts): Configuration file manager that provides schema validation and file I/O using the Strategy pattern.
+- [**JsonFileStrategy**](./src/strategies/JsonFileStrategy.ts): Strategy for loading and saving configuration data as JSON files.
+- [**SchemaConfigStrategy**](./src/strategies/SchemaConfigStrategy.ts): Strategy for validating configuration data against a TypeBox schema and applying default values.
+
+<!-- EXPORTS_END -->
 
 ## Installation
 
@@ -71,13 +80,3 @@ validation.isValid({ name: 'app', version: '2.0.0' }) // => true
 validation.applyDefaults({ name: 'app' })
 // => { name: 'app', version: '1.0.0' }
 ```
-
-## API Reference
-
-| Export                     | Description                                                                            |
-| -------------------------- | -------------------------------------------------------------------------------------- |
-| `ConfigFile`               | Main config class with singleton per filepath, schema validation, and JSON persistence |
-| `JsonFileStrategy`         | Strategy for reading/writing JSON config files                                         |
-| `SchemaConfigStrategy`     | Strategy for TypeBox schema validation with default merging                            |
-| `ConfigDataStrategy`       | Interface for data serialization strategies                                            |
-| `ConfigValidationStrategy` | Interface for validation strategies                                                    |

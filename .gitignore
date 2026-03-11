@@ -12,3 +12,7 @@ temp/
 .env
 .env.*
 .yarn/install-state.gz
+
+# Turborepo
+.turbo
+.next/

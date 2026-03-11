@@ -10,6 +10,7 @@ import description from './core/description'
 import { fixDashCharsAction } from './commands/fix_dash_chars'
 import { fixEmptyFilesAction } from './commands/fix_empty_files'
 import { fixIndexTsAction } from './commands/fix_index_ts'
+import { fixMissingDependencies } from './commands/fix_missing_dependencies'
 import { fixVitestImportsAction } from './commands/fix_vitest_imports'
 import { fixWorkspaceImportsAction } from './commands/fix_workspace_imports'
 import fs from 'fs-extra'
@@ -89,6 +90,13 @@ const cli = new Command('devkit')
   })
 
   // fix
+  .addCommand('fix-missing-dependencies', (cmd) => {
+    return cmd
+      .setGroup('Fix Commands')
+      .setDescription('Check for missing dependencies in workspaces and suggest commands to add them.')
+      .addOption('-y, --yes', { description: 'Skip confirmation.' })
+      .setAction(fixMissingDependencies)
+  })
   .addCommand('fix-workspace-imports', (cmd) => {
     return cmd
       .setGroup('Fix Commands')

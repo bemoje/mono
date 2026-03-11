@@ -1,22 +1,78 @@
 {
   "name": "@mono/string",
-  "version": "2.0.1",
+  "version": "2.1.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "description": "string",
+  "description": "String manipulation utilities for casing, wrapping, line processing, and character analysis.",
   "keywords": [
-    "string"
+    "string",
+    "manipulation",
+    "casing",
+    "wrapping",
+    "line-processing",
+    "character",
+    "utilities",
+    "typescript"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
+    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {
     "es-toolkit": "^1.45.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./countFloatDecimals": "./src/lib/countFloatDecimals.ts",
+    "./endsWithIncompleteUtfPairSurrogate": "./src/lib/endsWithIncompleteUtfPairSurrogate.ts",
+    "./strCountCharOccurances": "./src/lib/strCountCharOccurances.ts",
+    "./strCountChars": "./src/lib/strCountChars.ts",
+    "./strEnsureEndsWith": "./src/lib/strEnsureEndsWith.ts",
+    "./strEnsureStartsWith": "./src/lib/strEnsureStartsWith.ts",
+    "./strIsLowerCase": "./src/lib/strIsLowerCase.ts",
+    "./strIsMultiLine": "./src/lib/strIsMultiLine.ts",
+    "./strIsUpperCase": "./src/lib/strIsUpperCase.ts",
+    "./strMaxTwoConsecutiveEmptyLines": "./src/lib/strMaxTwoConsecutiveEmptyLines.ts",
+    "./strNoConsecutiveEmptyLines": "./src/lib/strNoConsecutiveEmptyLines.ts",
+    "./strNoConsecutiveWhitespace": "./src/lib/strNoConsecutiveWhitespace.ts",
+    "./strParseBoolean": "./src/lib/strParseBoolean.ts",
+    "./strPrefixCamelCased": "./src/lib/strPrefixCamelCased.ts",
+    "./strPrependLines": "./src/lib/strPrependLines.ts",
+    "./strRemoveDuplicateChars": "./src/lib/strRemoveDuplicateChars.ts",
+    "./strRemoveEmptyLines": "./src/lib/strRemoveEmptyLines.ts",
+    "./strRemoveFirstAndLastLine": "./src/lib/strRemoveFirstAndLastLine.ts",
+    "./strRemoveNewLines": "./src/lib/strRemoveNewLines.ts",
+    "./strRepeat": "./src/lib/strRepeat.ts",
+    "./strReplaceAll": "./src/lib/strReplaceAll.ts",
+    "./strSortChars": "./src/lib/strSortChars.ts",
+    "./strSplitAndTrim": "./src/lib/strSplitAndTrim.ts",
+    "./strSplitCamelCase": "./src/lib/strSplitCamelCase.ts",
+    "./strToCharCodes": "./src/lib/strToCharCodes.ts",
+    "./strToCharSet": "./src/lib/strToCharSet.ts",
+    "./strToGetterMethodName": "./src/lib/strToGetterMethodName.ts",
+    "./strToSetterMethodName": "./src/lib/strToSetterMethodName.ts",
+    "./strToSortedCharSet": "./src/lib/strToSortedCharSet.ts",
+    "./strTrimLines": "./src/lib/strTrimLines.ts",
+    "./strTrimLinesLeft": "./src/lib/strTrimLinesLeft.ts",
+    "./strTrimLinesRight": "./src/lib/strTrimLinesRight.ts",
+    "./strUnwrap": "./src/lib/strUnwrap.ts",
+    "./strWrapBetween": "./src/lib/strWrapBetween.ts",
+    "./strWrapIn": "./src/lib/strWrapIn.ts",
+    "./strWrapInAngleBrackets": "./src/lib/strWrapInAngleBrackets.ts",
+    "./strWrapInBraces": "./src/lib/strWrapInBraces.ts",
+    "./strWrapInBrackets": "./src/lib/strWrapInBrackets.ts",
+    "./strWrapInDoubleQuotes": "./src/lib/strWrapInDoubleQuotes.ts",
+    "./strWrapInParenthesis": "./src/lib/strWrapInParenthesis.ts",
+    "./strWrapInSingleQuotes": "./src/lib/strWrapInSingleQuotes.ts",
+    "./stringLineCount": "./src/lib/stringLineCount.ts",
+    "./unwrapDoubleQuotes": "./src/lib/unwrapDoubleQuotes.ts"
   }
 }

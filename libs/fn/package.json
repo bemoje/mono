@@ -1,25 +1,37 @@
 {
   "name": "@mono/fn",
-  "version": "1.1.0",
+  "version": "1.2.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
   "devDependencies": {
-    "tsup": "^8.5.1"
-  },
-  "dependencies": {
-    "es-toolkit": "^1.45.1",
+    "@mono/types": "workspace:^",
+    "prettier": "^3.3.3",
+    "tsup": "^8.5.1",
     "type-fest": "5.4.4"
   },
+  "dependencies": {
+    "es-toolkit": "^1.45.1"
+  },
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "keywords": [
-    "function"
+    "function",
+    "higher-order",
+    "binding",
+    "spy",
+    "method",
+    "wrapping",
+    "context",
+    "utilities",
+    "typescript"
   ],
-  "description": "fn",
+  "description": "Higher-order function utilities for argument binding, context manipulation, spying, and method wrapping.",
   "exports": {
     ".": "./src/index.ts",
     "./bindArg": "./src/bindArg.ts",

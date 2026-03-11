@@ -13,7 +13,7 @@ describe('template commands', () => {
   it('should export addDevDependency template', () => {
     expect(commands.addDevDependency).toBeDefined()
     const result = commands.addDevDependency.renderString({ dependency: 'vitest' })
-    expect(result).toBe('yarn add vitest --dev')
+    expect(result).toBe('yarn add vitest -D')
   })
 
   it('should export removeDependency template', () => {

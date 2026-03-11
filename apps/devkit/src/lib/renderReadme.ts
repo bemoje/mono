@@ -1,9 +1,11 @@
+import type { Logger } from '@mono/node'
 import { arrayTableToMarkdown } from './arrayTableToMarkdown'
-import cp from 'node:child_process'
+import cp from 'child_process'
 import fs from 'fs-extra'
 import { getLinesOfCode } from './getLinesOfCode'
 import { getRepoPackageJson } from './getRepoPackageJson'
 import { importLibs } from './importLibs'
+import { outputFileIfChanged } from './outputFileIfChanged'
 import { parseLibsTsDocSummaries } from './parseLibsTsDocSummaries'
 import upath from 'upath'
 
@@ -12,7 +14,7 @@ export const README_TEMPLATE_PATH = 'docs/readmeTemplate.md'
 /**
  * Renders the full README content.
  */
-export async function renderReadme(): Promise<string> {
+export async function renderReadme({ logger: log }: { logger: Logger }): Promise<string> {
   cp.execSync(`yarn prettier -w --l ${README_TEMPLATE_PATH}`, { stdio: 'inherit' })
 
   let md = await fs.readFile(README_TEMPLATE_PATH, 'utf8')
@@ -22,7 +24,7 @@ export async function renderReadme(): Promise<string> {
     getRepoDescription(),
     renderLinesOfCodeTable(),
     renderCoverageSummary(),
-    renderLibsExportedModules(),
+    renderLibsExportedModules({ logger: log }),
   ])
 
   md = md.replace('<!-- REPO_NAME -->', repoName)
@@ -70,7 +72,7 @@ export async function renderTOC(readmeMarkdown: string): Promise<string> {
     .join('\n')
 }
 
-export async function renderLibsExportedModules(): Promise<string> {
+export async function renderLibsExportedModules({ logger: log }: { logger: Logger }): Promise<string> {
   const { validSummaries } = await parseLibsTsDocSummaries()
 
   const libsModulesMap = await importLibs()
@@ -100,7 +102,7 @@ export async function renderLibsExportedModules(): Promise<string> {
   }
 
   const sortedLibNames = Array.from(librarySummaries.keys()).sort()
-  const libExports: string[] = []
+  const libsExports: string[] = []
 
   for (const libName of sortedLibNames) {
     const libModule = libsModulesMap.get(libName)
@@ -118,7 +120,11 @@ export async function renderLibsExportedModules(): Promise<string> {
       continue
     }
 
-    libExports.push(`**${libName}** (see [README.md](./libs/${libName}/README.md))`)
+    libsExports.push(
+      `- [**libs/${libName}**](./libs/${libName}/README.md): ${
+        (await fs.readJson(`libs/${libName}/package.json`)).description
+      }`
+    )
 
     const summaries = librarySummaries.get(libName) || []
     const summaryMap = new Map(
@@ -126,15 +132,36 @@ export async function renderLibsExportedModules(): Promise<string> {
         return [s.functionName, s.summary]
       })
     )
+    libsModulesMap.get(libName)
+    const libExports: string[] = []
 
     for (const exportName of namedExports) {
+      const filepath =
+        validSummaries.find((o) => {
+          return o.filepath.endsWith(`${exportName}.ts`)
+        })?.filepath ?? `libs/${libName}/src/index.ts`
       const summary = summaryMap.get(exportName) || '?'
-      libExports.push(`- \`${exportName}\`: ${summary}`)
+      libExports.push(`- [**${exportName}**](${filepath.replace(`libs/${libName}`, '.')}): ${summary}`)
     }
 
-    libExports.push('')
+    const libReadme = await fs.readFile(`libs/${libName}/README.md`, 'utf8')
+    const libReadmeLines = libReadme.split('\n')
+    const exportsSectionStartIndex = libReadmeLines.indexOf('<!-- EXPORTS_START -->') + 1
+    const exportsSectionEndIndex = libReadmeLines.indexOf('<!-- EXPORTS_END -->') - 1
+    if (exportsSectionStartIndex === -1 || exportsSectionEndIndex === -1) {
+      throw new Error(`EXPORTS_START or EXPORTS_END marker not found in libs/${libName}/README.md`)
+    }
+    libReadmeLines.splice(
+      exportsSectionStartIndex,
+      exportsSectionEndIndex - exportsSectionStartIndex + 1,
+      '',
+      ...libExports,
+      ''
+    )
+
+    await outputFileIfChanged(`libs/${libName}/README.md`, libReadmeLines.join('\n'), log)
   }
-  return libExports.join('\n')
+  return libsExports.join('\n')
 }
 
 export async function getNpmPkgDescription(name: string): Promise<string> {

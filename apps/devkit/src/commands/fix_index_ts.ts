@@ -23,10 +23,10 @@ export async function fixIndexTsAction(
 
   await forEachAsync(
     libWorkspacePaths,
-    async (wsPath) => {
+    async (wsDirpath) => {
       const OUTFILE = 'src/index.ts'
       const TEST_OUTFILE = 'src/index.test.ts'
-      const WS_ROOT = upath.joinSafe(repoRoot, wsPath)
+      const WS_ROOT = upath.joinSafe(repoRoot, wsDirpath)
 
       const filepaths = (await glob('src/**/*.ts', { cwd: WS_ROOT }))
         .map((fp) => {
@@ -41,14 +41,14 @@ export async function fixIndexTsAction(
           return fp.endsWith('/index.ts') && fp !== OUTFILE
         })
         .map((fp) => {
-          return upath.dirname(fp)
+          return upath.dirname(`${fp}/index`)
         })
         .sort()
 
       const exportFilepaths = filepaths
         .filter((fp) => {
           return !exportDirpaths.some((dp) => {
-            return fp.startsWith(dp)
+            return fp.startsWith(upath.dirname(dp))
           })
         })
         .filter((fp) => {
@@ -59,40 +59,33 @@ export async function fixIndexTsAction(
         })
         .sort()
 
-      const relative = [...exportDirpaths, ...exportFilepaths] //
+      const relative = [
+        ...exportDirpaths.map((dp) => {
+          return upath.removeExt(dp, '.ts')
+        }),
+        ...exportFilepaths,
+      ] //
         .map((fp) => {
           return fp.replace(/^src/, '.')
         })
 
-      // const tempName = (i: number) => {
-      //   return `MODULE_${String(i + 1).padStart(relative.length.toString().length, '0')}`
-      // }
-
       const lines = relative
         .flatMap((fp) => {
-          return `export * from '${fp}'`
+          return `export * from '${fp.replace(/\/index$/, '')}'`
         })
         .concat('')
 
-      // const tsconfig = {
-      //   ...(await fs.readJson(upath.joinSafe(repoRoot, 'tsconfig.json'), 'utf8')),
-      //   ...(await fs.readJson(upath.joinSafe(wsPath, 'tsconfig.json'), 'utf8')),
-      // }
-
-      // if (!tsconfig.compilerOptions.isolatedDeclarations) {
-      //   lines = lines.concat(
-      //     relative.map((fp, i) => {
-      //       return `import * as ${tempName(i)} from '${fp}'`
-      //     }),
-      //     '', //
-      //     `export default {`,
-      //     ...relative.map((_, i) => {
-      //       return `  ...${tempName(i)},${i === 0 ? ' //' : ''}`
-      //     }),
-      //     `}`,
-      //     '',
-      //   )
-      // }
+      const wsPkgPath = upath.joinSafe(wsDirpath, 'package.json')
+      const pkg = await fs.readJson(wsPkgPath)
+      pkg.exports = {
+        '.': './src/index.ts',
+        ...Object.fromEntries(
+          relative.map((fp) => {
+            return [`./${upath.basename(fp.replace(/\/index$/, ''))}`, `${fp.replace('.', './src')}.ts`]
+          })
+        ),
+      }
+      await outputFileIfChanged(wsPkgPath, `${JSON.stringify(pkg, null, 2)}\n`, logger)
 
       const testLines = [
         `import * as EXPORTS from './index'`,

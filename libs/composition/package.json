@@ -1,6 +1,6 @@
 {
   "name": "@mono/composition",
-  "version": "2.0.1",
+  "version": "2.1.4",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
@@ -9,18 +9,48 @@
     "@sinclair/typebox": "^0.34.48",
     "ansi-colors": "^4.1.3",
     "es-toolkit": "^1.45.1",
-    "mnemonist": "^0.40.3",
-    "type-fest": "5.4.4"
+    "mnemonist": "^0.40.3"
   },
-  "description": "composition",
+  "description": "Class composition utilities for views, proxy-based inheritance, object inspection, and parent-child relationships.",
   "keywords": [
-    "composition"
+    "composition",
+    "class",
+    "proxy",
+    "inheritance",
+    "mixin",
+    "parent-child",
+    "object",
+    "utilities",
+    "typescript"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
-    "tsup": "^8.5.1"
+    "@mono/object": "workspace:^",
+    "@mono/tschema": "workspace:^",
+    "@mono/types": "workspace:^",
+    "prettier": "^3.3.3",
+    "tsup": "^8.5.1",
+    "type-fest": "5.4.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./IView": "./src/IView.ts",
+    "./OptionsConfigurator": "./src/OptionsConfigurator.ts",
+    "./View": "./src/View.ts",
+    "./inheritProxifiedPrototype": "./src/inheritProxifiedPrototype.ts",
+    "./inheritProxifiedPrototypeProperty": "./src/inheritProxifiedPrototypeProperty.ts",
+    "./Inspector": "./src/inspector/Inspector.ts",
+    "./ignoreValuesDefaults": "./src/inspector/defaults/ignoreValuesDefaults.ts",
+    "./ignoreValuesFilterDefaults": "./src/inspector/defaults/ignoreValuesFilterDefaults.ts",
+    "./inspectDefaults": "./src/inspector/defaults/inspectDefaults.ts",
+    "./inspectorDefaults": "./src/inspector/defaults/inspectorDefaults.ts",
+    "./types": "./src/parenting/types.ts",
+    "./ParentRelationTypes": "./src/parenting/ParentRelationTypes.ts",
+    "./Parenting": "./src/parenting/Parenting.ts"
   }
 }

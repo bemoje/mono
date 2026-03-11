@@ -1,23 +1,52 @@
 {
   "name": "@mono/path",
-  "version": "1.0.1",
+  "version": "1.1.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "description": "path",
+  "description": "Cross-platform path utilities extending upath with validation, manipulation, and inspection helpers.",
   "keywords": [
-    "path"
+    "path",
+    "cross-platform",
+    "upath",
+    "validation",
+    "manipulation",
+    "inspection",
+    "utilities",
+    "typescript"
   ],
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
+    "@mono/fn": "workspace:^",
+    "prettier": "^3.3.3",
     "tsup": "^8.5.1",
     "type-fest": "^5.4.4"
   },
   "dependencies": {
     "upath": "^2.0.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./cwd": "./src/lib/cwd.ts",
+    "./dirnameDeep": "./src/lib/dirnameDeep.ts",
+    "./hasBasename": "./src/lib/hasBasename.ts",
+    "./hasExtname": "./src/lib/hasExtname.ts",
+    "./hasParentDirname": "./src/lib/hasParentDirname.ts",
+    "./isDotFile": "./src/lib/isDotFile.ts",
+    "./isExtValid": "./src/lib/isExtValid.ts",
+    "./isRelative": "./src/lib/isRelative.ts",
+    "./isUnc": "./src/lib/isUnc.ts",
+    "./isValidWin32": "./src/lib/isValidWin32.ts",
+    "./prefixFilename": "./src/lib/prefixFilename.ts",
+    "./root": "./src/lib/root.ts",
+    "./suffixFilename": "./src/lib/suffixFilename.ts",
+    "./toCwdRelative": "./src/lib/toCwdRelative.ts",
+    "./toWin32": "./src/lib/toWin32.ts"
   }
 }

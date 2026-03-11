@@ -5,8 +5,7 @@ description: 'Finds and fixes gaps in code coverage by identifying files with mi
 
 ## General Instructions
 
-- if uncovered source code is dead code or code that cannot be reached without type violations, then if it makes
-  sense, refactor the source code so that unreachable code is removed.
+- if uncovered source code is dead code or code that cannot be reached without type violations, then if it makes sense, refactor the source code so that unreachable code is removed.
 
 ## Tasks
 
@@ -16,5 +15,4 @@ Create a todo for each of the printed filepaths to ensure full code coverage usi
 
 process only one file at a time.
 
-Finally, when processing of all files is complete, run the tests with `yarn test-coverage` and then verify that all
-files have full code coverage by running `yarn test-coverage-full` again and ensuring that no files are printed.
+Finally, when processing of all files is complete, run the tests with `yarn test-coverage` and then verify that all files have full code coverage by running `yarn test-coverage-full` again and ensuring that no files are printed.

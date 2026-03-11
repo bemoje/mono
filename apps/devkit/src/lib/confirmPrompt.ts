@@ -1,4 +1,4 @@
-import readline from 'node:readline'
+import readline from 'readline'
 
 /**
  * Prompts the user to confirm in the terminal.

@@ -1,19 +1,54 @@
 {
   "name": "@mono/array",
-  "version": "3.1.2",
-  "description": "Array utils",
+  "version": "3.2.5",
+  "description": "Array manipulation and table processing utilities for TypeScript.",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
   "scripts": {
-    "build": "node --import '../../scripts/build-lib.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "lint-ws": "yarn eslint --fix './*' 'src/**/*.ts'",
+    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
   },
   "keywords": [
-    "array"
+    "array",
+    "table",
+    "2d-array",
+    "csv",
+    "sorting",
+    "searching",
+    "deduplication",
+    "shuffle",
+    "utilities",
+    "typescript"
   ],
   "devDependencies": {
+    "@mono/types": "workspace:^",
+    "eslint": "^10.0.2",
+    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./arrFindIndices": "./src/arrFindIndices.ts",
+    "./arrGetOrDefault": "./src/arrGetOrDefault.ts",
+    "./arrHasDuplicates": "./src/arrHasDuplicates.ts",
+    "./arrIndicesOf": "./src/arrIndicesOf.ts",
+    "./arrMapMutable": "./src/arrMapMutable.ts",
+    "./arrObjectsCommonKeys": "./src/arrObjectsCommonKeys.ts",
+    "./arrObjectsToTable": "./src/arrObjectsToTable.ts",
+    "./arrObjectsUniqueKeys": "./src/arrObjectsUniqueKeys.ts",
+    "./arrSortNumeric": "./src/arrSortNumeric.ts",
+    "./arrSortedInsertionIndex": "./src/arrSortedInsertionIndex.ts",
+    "./arrSwap": "./src/arrSwap.ts",
+    "./arrTableAssertRowsSameLength": "./src/arrTableAssertRowsSameLength.ts",
+    "./arrTableEachToString": "./src/arrTableEachToString.ts",
+    "./arrTableIterateAsObjects": "./src/arrTableIterateAsObjects.ts",
+    "./arrTableRemoveColumns": "./src/arrTableRemoveColumns.ts",
+    "./arrTableToCsv": "./src/arrTableToCsv.ts",
+    "./arrTableToObjects": "./src/arrTableToObjects.ts"
   }
 }

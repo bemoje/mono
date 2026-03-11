@@ -1,6 +1,6 @@
 import type { AutocompleteMultiSelectOptions } from '@clack/prompts'
 import { AutocompletePrompt } from '@clack/core'
-import type { Key } from 'node:readline'
+import type { Key } from 'readline'
 import type { Option } from '@clack/prompts'
 import { S_BAR } from '@clack/prompts'
 import { S_BAR_END } from '@clack/prompts'
@@ -8,7 +8,7 @@ import { S_CHECKBOX_INACTIVE } from '@clack/prompts'
 import { S_CHECKBOX_SELECTED } from '@clack/prompts'
 import colors from 'ansi-colors'
 import { limitOptions } from '@clack/prompts'
-import { styleText } from 'node:util'
+import { styleText } from 'util'
 import { symbol } from '@clack/prompts'
 
 export class AutocompleteMultiselectPrompt<Value> extends AutocompletePrompt<Option<Value>> {

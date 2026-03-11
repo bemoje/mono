@@ -34,6 +34,7 @@
   },
   "preferGlobal": true,
   "devDependencies": {
+    "@mono/node": "workspace:^",
     "@types/fs-extra": "^11.0.4",
     "@types/memoizee": "^0.4.12"
   }
