@@ -1,6 +1,10 @@
+import colors from 'ansi-colors'
 import cp from 'node:child_process'
 import fs from 'fs-extra'
+import { mapValues } from 'es-toolkit'
 import upath from 'upath'
+
+console.info(`Build started`)
 
 const wsDirpath = process.cwd()
 const distDir = upath.joinSafe(wsDirpath, 'dist')
@@ -12,13 +16,13 @@ const externalDeps = Array.from(
   new Set(
     Object.keys({
       ...rootPkg.dependencies,
-      ...rootPkg.devDependencies,
+      // ...rootPkg.devDependencies,
       ...pkg.dependencies,
-      ...pkg.devDependencies,
+      // ...pkg.devDependencies,
     })
   )
 ).filter((name) => {
-  return !name.startsWith('@types/') && !name.startsWith('@mono/')
+  return !name.startsWith('@types/') && !name.startsWith('@mono/') && !name.startsWith('type-fest')
 })
 const external = externalDeps
   .flatMap((name) => {
@@ -36,20 +40,15 @@ const externalArgs = external
 await fs.remove(distDir)
 await fs.ensureDir(distDir)
 
-cp.execSync(`yarn tsup --config tsup.config.mjs ${externalArgs}`, { cwd: wsDirpath, stdio: 'inherit' })
+cp.execSync(`yarn tsup --dts-resolve --config tsup.config.mjs ${externalArgs}`, {
+  cwd: wsDirpath,
+  stderr: 'inherit',
+})
 
-function depVersion(name) {
-  return (
-    pkg.dependencies?.[name]
-    || pkg.devDependencies?.[name]
-    || rootPkg.dependencies?.[name]
-    || rootPkg.devDependencies?.[name]
-  )
-}
-
-const outCode = [await fs.readFile('dist/index.d.ts', 'utf8'), await fs.readFile('dist/index.mjs', 'utf8')].join(
-  '\n'
-)
+const outCode = [
+  await fs.readFile('dist/lib/index.d.ts', 'utf8'),
+  await fs.readFile('dist/lib/index.js', 'utf8'),
+].join('\n')
 
 const dependencies = {
   ...Object.fromEntries(
@@ -61,7 +60,13 @@ const dependencies = {
         return new RegExp(` from ["']${dep}(["']|[/][^"']+["'])`).test(outCode)
       })
       .map((dep) => {
-        return [dep, depVersion(dep)]
+        return [
+          dep,
+          pkg.dependencies?.[dep]
+            // || pkg.devDependencies?.[name]
+            || rootPkg.dependencies?.[dep],
+          // || rootPkg.devDependencies?.[name]
+        ]
       })
   ),
 
@@ -96,10 +101,16 @@ await fs.outputJson(
     type: 'module',
     sideEffects: pkg.sideEffects,
     keywords: pkg.keywords,
-    exports: {
-      '.': { types: './index.d.ts', import: './index.mjs', default: './index.mjs' },
-      './*': { types: './index.d.ts', import: './index.mjs', default: './index.mjs' },
-    },
+    main: './lib/index.cjs',
+    module: './lib/index.js',
+    types: './lib/index.d.ts',
+    files: ['./lib/index.js', './lib/index.d.ts', './lib/index.cjs', './lib/index.d.cts'],
+    exports: mapValues(pkg.exports, () => {
+      return {
+        import: { types: './lib/index.d.ts', default: './lib/index.js' },
+        require: { types: './lib/index.d.cts', default: './lib/index.cjs' },
+      }
+    }),
     dependencies,
     publishConfig: { access: 'public' },
     license: rootPkg.license,
@@ -109,8 +120,13 @@ await fs.outputJson(
   { spaces: 2 }
 )
 
-await fs.copyFile(upath.joinSafe(wsDirpath, 'README.md'), upath.joinSafe(distDir, 'README.md'))
+await fs.outputFile(
+  upath.joinSafe(distDir, 'README.md'),
+  (await fs.readFile(upath.joinSafe(wsDirpath, 'README.md'), 'utf8')) //
+    // eslint-disable-next-line unicorn/better-regex
+    .replaceAll(/\[(\*\*.+\*\*)\]\((.+)\)/g, (_, name) => {
+      return name
+    }) //
+)
 
-console.info(`Built: libs/${wsDirname}`)
-
-process.exit(0)
+console.log(colors.green('✓ Build done'))

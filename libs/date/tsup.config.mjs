@@ -2,6 +2,9 @@ import { defineConfig } from 'tsup'
 
 export default defineConfig({
   entry: ['src/index.ts'],
+  splitting: false,
+  bundle: true,
+  skipNodeModulesBundle: true,
   platform: 'node',
   treeshake: 'recommended',
   shims: true,
@@ -9,10 +12,9 @@ export default defineConfig({
   tsconfig: 'tsconfig.json',
   target: 'esnext',
   noExternal: ['type-fest', '@types/*', '@mono/*'],
-  format: ['esm'],
+  format: ['esm', 'cjs'],
   dts: 'src/index.ts',
-
-  outExtension() {
-    return { js: '.mjs' }
-  },
+  dtsResolve: true,
+  outDir: 'dist/lib',
+  removeNodeProtocol: false,
 })

@@ -1,18 +1,13 @@
 import * as esbuild from 'esbuild'
+import colors from 'ansi-colors'
 import cp from 'child_process'
 import fs from 'fs-extra'
-/**
- * Self-contained build script.
- * This file must NOT import from s/ or any workspace - it is the bootstrap entry point.
- */
 import upath from 'upath'
 
 // inline repo root discovery
 const repoRootDirpath = (() => {
   const parts = upath.normalizeSafe(import.meta.dirname).split('/')
-  const i = parts.findLastIndex((p) => {
-    return p === 'mono'
-  })
+  const i = parts.lastIndexOf('mono')
   if (i === -1) {
     throw new Error('Could not find repo root directory')
   }
@@ -35,7 +30,10 @@ const pkg = await fs.readJson(packageJsonFilepath)
 // ensure package details are consistent across package.json and source code, and that version is unique on npm
 void (await (async () => {
   // check if version already exists on npm, and if so, bump patch version
-  const npmVersion = cp.execSync(`npm view ${pkg.name} version`, { encoding: 'utf8' })
+
+  console.log('Build version check')
+
+  const npmVersion = cp.execSync(`npm view ${pkg.name} version`, { encoding: 'utf8', stderr: 'inherit' })
   if (npmVersion.trim() === pkg.version) {
     const semver = pkg.version.split('.')
     semver[2] = (parseInt(semver[2]) + 1).toString()
@@ -47,7 +45,7 @@ void (await (async () => {
   // update version in source code
   const cmdVersionFilepath = upath.joinSafe(wsDirpath, 'src', 'core', 'version.ts')
   const cmdVersionSrc = await fs.readFile(cmdVersionFilepath, 'utf-8')
-  const cmdVersionSplit = cmdVersionSrc.split(/['"`]/)
+  const cmdVersionSplit = cmdVersionSrc.split(/["'`]/)
   const cmdVersion = cmdVersionSplit[1]
   if (cmdVersion !== pkg.version) {
     console.info(
@@ -64,7 +62,7 @@ void (await (async () => {
   // update description in source code
   const cmdDescriptionFilepath = upath.joinSafe(wsDirpath, 'src', 'core', 'description.ts')
   const cmdDescriptionSrc = await fs.readFile(cmdDescriptionFilepath, 'utf-8')
-  const cmdDescriptionSplit = cmdDescriptionSrc.split(/['"`]/)
+  const cmdDescriptionSplit = cmdDescriptionSrc.split(/["'`]/)
   const cmdDescription = cmdDescriptionSplit[1]
   if (cmdDescription !== pkg.description) {
     console.info(
@@ -78,6 +76,8 @@ void (await (async () => {
     await fs.outputFile(cmdDescriptionFilepath, cmdDescriptionSrcNew)
   }
 })())
+
+console.log('Build started')
 
 // build with esbuild
 await esbuild.build({
@@ -106,8 +106,12 @@ await esbuild.build({
   logOverride: { 'empty-import-meta': 'silent' },
 })
 
+console.log('Build completed')
+
 // validate the built artifact
-const stdout = cp.execSync(`node ${indexOutFileTemp} --help`, { cwd: repoRootDirpath }).toString()
+const stdout = cp
+  .execSync(`node ${indexOutFileTemp} --help`, { cwd: repoRootDirpath, stderr: 'inherit' })
+  .toString()
 if (typeof stdout !== 'string' || !stdout) {
   console.error(`Build did not produce a valid module: ${indexOutFileTemp}`)
   process.exit(1)
@@ -123,3 +127,5 @@ if (await fs.pathExists(`${indexOutFileTemp}.map`)) {
 
 // create bin wrapper for cross-platform npx support
 await fs.outputFile(upath.joinSafe(distDirpath, 'cli.mjs'), `#!/usr/bin/env node\nimport("./${wsDirname}.cjs");\n`)
+
+console.log(colors.green('✓ Build validated'))

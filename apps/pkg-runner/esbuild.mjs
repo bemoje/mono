@@ -1,11 +1,9 @@
 import * as esbuild from 'esbuild'
+import colors from 'ansi-colors'
 import fs from 'fs-extra'
 import upath from 'upath'
 
-/**
- * Self-contained build script.
- * This file must NOT import from s/ or any workspace - it is the bootstrap entry point.
- */
+console.log('Build started')
 
 const wsDirpath = upath.normalizeSafe(import.meta.dirname)
 const wsDirname = upath.basename(wsDirpath)
@@ -73,3 +71,5 @@ await fs.outputFile(
 )
 
 await fs.copyFile(upath.joinSafe(wsDirpath, 'README.md'), upath.joinSafe(distDir, 'README.md'))
+
+console.log(colors.green('✓ Build validated'))
