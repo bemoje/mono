@@ -17,12 +17,10 @@
     "typescript"
   ],
   "scripts": {
-    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
     "build": "node '../../scripts/build-lib-bundle.mjs'",
     "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
-    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {

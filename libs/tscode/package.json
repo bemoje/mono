@@ -16,7 +16,6 @@
     "utilities"
   ],
   "scripts": {
-    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
     "build": "node '../../scripts/build-lib-bundle.mjs'",
     "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
     "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
@@ -24,7 +23,6 @@
   "devDependencies": {
     "@mono/regex": "workspace:^",
     "@types/strip-comments": "^2.0.4",
-    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {

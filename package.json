@@ -11,9 +11,9 @@
   "scripts": {
     "fix": "yarn run-p --aggregate-output \"fix:*\"",
     "fix:fixOwnWsImports": "yarn DK fix-workspace-imports",
-    "fix:indexts": "yarn dk fix-index-ts",
+    "fix:indexts": "yarn DK fix-index-ts",
     "fix:removeEmptyWsFiles": "yarn DK fix-empty-files",
-    "fix:fixMissingDependencies": "yarn dk fix-missing-dependencies -y",
+    "fix:fixMissingDependencies": "yarn DK fix-missing-dependencies -y",
     "fix:replaceBadDashChars": "yarn DK fix-dash-chars",
     "check": "yarn run-s -n \"check:*\"",
     "check:knip": "yarn knip --config knip.jsonc --cache --no-config-hints",
@@ -34,9 +34,9 @@
     "test": "yarn vitest --run",
     "test:watch": "yarn vitest",
     "test-coverage": "yarn vitest --run --coverage --cache",
-    "test-coverage-full": "yarn DK missing-coverage-files --check",
+    "test-coverage-full": "yarn dk missing-coverage-files --check",
     "test-coverage:open": ".coverage/html/index.html",
-    "precommit": "yarn install && yarn run-s -n fix lint:fix format-all:write typecheck check:knip-cached check:tsdoc build:all test-coverage:cached test-coverage-full readme && echo 'Passed!'",
+    "precommit": "yarn runturbo runall",
     "publish:pkg-runner": "yarn workspace pkg-runner run build && cd apps/pkg-runner/dist && npm publish && cd ../../../",
     "publish:devkit": "yarn workspace devkit run build && cd apps/devkit/dist && npm publish && cd ../../../",
     "publish:linkedin-resume": "yarn workspace linkedin-resume run build && cd apps/linkedin-resume && npm publish && cd ../../",
@@ -57,7 +57,7 @@
     "@clack/prompts": "^1.1.0"
   },
   "devDependencies": {
-    "@bemoje/devkit": "^4.1.1",
+    "@bemoje/devkit": "4.3.0",
     "@bemoje/eslint": "1.1.5",
     "@bemoje/stacktrace": "1.1.2",
     "@eslint/js": "^10.0.1",

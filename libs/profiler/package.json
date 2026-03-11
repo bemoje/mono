@@ -16,7 +16,6 @@
     "typescript"
   ],
   "scripts": {
-    "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
     "build": "node '../../scripts/build-lib-bundle.mjs'",
     "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
     "npmPublish": "yarn build && yarn build:publint && cd dist && npm publish && cd ../../"
@@ -26,7 +25,6 @@
     "@mono/object": "workspace:^",
     "@mono/table": "workspace:^",
     "@mono/types": "workspace:^",
-    "prettier": "^3.3.3",
     "tsup": "^8.5.1"
   },
   "dependencies": {

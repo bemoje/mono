@@ -18,7 +18,6 @@
         "module": "src/index.ts",
         "sideEffects": false,
         "scripts": {
-          "format-ws": "yarn prettier './*' 'src/**/*' --config '../../.prettierrc' --write --cache --list-different --ignore-unknown",
           "build": "node '../../scripts/build-lib-bundle.mjs'",
           "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
         },

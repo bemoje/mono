@@ -52,17 +52,7 @@
       "dependsOn": ["yarn-install"],
       "cache": true
     },
-    "fix:replaceBadDashChars": {
-      "inputs": ["**/*.md"],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "devkit.config.json",
-        "**/*.md"
-      ],
-      "dependsOn": ["yarn-install"],
-      "cache": true
-    },
+
     "lint:fix": {
       "inputs": [
         "./*",
@@ -166,11 +156,7 @@
         "libs/*/package.json",
         "libs/*/README.md"
       ],
-      "dependsOn": [
-        "test-coverage",
-        "fix:replaceBadDashChars",
-        "format-all:write"
-      ],
+      "dependsOn": ["test-coverage", "format-all:write"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
@@ -187,7 +173,6 @@
         "fix:indexts",
         "fix:removeEmptyWsFiles",
         "fix:fixMissingDependencies",
-        "fix:replaceBadDashChars",
         "lint:fix",
         "format-all:write",
         "typecheck",
