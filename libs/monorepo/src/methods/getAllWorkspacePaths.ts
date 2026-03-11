@@ -9,12 +9,17 @@ export async function getAllWorkspacePaths(): Promise<string[]> {
   const pkg = await getRepoPackageJson()
   return (
     await Promise.all(
-      pkg.workspaces.map((pattern: string) => {
-        return glob(pattern)
-      })
+      pkg.workspaces
+        .filter((ws: string) => {
+          return ws !== '.'
+        })
+        .map((pattern: string) => {
+          return glob(pattern)
+        })
     )
   )
     .flat()
+
     .map((fp) => {
       return upath.normalizeSafe(fp)
     })

@@ -1,5 +1,5 @@
 import { importStatementToFormattedOneLiner } from './importStatementToFormattedOneLiner'
-import { isBuiltin } from 'node:module'
+import { isBuiltin } from 'module'
 import { rexec } from '@mono/regex'
 import upath from 'upath'
 

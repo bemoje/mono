@@ -1,7 +1,7 @@
 import type { FunctionPrototype } from '@mono/types'
 import type { FunctionType } from './types'
 import type { TargetType } from './types'
-import { inspect } from 'node:util'
+import { inspect } from 'util'
 import { setNonEnumerable } from '@mono/object'
 
 /**

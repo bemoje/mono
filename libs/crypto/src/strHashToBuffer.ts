@@ -1,5 +1,5 @@
 import type { TCryptoAlgorithm } from './TCryptoAlgorithm'
-import crypto from 'node:crypto'
+import crypto from 'crypto'
 
 /**
  * Hash a string into a buffer with a given algorithm

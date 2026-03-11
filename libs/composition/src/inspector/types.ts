@@ -1,4 +1,4 @@
-import type { InspectOptions } from 'node:util'
+import type { InspectOptions } from 'util'
 import type { InspectorTarget } from './Inspector'
 
 export interface InspectorOptions {

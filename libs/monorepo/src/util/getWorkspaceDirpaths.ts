@@ -14,6 +14,9 @@ export function getWorkspaceDirpaths(): string[] {
     throw new Error(`No workspaces found in package.json at ${rootDirpath}`)
   }
   return pkg.workspaces
+    .filter((ws) => {
+      return ws !== '.'
+    })
     .flatMap((workspace: string) => {
       return globSync(workspace)
     })

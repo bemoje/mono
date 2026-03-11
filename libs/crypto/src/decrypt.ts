@@ -1,4 +1,4 @@
-import crypto from 'node:crypto'
+import crypto from 'crypto'
 
 /**
  * Decrypts a string that was encrypted using encrypt().

@@ -3,9 +3,7 @@ import type { TFunction } from './TFunction'
 /**
  * Taken from https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#type-inference-in-conditional-types
  */
-export type FunctionPropertyNames<T> = {
-  [K in keyof T]: T[K] extends TFunction ? K : never
-}[keyof T]
+export type FunctionPropertyNames<T> = { [K in keyof T]: T[K] extends TFunction ? K : never }[keyof T]
 
 /**
  * Taken from https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#type-inference-in-conditional-types
@@ -15,9 +13,7 @@ export type FunctionProperties<T> = Pick<T, FunctionPropertyNames<T>>
 /**
  * Taken from https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#type-inference-in-conditional-types
  */
-export type NonFunctionPropertyNames<T> = {
-  [K in keyof T]: T[K] extends TFunction ? never : K
-}[keyof T]
+export type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends TFunction ? never : K }[keyof T]
 
 /**
  * Taken from https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#type-inference-in-conditional-types

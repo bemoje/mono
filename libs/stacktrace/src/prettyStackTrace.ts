@@ -1,6 +1,6 @@
 import type { StackFrame } from 'stacktrace-parser'
 import colors from 'ansi-colors'
-import { inspect } from 'node:util'
+import { inspect } from 'util'
 import { parse } from 'stacktrace-parser'
 import upath from 'upath'
 

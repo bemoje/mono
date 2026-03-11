@@ -1,4 +1,4 @@
-import readline from 'node:readline'
+import readline from 'readline'
 
 /**
  * Prompt the user for input.

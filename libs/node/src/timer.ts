@@ -2,7 +2,7 @@ import type { Logger } from './createLogger'
 import colors from 'ansi-colors'
 import { createLogger } from './createLogger'
 import humanizeDuration from 'humanize-duration'
-import { isPromise } from 'node:util/types'
+import { isPromise } from 'util/types'
 
 /**
  * Executes a task and logs the execution time.

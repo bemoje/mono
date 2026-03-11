@@ -6,7 +6,7 @@ import { Parenting } from '@mono/composition'
 import type { SetFieldType } from 'type-fest'
 import type { TsConfigJson } from 'type-fest'
 import { Workspace } from './repo/Workspace'
-import fs from 'node:fs'
+import fs from 'fs'
 import { getRepoRootDirpath } from './util/getRepoRootDirpath'
 import { lazyProp } from '@mono/decorators'
 import path from 'upath'
@@ -87,9 +87,13 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
     if (!this.packageJson.workspaces) {
       throw new Error(`MonoRepo package.json missing 'workspaces' field: ${this.packageJsonPath}`)
     }
-    return this.packageJson.workspaces.map((workspacePath: string) => {
-      return path.join(this.path, workspacePath.replace(/\*$/, ''))
-    })
+    return this.packageJson.workspaces
+      .filter((ws) => {
+        return ws !== '.'
+      })
+      .map((workspacePath: string) => {
+        return path.join(this.path, workspacePath.replace(/\*$/, ''))
+      })
   }
 
   @lazyProp(5000)

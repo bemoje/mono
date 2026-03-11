@@ -1,7 +1,7 @@
 import type { ClassInspectorMixin } from './types'
 import type { IgnoreValuesOptions } from './types'
+import type { InspectOptions } from 'util'
 import type { InspectorOptions } from './types'
-import type { InspectOptions as NativeInspectOptions } from 'node:util'
 import { View } from '../View'
 import { cloneDeep } from 'es-toolkit/object'
 import colors from 'ansi-colors'
@@ -12,7 +12,7 @@ import { getClassChain } from '@mono/object'
 import { hasOwnProperty } from '@mono/object'
 import { hasProperty } from '@mono/object'
 import { ignoreValuesFilterDefaults } from './defaults/ignoreValuesFilterDefaults'
-import { inspect } from 'node:util'
+import { inspect } from 'util'
 import { inspectorDefaults } from './defaults/inspectorDefaults'
 import { isObjectLike } from 'es-toolkit/compat'
 import { mapValues } from 'es-toolkit'
@@ -23,7 +23,7 @@ import { omit } from 'es-toolkit/compat'
  * Provides standard inspection methods for debugging and serialization.
  */
 export interface InspectorTarget {
-  [inspect.custom](depth: number, options: NativeInspectOptions): string
+  [inspect.custom](depth: number, options: InspectOptions): string
   get inspector(): Inspector
   toJSON(): Partial<this>
 }
@@ -42,7 +42,7 @@ export class Inspector extends View<InspectorTarget> {
       defineMethod(
         cls.prototype,
         inspect.custom,
-        function (this: InspectorTarget, depth?: number, options?: NativeInspectOptions) {
+        function (this: InspectorTarget, depth?: number, options?: InspectOptions) {
           return this.inspector.inspect(depth, options)
         }
       )
@@ -93,7 +93,7 @@ export class Inspector extends View<InspectorTarget> {
   /**
    * Inspect the target object.
    */
-  inspect(depth = 0, options: NativeInspectOptions = {}) {
+  inspect(depth = 0, options: InspectOptions = {}) {
     const { output, inspectOptions } = this.compile(depth)
     Object.assign(inspectOptions, options)
     const result = inspect(output, options)
@@ -107,7 +107,7 @@ export class Inspector extends View<InspectorTarget> {
    * Compiles the output object and inspect options.
    * Merges prototype chain options and applies filters to determine which properties to include.
    */
-  protected compile(depth = 0): { output: Partial<InspectorTarget>; inspectOptions: NativeInspectOptions } {
+  protected compile(depth = 0): { output: Partial<InspectorTarget>; inspectOptions: InspectOptions } {
     const output = Object.defineProperty({}, Symbol.toStringTag, {
       value: this.target.constructor.name,
       configurable: true,
