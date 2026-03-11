@@ -1,121 +1,21 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "tasks": {
-    "yarn-install": {
-      "outputs": ["node_modules/**", "yarn.lock"],
-      "cache": false
-    },
-    "fix:fixOwnWsImports": {
-      "inputs": ["libs/*/src/**/*.ts"],
-      "outputs": [".next/**", "!.next/cache/**", "devkit.config.json"],
-      "dependsOn": ["yarn-install"],
-      "cache": true
-    },
-    "fix:indexts": {
-      "inputs": [
-        "libs/*/src/**/*.ts",
-        "!libs/*/src/**/*.test.ts",
-        "libs/*/package.json"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "devkit.config.json",
-        "libs/*/src/index.ts",
-        "libs/*/package.json"
-      ],
-      "dependsOn": ["yarn-install"],
-      "cache": true
-    },
-    "fix:removeEmptyWsFiles": {
-      "inputs": ["libs/*/src/**/*.ts", "!libs/*/src/**/*.test.ts"],
-      "outputs": [".next/**", "!.next/cache/**", "devkit.config.json"],
-      "dependsOn": ["yarn-install"],
-      "cache": true
-    },
-    "fix:fixMissingDependencies": {
-      "inputs": [
-        "libs/*/src/**/*.ts",
-        "apps/*/src/**/*.ts",
-        "libs/*/package.json",
-        "apps/*/package.json"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "devkit.config.json",
-        "package.json",
-        "libs/*/package.json",
-        "apps/*/package.json",
-        "yarn.lock"
-      ],
-      "dependsOn": ["yarn-install"],
-      "cache": true
-    },
-
-    "lint:fix": {
-      "inputs": [
-        "./*",
-        "{libs,apps}/*/*",
-        "{libs,apps}/*/src/**/*",
-        "{scripts,notes,docs,.vscode,.github}/**/*"
-      ],
-      "dependsOn": [
-        "yarn-install",
-        "fix:fixOwnWsImports",
-        "fix:indexts",
-        "fix:fixMissingDependencies"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        ".eslintcache",
-        "./*",
-        "{libs,apps}/*/*",
-        "{libs,apps}/*/src/**/*",
-        "{scripts,notes,docs,.vscode,.github}/**/*"
-      ],
-      "cache": true
-    },
-
-    "format-all:write": {
-      "inputs": [
-        "./*",
-        "{libs,apps}/*/*",
-        "{libs,apps}/*/src/**/*",
-        "{scripts,notes,docs,.vscode,.github}/**/*"
-      ],
-      "dependsOn": ["yarn-install", "lint:fix"],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "./*",
-        "{libs,apps}/*/*",
-        "{libs,apps}/*/src/**/*",
-        "{scripts,notes,docs,.vscode,.github}/**/*"
-      ],
-      "cache": true
-    },
+    "precommit:write": { "cache": false },
     "typecheck": {
-      "inputs": [
-        "libs/*/src/**/*.ts",
-        "apps/*/src/**/*.ts",
-        "*.json",
-        "libs/*.json",
-        "apps/*.json"
-      ],
-      "dependsOn": ["yarn-install", "lint:fix"],
+      "inputs": ["*.json", "{apps,libs}/*.json", "{apps,libs}/*/src/**/*.ts"],
+      "dependsOn": ["precommit:write"],
       "outputs": [".next/**", "!.next/cache/**"],
       "cache": true
     },
     "check:tsdoc": {
-      "inputs": ["libs/*/src/**/*.ts", "apps/*/src/**/*.ts"],
-      "dependsOn": ["yarn-install", "lint:fix"],
-      "outputs": [".next/**", "!.next/cache/**", "devkit.config.json"],
+      "inputs": ["libs/*/src/**/*.ts"],
+      "dependsOn": ["precommit:write"],
+      "outputs": [".next/**", "!.next/cache/**"],
       "cache": true
     },
     "check:knip": {
-      "dependsOn": ["yarn-install", "lint:fix"],
+      "dependsOn": ["precommit:write"],
       "outputs": [".next/**", "!.next/cache/**"],
       "cache": true
     },
@@ -123,44 +23,38 @@
     "build": {
       "inputs": [
         "../../scripts/build-lib-bundle.mjs",
-        "src/**/*",
-        "./*.{json,mjs}",
-        "../../*.{json,mjs}"
+        "src/**/*.ts",
+        "*.{json,mjs}",
+        "../../*.{json,mjs,lock}"
       ],
-      "dependsOn": [
-        "mono#yarn-install",
-        "mono#lint:fix",
-        "mono#format-all:write",
-        "^build"
-      ],
+      "dependsOn": ["^build", "mono#precommit:write"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "cache": true
     },
-
     "test-coverage": {
       "inputs": ["libs/*/src/**/*.ts", "apps/*/src/**/*.ts"],
-      "dependsOn": ["yarn-install", "build", "lint:fix", "format-all:write"],
+      "dependsOn": ["build", "precommit:write"],
       "outputs": [".next/**", "!.next/cache/**", ".coverage/**"],
       "cache": true
     },
     "test-coverage-full": {
       "inputs": [".coverage/json/coverage-final.json"],
-      "dependsOn": ["test-coverage"],
+      "dependsOn": ["test-coverage", "precommit:write"],
       "outputs": [".next/**", "!.next/cache/**", "devkit.config.json"],
       "cache": true
     },
 
     "readme": {
       "inputs": [
-        "{apps,libs}/*/dist/**/*.d.ts",
+        "libs/*/src/**/*.ts",
         "libs/*/package.json",
-        "libs/*/README.md"
+        "libs/*/README.md",
+        "docs/**/*"
       ],
-      "dependsOn": ["test-coverage", "format-all:write"],
+      "dependsOn": ["test-coverage", "precommit:write"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
-        "devkit.config.json",
         "libs/*/README.md",
         "README.md"
       ],
@@ -168,21 +62,16 @@
     },
     "runall": {
       "dependsOn": [
-        "yarn-install",
-        "fix:fixOwnWsImports",
-        "fix:indexts",
-        "fix:removeEmptyWsFiles",
-        "fix:fixMissingDependencies",
-        "lint:fix",
-        "format-all:write",
+        "precommit:write",
         "typecheck",
-        "check:tsdoc",
         "check:knip",
+        "check:tsdoc",
         "build",
         "test-coverage",
         "test-coverage-full",
         "readme"
-      ]
+      ],
+      "cache": false
     }
   },
   "remoteCache": { "signature": true },

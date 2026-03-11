@@ -23,7 +23,7 @@ export default defineConfig({
     root: getRepoRoot(),
     include: ['{libs,apps}/*/{src,examples}/**/*.test.ts'],
     exclude: ['apps/playground'],
-    reporters: ['dot'],
+    reporters: ['default'],
     coverage: {
       enabled: false,
       reporter: ['html', 'json', 'json-summary', 'text-summary'],
