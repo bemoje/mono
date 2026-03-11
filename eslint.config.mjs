@@ -40,7 +40,7 @@ export default [
 
       // PLUGIN: split imports
       'split-and-sort-imports/split-imports': ['warn'],
-      'split-and-sort-imports/sort-imports': ['warn'],
+      'split-and-sort-imports/sort-imports': ['off'],
 
       '@typescript-eslint/no-unused-vars': [
         'warn',
