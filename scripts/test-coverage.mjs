@@ -21,7 +21,7 @@ const filepaths = uniq(
       '*{apps,libs}/*/src/**/*.ts',
       '*{apps,libs}/*/{tsconfig,package}.json',
     ],
-    { nodir: true, magicalBraces: true, posix: true }
+    { nodir: true, magicalBraces: true, posix: true, ignore: ['apps/playground/**/*'] }
   )
 ).toSorted()
 
