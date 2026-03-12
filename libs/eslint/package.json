@@ -16,8 +16,7 @@
     "typescript"
   ],
   "scripts": {
-    "build": "node '../../scripts/build-lib-bundle.mjs' && yarn build:publint",
-    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
     "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {

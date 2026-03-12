@@ -6,6 +6,7 @@
   "private": true,
   "sideEffects": false,
   "devDependencies": {
+    "@mono/monorepo": "workspace:^",
     "tsup": "^8.5.1"
   },
   "dependencies": {

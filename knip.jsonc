@@ -6,7 +6,6 @@
     "scripts/parseBarrelExportIndexFile.mjs" //
   ],
   "ignore": [
-    ".github/copilot/refactoring.mts",
     "libs/prompt/examples/**/*", //
     "apps/playground/src/**/*"
   ],

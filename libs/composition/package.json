@@ -1,6 +1,6 @@
 {
   "name": "@mono/composition",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
@@ -24,8 +24,7 @@
     "typescript"
   ],
   "scripts": {
-    "build": "node '../../scripts/build-lib-bundle.mjs' && yarn build:publint",
-    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
     "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {

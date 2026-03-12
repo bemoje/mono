@@ -1,0 +1,13 @@
+[2m Test Files [22m [1m[32m450 passed[39m[22m[90m (450)[39m
+[2m      Tests [22m [1m[32m3285 passed[39m[22m[90m (3285)[39m
+[2m   Start at [22m 02:47:42
+[2m   Duration [22m 72.54s[2m (transform 23.24s, setup 0ms, collect 180.98s, tests 9.40s, environment 187ms, prepare 98.54s)[22m
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+
+=============================== Coverage summary ===============================
+[32;1mStatements   : 100% ( 6791/6791 )[0m
+[32;1mBranches     : 100% ( 2244/2244 )[0m
+[32;1mFunctions    : 100% ( 686/686 )[0m
+[32;1mLines        : 100% ( 6791/6791 )[0m
+================================================================================
