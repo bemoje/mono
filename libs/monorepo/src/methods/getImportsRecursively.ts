@@ -87,7 +87,10 @@ export async function getImportsRecursively(entryPoints: string[]): Promise<Resu
     const builtins = isLocalWorkspace ? builtinsLocal : builtinsRecursive
     const internals = isLocalWorkspace ? internalsLocal : internalsRecursive
 
-    const entryPointFile = files.get(curFilepath)!
+    const entryPointFile = files.get(curFilepath)
+    if (!entryPointFile) {
+      return
+    }
     const wsName = entryPointFile.parent.name
     internals.add(wsName)
 

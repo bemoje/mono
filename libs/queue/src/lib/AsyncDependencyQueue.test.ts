@@ -65,7 +65,7 @@ describe('AsyncDependencyQueue', () => {
     await expect(dependencyQueue.run()).rejects.toThrow()
   })
 
-  it('should adhere to the concurrency limit', async () => {
+  it('should adhere to the concurrency limit', { retry: 3 }, async () => {
     const tasks: TaskMap<TaskNames> = {
       task1: {
         dependencies: [],

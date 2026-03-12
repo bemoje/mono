@@ -7,6 +7,7 @@ import type { TSchema } from '@sinclair/typebox'
 
 /**
  * Configuration file manager that provides schema validation and file I/O using the Strategy pattern.
+ * Ensures that only one instance of ConfigFile exists per file path, and allows for loading and updating configuration data with validation and default values applied.
  */
 export class ConfigFile<Schema extends TSchema> {
   protected static instances = new Map<string, ConfigFile<TSchema>>()

@@ -8,7 +8,7 @@ Configuration file management with JSON persistence and TypeBox schema validatio
 
 <!-- EXPORTS_START -->
 
-- [**ConfigFile**](./src/core/ConfigFile.ts): Configuration file manager that provides schema validation and file I/O using the Strategy pattern.
+- [**ConfigFile**](./src/core/ConfigFile.ts): Configuration file manager that provides schema validation and file I/O using the Strategy pattern. Ensures that only one instance of ConfigFile exists per file path, and allows for loading and updating configuration data with validation and default values applied.
 - [**JsonFileStrategy**](./src/strategies/JsonFileStrategy.ts): Strategy for loading and saving configuration data as JSON files.
 - [**SchemaConfigStrategy**](./src/strategies/SchemaConfigStrategy.ts): Strategy for validating configuration data against a TypeBox schema and applying default values.
 

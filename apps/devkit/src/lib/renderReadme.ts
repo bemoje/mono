@@ -15,8 +15,6 @@ export const README_TEMPLATE_PATH = 'docs/readmeTemplate.md'
  * Renders the full README content.
  */
 export async function renderReadme({ logger: log }: { logger: Logger }): Promise<string> {
-  cp.execSync(`yarn prettier -w --l ${README_TEMPLATE_PATH}`, { stdio: 'inherit' })
-
   let md = await fs.readFile(README_TEMPLATE_PATH, 'utf8')
 
   const [repoName, repoDescription, linesOfCodeTable, coverageSummary, libsExportedModules] = await Promise.all([
@@ -186,6 +184,9 @@ export async function getRepoName(): Promise<string> {
 
 export async function renderCoverageSummary(): Promise<string> {
   const coverageJsonPath = '.coverage/html/coverage-summary.json'
+  if (!fs.existsSync(coverageJsonPath)) {
+    throw new Error('Coverage summary not found. Please run "yarn test-coverage" first.')
+  }
   const coverageData = await fs.readJson(coverageJsonPath)
   const { total } = coverageData
 
