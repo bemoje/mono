@@ -38,32 +38,32 @@ const queue = new AsyncDependencyQueue({
         await exe({})(`yarn lint:fix`)
       },
     },
-    'format-all:write': {
+    'format:write:all': {
       dependencies: ['install', 'fix', 'lint:fix'],
       run: async () => {
-        await exe({})(`yarn format-all:write`)
+        await exe({})(`yarn format:write:all`)
       },
     },
     'typecheck': {
-      dependencies: ['install', 'fix', 'lint:fix', 'format-all:write'],
+      dependencies: ['install', 'fix', 'lint:fix', 'format:write:all'],
       run: async () => {
         await exe({})(`yarn typecheck`)
       },
     },
     'check': {
-      dependencies: ['install', 'fix', 'lint:fix', 'format-all:write'],
+      dependencies: ['install', 'fix', 'lint:fix', 'format:write:all'],
       run: async () => {
         await exe({})(`yarn check`)
       },
     },
     'build': {
-      dependencies: ['install', 'fix', 'lint:fix', 'format-all:write', 'typecheck'],
+      dependencies: ['install', 'fix', 'lint:fix', 'format:write:all', 'typecheck'],
       run: async () => {
         await exe({})(`yarn build`)
       },
     },
     'test-coverage': {
-      dependencies: ['install', 'fix', 'lint:fix', 'format-all:write'],
+      dependencies: ['install', 'fix', 'lint:fix', 'format:write:all'],
       run: async () => {
         await exe({})(`yarn test-coverage`)
       },
@@ -75,7 +75,7 @@ const queue = new AsyncDependencyQueue({
       },
     },
     'readme': {
-      dependencies: ['install', 'format-all:write', 'test-coverage'],
+      dependencies: ['install', 'format:write:all', 'test-coverage'],
       run: async () => {
         await exe({})(`yarn readme`)
       },
