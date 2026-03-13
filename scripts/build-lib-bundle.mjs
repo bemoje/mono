@@ -27,7 +27,7 @@ async function createBuildHash() {
     cwd: rootDirpath,
     // stdio: 'inherit',
     encoding: 'utf8',
-    shell: 'powershell',
+    // shell: 'powershell',
   })
 
   if (!buildHash) {
@@ -177,12 +177,12 @@ async function validateBuild() {
     cwd: distDir,
     stdio: 'inherit',
     encoding: 'utf8',
-    shell: 'powershell',
+    // shell: 'powershell',
   })
   cp.execSync('npx --yes @arethetypeswrong/cli --pack dist', {
     stdio: 'inherit',
     encoding: 'utf8',
-    shell: 'powershell', //
+    // shell: 'powershell', //
   })
   console.log(colors.green('✓ Build validation success'))
 }
