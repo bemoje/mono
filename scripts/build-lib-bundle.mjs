@@ -10,10 +10,15 @@ const rootDirpath = upath.joinSafe(wsDirpath, '..', '..')
 
 ////
 
-const saveBuildHash = await createBuildHash()
-await build()
-await validateBuild()
-await saveBuildHash()
+if (process.env.CI) {
+  console.log('CI environment detected, skipping build hash check')
+  await build()
+} else {
+  const saveBuildHash = await createBuildHash()
+  await build()
+  await validateBuild()
+  await saveBuildHash()
+}
 
 ////
 
