@@ -1,10 +1,14 @@
 import { noBlankLineBetweenCommentAndDeclaration } from '../rules/noBlankLineBetweenCommentAndDeclaration'
+import { splitImports } from '../rules/splitImports'
 
 /**
  * ESLint plugin for Bemoje projects.
  */
 export function eslintPluginBemoje() {
-  const rules = { 'no-blank-line-between-comment-and-declaration': noBlankLineBetweenCommentAndDeclaration }
+  const rules = {
+    'no-blank-line-between-comment-and-declaration': noBlankLineBetweenCommentAndDeclaration,
+    'split-imports': splitImports,
+  }
 
   const plugins = {
     get 'eslint-plugin-bemoje'() {
@@ -18,7 +22,7 @@ export function eslintPluginBemoje() {
         return { plugins, rules }
       },
     },
-    meta: { name: 'eslint-plugin-bemoje', version: '1.0.1' },
+    meta: { name: 'eslint-plugin-bemoje', version: '1.2.0' },
     rules,
   }
 }

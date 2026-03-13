@@ -1,6 +1,6 @@
 {
   "name": "@mono/eslint",
-  "version": "1.1.6",
+  "version": "1.2.0",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
@@ -30,6 +30,7 @@
     ".": "./src/index.ts",
     "./createRule": "./src/lib/createRule.ts",
     "./eslintPluginBemoje": "./src/lib/eslintPluginBemoje.ts",
-    "./noBlankLineBetweenCommentAndDeclaration": "./src/rules/noBlankLineBetweenCommentAndDeclaration.ts"
+    "./noBlankLineBetweenCommentAndDeclaration": "./src/rules/noBlankLineBetweenCommentAndDeclaration.ts",
+    "./splitImports": "./src/rules/splitImports.ts"
   }
 }
