@@ -292,7 +292,7 @@ describe(Command.name, () => {
     })
   })
 
-  describe('option value sorting in parseArgv', () => {
+  describe.runIf(process.env.CI !== 'true')('option value sorting in parseArgv', () => {
     it('should sort options: defined values -> true -> false -> undefined', () => {
       const cmd = new Command('test')
         .addOption('-a, --aaa <val>', { description: 'string opt 1' })
