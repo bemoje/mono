@@ -1,7 +1,7 @@
 {
   "name": "pkg-runner",
   "description": "A CLI tool to run npm/yarn scripts with an interactive prompt to select which script(s) to run.",
-  "version": "0.2.2",
+  "version": "0.2.5",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "dependencies": {

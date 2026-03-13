@@ -3,7 +3,8 @@
 
   "ignoreExportsUsedInFile": true,
   "ignoreFiles": [
-    "scripts/parseBarrelExportIndexFile.mjs" //
+    "scripts/parseBarrelExportIndexFile.mjs", //
+    "scripts/SMS.ts"
   ],
   "ignore": [
     "libs/prompt/examples/**/*", //

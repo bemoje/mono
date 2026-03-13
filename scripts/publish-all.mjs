@@ -31,6 +31,14 @@ for (const lib of libs) {
 console.log()
 console.log(upCommands.join('\n'))
 
+for (const cmd of upCommands) {
+  try {
+    cp.execSync(cmd, { shell: true, stdio: 'inherit' })
+  } catch (_) {
+    console.warn(`Command failed: "${cmd}"`)
+  }
+}
+
 function publish(dir, ws) {
   let pkg
   try {
