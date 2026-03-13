@@ -5,11 +5,10 @@
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "scripts": {
-    "build": "yarn build:bundle && yarn build:publint && yarn build:attw",
-    "build:bundle": "node esbuild.mjs",
+    "build": "node esbuild.mjs",
     "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
     "build:attw": "yarn attw --pack dist",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "npmPublish": "yarn build && yarn build:publint && yarn build:attw && cd dist && npm publish && cd ../../"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.34.48",

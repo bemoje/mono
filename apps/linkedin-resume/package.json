@@ -33,11 +33,10 @@
     "directory": "apps/linkedin-resume"
   },
   "scripts": {
-    "build": "yarn build:bundle && yarn build:publint && yarn build:attw",
-    "build:bundle": "node esbuild.mjs",
-    "build:publint": "npx --yes publint --level warning --pack npm",
-    "build:attw": "yarn attw --pack .",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "build": "node esbuild.mjs",
+    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
+    "build:attw": "yarn attw --pack dist",
+    "npmPublish": "yarn build && yarn build:publint && yarn build:attw && cd dist && npm publish && cd ../../"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.34.48",
