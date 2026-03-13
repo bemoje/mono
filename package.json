@@ -53,7 +53,7 @@
     "prepare": "husky",
     "release": "yarn release:build && yarn release:publish",
     "release:publish": "yarn changeset publish",
-    "release:build": "yarn workspaces foreach --parallel --all --jobs 10 --topological --exclude 'mono' --verbose --since 'origin/main' run build"
+    "release:build": "yarn workspaces foreach --topological --exclude 'mono' --verbose --since 'origin/main' run build"
   },
   "optionalDependencies": {
     "@clack/core": "^1.1.0",
