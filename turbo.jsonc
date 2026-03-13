@@ -1,20 +1,12 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "tasks": {
-    "fix:fixOwnWsImports": {},
     "fix:indexts": { "dependsOn": ["fix:fixOwnWsImports"] },
     "fix:fixMissingDependencies": { "dependsOn": ["fix:indexts"] },
-    "lint:fix": { "dependsOn": ["fix:indexts"] },
-    "format:write:all": { "dependsOn": ["lint:fix"] },
+    "lint:staged": { "dependsOn": ["fix:fixMissingDependencies"] },
 
     "precommit:write": {
-      "dependsOn": [
-        "fix:fixOwnWsImports",
-        "fix:indexts",
-        "fix:fixMissingDependencies",
-        "lint:fix",
-        "format:write:all"
-      ],
+      "dependsOn": ["fix:indexts", "fix:fixMissingDependencies", "lint:staged"],
       "cache": false
     },
     "typecheck": { "dependsOn": ["precommit:write"] },

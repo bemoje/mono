@@ -12,7 +12,6 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   eslintConfigPrettier,
-  // eslintPluginUnicorn.configs.unopinionated,
 
   {
     files: ['**/*.{ts,tsx,js,mjs}'],
@@ -24,7 +23,15 @@ export default [
       'eslint-plugin-bemoje': eslintPluginBemoje(),
     },
     rules: {
+      // manually enabled in: `.lintstagedrc.json`
+      'unused-imports/no-unused-imports': 'off',
+      'arrow-body-style': ['off', 'always'],
+
+      //
       'eslint-plugin-bemoje/no-blank-line-between-comment-and-declaration': 'error',
+      'eslint-plugin-bemoje/split-imports': 'error',
+
+      'split-and-sort-imports/sort-imports': 'error',
 
       // allow {}
       '@typescript-eslint/no-empty-object-type': 'off',
@@ -35,12 +42,7 @@ export default [
       // allow ts-ignore
       '@typescript-eslint/ban-ts-comment': 'off',
 
-      // PLUGIN: unused imports
-      'unused-imports/no-unused-imports': 'warn',
-
       // PLUGIN: split imports
-      'split-and-sort-imports/split-imports': ['warn'],
-      'split-and-sort-imports/sort-imports': ['off'],
 
       '@typescript-eslint/no-unused-vars': [
         'warn',
@@ -65,7 +67,7 @@ export default [
       'no-useless-assignment': 'off',
 
       'require-atomic-updates': 'error',
-      'arrow-body-style': ['error', 'always'],
+
       'complexity': ['warn'],
       'dot-notation': 'error',
       'max-classes-per-file': ['warn', 1],
@@ -98,7 +100,7 @@ export default [
       //
 
       'unicorn/consistent-empty-array-spread': ['error'],
-      'unicorn/better-regex': ['error'],
+      'unicorn/better-regex': ['off'],
       'unicorn/custom-error-definition': ['error'],
       'unicorn/new-for-builtins': ['error'],
       'unicorn/no-for-loop': ['error'],
@@ -152,7 +154,7 @@ export default [
       'unicorn/require-module-specifiers': ['error'],
       'unicorn/string-content': ['error'],
       'unicorn/switch-case-braces': ['error'],
-      'unicorn/template-indent': ['error'],
+      'unicorn/template-indent': ['off'],
       'unicorn/throw-new-error': ['error'],
     },
   },
@@ -249,8 +251,6 @@ export default [
     files: ['**/dist/*.{ts,mjs}'],
     rules: {
       'max-lines': 'off',
-      'split-and-sort-imports/split-imports': ['off'],
-      'split-and-sort-imports/sort-imports': ['off'],
       'no-cond-assign': 'off',
       'no-control-regex': 'off',
       'no-var': 'off',

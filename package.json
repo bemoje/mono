@@ -10,7 +10,6 @@
   ],
   "scripts": {
     "fix": "yarn run-p --aggregate-output \"fix:*\"",
-    "fix:fixOwnWsImports": "yarn DK fix-workspace-imports",
     "fix:indexts": "yarn DK fix-index-ts",
     "fix:removeEmptyWsFiles": "yarn DK fix-empty-files",
     "fix:fixMissingDependencies": "yarn DK fix-missing-dependencies -y",
@@ -30,6 +29,7 @@
     "format:write:all": "yarn format:write --cache '*.{js,mjs,json,jsonc,md,yml}' '{libs,apps}/*/*.{js,mjs,json,jsonc,md,yml}' '{libs,apps}/*/src/**/*.ts' '{scripts,notes,docs,.vscode,.github}/**/*.{js,mjs,json,jsonc,md,yml}'",
     "format:write": "yarn prettier --ignore-unknown --write --list-different",
     "format:check": "yarn prettier --ignore-unknown --check",
+    "lint:staged": "yarn lint-staged --config lint-staged.config.js --no-stash",
     "typecheck": "yarn tsc -p tsconfig.json --noEmit",
     "test": "yarn vitest --run",
     "test:watch": "yarn vitest",
@@ -50,7 +50,8 @@
     "dk": "yarn tsx --import 'tsconfig-paths/register' --import './scripts/enablePrettyStackTrace.ts' --import 'dotenv/config' apps/devkit/src/main.ts",
     "DK": "yarn devkit",
     "script:npmEnsureLoggedIn": "node ./scripts/npmEnsureLoggedIn.mjs",
-    "createWorkspaceHash": "yarn tsx ./scripts/createWorkspaceHash.ts"
+    "createWorkspaceHash": "yarn tsx ./scripts/createWorkspaceHash.ts",
+    "prepare": "husky"
   },
   "optionalDependencies": {
     "@clack/core": "^1.1.0",
@@ -58,7 +59,7 @@
   },
   "devDependencies": {
     "@bemoje/devkit": "4.3.0",
-    "@bemoje/eslint": "1.1.5",
+    "@bemoje/eslint": "1.2.0",
     "@bemoje/stacktrace": "1.1.2",
     "@eslint/js": "^10.0.1",
     "@mono/monorepo": "workspace:^",
@@ -76,6 +77,7 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "execa": "^9.6.1",
     "globals": "^17.3.0",
+    "husky": "^9.1.7",
     "knip": "^5.83.1",
     "npm-run-all2": "^8.0.4",
     "object-hash": "^3.0.0",

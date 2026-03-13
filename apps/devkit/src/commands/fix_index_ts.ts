@@ -1,14 +1,16 @@
 import type { Logger } from '@mono/node'
-import { forEachAsync } from 'es-toolkit'
+import cp from 'child_process'
+import { flatMapAsync } from 'es-toolkit'
 import fs from 'fs-extra'
 import { getRepoRootDirpath } from '../lib/getRepoRootDirpath'
 import { glob } from 'glob'
 import { outputFileIfChanged } from '../lib/outputFileIfChanged'
+import { toCwdRelative } from '@mono/path'
 import upath from 'upath'
 
 export async function fixIndexTsAction(
   dirnames: string[],
-  opts: { ignore?: string[] },
+  opts: { ignore?: string[]; addToStaged?: boolean },
   { logger }: { logger: Logger }
 ) {
   const repoRoot = getRepoRootDirpath()
@@ -21,7 +23,7 @@ export async function fixIndexTsAction(
       return upath.joinSafe('libs', d)
     })
 
-  await forEachAsync(
+  const changedFiles = await flatMapAsync(
     libWorkspacePaths,
     async (wsDirpath) => {
       const OUTFILE = 'src/index.ts'
@@ -75,18 +77,6 @@ export async function fixIndexTsAction(
         })
         .concat('')
 
-      const wsPkgPath = upath.joinSafe(wsDirpath, 'package.json')
-      const pkg = await fs.readJson(wsPkgPath)
-      pkg.exports = {
-        '.': './src/index.ts',
-        ...Object.fromEntries(
-          relative.map((fp) => {
-            return [`./${upath.basename(fp.replace(/\/index$/, ''))}`, `${fp.replace('.', './src')}.ts`]
-          })
-        ),
-      }
-      await outputFileIfChanged(wsPkgPath, `${JSON.stringify(pkg, null, 2)}\n`, logger)
-
       const testLines = [
         `import * as EXPORTS from './index'`,
         `import { describe } from 'vitest'`,
@@ -104,9 +94,25 @@ export async function fixIndexTsAction(
         ``,
       ]
 
-      await outputFileIfChanged(upath.joinSafe(WS_ROOT, OUTFILE), lines.join('\n'), logger)
-      await outputFileIfChanged(upath.joinSafe(WS_ROOT, TEST_OUTFILE), testLines.join('\n'), logger)
+      const changedIndexFile = await outputFileIfChanged(
+        upath.joinSafe(WS_ROOT, OUTFILE),
+        lines.join('\n'),
+        logger
+      )
+      const changedIndexTestFile = await outputFileIfChanged(
+        upath.joinSafe(WS_ROOT, TEST_OUTFILE),
+        testLines.join('\n'),
+        logger
+      )
+
+      return [changedIndexFile, changedIndexTestFile]
+        .filter((fp) => fp !== undefined)
+        .map((fp) => toCwdRelative(fp))
     },
     { concurrency: 10 }
   )
+
+  if (opts.addToStaged && changedFiles) {
+    cp.execSync(`git add ${changedFiles.join(' ')}`, { cwd: repoRoot })
+  }
 }

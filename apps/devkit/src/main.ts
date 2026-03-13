@@ -94,7 +94,9 @@ const cli = new Command('devkit')
     return cmd
       .setGroup('Fix Commands')
       .setDescription('Check for missing dependencies in workspaces and suggest commands to add them.')
+      .addArgument('[wsPaths...]', { description: 'Workspace dirpaths' })
       .addOption('-y, --yes', { description: 'Skip confirmation.' })
+      .addOption('-a, --add-to-staged', { description: 'Add commands to staged changes.' })
       .setAction(fixMissingDependencies)
   })
   .addCommand('fix-workspace-imports', (cmd) => {
@@ -136,6 +138,7 @@ const cli = new Command('devkit')
       .addOption('-i, --ignore <dirnames...>', {
         description: 'Workspace dirnames to ignore (relative to repo root)',
       })
+      .addOption('-a, --add-to-staged', { description: 'Add commands to staged changes.' })
       .setAction(fixIndexTsAction)
   })
 
