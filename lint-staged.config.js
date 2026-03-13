@@ -1,18 +1,12 @@
 import upath from 'upath'
 
-const eslintRules = [
-  `--rule 'unused-imports/no-unused-imports: error'`,
-  `--rule 'arrow-body-style: error'`,
-  //
-]
-
 export default {
   '*': [
     'prettier --ignore-unknown --write --list-different', //
   ],
 
   '*.{js,mjs}': [
-    `eslint --fix ${eslintRules.join(' ')}`, //
+    `eslint --fix`, //
     `prettier --write --list-different`,
   ],
 
@@ -55,7 +49,7 @@ export default {
       libDirnames ? `yarn dk fix-index-ts --add-to-staged ${libDirnames}` : '',
       wsDirpaths ? `yarn dk fix-missing-dependencies --yes --add-to-staged ${wsDirpaths}` : '',
 
-      `eslint --fix ${eslintRules.join(' ')} ${files.join(' ')}`,
+      `eslint --fix ${files.join(' ')}`,
       `prettier --write --list-different ${files.join(' ')}`,
     ].filter(Boolean)
   },

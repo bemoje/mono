@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import type { Logger } from '@mono/node'
 import fs from 'fs-extra'
 import { getNamedExportTsDocSummary } from './tsdoc'

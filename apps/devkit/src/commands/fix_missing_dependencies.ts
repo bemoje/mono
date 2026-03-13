@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-/* eslint-disable max-depth */
+
 import type { Logger } from '@mono/node'
 import { confirmPrompt } from '../lib/confirmPrompt'
 import cp from 'child_process'

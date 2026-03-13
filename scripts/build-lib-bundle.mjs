@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import colors from 'ansi-colors'
 import cp from 'node:child_process'
 import fs from 'fs-extra'

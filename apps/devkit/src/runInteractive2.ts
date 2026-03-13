@@ -82,7 +82,7 @@ async function promptOptionValue(opt: Option, argv: string[]) {
   }
 }
 
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function runInteractive2<T extends Command<any, any, any>>(cli: T) {
   const pkg = await fs.readJson('./package.json')
 

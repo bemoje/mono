@@ -58,6 +58,7 @@ function publish(dir, ws) {
     distPkg = fs.readJsonSync(`${dir}/${ws}/dist/package.json`, 'utf-8')
   } catch (error) {
     console.warn(`Failed to read dist/package.json for ${dir}/${ws}:`, error.message)
+
     distPkg = pkg
     return
   }

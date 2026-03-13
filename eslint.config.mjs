@@ -8,13 +8,15 @@ import tseslint from 'typescript-eslint'
 import unusedImports from 'eslint-plugin-unused-imports'
 
 export default [
-  { languageOptions: { globals: { ...globals.node }, parserOptions: { project: './tsconfig.json' } } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   eslintConfigPrettier,
 
   {
-    files: ['**/*.{ts,tsx,js,mjs}'],
+    languageOptions: {
+      globals: { ...globals.node },
+      parserOptions: { project: './tsconfig.json' }, //
+    },
 
     plugins: {
       'split-and-sort-imports': splitAndSortImports,
@@ -22,28 +24,39 @@ export default [
       'unicorn': eslintPluginUnicorn,
       'eslint-plugin-bemoje': eslintPluginBemoje(),
     },
+
     rules: {
       // manually enabled in: `.lintstagedrc.json`
-      'unused-imports/no-unused-imports': 'off',
-      'arrow-body-style': ['off', 'always'],
+      'arrow-body-style': ['error', 'always'],
 
-      //
+      // unused-imports
+      'unused-imports/no-unused-imports': 'error',
+
+      // split-and-sort-imports
+      'split-and-sort-imports/sort-imports': 'error',
+
+      // eslint-plugin-bemoje
       'eslint-plugin-bemoje/no-blank-line-between-comment-and-declaration': 'error',
       'eslint-plugin-bemoje/split-imports': 'error',
 
-      'split-and-sort-imports/sort-imports': 'error',
+      // unicorn
+      'unicorn/template-indent': 'off',
+      'unicorn/prefer-optional-catch-binding': 'off',
+      'unicorn/no-array-for-each': 'off',
+      'unicorn/no-array-method-this-argument': 'off',
+      'unicorn/no-await-expression-member': 'off',
+      'unicorn/no-null': 'off',
+      'unicorn/no-static-only-class': 'off',
+      'unicorn/prefer-string-slice': 'off',
+      'unicorn/prevent-abbreviations': 'off',
+      'unicorn/no-immediate-mutation': 'off',
+      'unicorn/prefer-node-protocol': 'off',
+      'unicorn/better-regex': 'off',
 
-      // allow {}
+      // builit-in
+      'no-useless-assignment': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
-
-      // IMPORTANT: check no missing 'await'
-      '@typescript-eslint/no-floating-promises': 'error',
-
-      // allow ts-ignore
       '@typescript-eslint/ban-ts-comment': 'off',
-
-      // PLUGIN: split imports
-
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
@@ -53,27 +66,43 @@ export default [
           destructuredArrayIgnorePattern: '^_',
           vars: 'local',
           args: 'after-used',
-          // caughtErrors: 'none',
-          // caughtErrors: 'all',
           ignoreRestSiblings: true,
-          // reportUsedIgnorePattern: true,
         },
       ],
+    },
+  },
 
-      'no-empty': ['error', { allowEmptyCatch: true }],
+  {
+    files: ['**/*.{js,mjs}'],
+    languageOptions: {
+      globals: { ...globals.node },
+      parserOptions: {
+        project: false,
+      },
+    },
+  },
 
+  {
+    files: ['**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-explicit-any': ['warn', { ignoreRestArgs: true }],
+      'max-depth': ['warn', 5],
+      'max-lines': ['warn', { max: 1000, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': ['warn', { max: 200, skipBlankLines: true, skipComments: true }],
+    },
+  },
 
-      'no-useless-assignment': 'off',
-
+  {
+    files: [
+      '{apps,libs}/*/src/**/*.ts', //
+      'scripts/**/*.{ts,mjs}',
+    ],
+    rules: {
+      'no-empty': ['error', { allowEmptyCatch: true }],
       'require-atomic-updates': 'error',
-
       'complexity': ['warn'],
       'dot-notation': 'error',
-      'max-classes-per-file': ['warn', 1],
-      'max-depth': ['warn', 4],
-      'max-lines': ['warn', { max: 500, skipBlankLines: true, skipComments: true }],
-      'max-lines-per-function': ['warn', { max: 100, skipBlankLines: true, skipComments: true }],
       'no-extra-bind': 'error',
       'curly': ['error'],
       'no-irregular-whitespace': 'error',
@@ -85,22 +114,7 @@ export default [
       'prefer-template': 'error',
       'preserve-caught-error': ['error', { requireCatchParameter: false }],
 
-      //
-
-      'unicorn/prefer-optional-catch-binding': 'off',
-      'unicorn/no-array-for-each': 'off',
-      'unicorn/no-array-method-this-argument': 'off',
-      'unicorn/no-await-expression-member': 'off',
-      'unicorn/no-null': 'off',
-      'unicorn/no-static-only-class': 'off',
-      'unicorn/prefer-string-slice': 'off',
-      'unicorn/prevent-abbreviations': 'off',
-      'unicorn/no-immediate-mutation': 'off',
-      'unicorn/prefer-node-protocol': 'off',
-      //
-
       'unicorn/consistent-empty-array-spread': ['error'],
-      'unicorn/better-regex': ['off'],
       'unicorn/custom-error-definition': ['error'],
       'unicorn/new-for-builtins': ['error'],
       'unicorn/no-for-loop': ['error'],
@@ -154,29 +168,35 @@ export default [
       'unicorn/require-module-specifiers': ['error'],
       'unicorn/string-content': ['error'],
       'unicorn/switch-case-braces': ['error'],
-      'unicorn/template-indent': ['off'],
       'unicorn/throw-new-error': ['error'],
     },
   },
 
   {
-    files: ['**/*.test.ts', 'apps/playground/src/**/*.ts', '**/dist/**'],
-    plugins: { unicorn: eslintPluginUnicorn },
+    files: [
+      '**/*.test.ts', //
+      '**/playground/src/**/*.ts',
+      '*.{js,mjs}',
+      '{apps,libs}/*/*.{js,mjs}',
+    ],
     rules: {
-      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
-      'arrow-body-style': ['error', 'always'],
+      '@typescript-eslint/no-unused-vars': 'off',
+
+      'no-cond-assign': 'off',
+      'no-control-regex': 'off',
+      'no-var': 'off',
       'complexity': 'off',
       'max-classes-per-file': 'off',
       'max-depth': 'off',
-      'max-lines': ['warn', { max: 500, skipBlankLines: true, skipComments: true }],
+      'max-lines': 'off',
       'max-lines-per-function': 'off',
-
       'unicorn/prefer-optional-catch-binding': 'off',
       'unicorn/no-array-for-each': 'off',
       'unicorn/no-array-method-this-argument': 'off',
@@ -244,17 +264,6 @@ export default [
       'unicorn/switch-case-braces': 'off',
       'unicorn/template-indent': 'off',
       'unicorn/throw-new-error': 'off',
-    },
-  },
-
-  {
-    files: ['**/dist/*.{ts,mjs}'],
-    rules: {
-      'max-lines': 'off',
-      'no-cond-assign': 'off',
-      'no-control-regex': 'off',
-      'no-var': 'off',
-      '@typescript-eslint/no-unused-expressions': 'off',
     },
   },
 ]

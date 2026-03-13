@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { Inspector } from '@mono/composition'
 import type { InspectorTarget } from '@mono/composition'
 

@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { ParentRelationTypes } from '@mono/composition'
 import { Parenting } from '@mono/composition'
 import type { ParentingTarget } from '@mono/composition'

@@ -106,8 +106,12 @@ export async function fixIndexTsAction(
       )
 
       return [changedIndexFile, changedIndexTestFile]
-        .filter((fp) => fp !== undefined)
-        .map((fp) => toCwdRelative(fp))
+        .filter((fp) => {
+          return fp !== undefined
+        })
+        .map((fp) => {
+          return toCwdRelative(fp)
+        })
     },
     { concurrency: 10 }
   )

@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import type { Argument } from './types'
 import { Help } from './Help'
 import type { ICommand } from './types'

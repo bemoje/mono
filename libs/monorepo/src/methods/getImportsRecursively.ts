@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 /* eslint-disable max-depth */
-/* eslint-disable max-lines-per-function */
+
 import { DefaultMap } from 'mnemonist'
 import { MonoRepo } from '../MonoRepo'
 import type { TsFile } from '../file/TsFile'

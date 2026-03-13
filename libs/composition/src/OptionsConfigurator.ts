@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KindGuard } from '@sinclair/typebox'
 import type { OptionalKeysOf } from 'type-fest'
@@ -58,8 +57,6 @@ import { keysOf } from '@mono/object'
  * //=> { state: 'WA', name: 'Alice', age: 2, city: 'Seattle' }
  * ```
  */
-
-// eslint-disable-next-line max-lines-per-function
 export function OptionsConfigurator<
   const DefaultKey extends keyof Static<TObject<P>>,
   P extends Record<string, TSchema>,
