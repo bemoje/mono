@@ -1,7 +1,7 @@
 {
   "name": "linkedin-resume",
   "description": "A CLI tool to generate a LinkedIn resume in PDF, HTML, and Markdown formats.",
-  "version": "0.4.2",
+  "version": "1.0.0",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "main": "dist/cli.mjs",
