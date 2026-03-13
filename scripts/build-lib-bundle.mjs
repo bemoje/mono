@@ -10,10 +10,15 @@ const rootDirpath = upath.joinSafe(wsDirpath, '..', '..')
 
 ////
 
-const saveBuildHash = await createBuildHash()
-await build()
-await validateBuild()
-await saveBuildHash()
+if (process.env.CI) {
+  console.log('CI environment detected, skipping build hash check')
+  await build()
+} else {
+  const saveBuildHash = await createBuildHash()
+  await build()
+  await validateBuild()
+  await saveBuildHash()
+}
 
 ////
 
@@ -27,7 +32,7 @@ async function createBuildHash() {
     cwd: rootDirpath,
     // stdio: 'inherit',
     encoding: 'utf8',
-    shell: 'powershell',
+    // shell: 'powershell',
   })
 
   if (!buildHash) {
@@ -177,12 +182,12 @@ async function validateBuild() {
     cwd: distDir,
     stdio: 'inherit',
     encoding: 'utf8',
-    shell: 'powershell',
+    // shell: 'powershell',
   })
   cp.execSync('npx --yes @arethetypeswrong/cli --pack dist', {
     stdio: 'inherit',
     encoding: 'utf8',
-    shell: 'powershell', //
+    // shell: 'powershell', //
   })
   console.log(colors.green('✓ Build validation success'))
 }

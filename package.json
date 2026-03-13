@@ -51,9 +51,7 @@
     "script:npmEnsureLoggedIn": "node ./scripts/npmEnsureLoggedIn.mjs",
     "createWorkspaceHash": "yarn tsx ./scripts/createWorkspaceHash.ts",
     "prepare": "husky",
-    "release": "yarn release:build && yarn release:publish",
-    "release:publish": "yarn changeset publish",
-    "release:build": "yarn workspaces foreach --parallel --all --jobs 10 --topological --exclude 'mono' --verbose --since 'origin/main' run build"
+    "release": "yarn changeset version && yarn build:all && yarn publish-all"
   },
   "optionalDependencies": {
     "@clack/core": "^1.1.0",
