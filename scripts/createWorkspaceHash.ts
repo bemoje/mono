@@ -1,8 +1,8 @@
-import objectHash from 'object-hash'
-import upath from 'upath'
 import fs from 'fs-extra'
 import { glob } from 'glob'
 import { mapAsync } from 'es-toolkit'
+import objectHash from 'object-hash'
+import upath from 'upath'
 
 if (!process.argv[2]) {
   throw new Error('Workspace directory path is required. Usage: node createWorkspaceHash.ts <workspace-dirpath>')
@@ -67,9 +67,8 @@ const sorted = [...filepaths].toSorted()
 
 const sourceFileContents = await mapAsync(sorted, async (filepath) => {
   try {
-    const content =
-      filepath.endsWith('.json') ?
-        JSON.parse((await fs.readFile(filepath, 'utf8')).trim()) //
+    const content = filepath.endsWith('.json')
+      ? JSON.parse((await fs.readFile(filepath, 'utf8')).trim()) //
       : (await fs.readFile(filepath, 'utf8')).trim()
     return { filepath, content }
   } catch (_) {
@@ -80,8 +79,9 @@ const sourceFileContents = await mapAsync(sorted, async (filepath) => {
 const buildHash = objectHash(sourceFileContents)
 
 const buildHashFilepath = upath.joinSafe(wsDirpath, '.cache', '.build.hash')
-const currentBuildHash =
-  fs.existsSync(buildHashFilepath) ? (await fs.readFile(buildHashFilepath, 'utf8')).trim() : ''
+const currentBuildHash = fs.existsSync(buildHashFilepath)
+  ? (await fs.readFile(buildHashFilepath, 'utf8')).trim()
+  : ''
 
 // console.log({ currentBuildHash, buildHash })
 

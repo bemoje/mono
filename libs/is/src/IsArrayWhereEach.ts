@@ -23,8 +23,8 @@ export function IsArrayWhereEach<O>(
   }
   const result = function (array: unknown): boolean {
     return (
-      Array.isArray(array)
-      && array.every((value) => {
+      Array.isArray(array) &&
+      array.every((value) => {
         return validators.every((isValid) => {
           return isValid(value)
         })

@@ -13,5 +13,6 @@ import type { AllUnionFields } from 'type-fest'
  * //=> "a" | "b" | "d" | "c"
  * ```
  */
-export type AllKeys<T extends object[]> =
-  (keyof AllUnionFields<T[number]>)[] extends never[] ? string[] : (keyof AllUnionFields<T[number]>)[]
+export type AllKeys<T extends object[]> = (keyof AllUnionFields<T[number]>)[] extends never[]
+  ? string[]
+  : (keyof AllUnionFields<T[number]>)[]

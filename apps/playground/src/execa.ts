@@ -96,8 +96,8 @@ const exe = function exe(...args: any[]) {
       if (opts.shell === true) {
         opts.shell = 'powershell'
       } else if (
-        (opts.shell && opts.shell.endsWith('bash.exe') && opts.shell.includes('system32'))
-        || /^bash(\.exe)?$/.test(String(opts.shell))
+        (opts.shell && opts.shell.endsWith('bash.exe') && opts.shell.includes('system32')) ||
+        /^bash(\.exe)?$/.test(String(opts.shell))
       ) {
         opts.shell = 'C:/Program Files/Git/bin/bash.exe'
       }

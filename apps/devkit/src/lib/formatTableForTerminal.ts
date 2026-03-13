@@ -23,8 +23,8 @@ export function formatTableForTerminal(
   for (const row of rows) {
     table.push(row)
   }
-  return options?.noBorders ?
-      table
+  return options?.noBorders
+    ? table
         .toString()
         .replaceAll(/[─│┌┐└┘├┤┬┴┼]/g, '')
         .split('\n')

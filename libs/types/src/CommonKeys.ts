@@ -14,6 +14,8 @@ import type { SharedUnionFields } from 'type-fest'
  * //=> "a" | "b"
  * ```
  */
-export type CommonKeys<T extends object[]> =
-  RequiredKeysOf<SharedUnionFields<T[number]> & object>[] extends never[] ? string[]
+export type CommonKeys<T extends object[]> = RequiredKeysOf<
+  SharedUnionFields<T[number]> & object
+>[] extends never[]
+  ? string[]
   : RequiredKeysOf<SharedUnionFields<T[number]> & object>[]

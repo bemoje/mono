@@ -55,15 +55,15 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
 
       // Headline - try multiple selectors
       const headline =
-        document.querySelector('.text-body-medium')?.textContent?.trim()
-        || document.querySelector('[data-generated-suggestion-target]')?.textContent?.trim()
-        || ''
+        document.querySelector('.text-body-medium')?.textContent?.trim() ||
+        document.querySelector('[data-generated-suggestion-target]')?.textContent?.trim() ||
+        ''
 
       // Location - try multiple selectors
       const locationEl =
-        document.querySelector('.text-body-small.inline.t-black--light.break-words')
-        || document.querySelector('.pv-text-details__left-panel .text-body-small')
-        || document.querySelector('.text-body-small[class*="break-words"]')
+        document.querySelector('.text-body-small.inline.t-black--light.break-words') ||
+        document.querySelector('.pv-text-details__left-panel .text-body-small') ||
+        document.querySelector('.text-body-small[class*="break-words"]')
 
       // Parse location string: "Herning, Midtjylland, Denmark" → { city, region, countryCode }
       const locParts = (locationEl?.textContent?.trim() ?? '').split(/\s*,\s*/).map((s) => {
@@ -73,11 +73,11 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
 
       // Profile photo
       const imgEl =
-        document.querySelector('.pv-top-card-profile-picture__image--show')
-        || document.querySelector('.pv-top-card-profile-picture__image')
-        || document.querySelector('img.profile-photo-edit__preview')
-        || document.querySelector('img[class*="profile"][width="200"]')
-        || document.querySelector('main img[src*="profile"]')
+        document.querySelector('.pv-top-card-profile-picture__image--show') ||
+        document.querySelector('.pv-top-card-profile-picture__image') ||
+        document.querySelector('img.profile-photo-edit__preview') ||
+        document.querySelector('img[class*="profile"][width="200"]') ||
+        document.querySelector('main img[src*="profile"]')
       const image = (imgEl as HTMLImageElement | null)?.src ?? ''
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -245,9 +245,9 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
       // Fallback: scan entire modal for email/phone if not found
       if (!data.email || !data.phone) {
         const modal =
-          document.querySelector('.pv-contact-info')
-          || document.querySelector('.artdeco-modal')
-          || document.querySelector('[class*="contact-info"]')
+          document.querySelector('.pv-contact-info') ||
+          document.querySelector('.artdeco-modal') ||
+          document.querySelector('[class*="contact-info"]')
         if (modal) {
           const modalText = modal.textContent!
           if (!data.email) {

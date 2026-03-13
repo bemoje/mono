@@ -110,9 +110,8 @@ export async function scrapeEducation(browser: Browser, options: CliOptions, log
       const endDate = parseEducationDate(dateParts[1]?.trim())
 
       // Skills
-      const skills =
-        skillsStr ?
-          skillsStr
+      const skills = skillsStr
+        ? skillsStr
             .replace(/^Skills:\s*/, '')
             .split(' · ')
             .map((s) => {

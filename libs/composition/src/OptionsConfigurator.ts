@@ -76,11 +76,11 @@ export function OptionsConfigurator<
         Reflect.set(
           acc,
           key,
-          (typeof prop.default === 'function' ?
-            prop.default
-          : () => {
-              return prop.default
-            }) as () => Options[keyof Options]
+          (typeof prop.default === 'function'
+            ? prop.default
+            : () => {
+                return prop.default
+              }) as () => Options[keyof Options]
         )
       }
       return acc

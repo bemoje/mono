@@ -11,6 +11,7 @@ Custom ESLint plugin and rule utilities for consistent code style in TypeScript 
 - [**createRule**](./src/lib/createRule.ts): Helper to create an ESLint rule with a consistent format.
 - [**eslintPluginBemoje**](./src/lib/eslintPluginBemoje.ts): ESLint plugin for Bemoje projects.
 - [**noBlankLineBetweenCommentAndDeclaration**](./src/rules/noBlankLineBetweenCommentAndDeclaration.ts): Enforce no blank lines between block comments and the next declaration.
+- [**splitImports**](./src/rules/splitImports.ts): Enforce no blank lines between block comments and the next declaration.
 
 <!-- EXPORTS_END -->
 

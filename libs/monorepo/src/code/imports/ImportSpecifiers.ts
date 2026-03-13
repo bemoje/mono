@@ -72,8 +72,8 @@ export class ImportSpecifiers<P extends ImportStatement = ImportStatement> exten
    * @example `{A,B} => {A},{B}`
    */
   splitSpecifiers() {
-    return this.isNamedImport ?
-        this.namedImportsArray.map((n) => {
+    return this.isNamedImport
+      ? this.namedImportsArray.map((n) => {
           return this.code.startsWith('type ') ? 'type ' + `{ ${n} }` : `{ ${n} }`
         })
       : [this.code]

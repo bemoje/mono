@@ -78,8 +78,8 @@ function handleResult<T extends Validator, V extends Parameters<T>[0]>(
   }
 
   const message =
-    opts?.message?.trim()
-    || [
+    opts?.message?.trim() ||
+    [
       `Expected [${validators
         .map((o, i) => {
           return o.name || `[${i}]`

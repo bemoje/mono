@@ -148,9 +148,8 @@ export class Command<
 
   /** adds aliases to existing ones */
   addAliases(...aliases: (string | string[])[]): this {
-    const taken =
-      this.parent ?
-        valuesOf(this.parent.commands).flatMap((c) => {
+    const taken = this.parent
+      ? valuesOf(this.parent.commands).flatMap((c) => {
           return [c.name, ...c.aliases]
         })
       : []
@@ -468,9 +467,9 @@ export class Command<
       name: optionName,
       predicate: setName(`has${upperFirst(optionName as string)}`, (({ opts }) => {
         return (
-          opts[optionName] !== undefined
-          && opts[optionName] !== false
-          && !(Array.isArray(opts[optionName]) && opts[optionName].length === 0)
+          opts[optionName] !== undefined &&
+          opts[optionName] !== false &&
+          !(Array.isArray(opts[optionName]) && opts[optionName].length === 0)
         )
       }) as HookPredicate<Arguments, Options & O>),
       action: setName(optionName as string, action),
@@ -504,13 +503,7 @@ export class Command<
     mergeOptionDefaults(parsed.values as Record<string, unknown>, this.options)
 
     parsed.values = objSortKeys(parsed.values, (a, b) => {
-      return (
-        a[1] === false ? 1
-        : b[1] === false ? -1
-        : a[1] === true ? 1
-        : b[1] === true ? -1
-        : 0
-      )
+      return a[1] === false ? 1 : b[1] === false ? -1 : a[1] === true ? 1 : b[1] === true ? -1 : 0
     })
 
     const args = resolveArguments(parsed.positionals, this.arguments)

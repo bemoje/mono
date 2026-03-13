@@ -31,6 +31,12 @@ ruleTester.run('split-imports', splitImports, {
       output: [`import a from "mod";`, `import { b } from "mod";`].join('\n'),
     },
     {
+      name: 'split default and namespace import',
+      code: `import a, * as ns from "mod";`,
+      errors: [{ messageId: 'split-import' }],
+      output: [`import a from "mod";`, `import * as ns from "mod";`].join('\n'),
+    },
+    {
       name: 'split type modifiers inside braces',
       code: `import { type A, B } from "mod";`,
       errors: [{ messageId: 'split-import' }],

@@ -362,11 +362,13 @@ export type ArgumentUsage =
 
 /** Helper type to infer allowed argument usage patterns based on the command's existing argument types */
 type InferArgumentUsage<T extends Command<any, any, any>> =
-  T extends Command<infer A, any> ?
-    A extends string[] ? ArgumentUsage
-    : A extends (string | (string | undefined))[] ? OptionalArgumentUsage | OptionalVariadicArgumentUsage
+  T extends Command<infer A, any>
+    ? A extends string[]
+      ? ArgumentUsage
+      : A extends (string | (string | undefined))[]
+        ? OptionalArgumentUsage | OptionalVariadicArgumentUsage
+        : never
     : never
-  : never
 
 /** Helper type to infer allowed argument usage patterns based on the command's existing argument types */
 export type AllowedArgumentUsage<T extends Command<any, any, any>, Usage extends ArgumentUsage> =

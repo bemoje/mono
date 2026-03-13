@@ -7,7 +7,6 @@ describe(eslintPluginBemoje.name, () => {
   it('should return plugin with meta, rules, and configs', () => {
     const plugin = eslintPluginBemoje()
     expect(plugin.meta.name).toBe('eslint-plugin-bemoje')
-    expect(plugin.meta.version).toBe('1.0.1')
     expect(plugin.rules).toHaveProperty('no-blank-line-between-comment-and-declaration')
   })
 

@@ -17,8 +17,8 @@ export class AutocompleteMultiselectPrompt<Value> extends AutocompletePrompt<Opt
       options: opts.options,
       multiple: true,
       filter:
-        opts.filter
-        ?? ((search, opt) => {
+        opts.filter ??
+        ((search, opt) => {
           return getFilteredOption(search, opt)
         }),
       validate: (): Error | string | undefined => {
@@ -135,10 +135,11 @@ function renderAutocompleteMultiselect<Value>(opts: AutocompleteMultiSelectOptio
 
     // Search input display
     const searchText =
-      this.isNavigating || showPlaceholder ?
-        showPlaceholder ? placeholder
-        : userInput // Just show plain text when in navigation mode
-      : this.userInputWithCursor
+      this.isNavigating || showPlaceholder
+        ? showPlaceholder
+          ? placeholder
+          : userInput // Just show plain text when in navigation mode
+        : this.userInputWithCursor
 
     // Render prompt state
     switch (this.state) {
@@ -158,9 +159,11 @@ function renderAutocompleteMultiselect<Value>(opts: AutocompleteMultiSelectOptio
           `${styleText('magenta', 'Ctrl + A:')} (de)select all`,
 
           `${styleText('magenta', 'Enter:')} ${
-            this.selectedValues.length > 0 ? 'confirm'
-            : this.isNavigating ? 'select and confirm'
-            : 'select all and confirm'
+            this.selectedValues.length > 0
+              ? 'confirm'
+              : this.isNavigating
+                ? 'select and confirm'
+                : 'select all and confirm'
           }`,
         ].filter((s) => {
           return s !== undefined
@@ -168,9 +171,9 @@ function renderAutocompleteMultiselect<Value>(opts: AutocompleteMultiSelectOptio
 
         // No results message
         const noResults =
-          this.filteredOptions.length === 0 && userInput ?
-            [`${styleText(barStyle, S_BAR)}  ${styleText('yellow', 'No matches')}`]
-          : []
+          this.filteredOptions.length === 0 && userInput
+            ? [`${styleText(barStyle, S_BAR)}  ${styleText('yellow', 'No matches')}`]
+            : []
 
         const errorMessage =
           this.state === 'error' ? [`${styleText(barStyle, S_BAR)}  ${styleText('yellow', this.error)}`] : []

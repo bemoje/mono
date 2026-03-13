@@ -1,11 +1,11 @@
-import objectHash from 'object-hash'
-import upath from 'upath'
+import { $ } from 'execa'
+import ansiColors from 'ansi-colors'
 import fs from 'fs-extra'
 import { glob } from 'glob'
 import { mapAsync } from 'es-toolkit'
+import objectHash from 'object-hash'
 import { uniq } from 'es-toolkit'
-import ansiColors from 'ansi-colors'
-import { $ } from 'execa'
+import upath from 'upath'
 
 const srcHashFilepath = upath.joinSafe('.cache', '.test-coverage.src.hash')
 const outLogFilepath = upath.joinSafe('.cache', '.test-coverage.out.log')
@@ -27,9 +27,8 @@ const filepaths = uniq(
 
 const sourceFileContents = await mapAsync(filepaths, async (filepath) => {
   try {
-    const content =
-      filepath.endsWith('.json') ?
-        JSON.parse((await fs.readFile(filepath, 'utf8')).trim()) //
+    const content = filepath.endsWith('.json')
+      ? JSON.parse((await fs.readFile(filepath, 'utf8')).trim()) //
       : (await fs.readFile(filepath, 'utf8')).trim()
     return { filepath, content }
   } catch (_) {
@@ -63,8 +62,8 @@ const child = $(`yarn vitest --run --coverage --cache --bail 1 --reporter=dot`, 
   env: { FORCE_COLOR: 'true' },
   preferLocal: true,
   detatch: true,
-  all: true,
-  lines: true,
+  // all: true,
+  // lines: true,
 })
 
 const newOutLog = []

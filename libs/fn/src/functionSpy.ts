@@ -73,8 +73,8 @@ function wrapMaybeAsync<T, Data>(
     }
     const data = spy.onInvoke(this, args)
     const retval = func.apply(this, args)
-    return retval instanceof Promise ?
-        retval.then((retval) => {
+    return retval instanceof Promise
+      ? retval.then((retval) => {
           return spy.onReturn(data, retval)
         })
       : spy.onReturn(data, retval)

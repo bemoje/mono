@@ -77,13 +77,7 @@ export class ExtMap<K = any, V = any> extends View<Map<K, V>> implements Map<K, 
   constructor(iterable?: Iterable<readonly [K, V]> | null | undefined)
   constructor(obj?: Record<Extract<K, PropertyKey>, V>)
   constructor(arg?: Record<Extract<K, PropertyKey>, V> | Iterable<readonly [K, V]> | null | undefined) {
-    super(
-      new Map(
-        isIterable(arg) ? arg
-        : arg ? entriesOf(arg)
-        : undefined
-      )
-    )
+    super(new Map(isIterable(arg) ? arg : arg ? entriesOf(arg) : undefined))
   }
 
   /**

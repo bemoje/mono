@@ -25,10 +25,9 @@ export async function fixWorkspaceImportsAction(
 
   const fixed = { count: 0 }
 
-  const workspaces =
-    options.workspaces ?
-      Array.isArray(options.workspaces) ?
-        options.workspaces
+  const workspaces = options.workspaces
+    ? Array.isArray(options.workspaces)
+      ? options.workspaces
       : [options.workspaces]
     : undefined
 

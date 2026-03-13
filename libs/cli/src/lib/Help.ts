@@ -84,10 +84,10 @@ export class Help implements IHelp {
       })
       .join(' ')
     return (
-      (sub.aliases[0] ? `${sub.aliases[0].padEnd(this.longestSubcommandAliasLength(), ' ')} | ` : '')
-      + sub.name
-      + (sub.options.length ? ` ${this.usageDisplayOptionsAs}` : '') // simplistic check for non-help option
-      + (args ? ` ${args}` : '')
+      (sub.aliases[0] ? `${sub.aliases[0].padEnd(this.longestSubcommandAliasLength(), ' ')} | ` : '') +
+      sub.name +
+      (sub.options.length ? ` ${this.usageDisplayOptionsAs}` : '') + // simplistic check for non-help option
+      (args ? ` ${args}` : '')
     )
   }
 
@@ -162,14 +162,13 @@ export class Help implements IHelp {
       ...(Object.keys(this.cmd.commands).length ? [this.usageDisplaySubcommandAs] : []),
       ...(this.cmd.options.length ? [this.usageDisplayOptionsAs] : []),
       ...this.cmd.arguments.map((arg) => {
-        return (
-          arg.required ?
-            arg.variadic ?
-              `<${arg.name}...>`
+        return arg.required
+          ? arg.variadic
+            ? `<${arg.name}...>`
             : `<${arg.name}>`
-          : arg.variadic ? `[${arg.name}...]`
-          : `[${arg.name}]`
-        )
+          : arg.variadic
+            ? `[${arg.name}...]`
+            : `[${arg.name}]`
       }),
     ].join(' ')}`.trim()
   }
@@ -193,8 +192,8 @@ export class Help implements IHelp {
    */
   subcommandDescription(sub: ICommand): string {
     return (
-      sub.summary
-      || (sub.description?.includes('\n') ? sub.description.trim().split('\n')[0] : sub.description.trim())
+      sub.summary ||
+      (sub.description?.includes('\n') ? sub.description.trim().split('\n')[0] : sub.description.trim())
     )
   }
 
@@ -493,10 +492,10 @@ export class Help implements IHelp {
 
     // Construct and overall indent.
     return (
-      itemIndentStr
-      + paddedTerm
-      + ' '.repeat(spacerWidth)
-      + formattedDescription.replaceAll('\n', `\n${itemIndentStr}`)
+      itemIndentStr +
+      paddedTerm +
+      ' '.repeat(spacerWidth) +
+      formattedDescription.replaceAll('\n', `\n${itemIndentStr}`)
     )
   }
 

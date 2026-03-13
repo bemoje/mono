@@ -1,5 +1,5 @@
-import ansiColors from 'ansi-colors'
 import { $ } from 'execa'
+import ansiColors from 'ansi-colors'
 import fs from 'fs-extra'
 
 await fs.outputFile('./OUTPUT.log', '')

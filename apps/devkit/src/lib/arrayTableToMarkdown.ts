@@ -3,8 +3,8 @@
  */
 export function arrayTableToMarkdown(table: string[][]): string {
   if (
-    table.length === 0
-    || table.some((row) => {
+    table.length === 0 ||
+    table.some((row) => {
       return row.length !== table[0].length
     })
   ) {

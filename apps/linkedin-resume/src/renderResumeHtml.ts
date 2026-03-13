@@ -235,13 +235,13 @@ function renderEducation(resume: Resume): string {
             <p class="entry-meta">${formatDateRange(edu.startDate, edu.endDate)}</p>
             ${edu.courses?.length ? `<p class="entry-description"><strong>Courses:</strong> ${edu.courses.map(esc).join(', ')}</p>` : ''}
             ${
-              edu.skills?.length ?
-                `<div class="skill-pills">${edu.skills
-                  .map((s) => {
-                    return `<span class="pill">${esc(s)}</span>`
-                  })
-                  .join('\n')}</div>`
-              : ''
+              edu.skills?.length
+                ? `<div class="skill-pills">${edu.skills
+                    .map((s) => {
+                      return `<span class="pill">${esc(s)}</span>`
+                    })
+                    .join('\n')}</div>`
+                : ''
             }
           </div>
         </div>`
@@ -291,31 +291,31 @@ function renderProjects(resume: Resume): string {
             <p class="entry-meta">${formatDateRange(proj.startDate, proj.endDate)}</p>
             ${proj.description ? `<p class="entry-description">${esc(proj.description)}</p>` : ''}
             ${
-              proj.highlights?.length ?
-                `<ul class="entry-highlights">${proj.highlights
-                  .map((h) => {
-                    return `<li>${esc(h)}</li>`
-                  })
-                  .join('\n')}</ul>`
-              : ''
+              proj.highlights?.length
+                ? `<ul class="entry-highlights">${proj.highlights
+                    .map((h) => {
+                      return `<li>${esc(h)}</li>`
+                    })
+                    .join('\n')}</ul>`
+                : ''
             }
             ${
-              proj.skills?.length ?
-                `<div class="skill-pills">${proj.skills
-                  .map((s) => {
-                    return `<span class="pill">${esc(s)}</span>`
-                  })
-                  .join('\n')}</div>`
-              : ''
+              proj.skills?.length
+                ? `<div class="skill-pills">${proj.skills
+                    .map((s) => {
+                      return `<span class="pill">${esc(s)}</span>`
+                    })
+                    .join('\n')}</div>`
+                : ''
             }
             ${
-              proj.mediaLinks?.length ?
-                `<div class="media-links">${proj.mediaLinks
-                  .map((m) => {
-                    return `<a href="${esc(m.url)}" class="media-link" target="_blank" rel="noopener">${esc(m.title)} ↗</a>`
-                  })
-                  .join('\n')}</div>`
-              : ''
+              proj.mediaLinks?.length
+                ? `<div class="media-links">${proj.mediaLinks
+                    .map((m) => {
+                      return `<a href="${esc(m.url)}" class="media-link" target="_blank" rel="noopener">${esc(m.title)} ↗</a>`
+                    })
+                    .join('\n')}</div>`
+                : ''
             }
           </div>
         </div>`

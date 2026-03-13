@@ -95,30 +95,33 @@ export function parseImportStatement(
     code: groups.mod!,
     type: ((): ImportPathType => {
       const p = groups.path!
-      return (
-        options?.isWorkspacePath?.(p) ? 'workspace'
-        : upath.isAbsolute(p) ? 'absolute'
-        : p.startsWith('.') ? 'relative'
-        : isBuiltin(p) ? 'builtin'
-        : 'package'
-      )
+      return options?.isWorkspacePath?.(p)
+        ? 'workspace'
+        : upath.isAbsolute(p)
+          ? 'absolute'
+          : p.startsWith('.')
+            ? 'relative'
+            : isBuiltin(p)
+              ? 'builtin'
+              : 'package'
     })(),
     quote: groups.quote!,
     path: groups.path!,
   }
 
   const type =
-    specifiers.children.length === 0 ? 'sideEffect'
-    : specifiers.children.length === 1 && specifiers.children[0].type === 'default' ? 'default'
-    : specifiers.children.length === 1 && specifiers.children[0].type === 'namespace' ? 'namespace'
-    : (
-      specifiers.children.length > 0
-      && specifiers.children.filter((s) => {
-        return s.type === 'named'
-      }).length === specifiers.children.length
-    ) ?
-      'named'
-    : 'mixed'
+    specifiers.children.length === 0
+      ? 'sideEffect'
+      : specifiers.children.length === 1 && specifiers.children[0].type === 'default'
+        ? 'default'
+        : specifiers.children.length === 1 && specifiers.children[0].type === 'namespace'
+          ? 'namespace'
+          : specifiers.children.length > 0 &&
+              specifiers.children.filter((s) => {
+                return s.type === 'named'
+              }).length === specifiers.children.length
+            ? 'named'
+            : 'mixed'
 
   const semi = groups.semi || ''
 
@@ -143,8 +146,8 @@ class ImportStatementParser implements ImportStatement {
     return this.splitBySpecifier(options).flatMap((ins) => {
       return ins.specifiers.children
         .map((s) => {
-          return s.type === 'named' && options?.unaliasNamedImports ?
-              s.code.replaceAll(/ as \w+/g, '')
+          return s.type === 'named' && options?.unaliasNamedImports
+            ? s.code.replaceAll(/ as \w+/g, '')
             : s.code.replaceAll(/[\w*]+ as /g, '')
         })
         .filter(Boolean)
@@ -155,8 +158,8 @@ class ImportStatementParser implements ImportStatement {
    * Split the import statement into as many individual import statements as possible.
    */
   splitBySpecifier(options?: { unaliasNamedImports?: boolean }): ImportStatementParser[] {
-    return this.type === 'sideEffect' ?
-        [this]
+    return this.type === 'sideEffect'
+      ? [this]
       : this.specifiers.children.map((s) => {
           const code =
             s.type === 'named' && options?.unaliasNamedImports ? s.code.replaceAll(/ as \w+/g, '') : s.code

@@ -8,8 +8,8 @@ export async function executeScripts(selections: string[], pkgManRun: string) {
   })
 
   const confirmed =
-    selections.length === 1
-    || (await confirm({
+    selections.length === 1 ||
+    (await confirm({
       message: [
         selections.length > 1 ? `Run all of the below commands?` : `Run the below command?`,
         ...selections.map((selection) => {

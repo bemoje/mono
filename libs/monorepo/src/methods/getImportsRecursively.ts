@@ -100,9 +100,8 @@ export async function getImportsRecursively(entryPoints: string[]): Promise<Resu
         continue
       }
 
-      const moduleFrom =
-        i.module.from.startsWith('.') ?
-          i.module.from
+      const moduleFrom = i.module.from.startsWith('.')
+        ? i.module.from
         : i.module.from
             .split('/')
             .slice(0, i.module.from.startsWith('@') ? 2 : 1)
@@ -143,10 +142,10 @@ export async function getImportsRecursively(entryPoints: string[]): Promise<Resu
               return p.dependencies?.[depName] || p.devDependencies?.[depName]
             })
             const depVersion =
-              rootPkg.dependencies?.[depName]
-              || rootPkg.devDependencies?.[depName]
-              || found?.dependencies?.[depName]
-              || found?.devDependencies?.[depName]
+              rootPkg.dependencies?.[depName] ||
+              rootPkg.devDependencies?.[depName] ||
+              found?.dependencies?.[depName] ||
+              found?.devDependencies?.[depName]
             if (depVersion) {
               externals.add(`"${depName}": "${depVersion}",`)
             } else {

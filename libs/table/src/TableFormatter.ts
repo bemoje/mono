@@ -160,10 +160,9 @@ export class TableFormatter {
     if (!options.headerRowSeparator) {
       options.headerRowSeparator = TableFormatter.defaults.headerRowSeparator
     }
-    options.color =
-      options.color ?
-        options.color === true ?
-          TableFormatter.defaults.color
+    options.color = options.color
+      ? options.color === true
+        ? TableFormatter.defaults.color
         : { ...TableFormatter.defaults.color, ...options.color }
       : defaultColorsNoop
     return options as FormatTableOptionsMerged

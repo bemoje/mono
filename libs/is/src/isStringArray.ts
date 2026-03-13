@@ -5,8 +5,8 @@ import { isString } from 'es-toolkit/predicate'
  */
 export function isStringArray(value: unknown): value is string[] {
   return (
-    Array.isArray(value)
-    && value.every((v) => {
+    Array.isArray(value) &&
+    value.every((v) => {
       return isString(v)
     })
   )

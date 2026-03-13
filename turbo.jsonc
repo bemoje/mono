@@ -1,12 +1,18 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "tasks": {
-    "fix:indexts": { "dependsOn": ["fix:fixOwnWsImports"] },
-    "fix:fixMissingDependencies": { "dependsOn": ["fix:indexts"] },
-    "lint:staged": { "dependsOn": ["fix:fixMissingDependencies"] },
+    "fix:indexts": { "dependsOn": [] },
+    "fix:fixMissingDependencies": { "dependsOn": [] },
+    "lint:fix": { "dependsOn": ["fix:indexts", "fix:fixMissingDependencies"] },
+    "format:write:all": { "dependsOn": ["lint:fix"] },
 
     "precommit:write": {
-      "dependsOn": ["fix:indexts", "fix:fixMissingDependencies", "lint:staged"],
+      "dependsOn": [
+        "fix:indexts",
+        "fix:fixMissingDependencies",
+        "lint:fix",
+        "format:write:all"
+      ],
       "cache": false
     },
     "typecheck": { "dependsOn": ["precommit:write"] },
@@ -15,7 +21,8 @@
 
     "test-coverage": {
       "dependsOn": ["precommit:write"],
-      "outputs": [".coverage/**"]
+      "outputs": [".coverage/**"],
+      "cache": false
     },
     "test-coverage-full": { "dependsOn": ["test-coverage", "precommit:write"] },
     "readme": { "dependsOn": ["test-coverage", "precommit:write"] },

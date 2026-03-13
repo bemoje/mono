@@ -100,9 +100,9 @@ async function build() {
         .map((dep) => {
           return [
             dep,
-            pkg.dependencies?.[dep]
+            pkg.dependencies?.[dep] ||
               // || pkg.devDependencies?.[name]
-              || rootPkg.dependencies?.[dep],
+              rootPkg.dependencies?.[dep],
             // || rootPkg.devDependencies?.[name]
           ]
         })
@@ -161,7 +161,7 @@ async function build() {
   await fs.outputFile(
     upath.joinSafe(distDir, 'README.md'),
     (await fs.readFile(upath.joinSafe(wsDirpath, 'README.md'), 'utf8')) //
-      // eslint-disable-next-line unicorn/better-regex
+
       .replaceAll(/\[(\*\*.+\*\*)\]\((.+)\)/g, (_, name) => {
         return name
       }) //

@@ -102,9 +102,8 @@ export async function scrapeProjects(browser: Browser, options: CliOptions, logg
       const endDate = rawEnd === 'Present' ? '' : parseDate(rawEnd)
 
       // Keywords from skills
-      const skills =
-        skillsStr ?
-          skillsStr
+      const skills = skillsStr
+        ? skillsStr
             .replace(/^Skills:\s*/, '')
             .split(' · ')
             .map((s) => {

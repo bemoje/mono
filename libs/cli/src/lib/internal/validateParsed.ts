@@ -16,9 +16,9 @@ export function validateParsed(
         return `Missing argument [${index}] ${def.usage}`
       }
       if (
-        def.choices
-        && value !== undefined
-        && ![value].flat().every((v) => {
+        def.choices &&
+        value !== undefined &&
+        ![value].flat().every((v) => {
           return def.choices!.includes(v as string)
         })
       ) {
@@ -38,9 +38,9 @@ export function validateParsed(
           return `Unknown option --${key}`
         }
         if (
-          def.choices
-          && value !== undefined
-          && !((def.variadic ? value : [value]) as string[]).every((v) => {
+          def.choices &&
+          value !== undefined &&
+          !((def.variadic ? value : [value]) as string[]).every((v) => {
             return def.choices!.includes(v)
           })
         ) {

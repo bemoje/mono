@@ -139,7 +139,8 @@ interface IOptsStringAndSymbolKeys extends IOptsKeyType {
 export type OptsKeysVariants = IOptsEnumerableKeys | IOptsNonEnumerableKeys | IOptsEnumerableAndNonEnumerableKeys
 export type OptsKeyTypeVariants = IOptsStringKeys | IOptsSymbolKeys | IOptsStringAndSymbolKeys
 export type GetKeysOptions<K extends OptsKeysVariants, KT extends OptsKeyTypeVariants> = K & KT
-export type KeysPrimitiveTypeFrom<P extends OptsKeyTypeVariants> =
-  P extends IOptsStringKeys ? string
-  : P extends IOptsSymbolKeys ? symbol
-  : string | symbol
+export type KeysPrimitiveTypeFrom<P extends OptsKeyTypeVariants> = P extends IOptsStringKeys
+  ? string
+  : P extends IOptsSymbolKeys
+    ? symbol
+    : string | symbol

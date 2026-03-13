@@ -8,9 +8,8 @@ export async function onCancel(prompt: AutocompleteMultiselectPrompt<string>) {
     const spawnArgs = [filepath, ...process.argv.slice(2)]
     const env = { ...process.env, INITIAL_VALUES: prompt.selectedValues.join(',') }
 
-    const exitCode =
-      filepath.endsWith('.ts') ?
-        await spawnChildProcess('tsx', spawnArgs, { stdio: 'inherit', env, shell: true }).catch(() => {
+    const exitCode = filepath.endsWith('.ts')
+      ? await spawnChildProcess('tsx', spawnArgs, { stdio: 'inherit', env, shell: true }).catch(() => {
           return 1
         })
       : await spawnNodeProcess(spawnArgs, { stdio: 'inherit', env }).catch(() => {

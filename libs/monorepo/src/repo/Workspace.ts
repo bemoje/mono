@@ -318,9 +318,8 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
             results.push({
               filepath: file.path,
               replaceValue: imp.module.from,
-              withValue:
-                resolvedFileName.endsWith('index.ts') ?
-                  `./${imp.specifiers?.importedNamesArray[0]}`
+              withValue: resolvedFileName.endsWith('index.ts')
+                ? `./${imp.specifiers?.importedNamesArray[0]}`
                 : `./${path.relative(path.dirname(file.path), resolvedFileName)}`,
             })
           }

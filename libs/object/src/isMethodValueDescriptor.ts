@@ -11,6 +11,6 @@ export function isMethodValueDescriptor(
   return typeof descriptor.value === 'function' && descriptor.value !== Function.prototype
 }
 
-export type TypedValuePropertyDescriptor<V = unknown> = ValueDescriptorAttributes
-  & DescriptorValue<V>
-  & ThisType<Any>
+export type TypedValuePropertyDescriptor<V = unknown> = ValueDescriptorAttributes &
+  DescriptorValue<V> &
+  ThisType<Any>
