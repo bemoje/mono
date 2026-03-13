@@ -16,9 +16,6 @@ export default {
     `prettier --write --list-different`,
   ],
 
-
-  
-
   '*.ts': (files) => {
     const srcFiles = files
       .map((file) => {
