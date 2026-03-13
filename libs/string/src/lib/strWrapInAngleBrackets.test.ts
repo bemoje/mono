@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strWrapInAngleBrackets } from './strWrapInAngleBrackets'
-import { describe, expect, it } from 'vitest'
 
 describe('strWrapInAngleBrackets', () => {
   it('example', () => {

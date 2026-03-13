@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
-import { encrypt } from './encrypt'
+import assert from 'assert'
 import { decrypt } from './decrypt'
+import { describe } from 'vitest'
+import { encrypt } from './encrypt'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(encrypt.name, () => {
   it('examples', () => {
@@ -42,11 +44,17 @@ describe(encrypt.name, () => {
   it('should throw on incorrect key for decryption', () => {
     const message = 'secret'
     const encrypted = encrypt('key1', message)
-    expect(() => decrypt('key2', encrypted)).toThrow()
+    expect(() => {
+      return decrypt('key2', encrypted)
+    }).toThrow()
   })
 
   it('should throw on malformed encrypted data', () => {
-    expect(() => decrypt('key', 'not-valid-hex')).toThrow()
-    expect(() => decrypt('key', '0'.repeat(32) + 'not-hex')).toThrow()
+    expect(() => {
+      return decrypt('key', 'not-valid-hex')
+    }).toThrow()
+    expect(() => {
+      return decrypt('key', `${'0'.repeat(32)}not-hex`)
+    }).toThrow()
   })
 })

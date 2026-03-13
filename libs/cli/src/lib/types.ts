@@ -1,14 +1,35 @@
+import type { AllUnionFields } from 'type-fest'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Command } from './Command'
+import type { SetFieldType } from 'type-fest'
+import type { SetRequired } from 'type-fest'
+import type { Simplify } from 'type-fest'
+
+/** Logger interface defining methods for different log levels. */
+export interface Logger {
+  start: (...args: unknown[]) => void
+  done: (...args: unknown[]) => void
+  info: (...args: unknown[]) => void
+  log: (...args: unknown[]) => void
+  warn: (...args: unknown[]) => void
+  error: (...args: unknown[]) => void
+  debug: (...args: unknown[]) => void
+}
+
 /** Parsed command-line arguments */
 export type Arguments = (undefined | string | string[])[]
 
 /** Parsed command-line options */
 export type Options = Record<string, undefined | boolean | string | string[]>
 
+/** Result of parsing command-line input, including arguments, options, triggered actions, and execution method */
+export type SubCommands = { [name: string]: Command<Arguments, Options, any> }
+
 /** Base descriptor for command-line arguments with shared properties */
-export interface IArgument {
+export interface Argument {
   usage: string
   name: string
-  description: string
+  description?: string
   required?: boolean
   variadic?: boolean
   choices?: string[]
@@ -17,14 +38,14 @@ export interface IArgument {
 }
 
 /** Base descriptor for command-line options with shared properties */
-export interface IOption {
+export interface Option {
   type: 'boolean' | 'string'
   flags: string
   short: string
   long: string
   name: string
   argName?: string
-  description: string
+  description?: string
   required?: boolean
   variadic?: boolean
   negate?: boolean
@@ -41,7 +62,7 @@ export interface ICommand {
   /** Parent command if this is a subcommand */
   readonly parent?: ICommand
   /** Help configuration and rendering */
-  readonly help: IHelp
+  // readonly help: IHelp
   /** Command name used for invocation */
   name: string
   /** Alternative names for this command */
@@ -57,11 +78,11 @@ export interface ICommand {
   /** Group name for organizing commands in help */
   group?: string
   /** Positional arguments */
-  arguments: IArgument[]
+  arguments: Argument[]
   /** Named options/flags */
-  options: IOption[]
+  options: Option[]
   /** Child subcommands */
-  commands: ICommand[]
+  commands: { [name: string]: ICommand }
 }
 
 export interface IHelp {
@@ -79,15 +100,15 @@ export interface IHelp {
   /**
    * Compare options for sort.
    */
-  compareOptions(a: IOption, b: IOption): number
+  compareOptions(a: Option, b: Option): number
   /**
    * Get an array of the visible options. Includes a placeholder for the implicit help option, if there is one.
    */
-  visibleOptions(): IOption[]
+  visibleOptions(): Option[]
   /**
    * Get an array of the arguments if any have a description.
    */
-  visibleArguments(): IArgument[]
+  visibleArguments(): Argument[]
   /**
    * Get the command term to show in the list of subcommands.
    */
@@ -95,11 +116,11 @@ export interface IHelp {
   /**
    * Get the option term to show in the list of options.
    */
-  optionTerm(option: IOption): string
+  optionTerm(option: Option): string
   /**
    * Get the argument term to show in the list of arguments.
    */
-  argumentTerm(argument: IArgument): string
+  argumentTerm(argument: Argument): string
   /**
    * Get the longest subcommand primary alias length.
    */
@@ -132,11 +153,11 @@ export interface IHelp {
   /**
    * Get the option description to show in the list of options.
    */
-  optionDescription(option: IOption): string
+  optionDescription(option: Option): string
   /**
    * Get the argument description to show in the list of arguments.
    */
-  argumentDescription(argument: IArgument): string
+  argumentDescription(argument: Argument): string
   /**
    * Format a list of items, given a heading and an array of formatted items.
    */
@@ -144,10 +165,10 @@ export interface IHelp {
   /**
    * Group items by their help group heading.
    */
-  groupItems<T extends ICommand | IOption>(
+  groupItems<T extends ICommand | Option>(
     unsortedItems: T[],
     visibleItems: T[],
-    getGroup: (item: T) => string,
+    getGroup: (item: T) => string
   ): Map<string, T[]>
   /**
    * Return display width of string, ignoring ANSI escape sequences. Used in padding and wrapping calculations.
@@ -235,3 +256,229 @@ export interface IHelp {
    */
   render(): string
 }
+
+/** Action handler function type, which receives parsed arguments and options as well as metadata about the command execution context. */
+export type ActionHandler<A extends Arguments, O extends Options, Subs extends SubCommands> = (
+  ...args: [
+    ...A,
+    O,
+    {
+      path: string[]
+      name: string
+      argv: string[]
+      args: A
+      opts: O
+      errors?: string[]
+      cmd: Command<A, O, Subs>
+      logger: Logger
+    },
+  ]
+) => Promise<void> | void
+
+/** Predicate function type for hooks, which receives the same metadata as action handlers and returns a boolean indicating whether the hook's action should be executed. */
+export type HookPredicate<
+  A extends Arguments = Arguments,
+  O extends Options = Options,
+  Subs extends SubCommands = SubCommands,
+> = (data: {
+  path: string[]
+  name: string
+  argv: string[]
+  args: A
+  opts: O
+  errors?: string[]
+  cmd: Command<A, O, Subs>
+}) => boolean
+
+/** Action handler function type for hooks, which receives the same metadata as action handlers and is executed when its predicate returns true. Can also throw to indicate an error. */
+export type HookActionHandler<
+  A extends Arguments = Arguments,
+  O extends Options = Options,
+  Subs extends SubCommands = SubCommands,
+> = (data: {
+  path: string[]
+  name: string
+  argv: string[]
+  args: A
+  opts: O
+  errors?: string[]
+  cmd: Command<A, O, Subs>
+}) => Promise<void> | void | never
+
+/** Hook definition type, which includes the option name that triggers the hook, a predicate function to determine when the hook should run, and an action handler to execute when triggered. */
+export type HookDefinition<
+  A extends Arguments = Arguments,
+  O extends Options = Options,
+  Subs extends SubCommands = SubCommands,
+> = { name: keyof O; predicate: HookPredicate<A, O, Subs>; action: HookActionHandler<A, O, Subs> }
+
+/**
+ * @see Command.prototype.parseArgv
+ */
+export type ParseArgvResult<
+  A extends Arguments = Arguments,
+  O extends Options = Options,
+  Subs extends SubCommands = SubCommands,
+> = {
+  /** The command or subcommand instance */
+  get cmd(): Command<A, O, Subs>
+  /** The part of argv that makes out a subcommand path, or empty array when root command */
+  path: string[]
+  /** Command namer */
+  name: string
+  /** Original argv array passed in or from process.argv, excluding subcommand path */
+  argv: string[]
+  /** Parsed arguments */
+  args: A
+  /** Parsed options */
+  opts: O
+  /** Error messages if parsing failed, otherwise undefined */
+  errors?: string[]
+  /** Names of all triggered hooks whose predicate returned true */
+  hooks: HookDefinition<A, O, Subs>[]
+
+  /** Calls the action handler with its expected args */
+  execute: () => Promise<void>
+}
+
+/** required variadic argument */
+export type RequiredVariadicArgumentUsage = `<${string}...>`
+
+/** optional variadic argument */
+export type OptionalVariadicArgumentUsage = `[${string}...]`
+
+/** required argument */
+export type RequiredArgumentUsage = `<${string}>`
+
+/** optional argument */
+export type OptionalArgumentUsage = `[${string}]`
+
+/** Union of all argument usage pattern types */
+export type ArgumentUsage =
+  | RequiredVariadicArgumentUsage
+  | OptionalVariadicArgumentUsage
+  | RequiredArgumentUsage
+  | OptionalArgumentUsage
+
+/** Helper type to infer allowed argument usage patterns based on the command's existing argument types */
+type InferArgumentUsage<T extends Command<any, any, any>> =
+  T extends Command<infer A, any>
+    ? A extends string[]
+      ? ArgumentUsage
+      : A extends (string | (string | undefined))[]
+        ? OptionalArgumentUsage | OptionalVariadicArgumentUsage
+        : never
+    : never
+
+/** Helper type to infer allowed argument usage patterns based on the command's existing argument types */
+export type AllowedArgumentUsage<T extends Command<any, any, any>, Usage extends ArgumentUsage> =
+  Usage extends InferArgumentUsage<T> ? Usage : never
+
+/** Base type for addArgument options, extended by specific required/optional and variadic/non-variadic argument option types */
+type ArgumentOptionsBase = Omit<
+  Argument,
+  'name' | 'required' | 'variadic' | 'usage' | 'defaultValue' | 'defaultValueDescription'
+>
+
+/** Base type for addArgument options, extended by specific required/optional and variadic/non-variadic argument option types */
+type ExtendArgumentOptionsBase<T extends object = object> = Simplify<ArgumentOptionsBase & T>
+
+/** Required positional argument descriptor. Usage: `<name>` */
+export type RequiredArgumentOptions = ExtendArgumentOptionsBase
+
+/** Optional positional argument with string default. Usage: `[name]` */
+export type OptionalArgumentOptions = ExtendArgumentOptionsBase<{
+  defaultValue?: string
+  defaultValueDescription?: string
+}>
+
+/** Optional positional argument with required string default. Usage: `[name]` */
+export type OptionalArgumentOptionsWithDefaultValue = SetFieldType<
+  SetRequired<OptionalArgumentOptions, 'defaultValue'>,
+  'defaultValue',
+  string
+>
+
+/** Required variadic argument accepting variadic values. Usage: `<name...>` */
+export type RequiredVariadicArgumentOptions = ExtendArgumentOptionsBase
+
+/** Optional variadic argument with array default. Usage: `[name...]` */
+export type OptionalVariadicArgumentOptions = ExtendArgumentOptionsBase<{
+  defaultValue?: string[]
+  defaultValueDescription?: string
+}>
+
+/** Union of all addArgument options types */
+export type ArgumentOptions = AllUnionFields<
+  | RequiredArgumentOptions
+  | OptionalArgumentOptions
+  | OptionalArgumentOptionsWithDefaultValue
+  | RequiredVariadicArgumentOptions
+  | OptionalVariadicArgumentOptions
+>
+
+/** Helper type for extracting argument name from usage pattern */
+export type InferAddedArgumentType<Opts> = Opts extends { choices: infer C extends string[] } ? C[number] : string
+
+/** Union of all option usage pattern types */
+export type OptionUsage<Long extends string> =
+  // boolean flag
+  | `-${string}, --${Long}`
+  // required string option
+  | `-${string}, --${Long} <${string}>`
+  // optional string option
+  | `-${string}, --${Long} [${string}]`
+  // required variadic option
+  | `-${string}, --${Long} <${string}...>`
+  // optional variadic option
+  | `-${string}, --${Long} [${string}...]`
+
+/** Base type for addOption options, extended by specific boolean/string and required/optional and variadic/non-variadic option types */
+type OptionOptionsBase = Omit<
+  Option,
+  'name' | 'required' | 'variadic' | 'type' | 'argName' | 'short' | 'long' | 'flags'
+>
+
+/** Helper type to extend base addOption options with specific fields for different option types */
+type ExtendAddOptionOptionsBase<T extends object = object> = Simplify<OptionOptionsBase & T>
+
+/** Boolean flag option. Usage: `-v, --verbose` */
+export type BooleanOptionOptions = ExtendAddOptionOptionsBase<{
+  defaultValue?: boolean
+  defaultValueDescription?: string
+}>
+
+/** Required string option. Usage: `-f, --file <path>` */
+export type RequiredOptionOptions = ExtendAddOptionOptionsBase<{ env?: undefined }>
+
+/** Optional string option with default. Usage: `-o, --output [path]` */
+export type OptionalOptionOptions = ExtendAddOptionOptionsBase<{
+  defaultValue?: string
+  defaultValueDescription?: string
+}>
+
+/** Required option accepting variadic values. Usage: `-i, --include <patterns...>` */
+export type RequiredVariadicOptionOptions = ExtendAddOptionOptionsBase<{ env?: undefined }>
+
+/** Optional option accepting variadic values with defaults. Usage: `-e, --exclude [patterns...]` */
+export type OptionalVariadicOptionOptions = ExtendAddOptionOptionsBase<{
+  defaultValue?: string[]
+  defaultValueDescription?: string
+}>
+
+/** Union of all addOption options types */
+export type OptionOptions = AllUnionFields<
+  | BooleanOptionOptions
+  | RequiredOptionOptions
+  | OptionalOptionOptions
+  | RequiredVariadicOptionOptions
+  | OptionalVariadicOptionOptions
+>
+
+/** Helper type to infer the resulting Command type after adding an option with specific options */
+export type InferAddOptionResult<
+  A extends Arguments,
+  O extends Options,
+  NewOptions extends Options,
+  Subs extends SubCommands,
+> = Command<A, Simplify<O & NewOptions>, Subs>

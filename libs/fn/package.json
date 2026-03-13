@@ -1,16 +1,46 @@
 {
   "name": "@mono/fn",
-  "version": "0.0.0",
+  "version": "1.2.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
-  "scripts": {
-    "indexts": "devkit clean index-ts",
-    "build": "node esbuild.mjs"
-  },
   "devDependencies": {
-    "@bemoje/devkit": "0.1.0"
+    "@mono/types": "workspace:^",
+    "tsup": "^8.5.1",
+    "type-fest": "5.4.4"
+  },
+  "dependencies": {
+    "es-toolkit": "^1.45.1"
+  },
+  "scripts": {
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+  },
+  "keywords": [
+    "function",
+    "higher-order",
+    "binding",
+    "spy",
+    "method",
+    "wrapping",
+    "context",
+    "utilities",
+    "typescript"
+  ],
+  "description": "Higher-order function utilities for argument binding, context manipulation, spying, and method wrapping.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./bindArg": "./src/bindArg.ts",
+    "./bindArgs": "./src/bindArgs.ts",
+    "./dethisify": "./src/dethisify.ts",
+    "./functionSpy": "./src/functionSpy.ts",
+    "./setLength": "./src/setLength.ts",
+    "./setName": "./src/setName.ts",
+    "./setNameAndLength": "./src/setNameAndLength.ts",
+    "./thisProxy": "./src/thisProxy.ts",
+    "./thisify": "./src/thisify.ts",
+    "./transformReturnValue": "./src/transformReturnValue.ts",
+    "./wrapMethods": "./src/wrapMethods.ts"
   }
 }

@@ -22,7 +22,9 @@ export class TimeoutWeakMap<K extends object, V> {
    */
   get(key: K): V | undefined {
     const vt: [V, NodeJS.Timeout] | undefined = this.wmap.get(key)
-    if (!vt) return undefined
+    if (!vt) {
+      return undefined
+    }
     const [value, timeout] = vt
     timeout.refresh()
     return value
@@ -54,7 +56,9 @@ export class TimeoutWeakMap<K extends object, V> {
    */
   delete(key: K): boolean {
     const vt: [V, NodeJS.Timeout] | undefined = this.wmap.get(key)
-    if (!vt) return false
+    if (!vt) {
+      return false
+    }
     const timeout = vt[1]
     clearTimeout(timeout)
     return this.wmap.delete(key)

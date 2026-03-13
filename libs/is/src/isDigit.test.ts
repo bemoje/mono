@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isDigit } from './isDigit'
-import { describe, expect, it } from 'vitest'
+import { it } from 'vitest'
 
 describe(isDigit.name, () => {
   it('should return true for digit characters', () => {

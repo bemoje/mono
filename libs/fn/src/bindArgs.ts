@@ -1,8 +1,9 @@
-import { Any } from '@mono/types'
-import { TupleToObject, UnionToTuple } from 'type-fest'
-import { RemoveArrayElements } from '@mono/types'
+import type { Any } from '@mono/types'
+import type { RemoveArrayElements } from '@mono/types'
+import type { TupleToObject } from 'type-fest'
+import type { UnionToTuple } from 'type-fest'
 import { range } from 'es-toolkit/math'
-import { preserveNameAndLength } from './preserveNameAndLength'
+import { setNameAndLength } from './setNameAndLength'
 
 /**
  * Binds specified arguments to the provided function, returning a new function that requires
@@ -22,7 +23,6 @@ export function bindArgs<
 >(fn: T, boundArgs: BoundArgs) {
   type NewArgs = RemoveArrayElements<
     Parameters<T>,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     UnionToTuple<Extract<keyof BoundArgs, number>>
   >
@@ -36,15 +36,23 @@ export function bindArgs<
     const boundIndex = index as keyof BoundArgs
     const unboundIndex = index - (isBound ? offset++ : offset)
     return isBound
-      ? () => boundArgs[boundIndex] //
-      : (args: NewArgs) => args[unboundIndex]
+      ? () => {
+          return boundArgs[boundIndex]
+        } //
+      : (args: NewArgs) => {
+          return args[unboundIndex]
+        }
   })
 
-  return preserveNameAndLength(
+  return setNameAndLength(
     fn,
     (...args: NewArgs): ReturnType<T> => {
-      return fn(...argGetters.map((get) => get(args)))
+      return fn(
+        ...argGetters.map((get) => {
+          return get(args)
+        })
+      )
     },
-    boundIndices.length * -1,
+    boundIndices.length * -1
   )
 }

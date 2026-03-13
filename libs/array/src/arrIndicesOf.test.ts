@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest'
 import { arrIndicesOf } from './arrIndicesOf'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
-describe('arrIndicesOf', () => {
+describe(arrIndicesOf.name, () => {
   it('example', () => {
     const arr = ['a', 'b', 'c', 'a']
     expect(arrIndicesOf(arr, 'a')).toStrictEqual([0, 3])

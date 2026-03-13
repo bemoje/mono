@@ -1,6 +1,11 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import assert from 'node:assert'
 import { TimeoutWeakMap } from './TimeoutWeakMap'
+import { afterEach } from 'vitest'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 describe(TimeoutWeakMap.name, () => {
   beforeEach(() => {
@@ -38,12 +43,16 @@ describe(TimeoutWeakMap.name, () => {
 
       // Factory pattern with getOrDefault
       const key3 = {}
-      const value = cache.getOrDefault(key3, () => 'created')
+      const value = cache.getOrDefault(key3, () => {
+        return 'created'
+      })
       assert.strictEqual(value, 'created')
       assert.strictEqual(cache.get(key3), 'created')
 
       // Update existing values
-      cache.update(key3, (old) => old + ' and updated')
+      cache.update(key3, (old) => {
+        return `${old} and updated`
+      })
       assert.strictEqual(cache.get(key3), 'created and updated')
 
       // Load multiple entries
@@ -109,10 +118,7 @@ describe(TimeoutWeakMap.name, () => {
       const map = new TimeoutWeakMap<object, string>(1000)
       const key = {}
       const unrefSpy = vi.spyOn(global, 'setTimeout').mockImplementation(((callback: () => void) => {
-        const timeout = {
-          unref: vi.fn().mockReturnThis(),
-          refresh: vi.fn(),
-        }
+        const timeout = { unref: vi.fn().mockReturnThis(), refresh: vi.fn() }
         return timeout as any
       }) as any)
 
@@ -139,10 +145,7 @@ describe(TimeoutWeakMap.name, () => {
 
       // Mock setTimeout to capture the timeout object
       vi.spyOn(global, 'setTimeout').mockImplementation(((callback: () => void) => {
-        const timeout = {
-          unref: vi.fn().mockReturnThis(),
-          refresh: refreshSpy,
-        }
+        const timeout = { unref: vi.fn().mockReturnThis(), refresh: refreshSpy }
         return timeout as any
       }) as any)
 
@@ -229,10 +232,7 @@ describe(TimeoutWeakMap.name, () => {
 
       // Mock setTimeout to capture the timeout object
       vi.spyOn(global, 'setTimeout').mockImplementation(((callback: () => void) => {
-        const timeout = {
-          unref: vi.fn().mockReturnThis(),
-          refresh: refreshSpy,
-        }
+        const timeout = { unref: vi.fn().mockReturnThis(), refresh: refreshSpy }
         return timeout as any
       }) as any)
 
@@ -287,7 +287,9 @@ describe(TimeoutWeakMap.name, () => {
     it('should handle empty iterable', () => {
       const map = new TimeoutWeakMap<object, string>(1000)
 
-      expect(() => map.load([])).not.toThrow()
+      expect(() => {
+        return map.load([])
+      }).not.toThrow()
     })
   })
 
@@ -297,7 +299,9 @@ describe(TimeoutWeakMap.name, () => {
       const key = {}
 
       map.set(key, 5)
-      const result = map.update(key, (value) => (value ?? 0) + 10)
+      const result = map.update(key, (value) => {
+        return (value ?? 0) + 10
+      })
 
       expect(result).toBe(map) // Returns this for chaining
       expect(map.get(key)).toBe(15)
@@ -307,7 +311,9 @@ describe(TimeoutWeakMap.name, () => {
       const map = new TimeoutWeakMap<object, number>(1000)
       const key = {}
 
-      map.update(key, (value) => (value ?? 0) + 10)
+      map.update(key, (value) => {
+        return (value ?? 0) + 10
+      })
 
       expect(map.get(key)).toBe(10)
     })
@@ -327,11 +333,15 @@ describe(TimeoutWeakMap.name, () => {
       const key = {}
 
       // First update creates array
-      map.update(key, (arr) => [...(arr ?? []), 'first'])
+      map.update(key, (arr) => {
+        return [...(arr ?? []), 'first']
+      })
       expect(map.get(key)).toEqual(['first'])
 
       // Second update adds to existing array
-      map.update(key, (arr) => [...(arr ?? []), 'second'])
+      map.update(key, (arr) => {
+        return [...(arr ?? []), 'second']
+      })
       expect(map.get(key)).toEqual(['first', 'second'])
     })
   })
@@ -345,10 +355,7 @@ describe(TimeoutWeakMap.name, () => {
 
       // Mock setTimeout to capture the timeout object
       vi.spyOn(global, 'setTimeout').mockImplementation(((callback: () => void) => {
-        const timeout = {
-          unref: vi.fn().mockReturnThis(),
-          refresh: refreshSpy,
-        }
+        const timeout = { unref: vi.fn().mockReturnThis(), refresh: refreshSpy }
         return timeout as any
       }) as any)
 
@@ -378,7 +385,13 @@ describe(TimeoutWeakMap.name, () => {
       const map = new TimeoutWeakMap<object, string>(1000)
       const key = {}
 
-      map.getOrDefault(key, () => 'created', 2000)
+      map.getOrDefault(
+        key,
+        () => {
+          return 'created'
+        },
+        2000
+      )
 
       // Should not expire after default timeout
       vi.advanceTimersByTime(1000)
@@ -470,7 +483,9 @@ describe(TimeoutWeakMap.name, () => {
       const map = new TimeoutWeakMap<object, string>(-1000)
       const key = {}
 
-      expect(() => map.set(key, 'test')).not.toThrow()
+      expect(() => {
+        return map.set(key, 'test')
+      }).not.toThrow()
       // Behavior with negative timeout depends on setTimeout implementation
     })
 
@@ -501,11 +516,7 @@ describe(TimeoutWeakMap.name, () => {
 
       const map = new TimeoutWeakMap<object, ComplexValue>(1000)
       const key = {}
-      const value: ComplexValue = {
-        id: 42,
-        data: ['a', 'b', 'c'],
-        nested: { flag: true },
-      }
+      const value: ComplexValue = { id: 42, data: ['a', 'b', 'c'], nested: { flag: true } }
 
       map.set(key, value)
       const retrieved = map.get(key)

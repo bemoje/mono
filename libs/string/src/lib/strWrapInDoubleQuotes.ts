@@ -7,5 +7,5 @@
  * ```
  */
 export function strWrapInDoubleQuotes(input: string): string {
-  return '"' + input + '"'
+  return `"${input}"`
 }

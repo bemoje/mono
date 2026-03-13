@@ -22,13 +22,10 @@ This mono-repo also uses various custom repo management CLI tools, scripts and a
 
 - [devkit](./apps/devkit/README.md) - Development utilities for the monorepo.
 - [linkedin-resume](./apps/linkedin-resume/README.md) - A CLI tool to generate a LinkedIn resume in PDF format.
+- [pkg-runner](./apps/pkg-runner/README.md) - A CLI tool to run npm/yarn scripts with an interactive prompt to select which script(s) to run.
 - [playground](./apps/playground/README.md) - Scratch/dev workspace for experimentation.
 
 ## Scripts
-
-### `package.json`
-
-Scripts are defined in the root [`package.json`](/package.json). Each script property has a description via a custom JSON schema ([`docs/package.schema.json`](/docs/package.schema.json)), which is shown when hovering over a script name in VS Code.
 
 ### `devkit` CLI
 
@@ -71,7 +68,7 @@ Before introducing a new dependency, check if if one of the library packages alr
 
 - **Package Manager**: Use `yarn`
 - **Workspaces**: `libs/*`, `apps/*` (Yarn 4.3.1 workspaces)
-- **Build System**: ESBuild with consistent configuration across packages
+- **Build System**: tsup (wrapper around ESBuild) with consistent configuration across packages
 - **Module System**: ESNext modules
 
 ### libs
@@ -82,21 +79,19 @@ Workspaces in the `libs/` directory may have additional directories/files but th
 
 ```
 libs/<package-name>/
-├── esbuild.mjs           # Build configuration (standardized)
-├── eslint.config.mjs     # Extends root ESLint config
+├── tsup.config.mjs       # Build configuration (standardized)
 ├── package.json          # Package metadata with build/lint scripts
 ├── README.md             # Package documentation
 ├── tsconfig.json         # Extends ../../tsconfig.json
 └── src/
-    ├── index.ts          # Barrel export file
+    ├── index.ts          # Barrel export file (auto-generated)
     ├── **/*.ts           # Implementation files
     └── **/*.test.ts      # Test files (Vitest)
 ```
 
 ## Testing
 
-The 'vitest' test framework is used for unit tests.
-To run specific test(s), use `yarn test <GLOB_PATTERN>`
+The 'vitest' test framework is used for unit tests. To run specific test(s), use `yarn test <GLOB_PATTERN>`
 
 ### Test Coverage
 
@@ -108,8 +103,7 @@ For full coverage reports, use `yarn test-coverage` which will run tests in all 
 
 ## Semantic Extname Prefix System
 
-This monorepo uses semantic extension prefixes to categorize files by their purpose.
-Files follow the pattern: `<filename>.<prefix>.<extension>`
+This monorepo uses semantic extension prefixes to categorize files by their purpose. Files follow the pattern: `<filename>.<prefix>.<extension>`
 
 ### Supported Prefixes
 
@@ -219,7 +213,7 @@ describe(
     describe('Some meaningful categorization one...', () => {
       // ...
     })
-  },
+  }
 )
 ```
 
@@ -240,6 +234,6 @@ describe(ClassToTest.name, () => {
 - Performance analysis utilities library in [libs/profiler](/libs/profiler)
 - Stack trace enhancement utilities library in [libs/stacktrace](/libs/stacktrace)
 
-## Exported Modules
+## Libraries
 
 <!-- LIBRARY_EXPORTED_MODULES -->

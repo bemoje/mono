@@ -16,7 +16,7 @@
 export function arrSortedInsertionIndex<T>(
   array: readonly T[],
   value: T,
-  comparator: (a: T, b: T) => number,
+  comparator: (a: T, b: T) => number
 ): number {
   let first = 0
   let count = array.length
@@ -24,7 +24,8 @@ export function arrSortedInsertionIndex<T>(
     const step = Math.trunc(count / 2)
     let it = first + step
     if (comparator(array[it]!, value) <= 0) {
-      first = ++it
+      it++
+      first = it
       count -= step + 1
     } else {
       count = step

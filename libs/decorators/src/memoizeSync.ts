@@ -1,15 +1,16 @@
-import memoizee from 'memoizee'
-import { ms } from 'enhanced-ms'
-import { MemoizeSyncOptions, SomeSyncFunction } from './types.internal'
+import type { MemoizeSyncOptions } from './types.internal'
+import type { SomeSyncFunction } from './types.internal'
 import assertDescriptorValueIsFunction from './assertDescriptorValueIsFunction'
 import { mapGetOrDefault } from '@mono/map'
+import memoizee from 'memoizee'
+import { ms } from 'enhanced-ms'
 
 /**
  * Decorator to memoize a sync method.
  * @param maxAge The maximum age of the memoized value as number (ms) or descriptive string (e.g. '10 min'). Uses 'ms' library: https://github.com/zeit/ms
  */
 export function memoizeSync(
-  maxAge?: number | string,
+  maxAge?: number | string
 ): (target: object, key: string, descriptor: PropertyDescriptor) => PropertyDescriptor
 
 /**
@@ -17,7 +18,7 @@ export function memoizeSync(
  * @param options The options for memoization.
  */
 export function memoizeSync(
-  options: MemoizeSyncOptions,
+  options: MemoizeSyncOptions
 ): (target: object, key: string, descriptor: PropertyDescriptor) => PropertyDescriptor
 
 //
@@ -25,7 +26,9 @@ export function memoizeSync(arg: (number | string) | MemoizeSyncOptions = {}) {
   const opts = typeof arg === 'object' ? arg : { maxAge: typeof arg === 'number' ? arg : ms(arg) }
 
   return function decorator(target: unknown, key: string, descriptor?: PropertyDescriptor) {
-    if (!descriptor) throw new TypeError('descriptor is undefined')
+    if (!descriptor) {
+      throw new TypeError('descriptor is undefined')
+    }
     const orig = descriptor.value
     assertDescriptorValueIsFunction(key, descriptor)
     const options = { length: false, ...opts } as memoizee.Options<SomeSyncFunction>
@@ -36,7 +39,9 @@ export function memoizeSync(arg: (number | string) | MemoizeSyncOptions = {}) {
     } else {
       const wmap = new WeakMap()
       descriptor.value = function (...args: any[]) {
-        const memoized = mapGetOrDefault(wmap, this, () => memoizee(orig, options))
+        const memoized = mapGetOrDefault(wmap, this, () => {
+          return memoizee(orig, options)
+        })
         return memoized.apply(this, args)
       }
     }

@@ -1,21 +1,23 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import assert from 'node:assert'
-import { execSync } from 'node:child_process'
+import { afterEach } from 'vitest'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
 import colors from 'ansi-colors'
-import upath from 'upath'
+import { describe } from 'vitest'
+import { execSync } from 'child_process'
 import { execute } from './execute'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import upath from 'upath'
+import { vi } from 'vitest'
 
 // Mock dependencies
-vi.mock('node:child_process', () => ({
-  execSync: vi.fn(),
-}))
+vi.mock('child_process', () => {
+  return { execSync: vi.fn() }
+})
 
-vi.mock('upath', () => ({
-  default: {
-    relative: vi.fn(),
-    basename: vi.fn(),
-  },
-}))
+vi.mock('upath', () => {
+  return { default: { relative: vi.fn(), basename: vi.fn() } }
+})
 
 const mockExecSync = vi.mocked(execSync)
 const mockPath = vi.mocked(upath)
@@ -55,12 +57,7 @@ describe(execute.name, () => {
       assert(typeof optionsResult === 'string', 'should handle options')
 
       // Command with all options
-      const fullOptionsResult = execute('pwd', {
-        cwd: '/custom',
-        silent: false,
-        fadedOutput: true,
-        noEcho: false,
-      })
+      const fullOptionsResult = execute('pwd', { cwd: '/custom', silent: false, fadedOutput: true, noEcho: false })
       assert(typeof fullOptionsResult === 'string', 'should handle all options')
     }).not.toThrow()
   })
@@ -73,10 +70,7 @@ describe(execute.name, () => {
       const result = execute('echo "Hello World"')
 
       expect(result).toBe(output)
-      expect(mockExecSync).toHaveBeenCalledWith('echo "Hello World"', {
-        stdio: 'inherit',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('echo "Hello World"', { stdio: 'inherit', cwd: process.cwd() })
     })
 
     it('should log command before execution', () => {
@@ -116,7 +110,7 @@ describe(execute.name, () => {
       const result = execute(['cmd1', 'cmd2', 'cmd3'])
 
       expect(result).toBe(
-        'output1\n-------------------------------\noutput2\n-------------------------------\noutput3',
+        'output1\n-------------------------------\noutput2\n-------------------------------\noutput3'
       )
       expect(mockExecSync).toHaveBeenCalledTimes(3)
       expect(mockExecSync).toHaveBeenNthCalledWith(1, 'cmd1', expect.any(Object))
@@ -147,19 +141,13 @@ describe(execute.name, () => {
 
       execute('test', { cwd: customCwd })
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'inherit',
-        cwd: customCwd,
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'inherit', cwd: customCwd })
     })
 
     it('should use current working directory by default', () => {
       execute('test')
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'inherit',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'inherit', cwd: process.cwd() })
     })
 
     it('should handle silent option', () => {
@@ -168,10 +156,7 @@ describe(execute.name, () => {
       const result = execute('test', { silent: true })
 
       expect(result).toBe('silent output')
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'pipe', cwd: process.cwd() })
     })
 
     it('should handle fadedOutput option', () => {
@@ -179,10 +164,7 @@ describe(execute.name, () => {
 
       execute('test', { fadedOutput: true })
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'pipe', cwd: process.cwd() })
     })
 
     it('should handle noEcho option', () => {
@@ -195,10 +177,7 @@ describe(execute.name, () => {
     it('should combine silent and fadedOutput options', () => {
       execute('test', { silent: true, fadedOutput: true })
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'pipe', cwd: process.cwd() })
     })
   })
 
@@ -221,8 +200,12 @@ describe(execute.name, () => {
       execute('test', { fadedOutput: true })
 
       // Should only log non-empty lines
-      const logCalls = consoleLogSpy.mock.calls.map((call) => call[0])
-      const outputCall = logCalls.find((call) => typeof call === 'string' && call.includes('- line1'))
+      const logCalls = consoleLogSpy.mock.calls.map((call) => {
+        return call[0]
+      })
+      const outputCall = logCalls.find((call) => {
+        return typeof call === 'string' && call.includes('- line1')
+      })
       expect(outputCall).toBeDefined()
     })
 
@@ -288,28 +271,19 @@ describe(execute.name, () => {
     it('should use inherit stdio by default', () => {
       execute('test')
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'inherit',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'inherit', cwd: process.cwd() })
     })
 
     it('should use pipe stdio when silent', () => {
       execute('test', { silent: true })
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'pipe', cwd: process.cwd() })
     })
 
     it('should use pipe stdio when fadedOutput', () => {
       execute('test', { fadedOutput: true })
 
-      expect(mockExecSync).toHaveBeenCalledWith('test', {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-      })
+      expect(mockExecSync).toHaveBeenCalledWith('test', { stdio: 'pipe', cwd: process.cwd() })
     })
   })
 
@@ -320,7 +294,9 @@ describe(execute.name, () => {
         throw error
       })
 
-      expect(() => execute('failing-command')).toThrow('Command failed')
+      expect(() => {
+        return execute('failing-command')
+      }).toThrow('Command failed')
     })
 
     it('should handle execSync returning non-buffer values', () => {
@@ -343,7 +319,7 @@ describe(execute.name, () => {
 
   describe('edge cases', () => {
     it('should handle very long commands', () => {
-      const longCommand = 'echo ' + 'a'.repeat(10000)
+      const longCommand = `echo ${'a'.repeat(10000)}`
 
       execute(longCommand)
 

@@ -1,12 +1,9 @@
-import { objUpdatePropertyDescriptors } from './objUpdatePropertyDescriptors'
-
 /**
- * Sets the specified properties of an object to be writable.
+ * Sets the specified properties of an object to be non-writable.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function setWritable(object: Record<PropertyKey, any>, ...properties: string[]): void {
-  objUpdatePropertyDescriptors(object, properties, (descriptor) => {
-    descriptor.writable = true
-    return descriptor
-  })
+export function setWritable<T extends object>(object: T, ...properties: string[]): T {
+  for (const prop of properties) {
+    Object.defineProperty(object, prop, { writable: true })
+  }
+  return object
 }

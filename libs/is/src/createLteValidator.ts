@@ -5,12 +5,11 @@ import { isValidNumber } from './isValidNumber'
  */
 export function createLteValidator(limit: number) {
   function func(value: unknown): value is number {
-    if (!isValidNumber(value)) return false
+    if (!isValidNumber(value)) {
+      return false
+    }
     return value <= limit
   }
-  Object.defineProperty(func, 'name', {
-    configurable: true,
-    value: 'isLte' + limit.toString(),
-  })
+  Object.defineProperty(func, 'name', { configurable: true, value: `isLte${limit.toString()}` })
   return func
 }

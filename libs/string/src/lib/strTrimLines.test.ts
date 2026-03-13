@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strTrimLines } from './strTrimLines'
-import { describe, expect, it } from 'vitest'
 
 describe('strTrimLines', () => {
   it('should trim leading and trailing whitespace from each line in a string', () => {

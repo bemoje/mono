@@ -1,14 +1,12 @@
-import { Inspector, InspectorTarget } from '@mono/composition'
+import { Inspector } from '@mono/composition'
+import type { InspectorTarget } from '@mono/composition'
 
 declare module './inspector' {
   export interface A extends InspectorTarget {}
 }
 
 class A {
-  static inspector = Inspector.compose(A, {
-    keys: ['one', 'two', 'a'],
-    ignoreValues: { noFalse: true },
-  })
+  static inspector = Inspector.compose(A, { keys: ['one', 'two', 'a'], ignoreValues: { noFalse: true } })
 
   constructor() {}
 
@@ -21,10 +19,7 @@ class A {
 }
 
 class B extends A {
-  static inspector = Inspector.compose(B, {
-    keys: ['three', 'b'],
-    ignoreKeys: ['a'],
-  })
+  static inspector = Inspector.compose(B, { keys: ['three', 'b'], ignoreKeys: ['a'] })
 
   get two() {
     return 2

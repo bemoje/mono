@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isNamedFunction } from './isNamedFunction'
-import { describe, expect, it } from 'vitest'
+import { it } from 'vitest'
 
 describe(isNamedFunction.name, () => {
   describe('valid', () => {

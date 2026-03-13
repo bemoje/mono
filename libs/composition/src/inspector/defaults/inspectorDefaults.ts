@@ -1,6 +1,6 @@
-import { InspectorOptions } from '../types'
-import { inspectDefaults } from './inspectDefaults'
+import type { InspectorOptions } from '../types'
 import { ignoreValuesDefaults } from './ignoreValuesDefaults'
+import { inspectDefaults } from './inspectDefaults'
 
 /**
  * The default inspector configuration options.

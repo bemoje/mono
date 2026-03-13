@@ -6,8 +6,10 @@ import { ms } from 'enhanced-ms'
 export function Timer(startTime: number = Date.now()) {
   return function (endTime: number = Date.now()) {
     const duration = endTime - startTime
-    if (duration === 0) return '0ms'
+    if (duration === 0) {
+      return '0ms'
+    }
     const string = ms(duration, { useAbbreviations: true })
-    return string ?? duration + 'ms'
+    return string ?? `${duration}ms`
   }
 }

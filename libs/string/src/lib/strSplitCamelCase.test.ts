@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strSplitCamelCase } from './strSplitCamelCase'
-import { describe, expect, it } from 'vitest'
 
 describe('strSplitCamelCase', () => {
   it('example', () => {

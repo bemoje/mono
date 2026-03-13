@@ -8,8 +8,14 @@ import { isWindows } from './isWindows'
  * @returns A string indicating the current operating system. It can be 'windows', 'osx', 'linux', or 'unknown'.
  */
 export function getOS(): 'windows' | 'osx' | 'linux' | 'unknown' {
-  if (isLinux()) return 'linux'
-  if (isOSX()) return 'osx'
-  if (isWindows()) return 'windows'
+  if (isLinux()) {
+    return 'linux'
+  }
+  if (isOSX()) {
+    return 'osx'
+  }
+  if (isWindows()) {
+    return 'windows'
+  }
   return 'unknown'
 }

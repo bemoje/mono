@@ -11,25 +11,25 @@ import strip from 'strip-comments'
  * const multilineImport = `import {
  *   foo,
  *   bar
- * } from 'node:module'`
+ * } from 'module'`
  *
  * importStatementToOneLiner(multilineImport)
- * // 'import { foo, bar } from 'node:module''
+ * // 'import { foo, bar } from 'module''
  * ```
  */
 export function importStatementToOneLiner(code: string) {
   return (
     strip(code)
       // remove newlines
-      .replace(/\r*\n/g, ' ')
+      .replaceAll(/\r*\n/g, ' ')
       // remove consecutive whitespace
-      .replace(/\s+/g, ' ')
+      .replaceAll(/\s+/g, ' ')
       // remove trailing commas
-      .replace(/,\s*\}/, ' }')
+      .replace(/,\s*}/, ' }')
       // Normalize spaces around commas
-      .replace(/\s*,\s*/g, ', ')
+      .replaceAll(/\s*,\s*/g, ', ')
       // remove consecutive whitespace
-      .replace(/\s+/g, ' ')
+      .replaceAll(/\s+/g, ' ')
       // remove leading and trailing whitespace
       .trim()
   )

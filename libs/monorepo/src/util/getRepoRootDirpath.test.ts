@@ -1,26 +1,36 @@
-import { describe, expect, it, vi } from 'vitest'
-import path from 'upath'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import fs from 'fs-extra'
+import { it } from 'vitest'
+import path from 'upath'
+import { vi } from 'vitest'
 
-vi.mock('upath', () => ({
-  default: {
-    normalizeSafe: vi.fn((p: string) => p),
-    joinSafe: vi.fn((...args: string[]) => args.join('/')),
-    dirname: vi.fn((p: string) => {
-      const parts = p.split('/')
-      return parts.length > 1 ? parts.slice(0, -1).join('/') : p
-    }),
-  },
-}))
-vi.mock('fs-extra', () => ({
-  default: {
-    existsSync: vi.fn(),
-    readJsonSync: vi.fn(),
-  },
-}))
-vi.mock('onetime', () => ({
-  default: (fn: () => unknown) => fn,
-}))
+vi.mock('upath', () => {
+  return {
+    default: {
+      normalizeSafe: vi.fn((p: string) => {
+        return p
+      }),
+      joinSafe: vi.fn((...args: string[]) => {
+        return args.join('/')
+      }),
+      dirname: vi.fn((p: string) => {
+        const parts = p.split('/')
+        return parts.length > 1 ? parts.slice(0, -1).join('/') : p
+      }),
+    },
+  }
+})
+vi.mock('fs-extra', () => {
+  return { default: { existsSync: vi.fn(), readJsonSync: vi.fn() } }
+})
+vi.mock('onetime', () => {
+  return {
+    default: (fn: () => unknown) => {
+      return fn
+    },
+  }
+})
 
 const mockFs = vi.mocked(fs)
 const mockPath = vi.mocked(path)
@@ -71,6 +81,8 @@ describe('getRepoRootDirpath', () => {
 
     const { getRepoRootDirpath } = await import('./getRepoRootDirpath')
 
-    expect(() => getRepoRootDirpath()).toThrow('Could not find repo root from process.cwd()')
+    expect(() => {
+      return getRepoRootDirpath()
+    }).toThrow('Could not find repo root from process.cwd()')
   })
 })

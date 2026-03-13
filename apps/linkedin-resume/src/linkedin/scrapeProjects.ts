@@ -1,47 +1,33 @@
+/* eslint-disable complexity */
+
 import type { Browser } from 'puppeteer'
-import fs from 'fs-extra'
-import { join } from 'path/posix'
+import type { CliOptions } from '../types/CliOptions'
+import type { Logger } from '@mono/node'
+import type { ResumeProject } from '../types/Resume'
 import { autoScroll } from './utils/autoScroll'
-import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
+import { getPageUrl } from './utils/getPageUrl'
 import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
-import { CliOptions } from '../types/CliOptions'
+import { onScrapeError } from './utils/onScrapeError'
 import { parseDate } from './utils/parseDate'
-import { getLinkedInUsername } from './utils/getLinkedInUsername'
-import { DIST_PATH } from '../constants'
-import { prettyStackTrace } from 'libs/stacktrace/src/prettyStackTrace'
-import { toError } from 'libs/node/src/toError'
+import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
+import { scrapeOutputJson } from './utils/scrapeOutputJson'
+import { userConfigFile } from '../userConfigFile'
 
-interface ProjectEntry {
-  name: string
-  description: string
-  highlights: string[]
-  skills: string[]
-  startDate: string
-  endDate: string
-  roles: string[]
-  entity: string
-  type: string
-  url: string
-  mediaLinks: { title: string; url: string }[]
-  logoUrl: string
-}
-
-export async function scrapeProjects(browser: Browser, options: CliOptions): Promise<void> {
+export async function scrapeProjects(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const page = await browser.newPage()
 
-  const projects: ProjectEntry[] = []
+  const projects: ResumeProject[] = []
 
   try {
-    const username = await getLinkedInUsername()
-    await page.goto(`https://www.linkedin.com/in/${username}/details/projects/?locale=en_US`, {
-      waitUntil: 'domcontentloaded',
-      timeout: 20000,
-    })
+    const username = userConfigFile.load().username
+    await page.goto(getPageUrl(username, 'projects'), { waitUntil: 'domcontentloaded', timeout: 20_000 })
 
     try {
-      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
+      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15_000 })
     } catch {
-      console.warn('No projects section found or it took too long to load.')
+      logger.warn('No projects section found or it took too long to load.')
+      // eslint-disable-next-line no-throw-literal
+      throw 'ignore'
     }
     await autoScroll(page)
     await patchEsbuildHelpers(page)
@@ -49,7 +35,9 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
 
     const rawEntries = await page.evaluate(() => {
       const container = document.querySelector('.scaffold-finite-scroll__content')
-      if (!container) return []
+      if (!container) {
+        return []
+      }
       const topLevelItems = Array.from(container.querySelector('ul')?.children ?? [])
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,30 +51,22 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
       return topLevelItems.map((li) => {
         const { mediaLinks, mediaTexts } = extractMedia(li)
         const mediaTextSet = new Set(mediaTexts)
-        const spans = getVisibleSpans(li).filter((text) => !mediaTextSet.has(text))
+        const spans = getVisibleSpans(li).filter((text) => {
+          return !mediaTextSet.has(text)
+        })
 
-        return {
-          spans,
-          logoUrl: li.querySelector('img')?.src ?? '',
-          mediaLinks,
-        }
+        return { spans, logoUrl: li.querySelector('img')?.src ?? '', mediaLinks }
       })
     })
-
-    if (options.debug) {
-      // Dump raw spans for diagnostic on first run
-      const debugPath = join('.temp', 'projects-raw-debug.json')
-
-      await fs.outputFile(debugPath, JSON.stringify(rawEntries, null, 2))
-      console.log(`Wrote raw project spans to ${debugPath}`)
-    }
 
     // Date patterns for project entries
     const PROJ_DATE_RE = /^[A-Z][a-z]{2}\s+\d{4}\s*-\s*([A-Z][a-z]{2}\s+\d{4}|Present)$|^[A-Z][a-z]{2}\s+\d{4}$/
     const ASSOC_RE = /^Associated with\s+/
 
     for (const { spans, logoUrl, mediaLinks } of rawEntries) {
-      if (spans.length < 2) continue
+      if (spans.length < 2) {
+        continue
+      }
 
       const name = spans[0]
       let dateStr = ''
@@ -126,7 +106,9 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
         ? skillsStr
             .replace(/^Skills:\s*/, '')
             .split(' · ')
-            .map((s) => s.trim())
+            .map((s) => {
+              return s.trim()
+            })
             .filter(Boolean)
         : []
 
@@ -145,7 +127,9 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
         const startsWithDesc = allText.length > 0 && !fullText.trimStart().startsWith('-')
         const parts = fullText
           .split(/(?:^|\n)\s*-\s*/)
-          .map((s) => s.trim())
+          .map((s) => {
+            return s.trim()
+          })
           .filter(Boolean)
         description = startsWithDesc ? (parts.shift() ?? '') : ''
         highlights = parts
@@ -167,14 +151,9 @@ export async function scrapeProjects(browser: Browser, options: CliOptions): Pro
       })
     }
   } catch (e) {
-    const error = toError(e)
-    error.message = 'Error scraping projects: ' + error.message
-    console.error(options.debug ? prettyStackTrace(error) : error.message)
+    onScrapeError(e, 'projects', options, logger)
   } finally {
-    const outPath = join(DIST_PATH, 'projects-scraped.json')
-    await fs.outputFile(outPath, JSON.stringify(projects, null, 2))
-    console.log(`Wrote ${projects.length} projects to ${outPath}`)
-
+    await scrapeOutputJson(projects, 'projects', logger, options)
     if (!options.keepOpen) {
       await page.close()
     }

@@ -1,5 +1,5 @@
-import { SpawnOptions } from 'node:child_process'
-import cp from 'node:child_process'
+import type { SpawnOptions } from 'child_process'
+import cp from 'child_process'
 import { spawnChildProcess } from './spawnChildProcess'
 
 /**
@@ -9,7 +9,7 @@ import { spawnChildProcess } from './spawnChildProcess'
 export async function spawnNodeProcess(
   args: string[] = [],
   spawnOptions: SpawnOptions = {},
-  emitterCallback?: (child: cp.ChildProcess) => void,
+  emitterCallback?: (child: cp.ChildProcess) => void
 ): Promise<number> {
   return await spawnChildProcess(getNodeExecPath(), args.slice(), spawnOptions, emitterCallback)
 }

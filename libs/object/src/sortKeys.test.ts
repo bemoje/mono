@@ -1,4 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { sortKeys } from './sortKeys'
 
 describe(sortKeys.name, () => {
@@ -10,7 +12,9 @@ describe(sortKeys.name, () => {
 
   it('should use the provided compare function to sort keys', () => {
     const input = { c: 3, a: 1, b: 2 }
-    const output = sortKeys(input, (a, b) => b.localeCompare(a)) // Descending order
+    const output = sortKeys(input, (a, b) => {
+      return b.localeCompare(a)
+    }) // Descending order
     expect(output).toEqual({ c: 3, b: 2, a: 1 })
   })
 

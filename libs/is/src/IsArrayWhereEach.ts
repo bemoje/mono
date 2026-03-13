@@ -11,14 +11,25 @@ import { isNamedFunctionArray } from './isNamedFunctionArray'
  */
 export function IsArrayWhereEach<O>(
   validators: ((value: O) => boolean)[],
-  name?: string,
+  name?: string
 ): (array: unknown) => boolean {
   if (!name) {
     ensureThat(validators, isNamedFunctionArray)
-    name = 'isArrayWhereEach' + validators.map((fun) => fun.name[0].toUpperCase() + fun.name.slice(1)).join('And')
+    name = `isArrayWhereEach${validators
+      .map((fun) => {
+        return fun.name[0].toUpperCase() + fun.name.slice(1)
+      })
+      .join('And')}`
   }
   const result = function (array: unknown): boolean {
-    return Array.isArray(array) && array.every((value) => validators.every((isValid) => isValid(value)))
+    return (
+      Array.isArray(array) &&
+      array.every((value) => {
+        return validators.every((isValid) => {
+          return isValid(value)
+        })
+      })
+    )
   }
   Object.defineProperty(result, 'name', { value: name })
   return result

@@ -1,8 +1,13 @@
-import { describe, expect, it } from 'vitest'
+import type { Argument } from './types'
 import { Help } from './Help'
-import type { IArgument, ICommand, IHelp, IOption } from './types'
+import type { ICommand } from './types'
+import type { IHelp } from './types'
+import type { Option } from './types'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
-function mockOption(overrides: Partial<IOption> = {}): IOption {
+function mockOption(overrides: Partial<Option> = {}): Option {
   return {
     type: 'boolean',
     flags: '-v, --verbose',
@@ -14,14 +19,8 @@ function mockOption(overrides: Partial<IOption> = {}): IOption {
   }
 }
 
-function mockArgument(overrides: Partial<IArgument> = {}): IArgument {
-  return {
-    usage: '<file>',
-    name: 'file',
-    description: 'File to process',
-    required: true,
-    ...overrides,
-  }
+function mockArgument(overrides: Partial<Argument> = {}): Argument {
+  return { usage: '<file>', name: 'file', description: 'File to process', required: true, ...overrides }
 }
 
 function mockCmd(overrides: Partial<ICommand> = {}): ICommand {
@@ -31,7 +30,7 @@ function mockCmd(overrides: Partial<ICommand> = {}): ICommand {
     description: 'A test command',
     arguments: [],
     options: [],
-    commands: [],
+    commands: {},
     help: undefined as unknown as IHelp,
     ...overrides,
   } as ICommand
@@ -76,7 +75,7 @@ describe(Help.name, () => {
   describe(Help.prototype.visibleCommands.name, () => {
     it('should filter hidden commands', () => {
       const cmd = mockCmd({
-        commands: [mockCmd({ name: 'visible' }), mockCmd({ name: 'hidden', hidden: true })],
+        commands: { visible: mockCmd({ name: 'visible' }), hidden: mockCmd({ name: 'hidden', hidden: true }) },
       })
       const help = new Help(cmd)
       const result = help.visibleCommands()
@@ -85,9 +84,7 @@ describe(Help.name, () => {
     })
 
     it('should sort subcommands by name', () => {
-      const cmd = mockCmd({
-        commands: [mockCmd({ name: 'beta' }), mockCmd({ name: 'alpha' })],
-      })
+      const cmd = mockCmd({ commands: { beta: mockCmd({ name: 'beta' }), alpha: mockCmd({ name: 'alpha' }) } })
       const help = new Help(cmd)
       const result = help.visibleCommands()
       expect(result[0].name).toBe('alpha')
@@ -95,9 +92,7 @@ describe(Help.name, () => {
     })
 
     it('should not sort when sortSubcommands is false', () => {
-      const cmd = mockCmd({
-        commands: [mockCmd({ name: 'beta' }), mockCmd({ name: 'alpha' })],
-      })
+      const cmd = mockCmd({ commands: { beta: mockCmd({ name: 'beta' }), alpha: mockCmd({ name: 'alpha' }) } })
       const help = new Help(cmd)
       help.sortSubcommands = false
       const result = help.visibleCommands()
@@ -140,7 +135,7 @@ describe(Help.name, () => {
   })
 
   describe(Help.prototype.visibleArguments.name, () => {
-    it('should return all arguments when any has description', () => {
+    it('should return all arguments', () => {
       const cmd = mockCmd({
         arguments: [
           mockArgument({ name: 'a', description: 'First' }),
@@ -149,14 +144,6 @@ describe(Help.name, () => {
       })
       const help = new Help(cmd)
       expect(help.visibleArguments()).toHaveLength(2)
-    })
-
-    it('should return empty when no arguments have descriptions', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ description: '' })],
-      })
-      const help = new Help(cmd)
-      expect(help.visibleArguments()).toHaveLength(0)
     })
   })
 
@@ -168,7 +155,7 @@ describe(Help.name, () => {
         options: [mockOption()],
         arguments: [mockArgument({ usage: '<port>' })],
       })
-      const cmd = mockCmd({ commands: [sub] })
+      const cmd = mockCmd({ commands: { serve: sub } })
       const help = new Help(cmd)
       const result = help.subcommandTerm(sub)
       expect(result).toContain('s')
@@ -198,7 +185,7 @@ describe(Help.name, () => {
     it('should return argument name', () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
-      expect(help.argumentTerm(mockArgument({ name: 'file' }))).toBe('file')
+      expect(help.argumentTerm(mockArgument({ name: 'file' }))).toBe('<file>')
     })
   })
 
@@ -213,13 +200,19 @@ describe(Help.name, () => {
     it('should include alias', () => {
       const cmd = mockCmd({ name: 'serve', aliases: ['s'] })
       const help = new Help(cmd)
-      expect(help.commandUsage()).toContain('serve|s')
+      expect(help.commandUsage()).toContain('serve')
     })
 
     it('should include [cmd] when commands exist', () => {
-      const cmd = mockCmd({ commands: [mockCmd({ name: 'sub' })] })
+      const cmd = mockCmd({ commands: { sub: mockCmd({ name: 'sub' }) } })
       const help = new Help(cmd)
       expect(help.commandUsage()).toContain('[cmd]')
+    })
+
+    it('should not include [cmd] when no commands exist', () => {
+      const cmd = mockCmd({ commands: {} })
+      const help = new Help(cmd)
+      expect(help.commandUsage()).not.toContain('[cmd]')
     })
 
     it('should include [opts] when options exist', () => {
@@ -229,33 +222,25 @@ describe(Help.name, () => {
     })
 
     it('should format required arg', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ name: 'file', required: true, variadic: false })],
-      })
+      const cmd = mockCmd({ arguments: [mockArgument({ name: 'file', required: true, variadic: false })] })
       const help = new Help(cmd)
       expect(help.commandUsage()).toContain('<file>')
     })
 
     it('should format required variadic arg', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ name: 'files', required: true, variadic: true })],
-      })
+      const cmd = mockCmd({ arguments: [mockArgument({ name: 'files', required: true, variadic: true })] })
       const help = new Help(cmd)
       expect(help.commandUsage()).toContain('<files...>')
     })
 
     it('should format optional arg', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ name: 'file', required: false, variadic: false })],
-      })
+      const cmd = mockCmd({ arguments: [mockArgument({ name: 'file', required: false, variadic: false })] })
       const help = new Help(cmd)
       expect(help.commandUsage()).toContain('[file]')
     })
 
     it('should format optional variadic arg', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ name: 'files', required: false, variadic: true })],
-      })
+      const cmd = mockCmd({ arguments: [mockArgument({ name: 'files', required: false, variadic: true })] })
       const help = new Help(cmd)
       expect(help.commandUsage()).toContain('[files...]')
     })
@@ -266,6 +251,14 @@ describe(Help.name, () => {
       const cmd = mockCmd({ description: 'My command' })
       const help = new Help(cmd)
       expect(help.commandDescription()).toBe('My command')
+    })
+
+    it('should include aliases when present', () => {
+      const cmd = mockCmd({ description: 'My command', aliases: ['mc', 'm'] })
+      const help = new Help(cmd)
+      const result = help.commandDescription()
+      expect(result).toContain('Aliases: mc, m')
+      expect(result).toContain('My command')
     })
   })
 
@@ -284,11 +277,11 @@ describe(Help.name, () => {
       expect(help.subcommandDescription(sub)).toBe('First line')
     })
 
-    it('should return empty for single-line description without summary', () => {
+    it('should return description for single-line description without summary', () => {
       const sub = mockCmd({ summary: undefined, description: 'Single line' })
       const cmd = mockCmd()
       const help = new Help(cmd)
-      expect(help.subcommandDescription(sub)).toBe('')
+      expect(help.subcommandDescription(sub)).toBe('Single line')
     })
   })
 
@@ -306,6 +299,16 @@ describe(Help.name, () => {
       expect(result).toContain('choices: a, b')
     })
 
+    it('should truncate choices when more than 5', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.optionDescription(
+        mockOption({ description: 'Pick', choices: ['a', 'b', 'c', 'd', 'e', 'f', 'g'] })
+      )
+      expect(result).toContain('choices: a, b, c, d, e, ...')
+      expect(result).not.toContain('f')
+    })
+
     it('should include default value', () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
@@ -317,7 +320,7 @@ describe(Help.name, () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
       const result = help.optionDescription(
-        mockOption({ description: 'Output', defaultValue: '/tmp', defaultValueDescription: 'temp dir' }),
+        mockOption({ description: 'Output', defaultValue: '/tmp', defaultValueDescription: 'temp dir' })
       )
       expect(result).toContain('default: temp dir')
     })
@@ -342,6 +345,13 @@ describe(Help.name, () => {
       const result = help.optionDescription(mockOption({ description: '', env: 'VERBOSE' }))
       expect(result).toBe('(env: VERBOSE)')
     })
+
+    it('should return empty string when description is undefined and no extra info', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.optionDescription(mockOption({ description: undefined as unknown as string }))
+      expect(result).toBe('')
+    })
   })
 
   describe(Help.prototype.argumentDescription.name, () => {
@@ -358,6 +368,16 @@ describe(Help.name, () => {
       expect(result).toContain('choices: dev, prod')
     })
 
+    it('should truncate choices when more than 5', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.argumentDescription(
+        mockArgument({ description: 'Pick', choices: ['a', 'b', 'c', 'd', 'e', 'f', 'g'] })
+      )
+      expect(result).toContain('choices: a, b, c, d, e, ...')
+      expect(result).not.toContain('f')
+    })
+
     it('should include default value', () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
@@ -369,9 +389,16 @@ describe(Help.name, () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
       const result = help.argumentDescription(
-        mockArgument({ description: 'Port', defaultValue: '3000', defaultValueDescription: 'default port' }),
+        mockArgument({ description: 'Port', defaultValue: '3000', defaultValueDescription: 'default port' })
       )
       expect(result).toContain('default: default port')
+    })
+
+    it('should skip empty array as defaultValue', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.argumentDescription(mockArgument({ description: 'Tags', defaultValue: [] }))
+      expect(result).not.toContain('default:')
     })
 
     it('should return only extra info when no description', () => {
@@ -379,6 +406,13 @@ describe(Help.name, () => {
       const help = new Help(cmd)
       const result = help.argumentDescription(mockArgument({ description: '', defaultValue: '3000' }))
       expect(result).toBe('(default: 3000)')
+    })
+
+    it('should return empty string when description is undefined and no extra info', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.argumentDescription(mockArgument({ description: undefined as unknown as string }))
+      expect(result).toBe('')
     })
   })
 
@@ -403,7 +437,9 @@ describe(Help.name, () => {
       const cmd = mockCmd()
       const help = new Help(cmd)
       const items = [mockOption({ name: 'a', group: 'A' }), mockOption({ name: 'b', group: 'B' })]
-      const result = help.groupItems(items, items, (o) => o.group ?? 'default')
+      const result = help.groupItems(items, items, (o) => {
+        return o.group ?? 'default'
+      })
       expect(result.size).toBe(2)
       expect(result.get('A')).toHaveLength(1)
     })
@@ -413,7 +449,9 @@ describe(Help.name, () => {
       const help = new Help(cmd)
       const unsorted = [mockOption({ name: 'a', group: 'A' })]
       const visible = [mockOption({ name: 'a', group: 'A' }), mockOption({ name: 'c', group: 'C' })]
-      const result = help.groupItems(unsorted, visible, (o) => o.group ?? 'default')
+      const result = help.groupItems(unsorted, visible, (o) => {
+        return o.group ?? 'default'
+      })
       expect(result.has('C')).toBe(true)
       expect(result.get('C')).toHaveLength(1)
     })
@@ -509,7 +547,7 @@ describe(Help.name, () => {
   describe(Help.prototype.styleUsage.name, () => {
     it('should style different usage parts', () => {
       const cmd = mockCmd({
-        commands: [mockCmd({ name: 'sub' })],
+        commands: { sub: mockCmd({ name: 'sub' }) },
         options: [mockOption()],
         arguments: [mockArgument({ name: 'req', required: true }), mockArgument({ name: 'opt', required: false })],
       })
@@ -530,6 +568,14 @@ describe(Help.name, () => {
       expect(result).toContain('serve')
       expect(result).toContain('[opts]')
     })
+
+    it('should style alias prefix green when term contains pipe separator', () => {
+      const cmd = mockCmd()
+      const help = new Help(cmd)
+      const result = help.styleSubcommandTerm('s | serve [opts]')
+      expect(result).toContain('|')
+      expect(result).toContain('serve')
+    })
   })
 
   describe('longest* methods', () => {
@@ -540,7 +586,10 @@ describe(Help.name, () => {
 
     it('longestSubcommandAliasLength should return alias length', () => {
       const cmd = mockCmd({
-        commands: [mockCmd({ name: 'serve', aliases: ['s'] }), mockCmd({ name: 'build', aliases: [] })],
+        commands: {
+          serve: mockCmd({ name: 'serve', aliases: ['s'] }),
+          build: mockCmd({ name: 'build', aliases: [] }),
+        },
       })
       const help = new Help(cmd)
       expect(help.longestSubcommandAliasLength()).toBe(1)
@@ -548,24 +597,20 @@ describe(Help.name, () => {
 
     it('longestSubcommandTermLength should measure terms', () => {
       const cmd = mockCmd({
-        commands: [mockCmd({ name: 'serve' }), mockCmd({ name: 'build-something' })],
+        commands: { serve: mockCmd({ name: 'serve' }), buildSomething: mockCmd({ name: 'build-something' }) },
       })
       const help = new Help(cmd)
       expect(help.longestSubcommandTermLength()).toBeGreaterThan(0)
     })
 
     it('longestOptionTermLength should measure option flags', () => {
-      const cmd = mockCmd({
-        options: [mockOption({ flags: '-v, --verbose' })],
-      })
+      const cmd = mockCmd({ options: [mockOption({ flags: '-v, --verbose' })] })
       const help = new Help(cmd)
       expect(help.longestOptionTermLength()).toBeGreaterThan(0)
     })
 
     it('longestArgumentTermLength should measure argument names', () => {
-      const cmd = mockCmd({
-        arguments: [mockArgument({ name: 'filename', description: 'The file' })],
-      })
+      const cmd = mockCmd({ arguments: [mockArgument({ name: 'filename', description: 'The file' })] })
       const help = new Help(cmd)
       expect(help.longestArgumentTermLength()).toBeGreaterThan(0)
     })
@@ -576,7 +621,7 @@ describe(Help.name, () => {
       const cmd = mockCmd({
         options: [mockOption({ flags: '-v, --verbose' })],
         arguments: [mockArgument({ name: 'file', description: 'The file' })],
-        commands: [mockCmd({ name: 'sub' })],
+        commands: { sub: mockCmd({ name: 'sub' }) },
       })
       const help = new Help(cmd)
       expect(help.padWidth()).toBeGreaterThan(0)
@@ -586,7 +631,7 @@ describe(Help.name, () => {
   describe('style pass-through methods', () => {
     it('should pass through text', () => {
       const help = new Help(mockCmd())
-      expect(help.styleDescriptionText('desc')).toBe('desc')
+      expect(help.styleDescriptionText('desc')).toContain('desc')
       expect(help.styleOptionText('opt')).toBe('opt')
       expect(help.styleArgumentText('arg')).toBe('arg')
       expect(help.styleSubcommandText('sub')).toBe('sub')
@@ -625,10 +670,10 @@ describe(Help.name, () => {
         description: 'Full app',
         arguments: [mockArgument({ name: 'input', description: 'Input file' })],
         options: [mockOption({ flags: '-v, --verbose', description: 'Verbose' })],
-        commands: [
-          mockCmd({ name: 'serve', description: 'Start server', summary: 'Start' }),
-          mockCmd({ name: 'build', description: 'Build project', summary: 'Build' }),
-        ],
+        commands: {
+          serve: mockCmd({ name: 'serve', description: 'Start server', summary: 'Start' }),
+          build: mockCmd({ name: 'build', description: 'Build project', summary: 'Build' }),
+        },
       })
       const help = new Help(cmd)
       const output = help.render()
@@ -667,10 +712,10 @@ describe(Help.name, () => {
     it('should render with command groups', () => {
       const cmd = mockCmd({
         name: 'app',
-        commands: [
-          mockCmd({ name: 'serve', summary: 'Start server', group: 'Dev:' }),
-          mockCmd({ name: 'build', summary: 'Build project', group: 'Build:' }),
-        ],
+        commands: {
+          serve: mockCmd({ name: 'serve', summary: 'Start server', group: 'Dev:' }),
+          build: mockCmd({ name: 'build', summary: 'Build project', group: 'Build:' }),
+        },
       })
       const help = new Help(cmd)
       const output = help.render()

@@ -1,6 +1,8 @@
-import { describe, it, expect } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { hasBasename } from './hasBasename'
+import { it } from 'vitest'
 
 describe(hasBasename.name, () => {
   it('examples', () => {
@@ -10,12 +12,12 @@ describe(hasBasename.name, () => {
       assert.deepStrictEqual(
         hasBasename('src/main.js', ['index.js', 'main.js']),
         true,
-        'should match array of basenames',
+        'should match array of basenames'
       )
       assert.deepStrictEqual(
         hasBasename('utils/helper.ts', ['index.ts', 'main.ts']),
         false,
-        'should not match unincluded basename',
+        'should not match unincluded basename'
       )
     }).not.toThrow()
   })

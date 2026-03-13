@@ -1,5 +1,7 @@
-import { Static, TString, Type } from '@sinclair/typebox'
-import { TemplateStrategy } from '../interfaces/TemplateStrategy'
+import type { Static } from '@sinclair/typebox'
+import type { TString } from '@sinclair/typebox'
+import type { TemplateStrategy } from '../interfaces/TemplateStrategy'
+import { Type } from '@sinclair/typebox'
 
 /**
  * Template strategy for handling simple string templates.

@@ -1,6 +1,7 @@
-import { TSchema } from '@sinclair/typebox'
+import type { TSchema } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
-import { ValueError, ValueErrorIterator } from '@sinclair/typebox/compiler'
+import type { ValueError } from '@sinclair/typebox/compiler'
+import { ValueErrorIterator } from '@sinclair/typebox/compiler'
 
 /**
  * Error thrown when a value does not match a given schema.
@@ -11,6 +12,7 @@ export class SchemaValidationError extends Error {
   readonly errors: ValueError[]
   constructor(errors: TSchema | ValueError[] | ValueErrorIterator, value: unknown, message: string) {
     super(message)
+    this.name = 'SchemaValidationError'
     this.value = value
     this.errors = Array.isArray(errors)
       ? errors

@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strReplaceAll } from './strReplaceAll'
-import { describe, expect, it } from 'vitest'
 
 describe('strReplaceAll', () => {
   it('replaces original string when nothing matches', () => {

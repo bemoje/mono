@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { formatTableForTerminal } from './formatTableForTerminal'
+import { it } from 'vitest'
 
 describe(formatTableForTerminal.name, () => {
   it('should return empty string for empty rows', () => {
@@ -27,7 +29,7 @@ describe(formatTableForTerminal.name, () => {
         ['1', '2'],
         ['3', '4'],
       ],
-      ['Col1', 'Col2'],
+      ['Col1', 'Col2']
     )
     expect(result).toContain('Col1')
     expect(result).toContain('Col2')

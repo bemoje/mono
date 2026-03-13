@@ -1,5 +1,5 @@
-import { getWeek as getWeekFns } from 'date-fns'
 import { da } from 'date-fns/locale'
+import { getWeek as getWeekFns } from 'date-fns'
 
 /**
  * Get the week number of the year for a given date using Danish locale.

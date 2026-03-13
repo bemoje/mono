@@ -1,22 +1,27 @@
+import type { StackFrame } from 'stacktrace-parser'
 import colors from 'ansi-colors'
-import path from 'node:path'
+import { inspect } from 'util'
 import { parse } from 'stacktrace-parser'
-import { StackFrame } from 'stacktrace-parser'
-import { inspect } from 'node:util'
+import upath from 'upath'
 
 /**
  * Formats stack traces with colors and improved readability for debugging.
  */
-export function prettyStackTrace(error: Error, options: { omitStack?: boolean; omitProps?: boolean } = {}) {
-  return [renderMessage(error) + ' ' + renderProps(error, options), renderStack(error, options), ''].join('\n')
+export function prettyStackTrace(
+  error: Error,
+  options: { omitStack?: boolean; omitProps?: boolean } = {}
+): string {
+  return [renderMessage(error), renderProps(error, options), renderStack(error, options), ''].join('\n')
 }
 
 function renderMessage(error: Error) {
-  return colors.red(error.message)
+  return colors.red(`${error.name}: ${error.message}`)
 }
 
 function renderStack(error: Error, options: { omitStack?: boolean; omitProps?: boolean }) {
-  if (!error.stack || options.omitStack) return ''
+  if (!error.stack || options.omitStack) {
+    return ''
+  }
 
   const frames: StackFrame[] = parse(error.stack)
 
@@ -26,12 +31,14 @@ function renderStack(error: Error, options: { omitStack?: boolean; omitProps?: b
   }, 0)
 
   const stack = frames.map((frame) => {
-    if (frame.file) frame.file = path.relative(process.cwd(), frame.file)
+    if (frame.file) {
+      frame.file = upath.relative(process.cwd(), frame.file.replace(/^file:[/\\]+/, ''))
+    }
     const { methodName, file, lineNumber, column } = frame
     let s = '  '
     let fp: string = ''
     if (file) {
-      const base = path.basename(file)
+      const base = upath.basename(file)
       if (file.startsWith('node:')) {
         s += colors.gray(methodName)
         fp = colors.gray(file)
@@ -44,7 +51,7 @@ function renderStack(error: Error, options: { omitStack?: boolean; omitProps?: b
       }
     }
     s += ' '.repeat(2 + offset - methodName.length)
-    s += fp + ':' + lineNumber + ':' + column
+    s += `${fp}:${lineNumber}:${column}`
     return s
   })
 
@@ -55,18 +62,23 @@ function renderStack(error: Error, options: { omitStack?: boolean; omitProps?: b
 }
 
 function renderProps(error: Error, options: { omitStack?: boolean; omitProps?: boolean }) {
-  if (options.omitProps) return ''
-  const ignore = ['name', 'message', 'frames', 'stack']
-  const keys = Object.getOwnPropertyNames(error).filter((key) => !ignore.includes(key))
-  if (!keys.length) return ''
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+  if (options.omitProps) {
+    return ''
+  }
+  const ignore = new Set(['name', 'message', 'frames', 'stack'])
+  const keys = Object.getOwnPropertyNames(error).filter((key) => {
+    return !ignore.has(key)
+  })
+  if (!keys.length) {
+    return ''
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = {} as any
   for (const [k, v] of Object.entries(error)) {
     if (keys.includes(k)) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       data[k] = v
     }
   }
   // const data = _.pick(error, keys)
-  return inspect(data, { colors: true, depth: 2, breakLength: 80, showHidden: false, getters: false })
+  return inspect(data, { colors: true })
 }

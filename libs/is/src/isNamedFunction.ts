@@ -1,4 +1,4 @@
-import { AnyFunction } from '@mono/types'
+import type { AnyFunction } from '@mono/types'
 
 /**
  * Checks if the provided value is a named function.

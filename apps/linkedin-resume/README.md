@@ -1,11 +1,12 @@
 # linkedin-resume
 
-A CLI tool that scrapes your LinkedIn profile and generates a professionally styled resume as PDF and HTML.
+A CLI tool that scrapes your LinkedIn profile and generates a professionally styled resume as PDF, HTML, and Markdown.
 
 ## Features
 
 - **Automated LinkedIn scraping** - Extracts your profile, work experience, education, projects, skills, recommendations, and languages using Puppeteer.
 - **HTML resume generation** - Renders a clean, LinkedIn-style HTML resume with grouped work experience, skill pills, and recommendation links.
+- **Markdown resume generation** - Generates a readable, well-structured Markdown resume (`resume.md`) for easy editing or sharing.
 - **PDF output** - Converts the HTML resume to PDF via headless Chrome (Windows).
 - **Configurable** - Control output path, extra profiles (e.g. GitHub), and selectively ignore resume sections or specific entries.
 - **Persistent login** - Uses a dedicated Chrome profile so you only need to log in to LinkedIn once.
@@ -25,8 +26,15 @@ linkedin-resume
 # Open the config file in VS Code to customize settings
 linkedin-resume config
 
+
 # Re-render without scraping again (useful for config tweaks)
 linkedin-resume --render
+
+# The following files are generated in your app data directory:
+# - `resume.json` (full resume data, useful for debugging or custom rendering)
+# - `resume.html` (styled HTML)
+# - `resume.pdf` (PDF, if Chrome is available)
+# - `resume.md` (Markdown, for easy editing/sharing)
 ```
 
 ## Usage
@@ -34,7 +42,7 @@ linkedin-resume --render
 ```
 Usage: linkedin-resume [options] [command] [outputFilepath]
 
-A CLI tool to generate a LinkedIn resume in PDF format.
+A CLI tool to generate a LinkedIn resume in PDF, HTML, and Markdown formats.
 
 Arguments:
   outputFilepath    Optional filepath. Defaults to value set in config file.
@@ -60,7 +68,8 @@ linkedin-resume
 # Show the browser window during scraping
 linkedin-resume --no-headless
 
-# Skip scraping, re-render from previously scraped data
+
+# Skip scraping, re-render from previously scraped data (updates HTML, PDF, and Markdown, JSON)
 linkedin-resume --render
 
 # Output PDF to a custom path
@@ -79,7 +88,8 @@ linkedin-resume config
 2. **Scrape** - Opens multiple LinkedIn pages in parallel (profile, experience, education, projects, skills, recommendations) and saves the scraped data as JSON files.
 3. **Render JSON** - Merges all scraped data into a single `resume.json` conforming to the [Resume schema](./resume.schema.json).
 4. **Render HTML** - Generates a styled `resume.html` from the resume data, applying any ignore filters from your config.
-5. **Render PDF** - Converts the HTML to PDF using headless Chrome and copies it to your configured output path.
+5. **Render Markdown** - Generates a readable `resume.md` for easy editing, sharing, or conversion to other formats.
+6. **Render PDF** - Converts the HTML to PDF using headless Chrome and copies it to your configured output path.
 
 ## Configuration
 
@@ -100,13 +110,7 @@ linkedin-resume config
   "outputFilepath": "$USERPROFILE/Desktop/resume.pdf",
 
   // Additional profiles to display in the resume header
-  "profiles": [
-    {
-      "network": "GitHub",
-      "username": "johndoe",
-      "url": "https://github.com/johndoe",
-    },
-  ],
+  "social": [{ "network": "GitHub", "username": "johndoe", "url": "https://github.com/johndoe" }],
 
   // Selectively ignore sections or specific entries when rendering
   "ignore": {
@@ -133,7 +137,7 @@ Supported fields per section:
 | Section           | Matchable fields                                                                         |
 | ----------------- | ---------------------------------------------------------------------------------------- |
 | `work`            | `name`, `location`, `position`, `startDate`, `endDate`, `duration`, `summary`, `logoUrl` |
-| `education`       | `institution`, `area`, `studyType`, `startDate`, `endDate`, `score`, `logoUrl`           |
+| `education`       | `name`, `area`, `studyType`, `startDate`, `endDate`, `logoUrl`                           |
 | `projects`        | `name`, `description`, `startDate`, `endDate`, `entity`, `type`, `url`, `logoUrl`        |
 | `skills`          | `name`                                                                                   |
 | `languages`       | `language`, `fluency`                                                                    |

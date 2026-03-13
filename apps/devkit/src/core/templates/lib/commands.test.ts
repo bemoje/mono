@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import { commands } from './commands'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('template commands', () => {
   it('should export addDependency template', () => {
@@ -11,7 +13,7 @@ describe('template commands', () => {
   it('should export addDevDependency template', () => {
     expect(commands.addDevDependency).toBeDefined()
     const result = commands.addDevDependency.renderString({ dependency: 'vitest' })
-    expect(result).toBe('yarn add vitest --dev')
+    expect(result).toBe('yarn add vitest -D')
   })
 
   it('should export removeDependency template', () => {

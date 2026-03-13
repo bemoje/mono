@@ -1,4 +1,4 @@
-import { exec } from 'node:child_process'
+import { exec } from 'child_process'
 import { getOS } from './getOS'
 
 /**
@@ -8,7 +8,9 @@ import { getOS } from './getOS'
  */
 export function isLinuxProgramInstalled(name: string): Promise<boolean> {
   return new Promise((resolve) => {
-    if (getOS() !== 'linux') return resolve(false)
+    if (getOS() !== 'linux') {
+      return resolve(false)
+    }
     exec(`which ${name}`, (error) => {
       if (error) {
         resolve(false)

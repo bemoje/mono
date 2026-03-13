@@ -1,5 +1,9 @@
-import { describe, expect, it } from 'vitest'
-import { ConfigSchema, dataPath, configFile } from './config'
+import { ConfigSchema } from './config'
+import { configFile } from './config'
+import { dataPath } from './config'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('config', () => {
   it('should export ConfigSchema as a TypeBox schema', () => {

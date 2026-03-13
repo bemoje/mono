@@ -1,4 +1,5 @@
-import { InspectOptions, inspect } from 'node:util'
+import type { InspectOptions } from 'util'
+import { inspect } from 'util'
 
 /**
  * Default options for Node.js util.inspect with enhanced settings for better debugging output.

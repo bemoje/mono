@@ -13,8 +13,8 @@
  */
 export function arrIndicesOf<T>(input: Array<T>, element: T): number[] {
   const result: number[] = []
-  for (let i = 0; i < input.length; i++) {
-    if (element === input[i]) {
+  for (const [i, element_] of input.entries()) {
+    if (element === element_) {
       result.push(i)
     }
   }

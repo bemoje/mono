@@ -1,6 +1,11 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import assert from 'node:assert'
+import { afterEach } from 'vitest'
 import { argvHasHelpFlag } from './argvHasHelpFlag'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 describe(argvHasHelpFlag.name, () => {
   let originalArgv: string[]
@@ -262,13 +267,13 @@ describe(argvHasHelpFlag.name, () => {
 
   describe('array methods behavior', () => {
     it('should use array.find method correctly', () => {
-      const findSpy = vi.spyOn(Array.prototype, 'find')
+      const someSpy = vi.spyOn(Array.prototype, 'some')
       const args = ['node', 'script.js', '--help']
 
       argvHasHelpFlag(args)
 
-      expect(findSpy).toHaveBeenCalled()
-      findSpy.mockRestore()
+      expect(someSpy).toHaveBeenCalled()
+      someSpy.mockRestore()
     })
 
     it('should handle arrays with non-string elements gracefully', () => {
@@ -292,15 +297,15 @@ describe(argvHasHelpFlag.name, () => {
 
   describe('performance considerations', () => {
     it('should stop searching after finding first match', () => {
-      const findSpy = vi.spyOn(Array.prototype, 'find')
+      const someSpy = vi.spyOn(Array.prototype, 'some')
       const args = ['node', 'script.js', '--help', '--config', '--help', '-h']
 
       const result = argvHasHelpFlag(args)
 
       expect(result).toBe(true)
-      // find() should stop at first match
-      expect(findSpy).toHaveBeenCalledTimes(1)
-      findSpy.mockRestore()
+      // some() should stop at first match
+      expect(someSpy).toHaveBeenCalledTimes(1)
+      someSpy.mockRestore()
     })
 
     it('should handle very large argument arrays efficiently', () => {
@@ -327,11 +332,15 @@ describe(argvHasHelpFlag.name, () => {
     })
 
     it('should handle null input gracefully', () => {
-      expect(() => argvHasHelpFlag(null as any)).toThrow()
+      expect(() => {
+        return argvHasHelpFlag(null as any)
+      }).toThrow()
     })
 
     it('should handle non-array input gracefully', () => {
-      expect(() => argvHasHelpFlag('not an array' as any)).toThrow()
+      expect(() => {
+        return argvHasHelpFlag('not an array' as any)
+      }).toThrow()
     })
   })
 })

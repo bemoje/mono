@@ -1,4 +1,4 @@
-import { TStringOfLength } from './TStringOfLength'
+import type { TStringOfLength } from './TStringOfLength'
 
 export type LocaleMonthNames<T extends string> = [
   Jan: T,

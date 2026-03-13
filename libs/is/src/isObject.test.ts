@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isObject } from './isObject'
-import { describe, expect, it } from 'vitest'
+import { it } from 'vitest'
 
 describe(isObject.name, () => {
   it('should return true for an object', () => {
@@ -34,7 +36,11 @@ describe(isObject.name, () => {
   })
 
   it('should return false for a function', () => {
-    expect(isObject(() => 1)).toBe(false)
+    expect(
+      isObject(() => {
+        return 1
+      })
+    ).toBe(false)
   })
 
   it('should be true when the value is an object.', function () {

@@ -1,10 +1,8 @@
-import {
-  getKeysPreset,
-  GetKeysOptions,
-  KeysPrimitiveTypeFrom,
-  OptsKeysVariants,
-  OptsKeyTypeVariants,
-} from './getKeysPreset'
+import type { GetKeysOptions } from './getKeysPreset'
+import type { KeysPrimitiveTypeFrom } from './getKeysPreset'
+import type { OptsKeyTypeVariants } from './getKeysPreset'
+import type { OptsKeysVariants } from './getKeysPreset'
+import { getKeysPreset } from './getKeysPreset'
 
 /**
  * Returns an array of the own property keys of an object.
@@ -22,7 +20,7 @@ import {
  */
 export function getKeys<K extends OptsKeysVariants, KT extends OptsKeyTypeVariants>(
   o: object,
-  options?: GetKeysOptions<K, KT>,
+  options?: GetKeysOptions<K, KT>
 ): KeysPrimitiveTypeFrom<KT>[] {
   const getter = getKeysPreset(options)
   return getter(o)

@@ -2,7 +2,8 @@ node_modules/
 .eslintcache
 .dist/
 **/dist/
-apps/devkit/dist/
+**/.cache/
+.cache/
 .yarn/sdks
 *.wip.*
 *.wip/
@@ -13,3 +14,7 @@ temp/
 .env
 .env.*
 .yarn/install-state.gz
+
+# Turborepo
+.turbo
+.next/

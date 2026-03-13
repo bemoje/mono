@@ -12,7 +12,7 @@
           "description": "Full name of the candidate.",
           "type": "string"
         },
-        "label": {
+        "headline": {
           "description": "Primary professional title or role, displayed as the headline beneath the name (e.g., 'Full Stack Software Developer').",
           "type": "string"
         },
@@ -37,18 +37,13 @@
         "skills": {
           "description": "A short list of top-level headline skills displayed as pills in the 'About' section. Keep this concise (3-5 items) to highlight key strengths. Distinct from the root-level 'skills' array, which is the comprehensive list.",
           "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "items": { "type": "string" }
         },
         "location": {
           "description": "Current geographic location of the candidate, shown in the profile header.",
           "type": "object",
           "properties": {
-            "city": {
-              "description": "City of residence.",
-              "type": "string"
-            },
+            "city": { "description": "City of residence.", "type": "string" },
             "region": {
               "description": "State, province, or region (e.g., 'Central Denmark Region').",
               "type": "string"
@@ -60,7 +55,7 @@
           },
           "required": ["city", "countryCode"]
         },
-        "profiles": {
+        "social": {
           "description": "Links to social media and professional profiles, rendered as buttons in the profile header.",
           "type": "array",
           "items": {
@@ -84,7 +79,17 @@
           }
         }
       },
-      "required": ["name", "label", "image", "email", "phone", "summary", "skills", "location", "profiles"]
+      "required": [
+        "name",
+        "headline",
+        "image",
+        "email",
+        "phone",
+        "summary",
+        "skills",
+        "location",
+        "social"
+      ]
     },
     "work": {
       "description": "Professional work experience entries, ordered from most recent to oldest. Consecutive entries with the same company name are automatically grouped under a single company heading with multiple sub-roles in the rendered output.",
@@ -123,16 +128,12 @@
           "highlights": {
             "description": "Key accomplishments and responsibilities, rendered as a bulleted list.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "skills": {
             "description": "Technologies, tools, and competencies used in this role, rendered as skill pills.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "mediaLinks": {
             "description": "Attached media items (images, documents, links) from the LinkedIn entry.",
@@ -166,7 +167,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "institution": {
+          "name": {
             "description": "Name of the educational institution (e.g., 'Aarhus University').",
             "type": "string"
           },
@@ -186,23 +187,15 @@
             "description": "End date of the education in 'YYYY-MM-DD' or 'YYYY-MM' format, or empty string if ongoing.",
             "type": "string"
           },
-          "score": {
-            "description": "Grade, GPA, or equivalent score achieved. Can be empty.",
-            "type": "string"
-          },
           "courses": {
             "description": "List of notable courses completed during the program, rendered as a comma-separated list.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "skills": {
             "description": "Skills and technologies acquired during the education, rendered as skill pills.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "mediaLinks": {
             "description": "Attached media items (images, documents, links) from the LinkedIn entry.",
@@ -227,7 +220,7 @@
             "type": "string"
           }
         },
-        "required": ["institution", "startDate", "endDate"]
+        "required": ["name", "startDate", "endDate"]
       }
     },
     "projects": {
@@ -236,10 +229,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "name": {
-            "description": "Name of the project.",
-            "type": "string"
-          },
+          "name": { "description": "Name of the project.", "type": "string" },
           "description": {
             "description": "Brief description of the project's purpose and scope.",
             "type": "string"
@@ -247,16 +237,12 @@
           "highlights": {
             "description": "Key features or accomplishments, rendered as a bulleted list.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "skills": {
             "description": "Technologies and skills used in the project, rendered as skill pills.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "startDate": {
             "description": "Start date of the project in 'YYYY-MM' format.",
@@ -269,9 +255,7 @@
           "roles": {
             "description": "Roles held within the project (e.g., 'Lead Developer', 'Maintainer').",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "entity": {
             "description": "Company or organization the project is associated with, rendered as 'Associated with <entity>'. Empty for personal projects.",
@@ -374,9 +358,7 @@
           "associations": {
             "description": "Contexts where the skill was demonstrated or acquired - work positions, education, projects, endorsements, or LinkedIn skill assessments.",
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           }
         },
         "required": ["name"]

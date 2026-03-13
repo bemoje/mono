@@ -1,4 +1,4 @@
-import { TChar } from '@mono/types'
+import type { TChar } from '@mono/types'
 
 /**
  * Determines whether a string is a single character.

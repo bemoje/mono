@@ -1,8 +1,10 @@
-import { assertValidSchema } from '@mono/tschema'
-import { Static, TObject, Type } from '@sinclair/typebox'
-import { TemplateStrategy } from '../interfaces/TemplateStrategy'
-import { TSchema } from '@sinclair/typebox'
+import type { Static } from '@sinclair/typebox'
+import type { TObject } from '@sinclair/typebox'
+import type { TSchema } from '@sinclair/typebox'
+import type { TemplateStrategy } from '../interfaces/TemplateStrategy'
+import { Type } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
+import { assertValidSchema } from '@mono/tschema'
 
 export interface TemplateOptions<TemplateSchema extends TSchema, OptionsSchema extends TObject> {
   readonly strategy: TemplateStrategy<TemplateSchema>
@@ -69,7 +71,7 @@ export class Template<TemplateSchema extends TSchema, OptionsSchema extends TObj
     const stringTemplate = this.strategy.templateToString(this.template)
     const merged = Value.Cast(this.optionsSchema, data)
     assertValidSchema(this.optionsSchema, merged, 'Invalid options')
-    const populated = stringTemplate.replace(/{{(\w+)}}/g, (_, key) => {
+    const populated = stringTemplate.replaceAll(/{{(\w+)}}/g, (_, key) => {
       return String(merged[key])
     })
     return this.strategy.render(populated)

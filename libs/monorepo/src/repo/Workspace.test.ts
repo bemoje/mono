@@ -1,58 +1,50 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import assert from 'node:assert'
-import { Workspace } from './Workspace'
-import { MonoRepo } from '../MonoRepo'
-import { TsFile } from '../file/TsFile'
-import { TestFile } from '../file/TestFile'
-import { PackageJson } from '@mono/types'
-import path from 'upath'
-import * as fsExtra from 'fs-extra/esm'
 import * as fs from '@mono/fs'
-import { promisify } from 'node:util'
+import * as fsExtra from 'fs-extra/esm'
+import { MonoRepo } from '../MonoRepo'
+import type { PackageJson } from '@mono/types'
+import { TestFile } from '../file/TestFile'
+import { TsFile } from '../file/TsFile'
+import { Workspace } from './Workspace'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
+import { hasParentDirname } from '@mono/path'
+import { it } from 'vitest'
+import path from 'upath'
+import { promisify } from 'util'
+// Mock resolveModuleImportPath
+import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
+import { vi } from 'vitest'
 
 // Mock dependencies
 vi.mock('fs-extra/esm')
 vi.mock('@mono/fs')
-vi.mock('node:child_process')
-vi.mock('node:util')
-vi.mock('upath', () => ({
-  default: {
-    normalize: vi.fn(),
-    basename: vi.fn(),
-    dirname: vi.fn(),
-    join: vi.fn(),
-    relative: vi.fn(),
-  },
-}))
+vi.mock('child_process')
+vi.mock('util')
+vi.mock('upath', () => {
+  return { default: { normalize: vi.fn(), basename: vi.fn(), dirname: vi.fn(), join: vi.fn(), relative: vi.fn() } }
+})
 vi.mock('../file/TsFile')
 vi.mock('../file/TestFile')
 vi.mock('../util/resolveModuleImportPath')
 vi.mock('@mono/path', async (importOriginal) => {
   const actual = await importOriginal()
-  return {
-    ...(actual as object),
-    hasParentDirname: vi.fn(),
-  }
+  return { ...(actual as object), hasParentDirname: vi.fn() }
 })
-vi.mock('../util/hasExtnamePrefix', () => ({
-  hasExtnamePrefix: vi.fn(),
-}))
-
+vi.mock('../util/hasExtnamePrefix', () => {
+  return { hasExtnamePrefix: vi.fn() }
+})
 const mockPath = vi.mocked(path)
 const mockFsExtra = vi.mocked(fsExtra)
 const mockFs = vi.mocked(fs)
 const mockPromisify = vi.mocked(promisify)
 const mockTestFile = vi.mocked(TestFile)
 
-// Mock resolveModuleImportPath
-import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
-import { hasParentDirname } from '@mono/path'
-import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
-
-vi.mock('../util/resolveModuleImportPath', () => ({
-  resolveModuleImportPath: vi.fn(),
-}))
+vi.mock('../util/resolveModuleImportPath', () => {
+  return { resolveModuleImportPath: vi.fn() }
+})
 
 const mockResolveModuleImportPath = vi.mocked(resolveModuleImportPath)
 const mockHasParentDirname = vi.mocked(hasParentDirname)
@@ -67,25 +59,15 @@ describe(Workspace.name, () => {
   const mockPackageJson: PackageJson = {
     name: '@mono/example',
     version: '1.0.0',
-    dependencies: {
-      'lodash-es': '^4.17.21',
-      '@mono/utils': 'workspace:*',
-    },
-    devDependencies: {
-      'vitest': '^1.0.0',
-      '@types/lodash-es': '^4.17.7',
-    },
+    dependencies: { 'lodash-es': '^4.17.21', '@mono/utils': 'workspace:*' },
+    devDependencies: { 'vitest': '^1.0.0', '@types/lodash-es': '^4.17.7' },
   }
 
   const mockParentPackageJson: PackageJson = {
     name: 'mono',
     version: '1.0.0',
-    dependencies: {
-      'global-dep': '^1.0.0',
-    },
-    devDependencies: {
-      'global-dev-dep': '^1.0.0',
-    },
+    dependencies: { 'global-dep': '^1.0.0' },
+    devDependencies: { 'global-dev-dep': '^1.0.0' },
   }
 
   beforeEach(() => {
@@ -101,22 +83,19 @@ describe(Workspace.name, () => {
       const parts = p.split('/')
       return parts.slice(0, -1).join('/')
     })
-    mockPath.join.mockImplementation((...args: string[]) => args.join('/'))
+    mockPath.join.mockImplementation((...args: string[]) => {
+      return args.join('/')
+    })
     mockPath.relative.mockImplementation((from: string, to: string) => {
       // Simple mock implementation
-      return to.replace(from + '/', '')
+      return to.replace(`${from}/`, '')
     })
 
     // Mock fs-extra
     mockFsExtra.readJsonSync.mockReturnValue(mockPackageJson)
 
     // Create mock MonoRepo
-    mockMonoRepo = {
-      packageJson: mockParentPackageJson,
-      tsconfigBasePaths: {
-        '@mono/*': ['libs/*/src'],
-      },
-    } as any
+    mockMonoRepo = { packageJson: mockParentPackageJson, tsconfigBasePaths: { '@mono/*': ['libs/*/src'] } } as any
 
     // Create workspace instance
     workspace = new Workspace(mockMonoRepo, testWorkspacePath)
@@ -186,8 +165,8 @@ describe(Workspace.name, () => {
     })
 
     it('should cache the result (lazy prop)', () => {
-      workspace.packageJson
-      workspace.packageJson
+      void workspace.packageJson
+      void workspace.packageJson
 
       expect(mockFsExtra.readJsonSync).toHaveBeenCalledTimes(1)
     })
@@ -201,7 +180,9 @@ describe(Workspace.name, () => {
     it('should throw error when name is missing', () => {
       mockFsExtra.readJsonSync.mockReturnValue({} as PackageJson)
 
-      expect(() => workspace.name).toThrow("Workspace package.json missing 'name' field")
+      expect(() => {
+        return workspace.name
+      }).toThrow("Workspace package.json missing 'name' field")
     })
   })
 
@@ -302,7 +283,9 @@ describe(Workspace.name, () => {
       ] as TsFile[]
 
       vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue(mockTsFiles)
-      mockPath.relative.mockImplementation((from, to) => to.replace('/test/repo/', ''))
+      mockPath.relative.mockImplementation((from, to) => {
+        return to.replace('/test/repo/', '')
+      })
 
       const result = workspace.importedDependenciesByFile
 
@@ -322,7 +305,9 @@ describe(Workspace.name, () => {
       ] as TestFile[]
 
       vi.spyOn(workspace, 'testFiles', 'get').mockReturnValue(mockTestFiles)
-      mockPath.relative.mockImplementation((from, to) => to.replace('/test/repo/', ''))
+      mockPath.relative.mockImplementation((from, to) => {
+        return to.replace('/test/repo/', '')
+      })
 
       const result = workspace.importedTestDependenciesByFile
 
@@ -456,12 +441,7 @@ describe(Workspace.name, () => {
           {
             path: '/test/repo/libs/example/src/file1.ts',
             tsCode: {
-              imports: [
-                {
-                  module: { from: '@mono/example' },
-                  specifiers: { importedNamesArray: ['utils'] },
-                },
-              ],
+              imports: [{ module: { from: '@mono/example' }, specifiers: { importedNamesArray: ['utils'] } }],
             },
           },
         ] as any
@@ -492,12 +472,7 @@ describe(Workspace.name, () => {
           {
             path: '/test/repo/libs/example/src/file1.ts',
             tsCode: {
-              imports: [
-                {
-                  module: { from: '@mono/example' },
-                  specifiers: { importedNamesArray: ['someExport'] },
-                },
-              ],
+              imports: [{ module: { from: '@mono/example' }, specifiers: { importedNamesArray: ['someExport'] } }],
             },
           },
         ] as any
@@ -535,9 +510,7 @@ describe(Workspace.name, () => {
         const mockFiles = [
           {
             path: '/test/repo/libs/example/src/file1.ts',
-            tsCode: {
-              imports: [{ module: { from: 'lodash-es' } }],
-            },
+            tsCode: { imports: [{ module: { from: 'lodash-es' } }] },
           },
         ] as any
 
@@ -585,11 +558,7 @@ describe(Workspace.name, () => {
 
         const result = workspace.dependencyProblems
 
-        expect(result).toEqual({
-          origin: workspace.origin,
-          workspace: workspace.name,
-          unused: ['unused-dep'],
-        })
+        expect(result).toEqual({ origin: workspace.origin, workspace: workspace.name, unused: ['unused-dep'] })
         expect(result).not.toHaveProperty('missing')
         expect(result).not.toHaveProperty('missingDev')
       })
@@ -614,11 +583,7 @@ describe(Workspace.name, () => {
 
       const result = workspace.dependencyProblems
 
-      expect(result).toEqual({
-        origin: workspace.origin,
-        workspace: workspace.name,
-        unused: ['unused-dep'],
-      })
+      expect(result).toEqual({ origin: workspace.origin, workspace: workspace.name, unused: ['unused-dep'] })
       expect(result).not.toHaveProperty('missing')
       expect(result).not.toHaveProperty('missingDev')
     })
@@ -723,12 +688,136 @@ describe(Workspace.name, () => {
     })
   })
 
+  describe('importedDependenciesRecursive', () => {
+    function mockTsFile(filePath: string, deps: string[]): TsFile {
+      return { path: filePath, dependencies: deps, isSourceFile: true } as unknown as TsFile
+    }
+
+    function mockWs(name: string, tsFiles: TsFile[]): Workspace {
+      return { name, tsFiles } as unknown as Workspace
+    }
+
+    it('should return empty arrays for workspace with no files', () => {
+      vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue([])
+      ;(mockMonoRepo as any).workspaces = [workspace]
+
+      const result = workspace.importedDependenciesRecursive
+      expect(result).toEqual({ internal: [], external: [] })
+    })
+
+    it('should return only external dependencies when no internal deps', () => {
+      vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue([
+        mockTsFile('/src/a.ts', ['lodash', 'upath']),
+        mockTsFile('/src/b.ts', ['fs-extra']),
+      ])
+      ;(mockMonoRepo as any).workspaces = [workspace]
+
+      const result = workspace.importedDependenciesRecursive
+      expect(result.internal).toEqual([])
+      expect(result.external).toEqual(['fs-extra', 'lodash', 'upath'])
+    })
+
+    it('should separate internal and external dependencies', () => {
+      const libA = mockWs('@mono/a', [mockTsFile('/libs/a/src/index.ts', ['lodash'])])
+      vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue([mockTsFile('/src/main.ts', ['@mono/a', 'upath'])])
+      ;(mockMonoRepo as any).workspaces = [workspace, libA]
+
+      const result = workspace.importedDependenciesRecursive
+      expect(result.internal).toEqual(['@mono/a'])
+      expect(result.external).toEqual(['lodash', 'upath'])
+    })
+
+    it('should recurse into transitive internal dependencies', () => {
+      const libB = mockWs('@mono/b', [mockTsFile('/libs/b/src/index.ts', ['es-toolkit'])])
+      const libA = mockWs('@mono/a', [mockTsFile('/libs/a/src/index.ts', ['@mono/b', 'lodash'])])
+      vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue([mockTsFile('/src/main.ts', ['@mono/a'])])
+      ;(mockMonoRepo as any).workspaces = [workspace, libA, libB]
+
+      const result = workspace.importedDependenciesRecursive
+      expect(result.internal).toEqual(['@mono/a', '@mono/b'])
+      expect(result.external).toEqual(['es-toolkit', 'lodash'])
+    })
+
+    it('should handle circular dependencies without infinite loop', () => {
+      const libB = mockWs('@mono/b', [mockTsFile('/libs/b/src/index.ts', ['@mono/a'])])
+      const libA = mockWs('@mono/a', [mockTsFile('/libs/a/src/index.ts', ['@mono/b'])])
+      vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue([mockTsFile('/src/main.ts', ['@mono/a'])])
+      ;(mockMonoRepo as any).workspaces = [workspace, libA, libB]
+
+      const result = workspace.importedDependenciesRecursive
+      expect(result.internal).toEqual(['@mono/a', '@mono/b'])
+      expect(result.external).toEqual([])
+    })
+
+    it('should not visit the same file twice', () => {
+      const sharedFile = mockTsFile('/libs/a/src/shared.ts', ['lodash'])
+      const libA = mockWs('@mono/a', [sharedFile, sharedFile])
+      vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue([mockTsFile('/src/main.ts', ['@mono/a'])])
+      ;(mockMonoRepo as any).workspaces = [workspace, libA]
+
+      const result = workspace.importedDependenciesRecursive
+      expect(result.external).toEqual(['lodash'])
+    })
+
+    it('should deduplicate dependencies across multiple files', () => {
+      vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue([
+        mockTsFile('/src/a.ts', ['lodash', 'upath']),
+        mockTsFile('/src/b.ts', ['lodash', 'fs-extra']),
+      ])
+      ;(mockMonoRepo as any).workspaces = [workspace]
+
+      const result = workspace.importedDependenciesRecursive
+      expect(result.external).toEqual(['fs-extra', 'lodash', 'upath'])
+    })
+
+    it('should handle deeply nested transitive dependencies', () => {
+      const libC = mockWs('@mono/c', [mockTsFile('/libs/c/src/index.ts', ['chalk'])])
+      const libB = mockWs('@mono/b', [mockTsFile('/libs/b/src/index.ts', ['@mono/c'])])
+      const libA = mockWs('@mono/a', [mockTsFile('/libs/a/src/index.ts', ['@mono/b'])])
+      vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue([mockTsFile('/src/main.ts', ['@mono/a'])])
+      ;(mockMonoRepo as any).workspaces = [workspace, libA, libB, libC]
+
+      const result = workspace.importedDependenciesRecursive
+      expect(result.internal).toEqual(['@mono/a', '@mono/b', '@mono/c'])
+      expect(result.external).toEqual(['chalk'])
+    })
+
+    it('should return sorted arrays', () => {
+      vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue([mockTsFile('/src/a.ts', ['zod', 'axios', 'lodash'])])
+      ;(mockMonoRepo as any).workspaces = [workspace]
+
+      const result = workspace.importedDependenciesRecursive
+      expect(result.external).toEqual(['axios', 'lodash', 'zod'])
+    })
+
+    it('should return empty for files with no dependencies', () => {
+      vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue([mockTsFile('/src/a.ts', [])])
+      ;(mockMonoRepo as any).workspaces = [workspace]
+
+      const result = workspace.importedDependenciesRecursive
+      expect(result).toEqual({ internal: [], external: [] })
+    })
+
+    it('should handle workspace with multiple files having mixed deps', () => {
+      const libA = mockWs('@mono/a', [
+        mockTsFile('/libs/a/src/x.ts', ['type-fest']),
+        mockTsFile('/libs/a/src/y.ts', ['es-toolkit']),
+      ])
+      vi.spyOn(workspace, 'tsFiles', 'get').mockReturnValue([
+        mockTsFile('/src/a.ts', ['@mono/a', 'commander']),
+        mockTsFile('/src/b.ts', ['upath']),
+      ])
+      ;(mockMonoRepo as any).workspaces = [workspace, libA]
+
+      const result = workspace.importedDependenciesRecursive
+      expect(result.internal).toEqual(['@mono/a'])
+      expect(result.external).toEqual(['commander', 'es-toolkit', 'type-fest', 'upath'])
+    })
+  })
+
   describe('edge cases', () => {
     it('should handle workspace with no package.json dependencies', () => {
-      mockFsExtra.readJsonSync.mockReturnValue({
-        name: '@mono/minimal',
-        version: '1.0.0',
-      } as PackageJson)
+      mockFsExtra.readJsonSync.mockReturnValue({ name: '@mono/minimal', version: '1.0.0' } as PackageJson)
 
       expect(workspace.installedDependencies).toEqual([])
       expect(workspace.installedDevDependencies).toEqual([])

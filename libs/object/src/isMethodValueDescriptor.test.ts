@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isMethodValueDescriptor } from './isMethodValueDescriptor'
+import { it } from 'vitest'
 
 describe(isMethodValueDescriptor.name, () => {
   it('examples', () => {
@@ -8,16 +10,13 @@ describe(isMethodValueDescriptor.name, () => {
       const methodDescriptor = Object.getOwnPropertyDescriptor(Array.prototype, 'push')
 
       // A non-method value descriptor
-      const valueDescriptor = {
-        value: 42,
-        writable: true,
-        enumerable: true,
-        configurable: true,
-      }
+      const valueDescriptor = { value: 42, writable: true, enumerable: true, configurable: true }
 
       // A getter descriptor
       const getterDescriptor = {
-        get: () => 42,
+        get: () => {
+          return 42
+        },
         enumerable: true,
         configurable: true,
       }
@@ -48,33 +47,27 @@ describe(isMethodValueDescriptor.name, () => {
   })
 
   it('should return false for non-function value descriptors', () => {
-    const valueDescriptor = {
-      value: 42,
-      writable: true,
-      enumerable: true,
-      configurable: true,
-    }
+    const valueDescriptor = { value: 42, writable: true, enumerable: true, configurable: true }
     expect(isMethodValueDescriptor(valueDescriptor)).toBe(false)
 
-    const stringValueDescriptor = {
-      value: 'hello',
-      writable: true,
-      enumerable: true,
-      configurable: true,
-    }
+    const stringValueDescriptor = { value: 'hello', writable: true, enumerable: true, configurable: true }
     expect(isMethodValueDescriptor(stringValueDescriptor)).toBe(false)
   })
 
   it('should return false for accessor descriptors', () => {
     const getterDescriptor = {
-      get: () => 42,
+      get: () => {
+        return 42
+      },
       enumerable: true,
       configurable: true,
     }
     expect(isMethodValueDescriptor(getterDescriptor)).toBe(false)
 
     const accessorDescriptor = {
-      get: () => 42,
+      get: () => {
+        return 42
+      },
       set: (v: number) => {},
       enumerable: true,
       configurable: true,
@@ -83,18 +76,15 @@ describe(isMethodValueDescriptor.name, () => {
   })
 
   it('should return false for Function.prototype as value', () => {
-    const funcProtoDescriptor = {
-      value: Function.prototype,
-      writable: true,
-      enumerable: true,
-      configurable: true,
-    }
+    const funcProtoDescriptor = { value: Function.prototype, writable: true, enumerable: true, configurable: true }
     expect(isMethodValueDescriptor(funcProtoDescriptor)).toBe(false)
   })
 
   it('should return true for arrow functions and class methods', () => {
     const arrowFuncDescriptor = {
-      value: () => 'arrow',
+      value: () => {
+        return 'arrow'
+      },
       writable: true,
       enumerable: true,
       configurable: true,

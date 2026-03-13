@@ -1,12 +1,36 @@
 {
   "name": "@mono/profiler",
-  "version": "1.0.0",
+  "version": "2.2.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
+  "description": "Performance profiling utilities for measuring execution time of functions, class methods, and modules.",
+  "keywords": [
+    "profiler",
+    "performance",
+    "profiling",
+    "execution-time",
+    "benchmarking",
+    "utilities",
+    "typescript"
+  ],
   "scripts": {
-    "build": "node esbuild.mjs"
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+  },
+  "devDependencies": {
+    "@mono/fn": "workspace:^",
+    "@mono/object": "workspace:^",
+    "@mono/table": "workspace:^",
+    "@mono/types": "workspace:^",
+    "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "es-toolkit": "^1.45.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./Profiler": "./src/Profiler/Profiler.ts"
   }
 }

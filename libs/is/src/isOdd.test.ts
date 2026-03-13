@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isOdd } from './isOdd'
-import { describe, expect, it } from 'vitest'
+import { it } from 'vitest'
 
 describe('isOdd', () => {
   it('correctly determines if natural number is even', () => {

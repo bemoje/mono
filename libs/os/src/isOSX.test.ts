@@ -1,11 +1,12 @@
-import { describe, expect, it, vi } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isOSX } from './isOSX'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Mock process
-const mockProcess = {
-  platform: 'darwin',
-}
+const mockProcess = { platform: 'darwin' }
 
 vi.stubGlobal('process', mockProcess)
 

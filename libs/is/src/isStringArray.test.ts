@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isStringArray } from './isStringArray'
-import { describe, expect, it } from 'vitest'
+import { it } from 'vitest'
 
 describe(isStringArray.name, () => {
   describe('valid', () => {

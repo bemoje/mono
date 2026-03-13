@@ -7,7 +7,7 @@ import fs from 'fs-extra'
  */
 export async function updateFileLines(
   filepath: string,
-  update: (fileContentLines: string[]) => string | string[] | Promise<string | string[]>,
+  update: (fileContentLines: string[]) => string | string[] | Promise<string | string[]>
 ): Promise<void> {
   await fs.ensureFile(filepath)
   const content = await fs.readFile(filepath, 'utf8')

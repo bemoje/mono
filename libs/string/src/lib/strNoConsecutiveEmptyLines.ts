@@ -3,5 +3,5 @@
  * @param code The string from which to remove consecutive empty lines.
  */
 export function strNoConsecutiveEmptyLines(code: string): string {
-  return code.replace(/\n\n+/g, '\n\n')
+  return code.replaceAll(/\n\n+/g, '\n\n')
 }

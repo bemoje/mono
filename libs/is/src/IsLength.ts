@@ -15,6 +15,6 @@ export function IsLength(length: number) {
       (input as { length: number }).length === length
     )
   }
-  Object.defineProperty(func, 'name', { value: 'isLen' + length })
+  Object.defineProperty(func, 'name', { value: `isLen${length}` })
   return func
 }

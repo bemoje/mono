@@ -12,6 +12,12 @@
  * ```
  */
 export function strSplitAndTrim(string: string, delimiter: string, removeEmptyLines = false): string[] {
-  const lines = string.split(delimiter).map((s) => s.trim())
-  return removeEmptyLines ? lines.filter((s) => !!s.trim()) : lines
+  const lines = string.split(delimiter).map((s) => {
+    return s.trim()
+  })
+  return removeEmptyLines
+    ? lines.filter((s) => {
+        return !!s.trim()
+      })
+    : lines
 }

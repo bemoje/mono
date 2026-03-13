@@ -1,23 +1,24 @@
-import { Results } from 'depcheck'
-import { exec } from 'node:child_process'
-import { promisify } from 'node:util'
-import { readJsonSync } from 'fs-extra/esm'
-import path from 'upath'
 import { AbstractBase } from '../common/AbstractBase'
-import { difference } from 'es-toolkit/array'
-import { union } from 'es-toolkit/array'
-import { Inspector, Parenting } from '@mono/composition'
-import { lazyProp } from '@mono/decorators'
+import { Inspector } from '@mono/composition'
 import { MonoRepo } from '../MonoRepo'
-import { type PackageJson } from '@mono/types'
-import { arrRemoveDuplicates } from '@mono/array'
+import type { PackageJson } from '@mono/types'
+import { Parenting } from '@mono/composition'
+import type { Results } from 'depcheck'
+import { SemanticExtnamePrefix } from '../util/SemanticExtnamePrefix'
 import { TestFile } from '../file/TestFile'
 import { TsFile } from '../file/TsFile'
-import { walkDirectory } from '@mono/fs'
-import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
-import { hasParentDirname } from '@mono/path'
+import { difference } from 'es-toolkit/array'
+import { exec } from 'child_process'
 import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
-import { SemanticExtnamePrefix } from '../util/SemanticExtnamePrefix'
+import { hasParentDirname } from '@mono/path'
+import { lazyProp } from '@mono/decorators'
+import path from 'upath'
+import { promisify } from 'util'
+import { readJsonSync } from 'fs-extra/esm'
+import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
+import { union } from 'es-toolkit/array'
+import { uniq } from 'es-toolkit'
+import { walkDirectory } from '@mono/fs'
 
 @Parenting.compose
 /**
@@ -33,9 +34,7 @@ import { SemanticExtnamePrefix } from '../util/SemanticExtnamePrefix'
  * @template P The type of the parent MonoRepo, defaults to MonoRepo
  */
 export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
-  static readonly inspector = Inspector.compose(Workspace, {
-    keys: ['name', 'tsFiles', 'testFiles'],
-  })
+  static readonly inspector = Inspector.compose(Workspace, { keys: ['name', 'tsFiles', 'testFiles'] })
 
   /**
    * The workspace's origin directory name, eg. 'libs', 'apps', etc.
@@ -95,6 +94,77 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
   }
 
   /**
+   * Get all unique file-level dependencies of the workspace, including transitive dependencies through other local workspaces.
+   *
+   * This method recursively traverses the dependency graph of the workspace, collecting all unique dependencies. It distinguishes between internal dependencies (other local workspaces) and external dependencies (npm packages).
+   *
+   * @returns An object containing two arrays: `internal` for internal workspace dependencies and `external` for npm package dependencies.
+   */
+  get importedDependenciesRecursive(): { internal: string[]; external: string[] } {
+    const repo = this.parent
+    const wsNames = new Set(
+      repo.workspaces.map((w) => {
+        return w.name
+      })
+    )
+    const allDeps = recurse(
+      this.tsFiles.filter((f) => {
+        return f.isSourceFile
+      })
+    )
+    const internal = [...allDeps]
+      .filter((d) => {
+        return wsNames.has(d)
+      })
+      .sort()
+    const external = [...allDeps]
+      .filter((d) => {
+        return !wsNames.has(d)
+      })
+      .sort()
+
+    /** Collect all deps reachable from a set of files, recursing into local workspace files. */
+    function recurse(
+      files: TsFile[],
+      allDeps = new Set<string>(),
+      visited = new Set<string>(),
+      depth = 0
+    ): Set<string> {
+      for (const file of files) {
+        if (visited.has(file.path)) {
+          continue
+        }
+        visited.add(file.path)
+
+        for (const dep of file.dependencies) {
+          allDeps.add(dep)
+
+          // If the dep is an internal workspace, recurse into its source files
+          const depWs = repo.workspaces.find((w) => {
+            return w.name === dep
+          })
+          if (depWs) {
+            recurse(
+              depWs.tsFiles.filter((f) => {
+                return f.isSourceFile
+              }),
+              allDeps,
+              visited,
+              depth + 1
+            ).forEach((d) => {
+              return allDeps.add(d)
+            })
+          }
+        }
+      }
+
+      return allDeps
+    }
+
+    return { internal, external }
+  }
+
+  /**
    * Get the source files in the workspace's 'src' directory.
    * Test files are not included.
    */
@@ -104,9 +174,15 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
       stats: true,
       only: 'files',
       filter: (_dirpath, basename) => {
-        if (basename === 'node_modules') return false
-        if (basename === 'coverage') return false
-        if (basename.startsWith('.')) return false
+        if (basename === 'node_modules') {
+          return false
+        }
+        if (basename === 'coverage') {
+          return false
+        }
+        if (basename.startsWith('.')) {
+          return false
+        }
         return true
       },
     })
@@ -127,9 +203,15 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
       stats: true,
       only: 'files',
       filter: (_dirpath, basename) => {
-        if (basename === 'node_modules') return false
-        if (basename === 'coverage') return false
-        if (basename.startsWith('.')) return false
+        if (basename === 'node_modules') {
+          return false
+        }
+        if (basename === 'coverage') {
+          return false
+        }
+        if (basename.startsWith('.')) {
+          return false
+        }
         return true
       },
     })
@@ -153,7 +235,7 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
     return new Map(
       this.tsFiles.map((file) => {
         return [path.relative(process.cwd(), file.path), file.dependencies]
-      }),
+      })
     )
   }
 
@@ -165,7 +247,7 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
     return new Map(
       this.testFiles.map((file) => {
         return [path.relative(process.cwd(), file.path), file.dependencies]
-      }),
+      })
     )
   }
 
@@ -173,14 +255,14 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
    * Get imported non-relative dependencies for each source file in the workspace in a flat array.
    */
   get importedDependencies(): string[] {
-    return arrRemoveDuplicates(Array.from(this.importedDependenciesByFile.values()).flat())
+    return uniq(Array.from(this.importedDependenciesByFile.values()).flat())
   }
 
   /**
    * Get imported non-relative dependencies for each test file in the workspace in a flat array.
    */
   get importedTestDependencies(): string[] {
-    return arrRemoveDuplicates(Array.from(this.importedTestDependenciesByFile.values()).flat())
+    return uniq(Array.from(this.importedTestDependenciesByFile.values()).flat())
   }
 
   /**
@@ -188,8 +270,12 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
    */
   get missingDependencies(): string[] {
     return difference(this.importedDependencies, this.installedDependencies)
-      .filter((dep) => !this.parent.packageJson.dependencies?.[dep])
-      .filter((dep) => !this.parent.tsconfigBasePaths?.[dep])
+      .filter((dep) => {
+        return !this.parent.packageJson.dependencies?.[dep]
+      })
+      .filter((dep) => {
+        return !this.parent.tsconfigBasePaths?.[dep]
+      })
   }
 
   /**
@@ -198,11 +284,17 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
   get missingDevDependencies(): string[] {
     return difference(
       this.importedTestDependencies,
-      union(this.installedDependencies, this.installedDevDependencies),
+      union(this.installedDependencies, this.installedDevDependencies)
     )
-      .filter((dep) => !this.parent.packageJson.devDependencies?.[dep])
-      .filter((dep) => !this.parent.packageJson.dependencies?.[dep])
-      .filter((dep) => !this.parent.tsconfigBasePaths?.[dep])
+      .filter((dep) => {
+        return !this.parent.packageJson.devDependencies?.[dep]
+      })
+      .filter((dep) => {
+        return !this.parent.packageJson.dependencies?.[dep]
+      })
+      .filter((dep) => {
+        return !this.parent.tsconfigBasePaths?.[dep]
+      })
   }
 
   /**
@@ -227,8 +319,8 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
               filepath: file.path,
               replaceValue: imp.module.from,
               withValue: resolvedFileName.endsWith('index.ts')
-                ? './' + imp.specifiers?.importedNamesArray[0]
-                : './' + path.relative(path.dirname(file.path), resolvedFileName),
+                ? `./${imp.specifiers?.importedNamesArray[0]}`
+                : `./${path.relative(path.dirname(file.path), resolvedFileName)}`,
             })
           }
         }
@@ -267,7 +359,7 @@ export class Workspace<P extends MonoRepo = MonoRepo> extends AbstractBase<P> {
       const dependencies = rootPkg.dependencies || {}
       const devDependencies = rootPkg.devDependencies || {}
       const ignores = Object.keys({ ...devDependencies, ...dependencies }).concat('@mono/*')
-      const ignoresFlag = '--ignores "' + ignores.join(',') + '"'
+      const ignoresFlag = `--ignores "${ignores.join(',')}"`
       const cmd = `yarn depcheck ${this.path} ${ignoresFlag} --json`
       const execPromise = promisify(exec)
       const res = await execPromise(cmd)

@@ -1,40 +1,59 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
-
-  "include": ["nsTypes", "nsExports", "classMembers"],
+  "include": ["nsTypes", "nsExports"],
 
   "ignoreExportsUsedInFile": true,
-  "ignore": [".github/copilot/refactoring.mts"],
-  "ignoreDependencies": ["@mono/*", "esbuild"],
-  "ignoreBinaries": ["cls"],
+  "ignoreFiles": [
+    "scripts/parseBarrelExportIndexFile.mjs", //
+    "scripts/SMS.ts"
+  ],
+  "ignore": [
+    "libs/prompt/examples/**/*", //
+    "apps/playground/src/**/*"
+  ],
+  "ignoreDependencies": [
+    "tsconfig-paths", //
+    "@swc/core"
+    // "@mono/*"
+  ],
+
+  "ignoreBinaries": [
+    "apps/devkit/src/main.ts" //
+  ],
 
   "workspaces": {
     "apps/*": {
-      "entry": ["src/*.ts", "**/*.examples.ts"],
-      "includeEntryExports": true,
+      "entry": [
+        "src/*.ts", //
+        "**/*.examples.ts",
+        "src/**/*.examples.ts"
+      ],
+      "includeEntryExports": true
     },
     "libs/*": {
-      "entry": ["src/index.ts", "src/**/*.examples.ts"],
-      "includeEntryExports": false,
-      "ignoreMembers": ["depth"],
-    },
+      "entry": [
+        "src/index.ts", //
+        "**/*.examples.ts",
+        "src/**/*.examples.ts"
+      ],
+      "includeEntryExports": false
+    }
   },
 
   "rules": {
-    // "nsTypes": "warn",
-    // "nsExports": "warn",
-    // "classMembers": "warn",
-    // "files": "error",
-    // "dependencies": "error",
-    // "devDependencies": "error",
-    // "optionalPeerDependencies": "error",
-    // "unlisted": "error",
-    // "binaries": "error",
-    // "unresolved": "error",
-    // "exports": "error",
-    // "types": "error",
-    // "duplicates": "error",
-    // "enumMembers": "error",
-    // "catalog": "error",
-  },
+    "nsTypes": "error",
+    "nsExports": "error",
+
+    "files": "error",
+    "dependencies": "error",
+    "devDependencies": "error",
+    "optionalPeerDependencies": "error",
+    "unlisted": "error",
+    "binaries": "error",
+    "unresolved": "error",
+    "exports": "error",
+    "types": "error",
+    "duplicates": "error",
+    "enumMembers": "error",
+    "catalog": "error"
+  }
 }

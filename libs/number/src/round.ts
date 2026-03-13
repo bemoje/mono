@@ -1,20 +1,15 @@
-import { roundWith } from './roundWith'
-
 /**
- * Round a given number with a given precision.
- * Shifts with exponential notation to avoid floating-point issues.
- * @param number the number to round.
- * @param precision the number of decimal points.
- * @param - The number of decimal places to round to. Defaults to 0 if not specified.
+ * Round a number to a specified number of decimal places.
+ * @param num The number to round.
+ * @param decimalPlaces The number of decimal places to round to (default is 0).
  * @returns The rounded number.
- * @throws if the given number is not finite or NaN.
  * @example ```ts
- * round(1.2345, 2);
- * //=> 1.23
- * round(1.2345);
- * //=> 1
+ * round(3.14159, 2);
+ * //=> 3.14
+ * round(3.14159);
+ * //=> 3
+ * round(3.14159, 4);
+ * //=> 3.1416
  * ```
  */
-export function round(number: number, precision = 0): number {
-  return roundWith(number, precision, Math.round)
-}
+export { round } from 'es-toolkit/math'

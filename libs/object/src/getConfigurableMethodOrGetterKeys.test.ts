@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest'
-
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getConfigurableMethodOrGetterKeys } from './getConfigurableMethodOrGetterKeys'
+import { it } from 'vitest'
 
 describe(getConfigurableMethodOrGetterKeys.name, () => {
   it('should return an empty array for an empty object', () => {
@@ -10,10 +11,7 @@ describe(getConfigurableMethodOrGetterKeys.name, () => {
   })
 
   it('should return an empty array for an object with no configurable methods or getters', () => {
-    const obj = {
-      prop1: 'value1',
-      prop2: 'value2',
-    }
+    const obj = { prop1: 'value1', prop2: 'value2' }
     const result = getConfigurableMethodOrGetterKeys(obj)
     expect(result).toEqual([])
   })

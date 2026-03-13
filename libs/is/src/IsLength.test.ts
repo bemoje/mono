@@ -1,12 +1,20 @@
 import { IsLength } from './IsLength'
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(IsLength.name, () => {
   describe('when creating the validator function', () => {
     it('should throw an error if length is not an integer', () => {
-      expect(() => IsLength(5.5)).toThrow()
-      expect(() => IsLength(NaN)).toThrow()
-      expect(() => IsLength(Infinity)).toThrow()
+      expect(() => {
+        return IsLength(5.5)
+      }).toThrow()
+      expect(() => {
+        return IsLength(NaN)
+      }).toThrow()
+      expect(() => {
+        return IsLength(Infinity)
+      }).toThrow()
     })
 
     it('should return a function', () => {

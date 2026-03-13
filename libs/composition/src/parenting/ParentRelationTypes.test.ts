@@ -1,6 +1,10 @@
-import { describe, expect, it, beforeEach, vi } from 'vitest'
-import assert from 'node:assert'
 import { ParentRelationTypes } from './ParentRelationTypes'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Use the same type definition as in the types library
 type FunctionPrototype = typeof Function.prototype
@@ -72,12 +76,12 @@ describe(ParentRelationTypes.name, () => {
       expect(
         ParentRelationTypes.parentTypesStats
           .get(TestChild as FunctionPrototype)
-          .has(TestParent as FunctionPrototype),
+          .has(TestParent as FunctionPrototype)
       ).toBe(true)
       expect(
         ParentRelationTypes.childTypesStats
           .get(TestParent as FunctionPrototype)
-          .has(TestChild as FunctionPrototype),
+          .has(TestChild as FunctionPrototype)
       ).toBe(true)
     })
 
@@ -89,12 +93,12 @@ describe(ParentRelationTypes.name, () => {
       expect(
         ParentRelationTypes.parentTypesStats
           .get(TestChild as FunctionPrototype)
-          .multiplicity(TestParent as FunctionPrototype),
+          .multiplicity(TestParent as FunctionPrototype)
       ).toBe(2)
       expect(
         ParentRelationTypes.childTypesStats
           .get(TestParent as FunctionPrototype)
-          .multiplicity(TestChild as FunctionPrototype),
+          .multiplicity(TestChild as FunctionPrototype)
       ).toBe(2)
     })
   })
@@ -183,9 +187,15 @@ describe(ParentRelationTypes.name, () => {
       expect(allStats).toBeInstanceOf(Array)
       expect(allStats.length).toBeGreaterThan(0)
 
-      const parentStats = allStats.find((stat) => stat.class === 'TestParent')
-      const childStats = allStats.find((stat) => stat.class === 'TestChild')
-      const grandChildStats = allStats.find((stat) => stat.class === 'TestGrandChild')
+      const parentStats = allStats.find((stat) => {
+        return stat.class === 'TestParent'
+      })
+      const childStats = allStats.find((stat) => {
+        return stat.class === 'TestChild'
+      })
+      const grandChildStats = allStats.find((stat) => {
+        return stat.class === 'TestGrandChild'
+      })
 
       expect(parentStats?.children).toBeDefined()
       expect(childStats?.parents).toBeDefined()

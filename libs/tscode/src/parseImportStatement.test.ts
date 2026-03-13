@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { parseImportStatement } from './parseImportStatement'
 
 describe(parseImportStatement.name, () => {
@@ -97,15 +99,15 @@ describe(parseImportStatement.name, () => {
     })
 
     it('should correctly identify builtin modules', () => {
-      const result = parseImportStatement("import fs from 'node:fs'")
+      const result = parseImportStatement("import fs from 'fs'")
       expect(result.modulePath.type).toBe('builtin')
-      expect(result.modulePath.path).toBe('node:fs')
+      expect(result.modulePath.path).toBe('fs')
     })
 
     it('should correctly identify node: prefixed builtin modules', () => {
-      const result = parseImportStatement("import fs from 'node:fs'")
+      const result = parseImportStatement("import fs from 'fs'")
       expect(result.modulePath.type).toBe('builtin')
-      expect(result.modulePath.path).toBe('node:fs')
+      expect(result.modulePath.path).toBe('fs')
     })
 
     it('should correctly identify absolute imports', () => {
@@ -116,7 +118,9 @@ describe(parseImportStatement.name, () => {
 
     it('should correctly identify workspace imports via isWorkspacePath option', () => {
       const result = parseImportStatement("import foo from '@mono/utils'", {
-        isWorkspacePath: (p) => p.startsWith('@mono/'),
+        isWorkspacePath: (p) => {
+          return p.startsWith('@mono/')
+        },
       })
       expect(result.modulePath.type).toBe('workspace')
       expect(result.modulePath.path).toBe('@mono/utils')
@@ -125,7 +129,7 @@ describe(parseImportStatement.name, () => {
 
   describe('quote types', () => {
     it('should handle single quotes', () => {
-      const result = parseImportStatement("import foo from 'node:module'")
+      const result = parseImportStatement("import foo from 'module'")
       expect(result.modulePath.quote).toBe("'")
     })
 

@@ -1,5 +1,3 @@
-import { arrEachToString } from './arrEachToString'
-
 /**
  * Coerce each value of a 2D array table to string.
  * @template T - The type of the elements in the input array.
@@ -12,5 +10,9 @@ import { arrEachToString } from './arrEachToString'
  * ```
  */
 export function arrTableEachToString<T>(table: T[][]): string[][] {
-  return table.map(arrEachToString)
+  return table.map((row) => {
+    return row.map((cell) => {
+      return cell === undefined ? '' : String(cell)
+    })
+  })
 }

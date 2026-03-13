@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isNegativeInteger } from './isNegativeInteger'
-import { describe, expect, it } from 'vitest'
+import { it } from 'vitest'
 
 describe('isNegativeInteger', () => {
   it('should return true for negative integers', () => {

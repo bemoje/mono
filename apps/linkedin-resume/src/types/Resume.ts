@@ -19,7 +19,7 @@ export interface ResumeLocation {
 /**
  * Link to a social media or professional profile, rendered as a button in the profile header.
  */
-export interface ResumeProfile {
+export interface ResumeSocial {
   /**
    * Display name of the platform (e.g., 'LinkedIn', 'GitHub').
    */
@@ -37,7 +37,7 @@ export interface ResumeProfile {
 /**
  * Core personal and contact details displayed in the profile header of the resume.
  */
-export interface ResumeBasics {
+export interface ResumeProfile {
   /**
    * Full name of the candidate.
    */
@@ -45,8 +45,9 @@ export interface ResumeBasics {
   /**
    * Primary professional title or role, displayed as the headline beneath the name (e.g., 'Full Stack Software Developer').
    */
-  label: string
+  headline: string
   image: string
+  websites?: string[]
 
   /**
    * Primary contact email address.
@@ -59,11 +60,11 @@ export interface ResumeBasics {
   /**
    * Multiline 'About' text providing a brief overview of the candidate's background, expertise, and current focus. Newlines separate paragraphs in the rendered output.
    */
-  summary: string
+  summary?: string
   /**
    * A short list of top-level headline skills displayed as pills in the 'About' section. Keep this concise (3-5 items) to highlight key strengths. Distinct from the root-level 'skills' array, which is the comprehensive list.
    */
-  skills: string[]
+  topSkills?: string[]
   /**
    * Current geographic location of the candidate, shown in the profile header.
    */
@@ -71,7 +72,7 @@ export interface ResumeBasics {
   /**
    * Links to social media and professional profiles, rendered as buttons in the profile header.
    */
-  profiles: ResumeProfile[]
+  social: ResumeSocial[]
 }
 
 /**
@@ -131,7 +132,7 @@ export interface ResumeEducation {
   /**
    * Name of the educational institution (e.g., 'Aarhus University').
    */
-  institution: string
+  name: string
   /**
    * Field of study or degree program (e.g., 'Computer Science (4 semesters)'). Can be empty for institutions where a specific program is not applicable.
    */
@@ -148,10 +149,6 @@ export interface ResumeEducation {
    * End date of the education in 'YYYY-MM-DD' or 'YYYY-MM' format, or empty string if ongoing.
    */
   endDate: string
-  /**
-   * Grade, GPA, or equivalent score achieved. Can be empty.
-   */
-  score?: string
   /**
    * List of notable courses completed during the program, rendered as a comma-separated list.
    */
@@ -299,7 +296,7 @@ export interface Resume {
   /**
    * Core personal and contact details displayed in the profile header of the resume.
    */
-  basics: ResumeBasics
+  basics: ResumeProfile
   /**
    * Professional work experience entries, ordered from most recent to oldest. Consecutive entries with the same company name are automatically grouped under a single company heading with multiple sub-roles in the rendered output.
    */

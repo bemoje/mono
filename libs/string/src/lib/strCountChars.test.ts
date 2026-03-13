@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strCountChars } from './strCountChars'
-import { describe, expect, it } from 'vitest'
 
 describe('strCountChars', () => {
   it('should count the number of occurrences of each character in a string', () => {
@@ -14,7 +16,7 @@ describe('strCountChars', () => {
         ['r', 1],
         ['d', 1],
         ['!', 1],
-      ]),
+      ])
     )
     expect(strCountChars('Hello')).toEqual(
       new Map([
@@ -22,7 +24,7 @@ describe('strCountChars', () => {
         ['e', 1],
         ['l', 2],
         ['o', 1],
-      ]),
+      ])
     )
     expect(strCountChars('')).toEqual(new Map())
   })

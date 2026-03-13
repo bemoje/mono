@@ -1,38 +1,29 @@
 import type { Browser } from 'puppeteer'
-import fs from 'fs-extra'
-import { join } from 'path/posix'
+import type { CliOptions } from '../types/CliOptions'
+import type { Logger } from '@mono/node'
+import type { ResumeRecommendation } from '../types/Resume'
 import { autoScroll } from './utils/autoScroll'
+import { getPageUrl } from './utils/getPageUrl'
+import { onScrapeError } from './utils/onScrapeError'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
-import { CliOptions } from '../types/CliOptions'
-import { getLinkedInUsername } from './utils/getLinkedInUsername'
-import { DIST_PATH } from '../constants'
-import { prettyStackTrace } from 'libs/stacktrace/src/prettyStackTrace'
-import { toError } from 'libs/node/src/toError'
+import { scrapeOutputJson } from './utils/scrapeOutputJson'
+import { userConfigFile } from '../userConfigFile'
 
-interface RecommendationEntry {
-  name: string
-  headline: string
-  date: string
-  relationship: string
-  logoUrl: string
-}
-
-export async function scrapeRecommendations(browser: Browser, options: CliOptions): Promise<void> {
+export async function scrapeRecommendations(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
   const page = await browser.newPage()
 
-  const recommendations: RecommendationEntry[] = []
+  const recommendations: ResumeRecommendation[] = []
 
   try {
-    const username = await getLinkedInUsername()
-    await page.goto(`https://www.linkedin.com/in/${username}/details/recommendations/?locale=en_US`, {
-      waitUntil: 'domcontentloaded',
-      timeout: 20000,
-    })
+    const username = userConfigFile.load().username
+    await page.goto(getPageUrl(username, 'recommendations'), { waitUntil: 'domcontentloaded', timeout: 20_000 })
 
     try {
-      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15000 })
-    } catch (error) {
-      console.warn('No recommendations section found or it took too long to load.')
+      await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15_000 })
+    } catch {
+      logger.warn('No recommendations section found or it took too long to load.')
+      // eslint-disable-next-line no-throw-literal
+      throw 'ignore'
     }
 
     await autoScroll(page)
@@ -40,26 +31,25 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
 
     const rawEntries = await page.evaluate(() => {
       const container = document.querySelector('.scaffold-finite-scroll__content')
-      if (!container) return []
+      if (!container) {
+        return []
+      }
       const topLevelItems = Array.from(container.querySelector('ul')?.children ?? [])
 
       const getVisibleSpans = (el: Element): string[] => {
         return Array.from(el.querySelectorAll('span'))
-          .filter((span) => !span.className.includes('visually-hidden') && span.hasAttribute('aria-hidden'))
-          .map((span) => span.textContent!.trim())
+          .filter((span) => {
+            return !span.className.includes('visually-hidden') && span.hasAttribute('aria-hidden')
+          })
+          .map((span) => {
+            return span.textContent!.trim()
+          })
       }
 
-      return topLevelItems.map((li) => ({
-        spans: getVisibleSpans(li),
-        logoUrl: li.querySelector('img')?.src ?? '',
-      }))
+      return topLevelItems.map((li) => {
+        return { spans: getVisibleSpans(li), logoUrl: li.querySelector('img')?.src ?? '' }
+      })
     })
-
-    if (options.debug) {
-      const debugPath = join('.temp', 'recommendations-raw-debug.json')
-      await fs.outputFile(debugPath, JSON.stringify(rawEntries, null, 2))
-      console.log(`Wrote raw recommendation spans to ${debugPath}`)
-    }
 
     // Each recommendation entry spans:
     // [0] = recommender name
@@ -73,18 +63,26 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
     const NOISE_RE = /^(· \d|All LinkedIn members$|^On$|^Off$)/
 
     for (const { spans, logoUrl } of rawEntries) {
-      if (spans.length < 3) continue
+      if (spans.length < 3) {
+        continue
+      }
 
       // Check visibility toggle: find "All LinkedIn members" and check the next span
       const visIdx = spans.indexOf('All LinkedIn members')
-      if (visIdx !== -1 && spans[visIdx + 1] === 'Off') continue
+      if (visIdx !== -1 && spans[visIdx + 1] === 'Off') {
+        continue
+      }
 
       const name = spans[0]
-      if (!name) continue
+      if (!name) {
+        continue
+      }
 
       // Skip connection degree indicator (e.g. "· 1st")
       let idx = 1
-      if (spans[idx]?.startsWith('·')) idx++
+      if (spans[idx]?.startsWith('·')) {
+        idx++
+      }
 
       const headline = spans[idx++] ?? ''
 
@@ -94,37 +92,30 @@ export async function scrapeRecommendations(browser: Browser, options: CliOption
       // Look for the date + relationship span
       for (let i = idx; i < spans.length; i++) {
         const s = spans[i]
-        if (NOISE_RE.test(s)) continue
+        if (NOISE_RE.test(s)) {
+          continue
+        }
 
         const dateMatch = s.match(DATE_RE)
         if (dateMatch && !date) {
           date = dateMatch[1]
           const after = s
             .slice(dateMatch[0].length)
-            .replace(/^[,\s]+/, '')
+            .replace(/^[\s,]+/, '')
             .trim()
-          if (after) relationship = after
+          if (after) {
+            relationship = after
+          }
           break
         }
       }
 
-      recommendations.push({
-        name,
-        headline,
-        date,
-        relationship,
-        logoUrl,
-      })
+      recommendations.push({ name, headline, date, relationship, logoUrl })
     }
   } catch (e) {
-    const error = toError(e)
-    error.message = 'Error scraping recommendations: ' + error.message
-    console.error(options.debug ? prettyStackTrace(error) : error.message)
+    onScrapeError(e, 'recommendations', options, logger)
   } finally {
-    const outPath = join(DIST_PATH, 'recommendations-scraped.json')
-    await fs.outputFile(outPath, JSON.stringify(recommendations, null, 2))
-    console.log(`Wrote ${recommendations.length} recommendations to ${outPath}`)
-
+    await scrapeOutputJson(recommendations, 'recommendations', logger, options)
     if (!options.keepOpen) {
       await page.close()
     }

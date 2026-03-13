@@ -71,7 +71,9 @@ export class NumberFormatter {
    */
   locale(locale: string): this {
     const sep = locales.get(locale)
-    if (!sep) throw new Error(`Invalid locale: ${locale}. Valid: ${Array.from(locales.keys())}}.`)
+    if (!sep) {
+      throw new Error(`Invalid locale: ${locale}. Valid: ${Array.from(locales.keys())}}.`)
+    }
     this.thousandSeparator = sep[0]
     this.decimalSeparator = sep[1]
     return this
@@ -101,9 +103,11 @@ export class NumberFormatter {
     string = string
       .replaceAll(this.thousandSeparator, '')
       .replace(this.decimalSeparator, '.')
-      .replace(/[^\d.-]/g, '')
+      .replaceAll(/[^\d.-]/g, '')
       .split('.')
-      .map((s) => parseInt(s))
+      .map((s) => {
+        return parseInt(s)
+      })
       .join('.')
     const n = Number(string)
     return n

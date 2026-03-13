@@ -4,19 +4,53 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "RUN",
+      "label": "run_tsx",
       "type": "shell",
-      "command": "yarn devkit run ${relativeFile}",
+      "command": "tsx --import 'tsconfig-paths/register' --import 'scripts/enablePrettyStackTrace.ts' --import 'dotenv/config' ${relativeFile}",
       "args": [],
-      "detail": "Run file (.ts, .test.ts, .js, .ps1, .mjs)",
+      "detail": "Run file (.ts, .mjs)",
       "presentation": {
-        "echo": false,
+        "echo": true,
         "reveal": "always",
         "showReuseMessage": true,
-        // "close": true,
+        "close": false,
         "focus": true,
-        "panel": "dedicated"
-        // "clear": true
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "run_vitest_file",
+      "type": "shell",
+      "command": "yarn test ${relativeFile}",
+      "args": [],
+      "detail": "Run vitest file (.test.ts)",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "showReuseMessage": true,
+        "close": false,
+        "focus": true,
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "run_vitest_dir",
+      "type": "shell",
+      "command": "yarn test ${relativeFileDirname}",
+      "args": [],
+      "detail": "Run vitest directory",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "showReuseMessage": true,
+        "close": false,
+        "focus": true,
+        "panel": "shared",
+        "clear": true
       },
       "problemMatcher": []
     }

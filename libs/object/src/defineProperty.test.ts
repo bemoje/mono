@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
 import { defineProperty } from './defineProperty'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(defineProperty.name, () => {
   it('examples', () => {
@@ -44,11 +46,7 @@ describe(defineProperty.name, () => {
     it('should define properties with value descriptors', () => {
       const obj: any = {}
 
-      defineProperty(obj, 'prop', {
-        value: 'test-value',
-        writable: true,
-        enumerable: true,
-      })
+      defineProperty(obj, 'prop', { value: 'test-value', writable: true, enumerable: true })
 
       expect(obj.prop).toBe('test-value')
 
@@ -126,10 +124,7 @@ describe(defineProperty.name, () => {
     it('should allow overriding configurable', () => {
       const obj: any = {}
 
-      defineProperty(obj, 'prop', {
-        value: 'test',
-        configurable: false,
-      })
+      defineProperty(obj, 'prop', { value: 'test', configurable: false })
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
       expect(descriptor?.configurable).toBe(false)
@@ -138,19 +133,10 @@ describe(defineProperty.name, () => {
     it('should preserve other descriptor properties', () => {
       const obj: any = {}
 
-      defineProperty(obj, 'prop', {
-        value: 'test',
-        writable: false,
-        enumerable: true,
-      })
+      defineProperty(obj, 'prop', { value: 'test', writable: false, enumerable: true })
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
-      expect(descriptor).toMatchObject({
-        value: 'test',
-        writable: false,
-        enumerable: true,
-        configurable: true,
-      })
+      expect(descriptor).toMatchObject({ value: 'test', writable: false, enumerable: true, configurable: true })
     })
   })
 
@@ -176,7 +162,9 @@ describe(defineProperty.name, () => {
       expect(obj.obj).toBe(objValue)
 
       // Function
-      const fnValue = () => 'function'
+      const fnValue = () => {
+        return 'function'
+      }
       defineProperty(obj, 'fn', { value: fnValue })
       expect(obj.fn).toBe(fnValue)
     })
@@ -194,10 +182,7 @@ describe(defineProperty.name, () => {
     it('should respect writable flag', () => {
       const obj: any = {}
 
-      defineProperty(obj, 'readonly', {
-        value: 'cannot-change',
-        writable: false,
-      })
+      defineProperty(obj, 'readonly', { value: 'cannot-change', writable: false })
 
       expect(() => {
         obj.readonly = 'attempted-change'
@@ -240,9 +225,7 @@ describe(defineProperty.name, () => {
     })
 
     it('should maintain this context in getters and setters', () => {
-      const obj: any = {
-        _value: 'initial',
-      }
+      const obj: any = { _value: 'initial' }
 
       defineProperty(obj, 'controlled', {
         get(this: any) {
@@ -263,15 +246,9 @@ describe(defineProperty.name, () => {
     it('should respect enumerable flag for value properties', () => {
       const obj: any = {}
 
-      defineProperty(obj, 'enumerable', {
-        value: 'visible',
-        enumerable: true,
-      })
+      defineProperty(obj, 'enumerable', { value: 'visible', enumerable: true })
 
-      defineProperty(obj, 'hidden', {
-        value: 'invisible',
-        enumerable: false,
-      })
+      defineProperty(obj, 'hidden', { value: 'invisible', enumerable: false })
 
       const keys = Object.keys(obj)
       expect(keys).toContain('enumerable')
@@ -330,12 +307,7 @@ describe(defineProperty.name, () => {
     it('should handle complex descriptor combinations', () => {
       const obj: any = {}
 
-      defineProperty(obj, 'complex', {
-        value: 'initial',
-        writable: true,
-        enumerable: false,
-        configurable: false,
-      })
+      defineProperty(obj, 'complex', { value: 'initial', writable: true, enumerable: false, configurable: false })
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'complex')
       expect(descriptor).toMatchObject({

@@ -1,30 +1,38 @@
-import { describe, expect, it, vi } from 'vitest'
-import path from 'upath'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import fs from 'fs-extra'
+import { globSync } from 'glob'
+import { it } from 'vitest'
+import path from 'upath'
+import { vi } from 'vitest'
 
-vi.mock('upath', () => ({
-  default: {
-    joinSafe: vi.fn((...args: string[]) => args.join('/')),
-    normalizeSafe: vi.fn((p: string) => p),
-  },
-}))
-vi.mock('fs-extra', () => ({
-  default: {
-    existsSync: vi.fn(),
-    readJsonSync: vi.fn(),
-  },
-}))
-vi.mock('glob', () => ({
-  globSync: vi.fn(),
-}))
-vi.mock('onetime', () => ({
-  default: (fn: () => unknown) => fn,
-}))
-
+vi.mock('upath', () => {
+  return {
+    default: {
+      joinSafe: vi.fn((...args: string[]) => {
+        return args.join('/')
+      }),
+      normalizeSafe: vi.fn((p: string) => {
+        return p
+      }),
+    },
+  }
+})
+vi.mock('fs-extra', () => {
+  return { default: { existsSync: vi.fn(), readJsonSync: vi.fn() } }
+})
+vi.mock('glob', () => {
+  return { globSync: vi.fn() }
+})
+vi.mock('onetime', () => {
+  return {
+    default: (fn: () => unknown) => {
+      return fn
+    },
+  }
+})
 const mockFs = vi.mocked(fs)
 const mockPath = vi.mocked(path)
-
-import { globSync } from 'glob'
 const mockGlobSync = vi.mocked(globSync)
 
 describe('getWorkspaceDirpaths', () => {
@@ -53,6 +61,8 @@ describe('getWorkspaceDirpaths', () => {
 
     const { getWorkspaceDirpaths } = await import('./getWorkspaceDirpaths')
 
-    expect(() => getWorkspaceDirpaths()).toThrow('No workspaces found in package.json')
+    expect(() => {
+      return getWorkspaceDirpaths()
+    }).toThrow('No workspaces found in package.json')
   })
 })

@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
-import { Any } from '@mono/types'
+import type { Any } from '@mono/types'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { wrapMethods } from './wrapMethods'
 
 describe(wrapMethods.name, () => {
@@ -147,7 +149,9 @@ describe(wrapMethods.name, () => {
       },
     }
     wrapMethods(target, {
-      onMethod: () => undefined as Any,
+      onMethod: () => {
+        return undefined as Any
+      },
     })
     expect(target.method1()).toBe('original')
   })
@@ -159,7 +163,9 @@ describe(wrapMethods.name, () => {
       },
     }
     wrapMethods(target, {
-      onGetter: () => undefined as Any,
+      onGetter: () => {
+        return undefined as Any
+      },
     })
     expect(target.prop).toBe('original')
   })
@@ -172,7 +178,9 @@ describe(wrapMethods.name, () => {
       },
     }
     wrapMethods(target, {
-      onSetter: () => undefined as Any,
+      onSetter: () => {
+        return undefined as Any
+      },
     })
     target.val = 'test'
     expect(target._val).toBe('test')

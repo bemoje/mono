@@ -1,0 +1,36 @@
+{
+  "name": "@mono/eslint",
+  "version": "1.2.0",
+  "packageManager": "yarn@4.3.1",
+  "type": "module",
+  "module": "src/index.ts",
+  "sideEffects": false,
+  "description": "Custom ESLint plugin and rule utilities for consistent code style in TypeScript projects.",
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "linting",
+    "rules",
+    "code-style",
+    "utilities",
+    "typescript"
+  ],
+  "scripts": {
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+  },
+  "devDependencies": {
+    "@typescript-eslint/rule-tester": "^8.56.1",
+    "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "@typescript-eslint/utils": "^8.56.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./createRule": "./src/lib/createRule.ts",
+    "./eslintPluginBemoje": "./src/lib/eslintPluginBemoje.ts",
+    "./noBlankLineBetweenCommentAndDeclaration": "./src/rules/noBlankLineBetweenCommentAndDeclaration.ts",
+    "./splitImports": "./src/rules/splitImports.ts"
+  }
+}

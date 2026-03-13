@@ -1,0 +1,69 @@
+{
+  "name": "@mono/prompt",
+  "version": "1.1.3",
+  "packageManager": "yarn@4.3.1",
+  "type": "module",
+  "module": "src/index.ts",
+  "sideEffects": false,
+  "dependencies": {
+    "ansi-colors": "^4.1.3",
+    "es-toolkit": "^1.45.1",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@mono/object": "workspace:^",
+    "@mono/types": "workspace:^",
+    "@types/prompts": "^2.4.9",
+    "tsup": "^8.5.1"
+  },
+  "scripts": {
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+  },
+  "keywords": [
+    "prompt",
+    "interactive",
+    "terminal",
+    "fluent",
+    "builder",
+    "node",
+    "utilities",
+    "typescript"
+  ],
+  "description": "Interactive terminal prompt utilities for Node.js with a fluent builder API.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./IChoice": "./src/prompt/additions/searchPrompt/core/IChoice.ts",
+    "./ISearchPromptChoiceMetaData": "./src/prompt/additions/searchPrompt/core/ISearchPromptChoiceMetaData.ts",
+    "./ISearchPromptFilteringOptions": "./src/prompt/additions/searchPrompt/core/ISearchPromptFilteringOptions.ts",
+    "./ISearchPromptMetaData": "./src/prompt/additions/searchPrompt/core/ISearchPromptMetaData.ts",
+    "./ISearchPromptOptions": "./src/prompt/additions/searchPrompt/core/ISearchPromptOptions.ts",
+    "./ISearchPromptResult": "./src/prompt/additions/searchPrompt/core/ISearchPromptResult.ts",
+    "./PROMPT_META_DATA": "./src/prompt/additions/searchPrompt/core/PROMPT_META_DATA.ts",
+    "./createSearchPromptObject": "./src/prompt/additions/searchPrompt/core/createSearchPromptObject.ts",
+    "./getSearchPromptMetaData": "./src/prompt/additions/searchPrompt/core/getSearchPromptMetaData.ts",
+    "./searchPrompt": "./src/prompt/additions/searchPrompt/searchPrompt.ts",
+    "./AbstractUserPrompt": "./src/prompt/core/AbstractUserPrompt.ts",
+    "./AutocompleteMultiselectPrompt": "./src/prompt/core/AutocompleteMultiselectPrompt.ts",
+    "./AutocompletePrompt": "./src/prompt/core/AutocompletePrompt.ts",
+    "./ConfirmPrompt": "./src/prompt/core/ConfirmPrompt.ts",
+    "./DatePrompt": "./src/prompt/core/DatePrompt.ts",
+    "./InvisiblePrompt": "./src/prompt/core/InvisiblePrompt.ts",
+    "./ListPrompt": "./src/prompt/core/ListPrompt.ts",
+    "./MultiselectPrompt": "./src/prompt/core/MultiselectPrompt.ts",
+    "./NumberPrompt": "./src/prompt/core/NumberPrompt.ts",
+    "./PasswordPrompt": "./src/prompt/core/PasswordPrompt.ts",
+    "./SearchPrompt": "./src/prompt/core/SearchPrompt.ts",
+    "./SelectPrompt": "./src/prompt/core/SelectPrompt.ts",
+    "./TextPrompt": "./src/prompt/core/TextPrompt.ts",
+    "./TogglePrompt": "./src/prompt/core/TogglePrompt.ts",
+    "./types": "./src/prompt/suggest/types.ts",
+    "./prompt": "./src/prompt/prompt.ts",
+    "./common": "./src/prompt/suggest/common.ts",
+    "./initChoices": "./src/prompt/suggest/initChoices.ts",
+    "./regExact": "./src/prompt/suggest/regExact.ts",
+    "./regIncludes": "./src/prompt/suggest/regIncludes.ts",
+    "./regStartsWith": "./src/prompt/suggest/regStartsWith.ts",
+    "./suggestDefault": "./src/prompt/suggest/suggestDefault.ts"
+  }
+}

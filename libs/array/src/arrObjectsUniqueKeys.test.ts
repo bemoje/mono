@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import { arrObjectsUniqueKeys } from './arrObjectsUniqueKeys'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('arrObjectsUniqueKeys', () => {
   it('should return an empty array if the input array is empty', () => {

@@ -1,4 +1,4 @@
-import { RemoveArrayElement } from './RemoveArrayElement'
+import type { RemoveArrayElement } from './RemoveArrayElement'
 
 export type ParametersWithout<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

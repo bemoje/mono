@@ -1,9 +1,13 @@
-import { describe, expect, it, beforeEach, afterEach } from 'vitest'
-import assert from 'node:assert'
-import fs from 'fs-extra'
-import upath from 'upath'
 import { JsonFileStrategy } from './JsonFileStrategy'
+import { afterEach } from 'vitest'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import fs from 'fs-extra'
 import { getTempDataPath } from '@mono/os'
+import { it } from 'vitest'
+import upath from 'upath'
 
 describe(JsonFileStrategy.name, () => {
   const testDir = getTempDataPath('JsonFileStrategy')
@@ -118,15 +122,7 @@ describe(JsonFileStrategy.name, () => {
 
     it('should handle complex nested objects', () => {
       const complexData = {
-        user: {
-          profile: {
-            name: 'John',
-            settings: {
-              theme: 'dark',
-              notifications: true,
-            },
-          },
-        },
+        user: { profile: { name: 'John', settings: { theme: 'dark', notifications: true } } },
         permissions: ['read', 'write'],
         metadata: null,
       }

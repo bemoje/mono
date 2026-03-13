@@ -1,20 +1,11 @@
 {
   "name": "@mono/cli",
-  "version": "2.0.0",
-  "description": "A type-safe CLI composer that can parse argv and generate help without execution coupling.",
+  "version": "3.1.4",
+  "description": "A type-safe CLI framework for building command-line interfaces with typed arguments, options, subcommands, and auto-generated help - without execution coupling.",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
-  "scripts": {
-    "indexts": "devkit clean index-ts",
-    "build": "node esbuild.mjs"
-  },
-  "devDependencies": {
-    "@bemoje/devkit": "0.1.0",
-    "type-fest": "^5.4.4"
-  },
   "keywords": [
     "cli",
     "command-line",
@@ -30,5 +21,28 @@
     "console",
     "args",
     "argv"
-  ]
+  ],
+  "scripts": {
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+  },
+  "dependencies": {
+    "ansi-colors": "^4.1.3",
+    "es-toolkit": "^1.45.1"
+  },
+  "devDependencies": {
+    "@mono/decorators": "workspace:^",
+    "@mono/fn": "workspace:^",
+    "@mono/node": "workspace:^",
+    "@mono/object": "workspace:^",
+    "tsup": "^8.5.1",
+    "type-fest": "5.4.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./helpers": "./src/lib/helpers/index.ts",
+    "./Command": "./src/lib/Command.ts",
+    "./Help": "./src/lib/Help.ts",
+    "./types": "./src/lib/types.ts"
+  }
 }

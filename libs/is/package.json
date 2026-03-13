@@ -1,16 +1,77 @@
 {
   "name": "@mono/is",
-  "version": "0.0.0",
+  "version": "2.1.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
-  "scripts": {
-    "indexts": "devkit clean index-ts",
-    "build": "node esbuild.mjs"
-  },
   "devDependencies": {
-    "@bemoje/devkit": "0.1.0"
+    "@mono/types": "workspace:^",
+    "tsup": "^8.5.1"
+  },
+  "description": "Type checking and validation utilities with composable validators and detailed error reporting.",
+  "keywords": [
+    "is",
+    "type-checking",
+    "validation",
+    "validators",
+    "composable",
+    "guards",
+    "utilities",
+    "typescript"
+  ],
+  "scripts": {
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+  },
+  "dependencies": {
+    "es-toolkit": "^1.45.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./IsArrayWhereEach": "./src/IsArrayWhereEach.ts",
+    "./IsFileExt": "./src/IsFileExt.ts",
+    "./IsLength": "./src/IsLength.ts",
+    "./ValidatorError": "./src/ValidatorError.ts",
+    "./createGtValidator": "./src/createGtValidator.ts",
+    "./createGteValidator": "./src/createGteValidator.ts",
+    "./createLtValidator": "./src/createLtValidator.ts",
+    "./createLteValidator": "./src/createLteValidator.ts",
+    "./ensureThat": "./src/ensureThat.ts",
+    "./isArray": "./src/isArray.ts",
+    "./isChar": "./src/isChar.ts",
+    "./isClass": "./src/isClass.ts",
+    "./isConstructor": "./src/isConstructor.ts",
+    "./isDefined": "./src/isDefined.ts",
+    "./isDigit": "./src/isDigit.ts",
+    "./isDigits": "./src/isDigits.ts",
+    "./isEven": "./src/isEven.ts",
+    "./isHex": "./src/isHex.ts",
+    "./isHexOrUnicode": "./src/isHexOrUnicode.ts",
+    "./isIntRange": "./src/isIntRange.ts",
+    "./isInteger": "./src/isInteger.ts",
+    "./isLen2": "./src/isLen2.ts",
+    "./isNamedFunction": "./src/isNamedFunction.ts",
+    "./isNamedFunctionArray": "./src/isNamedFunctionArray.ts",
+    "./isNegativeInteger": "./src/isNegativeInteger.ts",
+    "./isNegativeNumber": "./src/isNegativeNumber.ts",
+    "./isNonZeroNegativeInteger": "./src/isNonZeroNegativeInteger.ts",
+    "./isNonZeroNegativeNumber": "./src/isNonZeroNegativeNumber.ts",
+    "./isNonZeroPositiveInteger": "./src/isNonZeroPositiveInteger.ts",
+    "./isNonZeroPositiveNumber": "./src/isNonZeroPositiveNumber.ts",
+    "./isNumArrayAscending": "./src/isNumArrayAscending.ts",
+    "./isNumericString": "./src/isNumericString.ts",
+    "./isObject": "./src/isObject.ts",
+    "./isObjectType": "./src/isObjectType.ts",
+    "./isOdd": "./src/isOdd.ts",
+    "./isPosIntArray": "./src/isPosIntArray.ts",
+    "./isPosIntRange": "./src/isPosIntRange.ts",
+    "./isPositiveInteger": "./src/isPositiveInteger.ts",
+    "./isPositiveNumber": "./src/isPositiveNumber.ts",
+    "./isPrototype": "./src/isPrototype.ts",
+    "./isStringArray": "./src/isStringArray.ts",
+    "./isStringWithNoSpacesOrDashes": "./src/isStringWithNoSpacesOrDashes.ts",
+    "./isUniqueNumArrayAscending": "./src/isUniqueNumArrayAscending.ts",
+    "./isValidNumber": "./src/isValidNumber.ts"
   }
 }

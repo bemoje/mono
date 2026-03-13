@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import { countFloatDecimals } from './countFloatDecimals'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(countFloatDecimals.name, () => {
   it('should return 0 for invalid values', () => {

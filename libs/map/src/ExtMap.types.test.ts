@@ -1,12 +1,14 @@
-import { describe, expect, it } from 'vitest'
-import { expectType } from 'tsd'
 import { ExtMap } from './ExtMap'
-import { mapUpdate } from './mapUpdate'
-import { mapGetOrDefault } from './mapGetOrDefault'
-import { keysArray } from './keysArray'
-import { valuesArray } from './valuesArray'
+import { describe } from 'vitest'
 import { entriesArray } from './entriesArray'
+import { expect } from 'vitest'
+import { expectType } from 'tsd'
+import { it } from 'vitest'
+import { keysArray } from './keysArray'
+import { mapGetOrDefault } from './mapGetOrDefault'
+import { mapUpdate } from './mapUpdate'
 import { toMap } from './toMap'
+import { valuesArray } from './valuesArray'
 
 describe('ExtMap type compatibility', () => {
   it('should have type-compatible methods with utility functions', () => {
@@ -19,17 +21,23 @@ describe('ExtMap type compatibility', () => {
     expect(loadResult).toBeInstanceOf(ExtMap)
 
     // Test sort methods compatibility
-    const sortResult = map.sort(([k1, v1], [k2, v2]) => k1.localeCompare(k2))
+    const sortResult = map.sort(([k1, v1], [k2, v2]) => {
+      return k1.localeCompare(k2)
+    })
     expectType<ExtMap<string, number>>(sortResult)
     expect(sortResult).toBe(map) // Should return this for chaining
     expect(sortResult).toBeInstanceOf(ExtMap)
 
-    const sortByKeysResult = map.sortByKeys((a, b) => a.localeCompare(b))
+    const sortByKeysResult = map.sortByKeys((a, b) => {
+      return a.localeCompare(b)
+    })
     expectType<ExtMap<string, number>>(sortByKeysResult)
     expect(sortByKeysResult).toBe(map) // Should return this for chaining
     expect(sortByKeysResult).toBeInstanceOf(ExtMap)
 
-    const sortByValuesResult = map.sortByValues((a, b) => a - b)
+    const sortByValuesResult = map.sortByValues((a, b) => {
+      return a - b
+    })
     expectType<ExtMap<string, number>>(sortByValuesResult)
     expect(sortByValuesResult).toBe(map) // Should return this for chaining
     expect(sortByValuesResult).toBeInstanceOf(ExtMap)
@@ -41,24 +49,32 @@ describe('ExtMap type compatibility', () => {
 
     // Test update method compatibility - NOTE: Different return types!
     // Interface returns this, utility returns the value
-    const updateResult = map.update('key', (v) => v ?? 0)
+    const updateResult = map.update('key', (v) => {
+      return v ?? 0
+    })
     expectType<ExtMap<string, number>>(updateResult)
     expect(updateResult).toBe(map) // Should return this for chaining
     expect(updateResult).toBeInstanceOf(ExtMap)
 
     // Test getOrDefault method compatibility
-    const getOrDefaultResult = map.getOrDefault('key', () => 42)
+    const getOrDefaultResult = map.getOrDefault('key', () => {
+      return 42
+    })
     expectType<number>(getOrDefaultResult)
     expect(typeof getOrDefaultResult).toBe('number')
     expect(getOrDefaultResult).toBe(0) // Should return the existing value since key exists
 
     // Test getOrDefault with non-existent key
-    const defaultValueResult = map.getOrDefault('nonexistent', () => 42)
+    const defaultValueResult = map.getOrDefault('nonexistent', () => {
+      return 42
+    })
     expectType<number>(defaultValueResult)
     expect(typeof defaultValueResult).toBe('number')
     expect(defaultValueResult).toBe(42) // Should return the default value
 
-    const utilGetOrDefaultResult = mapGetOrDefault(map, 'key2', () => 123)
+    const utilGetOrDefaultResult = mapGetOrDefault(map, 'key2', () => {
+      return 123
+    })
     expectType<number>(utilGetOrDefaultResult)
     expect(typeof utilGetOrDefaultResult).toBe('number')
     expect(utilGetOrDefaultResult).toBe(123) // Should return the default value
@@ -67,22 +83,38 @@ describe('ExtMap type compatibility', () => {
     const keysArrayResult = map.keysArray()
     expectType<string[]>(keysArrayResult)
     expect(Array.isArray(keysArrayResult)).toBe(true)
-    expect(keysArrayResult.every((k) => typeof k === 'string')).toBe(true)
+    expect(
+      keysArrayResult.every((k) => {
+        return typeof k === 'string'
+      })
+    ).toBe(true)
 
     const utilKeysArrayResult = keysArray(map)
     expectType<string[]>(utilKeysArrayResult)
     expect(Array.isArray(utilKeysArrayResult)).toBe(true)
-    expect(utilKeysArrayResult.every((k) => typeof k === 'string')).toBe(true)
+    expect(
+      utilKeysArrayResult.every((k) => {
+        return typeof k === 'string'
+      })
+    ).toBe(true)
 
     const valuesArrayResult = map.valuesArray()
     expectType<number[]>(valuesArrayResult)
     expect(Array.isArray(valuesArrayResult)).toBe(true)
-    expect(valuesArrayResult.every((v) => typeof v === 'number')).toBe(true)
+    expect(
+      valuesArrayResult.every((v) => {
+        return typeof v === 'number'
+      })
+    ).toBe(true)
 
     const utilValuesArrayResult = valuesArray(map)
     expectType<number[]>(utilValuesArrayResult) // Type issue: returns unknown[]
     expect(Array.isArray(utilValuesArrayResult)).toBe(true)
-    expect(utilValuesArrayResult.every((v) => typeof v === 'number')).toBe(true)
+    expect(
+      utilValuesArrayResult.every((v) => {
+        return typeof v === 'number'
+      })
+    ).toBe(true)
 
     const entriesArrayResult = map.entriesArray()
     expectType<[string, number][]>(entriesArrayResult)
@@ -114,11 +146,15 @@ describe('ExtMap type compatibility', () => {
     const map = new ExtMap<string, number>()
 
     // The interface says update returns this for chaining
-    const chainResult = map.update('key', (v) => v ?? 0)
+    const chainResult = map.update('key', (v) => {
+      return v ?? 0
+    })
     expectType<ExtMap<string, number>>(chainResult)
     expect(chainResult).toBe(map)
 
-    const retval = mapUpdate(map, 'key', (v) => v ?? 0)
+    const retval = mapUpdate(map, 'key', (v) => {
+      return v ?? 0
+    })
     expect(typeof map.get('key')).toBe('number')
     expect(retval).toBe(map)
   })

@@ -1,8 +1,8 @@
+import type { Any } from '@mono/types'
 import type { AnyAsyncFunction } from '@mono/types'
 import type { TFunction } from '@mono/types'
-import type { Any } from '@mono/types'
-import { isAsyncFunction } from 'node:util/types'
-import { preserveNameAndLength } from './preserveNameAndLength'
+import { isAsyncFunction } from 'util/types'
+import { setNameAndLength } from './setNameAndLength'
 
 /**
  * Wraps a function so that the given @see IFunctionSpyStrategy will be applied.
@@ -13,7 +13,7 @@ import { preserveNameAndLength } from './preserveNameAndLength'
 export function functionSpy<T, Data>(
   func: TFunction,
   spy: IFunctionSpyStrategy<T, Data>,
-  options: FunctionSpyOptions<T, Data> = {},
+  options: FunctionSpyOptions<T, Data> = {}
 ) {
   if (options.async === false) {
     return wrapSync(func, spy, options)
@@ -61,34 +61,36 @@ export interface IFunctionSpyStrategy<T, Data> {
 function wrapMaybeAsync<T, Data>(
   func: TFunction,
   spy: IFunctionSpyStrategy<T, Data>,
-  options: { ignore?: IgnorePredicate<T, Data> } = {},
+  options: { ignore?: IgnorePredicate<T, Data> } = {}
 ) {
   const ignore = options.ignore
-  if (ignore && ignore(func, spy)) return func
-  return preserveNameAndLength(func, function (this: T, ...args: any[]) {
+  if (ignore && ignore(func, spy)) {
+    return func
+  }
+  return setNameAndLength(func, function (this: T, ...args: any[]) {
     if (ignore && ignore(func, spy, this)) {
       return func.apply(this, args)
     }
     const data = spy.onInvoke(this, args)
     const retval = func.apply(this, args)
-    if (retval instanceof Promise) {
-      return retval.then((retval) => {
-        return spy.onReturn(data, retval)
-      })
-    } else {
-      return spy.onReturn(data, retval)
-    }
+    return retval instanceof Promise
+      ? retval.then((retval) => {
+          return spy.onReturn(data, retval)
+        })
+      : spy.onReturn(data, retval)
   })
 }
 
 function wrapSync<T, Data>(
   func: TFunction,
   spy: IFunctionSpyStrategy<T, Data>,
-  options: { ignore?: IgnorePredicate<T, Data> } = {},
+  options: { ignore?: IgnorePredicate<T, Data> } = {}
 ) {
   const ignore = options.ignore
-  if (ignore && ignore(func, spy)) return func
-  return preserveNameAndLength(func, function (this: T, ...args: any[]) {
+  if (ignore && ignore(func, spy)) {
+    return func
+  }
+  return setNameAndLength(func, function (this: T, ...args: any[]) {
     if (ignore && ignore(func, spy, this)) {
       return func.apply(this, args)
     }
@@ -101,11 +103,13 @@ function wrapSync<T, Data>(
 function wrapAsync<T, Data>(
   func: AnyAsyncFunction,
   spy: IFunctionSpyStrategy<T, Data>,
-  options: { ignore?: IgnorePredicate<T, Data> } = {},
+  options: { ignore?: IgnorePredicate<T, Data> } = {}
 ) {
   const ignore = options.ignore
-  if (ignore && ignore(func, spy)) return func
-  return preserveNameAndLength(func, async function (this: T, ...args: any[]) {
+  if (ignore && ignore(func, spy)) {
+    return func
+  }
+  return setNameAndLength(func, async function (this: T, ...args: any[]) {
     if (ignore && ignore(func, spy, this)) {
       return await func.apply(this, args)
     }
@@ -118,5 +122,5 @@ function wrapAsync<T, Data>(
 export type IgnorePredicate<T, Data> = (
   func: TFunction,
   spy: IFunctionSpyStrategy<T, Data>,
-  thisContext?: T,
+  thisContext?: T
 ) => boolean

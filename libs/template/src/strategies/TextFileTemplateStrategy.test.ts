@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
 import { TextFileTemplateStrategy } from './TextFileTemplateStrategy'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(TextFileTemplateStrategy.name, () => {
   it('examples', () => {

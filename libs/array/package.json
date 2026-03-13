@@ -1,16 +1,49 @@
 {
   "name": "@mono/array",
-  "version": "1.0.0",
+  "version": "3.2.5",
+  "description": "Array manipulation and table processing utilities for TypeScript.",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
   "scripts": {
-    "indexts": "devkit clean index-ts",
-    "build": "node esbuild.mjs"
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
+  "keywords": [
+    "array",
+    "table",
+    "2d-array",
+    "csv",
+    "sorting",
+    "searching",
+    "deduplication",
+    "shuffle",
+    "utilities",
+    "typescript"
+  ],
   "devDependencies": {
-    "@bemoje/devkit": "0.1.0"
+    "@mono/types": "workspace:^",
+    "tsup": "^8.5.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./arrFindIndices": "./src/arrFindIndices.ts",
+    "./arrGetOrDefault": "./src/arrGetOrDefault.ts",
+    "./arrHasDuplicates": "./src/arrHasDuplicates.ts",
+    "./arrIndicesOf": "./src/arrIndicesOf.ts",
+    "./arrMapMutable": "./src/arrMapMutable.ts",
+    "./arrObjectsCommonKeys": "./src/arrObjectsCommonKeys.ts",
+    "./arrObjectsToTable": "./src/arrObjectsToTable.ts",
+    "./arrObjectsUniqueKeys": "./src/arrObjectsUniqueKeys.ts",
+    "./arrSortNumeric": "./src/arrSortNumeric.ts",
+    "./arrSortedInsertionIndex": "./src/arrSortedInsertionIndex.ts",
+    "./arrSwap": "./src/arrSwap.ts",
+    "./arrTableAssertRowsSameLength": "./src/arrTableAssertRowsSameLength.ts",
+    "./arrTableEachToString": "./src/arrTableEachToString.ts",
+    "./arrTableIterateAsObjects": "./src/arrTableIterateAsObjects.ts",
+    "./arrTableRemoveColumns": "./src/arrTableRemoveColumns.ts",
+    "./arrTableToCsv": "./src/arrTableToCsv.ts",
+    "./arrTableToObjects": "./src/arrTableToObjects.ts"
   }
 }

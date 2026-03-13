@@ -1,11 +1,15 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { execSync } from 'node:child_process'
+import { beforeEach } from 'vitest'
 import { clearTerminal } from './clearTerminal'
+import { describe } from 'vitest'
+import { execSync } from 'child_process'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Mock child_process module
-vi.mock('node:child_process', () => ({
-  execSync: vi.fn(),
-}))
+vi.mock('child_process', () => {
+  return { execSync: vi.fn() }
+})
 
 const mockedExecSync = vi.mocked(execSync)
 
@@ -41,7 +45,9 @@ describe(clearTerminal.name, () => {
         throw new Error('Command failed')
       })
 
-      expect(() => clearTerminal()).toThrow('Command failed')
+      expect(() => {
+        return clearTerminal()
+      }).toThrow('Command failed')
     })
   })
 

@@ -1,8 +1,13 @@
-import colors from 'ansi-colors'
-import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
-import { FunctionProfiler } from '../FunctionProfiler/FunctionProfiler'
-import { inspect } from 'node:util'
+import { FunctionProfiler } from '../internal/FunctionProfiler/FunctionProfiler'
 import { Profiler } from './Profiler'
+import { afterEach } from 'vitest'
+import { beforeEach } from 'vitest'
+import colors from 'ansi-colors'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { inspect } from 'util'
+import { it } from 'vitest'
+import { vitest } from 'vitest'
 
 describe(Profiler.name, () => {
   beforeEach(() => {
@@ -107,10 +112,7 @@ describe(Profiler.name, () => {
       const classStaticSpy = vitest.spyOn(Profiler, 'classStatic')
       const classPrototypeSpy = vitest.spyOn(Profiler, 'classPrototype')
       class Target {}
-      const options = {
-        ignoreStaticKeys: [],
-        ignorePrototypeKeys: [],
-      }
+      const options = { ignoreStaticKeys: [], ignorePrototypeKeys: [] }
       Profiler.class(Target, options)
       expect(classStaticSpy).toHaveBeenCalledWith(Target, options.ignoreStaticKeys)
       expect(classPrototypeSpy).toHaveBeenCalledWith(Target, options.ignorePrototypeKeys)
@@ -208,7 +210,9 @@ describe(Profiler.name, () => {
   })
 
   describe(Profiler.fn.name, () => {
-    const Target = () => 1
+    const Target = () => {
+      return 1
+    }
 
     it('should profile function', () => {
       Profiler.fn(Target)
@@ -219,15 +223,25 @@ describe(Profiler.name, () => {
     })
 
     it('should throw if function has no name', () => {
-      expect(() => Profiler.fn(() => 1)).toThrow()
+      expect(() => {
+        return Profiler.fn(() => {
+          return 1
+        })
+      }).toThrow()
     })
 
     it('should not throw if function has no name but name is given', () => {
-      expect(() => Profiler.fn('someName', () => 1)).not.toThrow()
+      expect(() => {
+        return Profiler.fn('someName', () => {
+          return 1
+        })
+      }).not.toThrow()
     })
 
     it('should return input function if Profiler is disabled', () => {
-      const fn = () => 1
+      const fn = () => {
+        return 1
+      }
       Profiler.enabled = false
       const wrapped = Profiler.fn(fn)
       Profiler.enabled = true
@@ -276,7 +290,9 @@ describe(Profiler.name, () => {
         expect(name).toBeTypeOf('string')
         const data = result[1]
         expect(data).toBeTypeOf('object')
-        const profiler = FunctionProfiler.instances.find((profiler) => profiler.id.name === name)
+        const profiler = FunctionProfiler.instances.find((profiler) => {
+          return profiler.id.name === name
+        })
         expect(profiler).toBeInstanceOf(FunctionProfiler)
         expect(profiler!.getResult()).toEqual(data)
       }
@@ -285,57 +301,119 @@ describe(Profiler.name, () => {
     describe('options', () => {
       it('sortBy calls (primary) -> totalTimeUs (auto secondary)', () => {
         FunctionProfiler.instances = [
-          { id: { name: 'A' }, getResult: () => ({ calls: 1, totalTimeUs: 3 }) },
-          { id: { name: 'B' }, getResult: () => ({ calls: 2, totalTimeUs: 1 }) },
-          { id: { name: 'C' }, getResult: () => ({ calls: 2, totalTimeUs: 2 }) },
-          { id: { name: 'D' }, getResult: () => ({ calls: 3, totalTimeUs: 3 }) },
+          {
+            id: { name: 'A' },
+            getResult: () => {
+              return { calls: 1, totalTimeUs: 3 }
+            },
+          },
+          {
+            id: { name: 'B' },
+            getResult: () => {
+              return { calls: 2, totalTimeUs: 1 }
+            },
+          },
+          {
+            id: { name: 'C' },
+            getResult: () => {
+              return { calls: 2, totalTimeUs: 2 }
+            },
+          },
+          {
+            id: { name: 'D' },
+            getResult: () => {
+              return { calls: 3, totalTimeUs: 3 }
+            },
+          },
         ].reverse() as FunctionProfiler<object>[]
 
         const results = Profiler.getResults({ sortBy: 'calls' })
-        const names = results.map(([name]) => name).join(', ')
+        const names = results
+          .map(([name]) => {
+            return name
+          })
+          .join(', ')
         expect(
           [
             'A', //
             'B', //
             'C', //
             'D', //
-          ].join(', '),
+          ].join(', ')
         ).toBe(names)
       })
 
       it('sortBy totalTimeUs (primary) -> calls (auto secondary)', () => {
         FunctionProfiler.instances = [
-          { id: { name: 'A' }, getResult: () => ({ calls: 3, totalTimeUs: 1 }) },
-          { id: { name: 'B' }, getResult: () => ({ calls: 1, totalTimeUs: 2 }) },
-          { id: { name: 'C' }, getResult: () => ({ calls: 2, totalTimeUs: 2 }) },
-          { id: { name: 'D' }, getResult: () => ({ calls: 3, totalTimeUs: 3 }) },
+          {
+            id: { name: 'A' },
+            getResult: () => {
+              return { calls: 3, totalTimeUs: 1 }
+            },
+          },
+          {
+            id: { name: 'B' },
+            getResult: () => {
+              return { calls: 1, totalTimeUs: 2 }
+            },
+          },
+          {
+            id: { name: 'C' },
+            getResult: () => {
+              return { calls: 2, totalTimeUs: 2 }
+            },
+          },
+          {
+            id: { name: 'D' },
+            getResult: () => {
+              return { calls: 3, totalTimeUs: 3 }
+            },
+          },
         ].reverse() as FunctionProfiler<object>[]
 
         const results = Profiler.getResults({ sortBy: 'totalTimeUs' })
-        const names = results.map(([name]) => name).join(', ')
+        const names = results
+          .map(([name]) => {
+            return name
+          })
+          .join(', ')
         expect(
           [
             'A', //
             'B', //
             'C', //
             'D', //
-          ].join(', '),
+          ].join(', ')
         ).toBe(names)
       })
 
       it('sortBy should consider undefined as lowest sort value', () => {
         FunctionProfiler.instances = [
-          { id: { name: 'A' }, getResult: () => ({ calls: 0, totalTimeUs: undefined }) },
-          { id: { name: 'B' }, getResult: () => ({ calls: 0, totalTimeUs: 0 }) },
+          {
+            id: { name: 'A' },
+            getResult: () => {
+              return { calls: 0, totalTimeUs: undefined }
+            },
+          },
+          {
+            id: { name: 'B' },
+            getResult: () => {
+              return { calls: 0, totalTimeUs: 0 }
+            },
+          },
         ].reverse() as FunctionProfiler<object>[]
 
         const results = Profiler.getResults({ sortBy: 'totalTimeUs' })
-        const names = results.map(([name]) => name).join(', ')
+        const names = results
+          .map(([name]) => {
+            return name
+          })
+          .join(', ')
         expect(
           [
             'A', //
             'B', //
-          ].join(', '),
+          ].join(', ')
         ).toBe(names)
       })
     })
@@ -369,7 +447,9 @@ describe(Profiler.name, () => {
     it('options.update should allow for editing results before printing', () => {
       const consoleLogSpy = vitest.spyOn(console, 'log').mockImplementation(() => {})
       Profiler.printResults({
-        update: (entries) => entries.slice(0, 1),
+        update: (entries) => {
+          return entries.slice(0, 1)
+        },
       })
       expect(consoleLogSpy).toHaveBeenCalledTimes(NO_DATA_MIN_NUM_CONSOLE_LOGS + 1)
     })

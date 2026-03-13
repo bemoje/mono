@@ -13,11 +13,15 @@ import { isLen2 } from './isLen2'
  * ```
  */
 export const isIntRange = (v: unknown): boolean => {
-  if (!Array.isArray(v) || !isLen2(v)) return false
+  if (!Array.isArray(v) || !isLen2(v)) {
+    return false
+  }
 
   // Check if both elements are integers
   const [first, second] = v
-  if (!Number.isInteger(first) || !Number.isInteger(second)) return false
+  if (!Number.isInteger(first) || !Number.isInteger(second)) {
+    return false
+  }
 
   // Check if in ascending order (equal values allowed)
   return first <= second

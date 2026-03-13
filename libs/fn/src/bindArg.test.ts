@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
 import { bindArg } from './bindArg'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(bindArg.name, () => {
   it('examples', () => {
@@ -84,14 +86,12 @@ describe(bindArg.name, () => {
 
       const testObj = { key: 'value' }
       const boundFn = bindArg(typeTest, 0, testObj)
-      const testFn = () => 'test'
+      const testFn = () => {
+        return 'test'
+      }
       const result = boundFn([1, 2, 3], testFn)
 
-      expect(result).toEqual({
-        obj: testObj,
-        arr: [1, 2, 3],
-        fn: testFn,
-      })
+      expect(result).toEqual({ obj: testObj, arr: [1, 2, 3], fn: testFn })
     })
   })
 })

@@ -7,7 +7,17 @@ import { arrIndicesOf } from './arrIndicesOf'
  * @returns A new 2D array (table) with the specified columns removed.
  */
 export function arrTableRemoveColumns(table: string[][], ...removeColumnNames: string[]): string[][] {
-  if (!removeColumnNames.length || !table.length) return table
-  const set = new Set(removeColumnNames.map((col) => arrIndicesOf(table[0], col)).flat())
-  return table.map((row) => row.filter((_, i) => !set.has(i)))
+  if (!removeColumnNames.length || !table.length) {
+    return table
+  }
+  const set = new Set(
+    removeColumnNames.flatMap((col) => {
+      return arrIndicesOf(table[0], col)
+    })
+  )
+  return table.map((row) => {
+    return row.filter((_, i) => {
+      return !set.has(i)
+    })
+  })
 }

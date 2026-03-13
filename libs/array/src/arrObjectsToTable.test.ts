@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import { arrObjectsToTable } from './arrObjectsToTable'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('arrObjectsToTable', () => {
   it('should convert an array of objects to a two-dimensional table', () => {
@@ -7,10 +9,7 @@ describe('arrObjectsToTable', () => {
       { name: 'John', age: 25 },
       { name: 'Jane', age: 30 },
     ]
-    const options: any = {
-      headers: ['name', 'age'],
-      emptyCell: -1,
-    }
+    const options: any = { headers: ['name', 'age'], emptyCell: -1 }
     const expectedTable = [
       ['name', 'age'],
       ['John', 25],
@@ -39,9 +38,7 @@ describe('arrObjectsToTable', () => {
       { name: 'John', age: 25 },
       { name: 'Jane', age: 30 },
     ]
-    const options: any = {
-      headers: ['name', 'age'],
-    }
+    const options: any = { headers: ['name', 'age'] }
     const expectedTable = [
       ['name', 'age'],
       ['John', 25],
@@ -56,10 +53,7 @@ describe('arrObjectsToTable', () => {
       { name: 'John', age: 25 },
       { name: 'Jane', age: 30 },
     ]
-    const options: any = {
-      headers: ['name', 'age'],
-      emptyCell: -1,
-    }
+    const options: any = { headers: ['name', 'age'], emptyCell: -1 }
     const expectedTable = [
       ['name', 'age'],
       ['John', 25],
@@ -71,10 +65,7 @@ describe('arrObjectsToTable', () => {
 
   it('should handle objects with missing properties', () => {
     const objects = [{ name: 'John', age: 25 }, { name: 'Jane' }]
-    const options: any = {
-      headers: ['name', 'age'],
-      emptyCell: -1,
-    }
+    const options: any = { headers: ['name', 'age'], emptyCell: -1 }
     const expectedTable = [
       ['name', 'age'],
       ['John', 25],
@@ -86,10 +77,7 @@ describe('arrObjectsToTable', () => {
 
   it('should handle empty objects', () => {
     const objects = [{ name: 'John', age: 25 }, {}]
-    const options: any = {
-      headers: ['name', 'age'],
-      emptyCell: -1,
-    }
+    const options: any = { headers: ['name', 'age'], emptyCell: -1 }
     const expectedTable = [
       ['name', 'age'],
       ['John', 25],
@@ -101,10 +89,7 @@ describe('arrObjectsToTable', () => {
 
   it('should handle empty arrays', () => {
     const objects: Record<string, number | undefined>[] = []
-    const options: any = {
-      headers: ['name', 'age'],
-      emptyCell: -1,
-    }
+    const options: any = { headers: ['name', 'age'], emptyCell: -1 }
     const expectedTable = [['name', 'age']]
     const table = arrObjectsToTable(objects, options)
     expect(table).toEqual(expectedTable)

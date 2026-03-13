@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { hasOwnProperty } from './hasOwnProperty'
+import { it } from 'vitest'
 
 describe(hasOwnProperty.name, () => {
   it('should return true if the object has the specified property', () => {

@@ -1,16 +1,41 @@
 {
   "name": "@mono/decorators",
-  "version": "0.0.0",
+  "version": "1.1.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
-  "private": true,
+  "description": "TypeScript decorators for lazy property initialization and method memoization.",
+  "keywords": [
+    "decorators",
+    "lazy",
+    "memoization",
+    "property",
+    "method",
+    "class",
+    "utilities",
+    "typescript"
+  ],
   "scripts": {
-    "indexts": "devkit clean index-ts",
-    "build": "node esbuild.mjs"
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
-    "@bemoje/devkit": "0.1.0"
+    "@mono/map": "workspace:^",
+    "@mono/types": "workspace:^",
+    "@types/memoizee": "^0.4.12",
+    "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "enhanced-ms": "^4.2.0",
+    "es-toolkit": "^1.45.1",
+    "memoizee": "^0.4.17"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./assertDescriptorValueIsFunction": "./src/assertDescriptorValueIsFunction.ts",
+    "./lazyProp": "./src/lazyProp.ts",
+    "./memoizeAsync": "./src/memoizeAsync.ts",
+    "./memoizeSync": "./src/memoizeSync.ts"
   }
 }

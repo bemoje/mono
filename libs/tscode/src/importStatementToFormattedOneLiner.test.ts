@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { importStatementToFormattedOneLiner } from './importStatementToFormattedOneLiner'
+import { it } from 'vitest'
 
 describe(importStatementToFormattedOneLiner.name, () => {
   it('examples', () => {
@@ -7,7 +9,7 @@ describe(importStatementToFormattedOneLiner.name, () => {
       const multilineImport = `import {
   foo,
   bar
-} from 'node:module'`
+} from 'module'`
 
       const result = importStatementToFormattedOneLiner(multilineImport)
     }).not.toThrow()
@@ -17,10 +19,10 @@ describe(importStatementToFormattedOneLiner.name, () => {
     const multilineImport = `import {
   foo,
   bar
-} from 'node:module'`
+} from 'module'`
 
     const result = importStatementToFormattedOneLiner(multilineImport)
-    expect(result).toBe("import { foo, bar } from 'node:module'")
+    expect(result).toBe("import { foo, bar } from 'module'")
   })
 
   it('should add proper spacing around braces and from keyword', () => {

@@ -1,25 +1,32 @@
-import { describe, expect, it, vi } from 'vitest'
-import fs from 'node:fs'
-
-vi.mock('node:fs', () => ({
-  default: {
-    statSync: vi.fn(),
-    existsSync: vi.fn().mockReturnValue(true),
-    readFileSync: vi.fn().mockReturnValue('const a = 1'),
-  },
-}))
-
-vi.mock('@mono/path', () => ({
-  default: {
-    normalize: vi.fn((p: string) => p),
-    hasExtname: vi.fn(),
-    parse: vi.fn(),
-    hasParentDirname: vi.fn(),
-  },
-  hasParentDirname: vi.fn(),
-}))
-
 import { TsFile } from '../index'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import fs from 'fs'
+import { it } from 'vitest'
+import { vi } from 'vitest'
+
+vi.mock('fs', () => {
+  return {
+    default: {
+      statSync: vi.fn(),
+      existsSync: vi.fn().mockReturnValue(true),
+      readFileSync: vi.fn().mockReturnValue('const a = 1'),
+    },
+  }
+})
+vi.mock('@mono/path', () => {
+  return {
+    default: {
+      normalize: vi.fn((p: string) => {
+        return p
+      }),
+      hasExtname: vi.fn(),
+      parse: vi.fn(),
+      hasParentDirname: vi.fn(),
+    },
+    hasParentDirname: vi.fn(),
+  }
+})
 
 function createTsFile(filepath = '/workspace/src/file.ts') {
   return new TsFile({} as any, filepath)

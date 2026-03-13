@@ -1,6 +1,8 @@
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isInteger } from './isInteger'
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
+import { it } from 'vitest'
 
 describe(isInteger.name, () => {
   it('examples', () => {

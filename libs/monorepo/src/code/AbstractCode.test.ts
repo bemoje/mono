@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
 import { AbstractCode } from './AbstractCode'
 import { TsCode } from './TsCode'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 function createTsCode(code: string) {
   return new TsCode({} as any, code)
@@ -27,7 +29,9 @@ describe(AbstractCode.name, () => {
   describe('path', () => {
     it('should throw when no File ancestor exists', () => {
       const tsCode = createTsCode('const a = 1')
-      expect(() => tsCode.path).toThrow()
+      expect(() => {
+        return tsCode.path
+      }).toThrow()
     })
   })
 
@@ -66,7 +70,9 @@ describe(AbstractCode.name, () => {
 
     it('should throw when code is not found', () => {
       const tsCode = createTsCode('const a = 1')
-      expect(() => tsCode.codeIndexRangeOf('not found')).toThrow('Code not found')
+      expect(() => {
+        return tsCode.codeIndexRangeOf('not found')
+      }).toThrow('Code not found')
     })
   })
 
@@ -93,7 +99,9 @@ describe(AbstractCode.name, () => {
     })
 
     it('should return an array for multi-line code', () => {
-      const lines = Array.from({ length: 20 }, (_, i) => `line ${i + 1}`)
+      const lines = Array.from({ length: 20 }, (_, i) => {
+        return `line ${i + 1}`
+      })
       const tsCode = createTsCode(lines.join('\n'))
       const preview = tsCode.codePreview as string[]
       expect(Array.isArray(preview)).toBe(true)

@@ -1,5 +1,7 @@
-import { describe, it, expect } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { hoursToMs } from './hoursToMs'
+import { it } from 'vitest'
 
 describe(hoursToMs.name, () => {
   it('should convert hours to milliseconds', () => {

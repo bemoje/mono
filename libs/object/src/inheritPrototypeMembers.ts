@@ -1,4 +1,4 @@
-import { Constructor } from 'type-fest'
+import type { Constructor } from 'type-fest'
 
 /**
  * Copies prototype members from a source constructor to a target constructor, excluding specified keys.
@@ -6,14 +6,16 @@ import { Constructor } from 'type-fest'
 export function inheritPrototypeMembers<T extends Constructor<object>>(
   target: T,
   source: Constructor<object>,
-  ignoreKeys: PropertyKey[] = [],
+  ignoreKeys: PropertyKey[] = []
 ): T {
   const ignore: Set<PropertyKey> = new Set([...ignoreKeys, 'constructor'])
   for (const key of Reflect.ownKeys(source.prototype)) {
-    if (ignore.has(key)) continue
-    if (Reflect.has(target.prototype, key)) continue
-    const des = Object.getOwnPropertyDescriptor(source.prototype, key)
-    Object.defineProperty(target.prototype, key, des as PropertyDescriptor)
+    if (!ignore.has(key) && !Object.hasOwn(target.prototype, key)) {
+      const des = Object.getOwnPropertyDescriptor(source.prototype, key)
+      if (des) {
+        Object.defineProperty(target.prototype, key, des)
+      }
+    }
   }
   return target
 }

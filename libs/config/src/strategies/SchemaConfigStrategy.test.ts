@@ -1,7 +1,10 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
-import { Type, Static } from '@sinclair/typebox'
 import { SchemaConfigStrategy } from './SchemaConfigStrategy'
+import type { Static } from '@sinclair/typebox'
+import { Type } from '@sinclair/typebox'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(SchemaConfigStrategy.name, () => {
   const userSchema = Type.Object({
@@ -13,7 +16,7 @@ describe(SchemaConfigStrategy.name, () => {
         theme: Type.Union([Type.Literal('light'), Type.Literal('dark')], { default: 'light' }),
         notifications: Type.Boolean({ default: true }),
       },
-      { default: {} },
+      { default: {} }
     ),
   })
 
@@ -28,10 +31,7 @@ describe(SchemaConfigStrategy.name, () => {
         name: 'John',
         age: 30,
         email: 'john@example.com',
-        settings: {
-          theme: 'dark',
-          notifications: false,
-        },
+        settings: { theme: 'dark', notifications: false },
       }
 
       assert.strictEqual(strategy.isValid(validConfig), true, 'valid config should pass validation')
@@ -59,14 +59,7 @@ describe(SchemaConfigStrategy.name, () => {
   describe(SchemaConfigStrategy.prototype.isValid.name, () => {
     it('should return true for valid config', () => {
       const strategy = new SchemaConfigStrategy(userSchema)
-      const validConfig: UserConfig = {
-        name: 'John',
-        age: 30,
-        settings: {
-          theme: 'dark',
-          notifications: true,
-        },
-      }
+      const validConfig: UserConfig = { name: 'John', age: 30, settings: { theme: 'dark', notifications: true } }
 
       expect(strategy.isValid(validConfig)).toBe(true)
     })
@@ -76,10 +69,7 @@ describe(SchemaConfigStrategy.name, () => {
       const configWithoutEmail = {
         name: 'John',
         age: 30,
-        settings: {
-          theme: 'light' as const,
-          notifications: true,
-        },
+        settings: { theme: 'light' as const, notifications: true },
       }
 
       expect(strategy.isValid(configWithoutEmail)).toBe(true)
@@ -90,10 +80,7 @@ describe(SchemaConfigStrategy.name, () => {
       const invalidConfig = {
         name: 123, // should be string
         age: 30,
-        settings: {
-          theme: 'light',
-          notifications: true,
-        },
+        settings: { theme: 'light', notifications: true },
       }
 
       expect(strategy.isValid(invalidConfig)).toBe(false)
@@ -128,10 +115,7 @@ describe(SchemaConfigStrategy.name, () => {
       const negativeAgeConfig = {
         name: 'John',
         age: -5,
-        settings: {
-          theme: 'light' as const,
-          notifications: true,
-        },
+        settings: { theme: 'light' as const, notifications: true },
       }
 
       expect(strategy.isValid(negativeAgeConfig)).toBe(false)
@@ -151,49 +135,45 @@ describe(SchemaConfigStrategy.name, () => {
   describe(SchemaConfigStrategy.prototype.assertValid.name, () => {
     it('should not throw for valid config', () => {
       const strategy = new SchemaConfigStrategy(userSchema)
-      const validConfig: UserConfig = {
-        name: 'John',
-        age: 30,
-        settings: {
-          theme: 'dark',
-          notifications: true,
-        },
-      }
+      const validConfig: UserConfig = { name: 'John', age: 30, settings: { theme: 'dark', notifications: true } }
 
-      expect(() => strategy.assertValid(validConfig)).not.toThrow()
+      expect(() => {
+        return strategy.assertValid(validConfig)
+      }).not.toThrow()
     })
 
     it('should throw for invalid config', () => {
       const strategy = new SchemaConfigStrategy(userSchema)
-      const invalidConfig = {
-        name: 123,
-        age: 30,
-        settings: {
-          theme: 'light',
-          notifications: true,
-        },
-      }
+      const invalidConfig = { name: 123, age: 30, settings: { theme: 'light', notifications: true } }
 
-      expect(() => strategy.assertValid(invalidConfig)).toThrow('Invalid config.')
+      expect(() => {
+        return strategy.assertValid(invalidConfig)
+      }).toThrow('Invalid config.')
     })
 
     it('should throw for config with missing required fields', () => {
       const strategy = new SchemaConfigStrategy(userSchema)
       const incompleteConfig = { name: 'John' }
 
-      expect(() => strategy.assertValid(incompleteConfig)).toThrow('Invalid config.')
+      expect(() => {
+        return strategy.assertValid(incompleteConfig)
+      }).toThrow('Invalid config.')
     })
 
     it('should throw for null input', () => {
       const strategy = new SchemaConfigStrategy(userSchema)
 
-      expect(() => strategy.assertValid(null)).toThrow('Invalid config.')
+      expect(() => {
+        return strategy.assertValid(null)
+      }).toThrow('Invalid config.')
     })
 
     it('should throw for undefined input', () => {
       const strategy = new SchemaConfigStrategy(userSchema)
 
-      expect(() => strategy.assertValid(undefined)).toThrow('Invalid config.')
+      expect(() => {
+        return strategy.assertValid(undefined)
+      }).toThrow('Invalid config.')
     })
   })
 
@@ -202,37 +182,19 @@ describe(SchemaConfigStrategy.name, () => {
       const strategy = new SchemaConfigStrategy(userSchema)
       const result = strategy.applyDefaults({})
 
-      expect(result).toEqual({
-        name: 'Anonymous',
-        age: 0,
-        settings: {
-          theme: 'light',
-          notifications: true,
-        },
-      })
+      expect(result).toEqual({ name: 'Anonymous', age: 0, settings: { theme: 'light', notifications: true } })
     })
 
     it('should apply defaults for undefined input', () => {
       const strategy = new SchemaConfigStrategy(userSchema)
       const result = strategy.applyDefaults()
 
-      expect(result).toEqual({
-        name: 'Anonymous',
-        age: 0,
-        settings: {
-          theme: 'light',
-          notifications: true,
-        },
-      })
+      expect(result).toEqual({ name: 'Anonymous', age: 0, settings: { theme: 'light', notifications: true } })
     })
 
     it('should preserve provided values and apply defaults for missing ones', () => {
       const strategy = new SchemaConfigStrategy(userSchema)
-      const partialConfig = {
-        name: 'Jane',
-        age: 25,
-        email: 'jane@example.com',
-      }
+      const partialConfig = { name: 'Jane', age: 25, email: 'jane@example.com' }
 
       const result = strategy.applyDefaults(partialConfig)
 
@@ -240,10 +202,7 @@ describe(SchemaConfigStrategy.name, () => {
         name: 'Jane',
         age: 25,
         email: 'jane@example.com',
-        settings: {
-          theme: 'light',
-          notifications: true,
-        },
+        settings: { theme: 'light', notifications: true },
       })
     })
 
@@ -260,14 +219,7 @@ describe(SchemaConfigStrategy.name, () => {
 
       const result = strategy.applyDefaults(partialConfig)
 
-      expect(result).toEqual({
-        name: 'Bob',
-        age: 35,
-        settings: {
-          theme: 'dark',
-          notifications: true,
-        },
-      })
+      expect(result).toEqual({ name: 'Bob', age: 35, settings: { theme: 'dark', notifications: true } })
     })
 
     it('should preserve all values when complete config is provided', () => {
@@ -276,10 +228,7 @@ describe(SchemaConfigStrategy.name, () => {
         name: 'Alice',
         age: 28,
         email: 'alice@example.com',
-        settings: {
-          theme: 'dark',
-          notifications: false,
-        },
+        settings: { theme: 'dark', notifications: false },
       }
 
       const result = strategy.applyDefaults(completeConfig)
@@ -292,13 +241,12 @@ describe(SchemaConfigStrategy.name, () => {
       const invalidConfig = {
         name: 'Test',
         age: -10, // violates minimum constraint
-        settings: {
-          theme: 'light' as const,
-          notifications: true,
-        },
+        settings: { theme: 'light' as const, notifications: true },
       } as Partial<UserConfig>
 
-      expect(() => strategy.applyDefaults(invalidConfig)).toThrow('Invalid config.')
+      expect(() => {
+        return strategy.applyDefaults(invalidConfig)
+      }).toThrow('Invalid config.')
     })
   })
 })

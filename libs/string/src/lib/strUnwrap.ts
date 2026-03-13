@@ -14,6 +14,6 @@
  */
 export function strUnwrap(input: string, left: string, right: string, flags = ''): string {
   return input
-    .replace(new RegExp('^' + left.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags), '')
-    .replace(new RegExp(right.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', flags), '')
+    .replace(new RegExp(`^${left.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&')}`, flags), '')
+    .replace(new RegExp(`${right.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&')}$`, flags), '')
 }

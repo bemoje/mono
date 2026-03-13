@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getSuperClass } from './getSuperClass'
+import { it } from 'vitest'
 
 describe(getSuperClass.name, () => {
   it('should return the immediate superclass', () => {

@@ -1,9 +1,11 @@
 import { DefaultMap } from 'mnemonist'
-import { defineLazyProperty, hasProperty } from '@mono/object'
 import type { FunctionPrototype } from '@mono/types'
-import { ParentingTarget, ParentingTargetConstructor } from './types'
 import { ParentRelationTypes } from './ParentRelationTypes'
+import type { ParentingTarget } from './types'
+import type { ParentingTargetConstructor } from './types'
 import { View } from '../View'
+import { defineLazyProperty } from '@mono/object'
+import { hasProperty } from '@mono/object'
 
 /**
  * Class that handles the parent-child relationships between objects on their behalf.
@@ -40,7 +42,9 @@ export class Parenting<TP extends object | null = object | null> extends View<Pa
    * Store a weak refences to the target object's parent.
    */
   onInstance(parent: TP | null) {
-    if (!parent) return
+    if (!parent) {
+      return
+    }
     const targetClass = this.parentingTargetConstructor
     Parenting.parentWeakRefMap.get(targetClass).set(this.target, parent)
     targetClass.parenting?.registerParent(parent.constructor)
@@ -60,10 +64,14 @@ export class Parenting<TP extends object | null = object | null> extends View<Pa
    */
   *iterateAncestors<T extends object | null = object | null>(): Generator<ParentingTarget<T>> {
     let node = this.target.parenting.getParent()
-    if (!node) return
+    if (!node) {
+      return
+    }
     const seen = new Set<object>()
     while (node) {
-      if (seen.has(node)) return
+      if (seen.has(node)) {
+        return
+      }
       seen.add(node)
       yield node as ParentingTarget<T>
       node = (node as ParentingTarget<TP>)?.parenting?.getParent()
@@ -90,5 +98,7 @@ export class Parenting<TP extends object | null = object | null> extends View<Pa
   private static readonly parentWeakRefMap = new DefaultMap<
     FunctionPrototype,
     WeakMap<ParentingTarget, object | null>
-  >(() => new WeakMap<ParentingTarget, object | null>())
+  >(() => {
+    return new WeakMap<ParentingTarget, object | null>()
+  })
 }

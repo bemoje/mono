@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
 import { defineLazyProperty } from './defineLazyProperty'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(defineLazyProperty.name, () => {
   it('examples', () => {
@@ -24,9 +26,14 @@ describe(defineLazyProperty.name, () => {
 
       // Lazy property with descriptor options
       const cache: any = {}
-      defineLazyProperty(cache, 'data', () => ({ fetched: 'from-api' }), {
-        enumerable: true,
-      })
+      defineLazyProperty(
+        cache,
+        'data',
+        () => {
+          return { fetched: 'from-api' }
+        },
+        { enumerable: true }
+      )
       assert.deepStrictEqual(cache.data, { fetched: 'from-api' })
       assert.strictEqual(Object.propertyIsEnumerable.call(cache, 'data'), true)
     }).not.toThrow()
@@ -63,7 +70,9 @@ describe(defineLazyProperty.name, () => {
 
     it('should return the modified object', () => {
       const obj: any = {}
-      const result = defineLazyProperty(obj, 'prop', () => 'value')
+      const result = defineLazyProperty(obj, 'prop', () => {
+        return 'value'
+      })
 
       expect(result).toBe(obj)
     })
@@ -88,7 +97,9 @@ describe(defineLazyProperty.name, () => {
     it('should replace getter with value after first access', () => {
       const obj: any = {}
 
-      defineLazyProperty(obj, 'prop', () => 42)
+      defineLazyProperty(obj, 'prop', () => {
+        return 42
+      })
 
       // Initially should have a getter
       let descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
@@ -108,32 +119,46 @@ describe(defineLazyProperty.name, () => {
       const obj: any = {}
 
       // String value
-      defineLazyProperty(obj, 'str', () => 'string-value')
+      defineLazyProperty(obj, 'str', () => {
+        return 'string-value'
+      })
       expect(obj.str).toBe('string-value')
 
       // Object value
       const objValue = { nested: true }
-      defineLazyProperty(obj, 'obj', () => objValue)
+      defineLazyProperty(obj, 'obj', () => {
+        return objValue
+      })
       expect(obj.obj).toBe(objValue)
 
       // Function value
-      const fnValue = () => 'function-result'
-      defineLazyProperty(obj, 'fn', () => fnValue)
+      const fnValue = () => {
+        return 'function-result'
+      }
+      defineLazyProperty(obj, 'fn', () => {
+        return fnValue
+      })
       expect(obj.fn).toBe(fnValue)
 
       // Array value
       const arrValue = [1, 2, 3]
-      defineLazyProperty(obj, 'arr', () => arrValue)
+      defineLazyProperty(obj, 'arr', () => {
+        return arrValue
+      })
       expect(obj.arr).toBe(arrValue)
     })
 
     it('should handle null and undefined values', () => {
       const obj: any = {}
 
-      defineLazyProperty(obj, 'nullProp', () => null)
+      defineLazyProperty(obj, 'nullProp', () => {
+        return null
+      })
       expect(obj.nullProp).toBe(null)
 
-      defineLazyProperty(obj, 'undefinedProp', () => undefined)
+      defineLazyProperty(obj, 'undefinedProp', () => {
+        return undefined
+      })
       expect(obj.undefinedProp).toBe(undefined)
     })
   })
@@ -141,7 +166,9 @@ describe(defineLazyProperty.name, () => {
   describe('descriptor handling', () => {
     it('should use default descriptor options for lazy getter', () => {
       const obj: any = {}
-      defineLazyProperty(obj, 'prop', () => 'value')
+      defineLazyProperty(obj, 'prop', () => {
+        return 'value'
+      })
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
 
@@ -156,10 +183,14 @@ describe(defineLazyProperty.name, () => {
     it('should allow overriding descriptor options', () => {
       const obj: any = {}
 
-      defineLazyProperty(obj, 'prop', () => 'value', {
-        enumerable: true,
-        configurable: false,
-      })
+      defineLazyProperty(
+        obj,
+        'prop',
+        () => {
+          return 'value'
+        },
+        { enumerable: true, configurable: false }
+      )
 
       const descriptor = Object.getOwnPropertyDescriptor(obj, 'prop')
 
@@ -215,10 +246,14 @@ describe(defineLazyProperty.name, () => {
         throw new Error('computation failed')
       })
 
-      expect(() => obj.throwing).toThrow('computation failed')
+      expect(() => {
+        return obj.throwing
+      }).toThrow('computation failed')
 
       // Should still throw on subsequent accesses since caching failed
-      expect(() => obj.throwing).toThrow('computation failed')
+      expect(() => {
+        return obj.throwing
+      }).toThrow('computation failed')
     })
 
     it('should work with multiple lazy properties on same object', () => {

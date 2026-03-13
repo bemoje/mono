@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { mapReverse } from './mapReverse'
 
 describe(mapReverse.name, () => {
@@ -30,7 +32,7 @@ describe(mapReverse.name, () => {
         ['first', '1'],
       ]
         .flat(2)
-        .join(','),
+        .join(',')
     )
   })
 

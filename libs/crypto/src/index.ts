@@ -1,2 +1,7 @@
+export * from './TCryptoAlgorithm'
 export * from './decrypt'
 export * from './encrypt'
+export * from './strHashToBuffer'
+export * from './strHashToString'
+export * from './strHashToStringDJB2'
+export * from './strHashToUint32Array'

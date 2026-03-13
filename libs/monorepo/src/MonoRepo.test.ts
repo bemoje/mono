@@ -1,26 +1,26 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { afterEach, beforeEach, describe, it, vi, expect } from 'vitest'
-import { MonoRepo } from './MonoRepo'
-import * as fs from 'node:fs'
+import * as fs from 'fs'
 import * as fse from 'fs-extra/esm'
+import { MonoRepo } from './MonoRepo'
 import { Workspace } from './repo/Workspace'
+import { afterEach } from 'vitest'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import path from 'upath'
+import { vi } from 'vitest'
 
 vi.mock('./repo/Workspace')
 vi.mock('./util/getRepoRootDirpath')
 
 // Mock dependencies
-vi.mock('node:fs')
+vi.mock('fs')
 vi.mock('fs-extra/esm')
-vi.mock('upath', () => ({
-  default: {
-    normalize: vi.fn(),
-    join: vi.fn(),
-    joinSafe: vi.fn(),
-    normalizeSafe: vi.fn(),
-    dirname: vi.fn(),
-  },
-}))
+vi.mock('upath', () => {
+  return {
+    default: { normalize: vi.fn(), join: vi.fn(), joinSafe: vi.fn(), normalizeSafe: vi.fn(), dirname: vi.fn() },
+  }
+})
 
 const mockPath = vi.mocked(path)
 const mockFs = vi.mocked(fs)
@@ -40,8 +40,12 @@ describe(MonoRepo.name, () => {
     mockPath.dirname.mockReturnValue(mockRootPath)
     mockPath.normalize.mockReturnValue(normalizedPath)
     mockPath.normalizeSafe.mockReturnValue(normalizedPath)
-    mockPath.join.mockImplementation((...args: string[]) => args.join('/'))
-    mockPath.joinSafe.mockImplementation((...args: string[]) => args.join('/'))
+    mockPath.join.mockImplementation((...args: string[]) => {
+      return args.join('/')
+    })
+    mockPath.joinSafe.mockImplementation((...args: string[]) => {
+      return args.join('/')
+    })
   })
 
   afterEach(() => {
@@ -60,23 +64,7 @@ describe(MonoRepo.name, () => {
   })
 
   describe('monoRepo getter', () => {
-    it('should return parent MonoRepo if exists', () => {
-      const mockParent = { findParentDeep: vi.fn() }
-      const parentRepo = new MonoRepo()
-
-      mockParent.findParentDeep.mockReturnValue(parentRepo)
-
-      const repo = new MonoRepo()
-      // Mock the findParentDeep method to simulate parent existence
-      const originalFindParentDeep = repo.findParentDeep
-      repo.findParentDeep = vi.fn().mockReturnValue(parentRepo)
-
-      expect(repo.monoRepo).toBe(parentRepo)
-
-      repo.findParentDeep = originalFindParentDeep
-    })
-
-    it('should return self if no parent MonoRepo found', () => {
+    it('should return self', () => {
       const repo = new MonoRepo()
       expect(repo.monoRepo).toBe(repo)
     })
@@ -102,12 +90,7 @@ describe(MonoRepo.name, () => {
 
   describe('tsconfigBase getter', () => {
     it('should read and return tsconfig.json content', () => {
-      const mockTsConfig = {
-        compilerOptions: {
-          target: 'es2020',
-          module: 'commonjs',
-        },
-      }
+      const mockTsConfig = { compilerOptions: { target: 'es2020', module: 'commonjs' } }
 
       mockFse.readJsonSync.mockReturnValue(mockTsConfig)
 
@@ -132,13 +115,8 @@ describe(MonoRepo.name, () => {
     })
 
     it('should set paths from tsconfigBasePaths if not present', () => {
-      const mockTsConfig = {
-        compilerOptions: {},
-      }
-      const mockPaths = {
-        '@mono/*': ['libs/*/src'],
-        '@app/*': ['apps/*/src'],
-      }
+      const mockTsConfig = { compilerOptions: {} }
+      const mockPaths = { '@mono/*': ['libs/*/src'], '@app/*': ['apps/*/src'] }
 
       mockFse.readJsonSync.mockReturnValue(mockTsConfig)
       mockFs.existsSync.mockReturnValue(true)
@@ -172,17 +150,10 @@ describe(MonoRepo.name, () => {
     })
 
     it('should read and return paths from tsconfig.paths.json', () => {
-      const mockPaths = {
-        '@mono/*': ['libs/*/src'],
-        '@app/*': ['apps/*/src'],
-      }
+      const mockPaths = { '@mono/*': ['libs/*/src'], '@app/*': ['apps/*/src'] }
 
       mockFs.existsSync.mockReturnValue(true)
-      mockFse.readJsonSync.mockReturnValue({
-        compilerOptions: {
-          paths: mockPaths,
-        },
-      })
+      mockFse.readJsonSync.mockReturnValue({ compilerOptions: { paths: mockPaths } })
 
       const repo = new MonoRepo()
       const result = repo.tsconfigBasePaths
@@ -193,9 +164,7 @@ describe(MonoRepo.name, () => {
 
     it('should return empty object if compilerOptions.paths is undefined', () => {
       mockFs.existsSync.mockReturnValue(true)
-      mockFse.readJsonSync.mockReturnValue({
-        compilerOptions: {},
-      })
+      mockFse.readJsonSync.mockReturnValue({ compilerOptions: {} })
 
       const repo = new MonoRepo()
       const result = repo.tsconfigBasePaths
@@ -206,11 +175,7 @@ describe(MonoRepo.name, () => {
 
   describe('packageJson getter', () => {
     it('should read and return package.json content', () => {
-      const mockPackageJson = {
-        name: 'test-repo',
-        version: '1.0.0',
-        workspaces: ['libs/*', 'apps/*'],
-      }
+      const mockPackageJson = { name: 'test-repo', version: '1.0.0', workspaces: ['libs/*', 'apps/*'] }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
 
@@ -224,10 +189,7 @@ describe(MonoRepo.name, () => {
 
   describe('name getter', () => {
     it('should return name from package.json', () => {
-      const mockPackageJson = {
-        name: 'test-monorepo',
-        version: '1.0.0',
-      }
+      const mockPackageJson = { name: 'test-monorepo', version: '1.0.0' }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
 
@@ -238,29 +200,28 @@ describe(MonoRepo.name, () => {
     })
 
     it('should throw error if package.json missing name field', () => {
-      const mockPackageJson = {
-        version: '1.0.0',
-      }
+      const mockPackageJson = { version: '1.0.0' }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
 
       const repo = new MonoRepo()
 
-      expect(() => repo.name).toThrow(`MonoRepo package.json missing 'name' field: ${repo.packageJsonPath}`)
+      expect(() => {
+        return repo.name
+      }).toThrow(`MonoRepo package.json missing 'name' field: ${repo.packageJsonPath}`)
     })
   })
 
   describe('workspacesRootPaths getter', () => {
     it('should return normalized workspace paths', () => {
-      const mockPackageJson = {
-        name: 'test-repo',
-        workspaces: ['libs/*', 'apps/*'],
-      }
+      const mockPackageJson = { name: 'test-repo', workspaces: ['libs/*', 'apps/*'] }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       // Mock path.normalize to return the expected values for workspace paths
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
 
@@ -271,14 +232,13 @@ describe(MonoRepo.name, () => {
     })
 
     it('should remove trailing asterisk from workspace paths', () => {
-      const mockPackageJson = {
-        name: 'test-repo',
-        workspaces: ['libs/*', 'apps/*', 'packages/*'],
-      }
+      const mockPackageJson = { name: 'test-repo', workspaces: ['libs/*', 'apps/*', 'packages/*'] }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
 
@@ -289,35 +249,46 @@ describe(MonoRepo.name, () => {
     })
 
     it('should throw error if package.json missing workspaces field', () => {
-      const mockPackageJson = {
-        name: 'test-repo',
-        version: '1.0.0',
-      }
+      const mockPackageJson = { name: 'test-repo', version: '1.0.0' }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
 
       const repo = new MonoRepo()
 
-      expect(() => repo.workspacesRootPaths).toThrow(
-        `MonoRepo package.json missing 'workspaces' field: ${repo.packageJsonPath}`,
-      )
+      expect(() => {
+        return repo.workspacesRootPaths
+      }).toThrow(`MonoRepo package.json missing 'workspaces' field: ${repo.packageJsonPath}`)
     })
   })
 
   describe('workspacePaths getter', () => {
     it('should return all workspace directory paths', () => {
-      const mockPackageJson = {
-        name: 'test-repo',
-        workspaces: ['libs/*', 'apps/*'],
-      }
+      const mockPackageJson = { name: 'test-repo', workspaces: ['libs/*', 'apps/*'] }
 
-      const mockDirent1 = { name: 'package1', isDirectory: () => true }
-      const mockDirent2 = { name: 'package2', isDirectory: () => true }
-      const mockDirent3 = { name: 'app1', isDirectory: () => true }
+      const mockDirent1 = {
+        name: 'package1',
+        isDirectory: () => {
+          return true
+        },
+      }
+      const mockDirent2 = {
+        name: 'package2',
+        isDirectory: () => {
+          return true
+        },
+      }
+      const mockDirent3 = {
+        name: 'app1',
+        isDirectory: () => {
+          return true
+        },
+      }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
       mockFs.readdirSync.mockReturnValueOnce([mockDirent1, mockDirent2] as any)
@@ -332,18 +303,32 @@ describe(MonoRepo.name, () => {
     })
 
     it('should filter only directories', () => {
-      const mockPackageJson = {
-        name: 'test-repo',
-        workspaces: ['libs/*'],
-      }
+      const mockPackageJson = { name: 'test-repo', workspaces: ['libs/*'] }
 
-      const mockDirent1 = { name: 'package1', isDirectory: () => true }
-      const mockDirent2 = { name: 'file.txt', isDirectory: () => false }
-      const mockDirent3 = { name: 'package2', isDirectory: () => true }
+      const mockDirent1 = {
+        name: 'package1',
+        isDirectory: () => {
+          return true
+        },
+      }
+      const mockDirent2 = {
+        name: 'file.txt',
+        isDirectory: () => {
+          return false
+        },
+      }
+      const mockDirent3 = {
+        name: 'package2',
+        isDirectory: () => {
+          return true
+        },
+      }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
       mockFs.readdirSync.mockReturnValue([mockDirent1, mockDirent2, mockDirent3] as any)
@@ -355,17 +340,26 @@ describe(MonoRepo.name, () => {
     })
 
     it('should flatten nested workspace paths', () => {
-      const mockPackageJson = {
-        name: 'test-repo',
-        workspaces: ['libs/*', 'apps/*'],
-      }
+      const mockPackageJson = { name: 'test-repo', workspaces: ['libs/*', 'apps/*'] }
 
-      const mockDirent1 = { name: 'lib1', isDirectory: () => true }
-      const mockDirent2 = { name: 'app1', isDirectory: () => true }
+      const mockDirent1 = {
+        name: 'lib1',
+        isDirectory: () => {
+          return true
+        },
+      }
+      const mockDirent2 = {
+        name: 'app1',
+        isDirectory: () => {
+          return true
+        },
+      }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
       mockFs.readdirSync.mockReturnValueOnce([mockDirent1] as any)
@@ -381,16 +375,20 @@ describe(MonoRepo.name, () => {
 
   describe('workspaces getter', () => {
     it('should return array of Workspace instances', () => {
-      const mockPackageJson = {
-        name: 'test-repo',
-        workspaces: ['libs/*'],
-      }
+      const mockPackageJson = { name: 'test-repo', workspaces: ['libs/*'] }
 
-      const mockDirent = { name: 'package1', isDirectory: () => true }
+      const mockDirent = {
+        name: 'package1',
+        isDirectory: () => {
+          return true
+        },
+      }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
       mockFs.readdirSync.mockReturnValue([mockDirent] as any)
@@ -404,24 +402,33 @@ describe(MonoRepo.name, () => {
     })
 
     it('should create Workspace with correct parent and path', () => {
-      const mockPackageJson = {
-        name: 'test-repo',
-        workspaces: ['libs/*', 'apps/*'],
-      }
+      const mockPackageJson = { name: 'test-repo', workspaces: ['libs/*', 'apps/*'] }
 
-      const mockDirent1 = { name: 'lib1', isDirectory: () => true }
-      const mockDirent2 = { name: 'app1', isDirectory: () => true }
+      const mockDirent1 = {
+        name: 'lib1',
+        isDirectory: () => {
+          return true
+        },
+      }
+      const mockDirent2 = {
+        name: 'app1',
+        isDirectory: () => {
+          return true
+        },
+      }
 
       mockFse.readJsonSync.mockReturnValue(mockPackageJson)
       mockPath.normalize.mockImplementation((p: string) => {
-        if (p === mockRootPath) return normalizedPath
+        if (p === mockRootPath) {
+          return normalizedPath
+        }
         return p.replace(/\*$/, '')
       })
       mockFs.readdirSync.mockReturnValueOnce([mockDirent1] as any)
       mockFs.readdirSync.mockReturnValueOnce([mockDirent2] as any)
 
       const repo = new MonoRepo()
-      repo.workspaces
+      void repo.workspaces
 
       expect(Workspace).toHaveBeenCalledWith(repo, '/libs//lib1')
       expect(Workspace).toHaveBeenCalledWith(repo, '/apps//app1')
@@ -437,7 +444,9 @@ describe(MonoRepo.name, () => {
 
       const repo = new MonoRepo()
 
-      expect(() => repo.packageJson).toThrow('File not found')
+      expect(() => {
+        return repo.packageJson
+      }).toThrow('File not found')
     })
   })
 

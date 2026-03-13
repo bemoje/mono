@@ -1,12 +1,9 @@
-import { objUpdatePropertyDescriptors } from './objUpdatePropertyDescriptors'
-
 /**
  * Sets the specified properties of an object as non-configurable.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function setNonConfigurable(object: Record<PropertyKey, any>, ...properties: string[]): void {
-  objUpdatePropertyDescriptors(object, properties, (descriptor) => {
-    descriptor.configurable = false
-    return descriptor
-  })
+export function setNonConfigurable<T extends object>(object: T, ...properties: string[]): T {
+  for (const prop of properties) {
+    Object.defineProperty(object, prop, { configurable: false })
+  }
+  return object
 }

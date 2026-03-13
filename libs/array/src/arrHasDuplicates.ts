@@ -7,7 +7,9 @@
 export function arrHasDuplicates<T>(arr: T[]): boolean {
   const seen = new Set<T>()
   for (const e of arr) {
-    if (seen.has(e)) return true
+    if (seen.has(e)) {
+      return true
+    }
     seen.add(e)
   }
   return false

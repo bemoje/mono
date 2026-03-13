@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { mapLoad } from './mapLoad'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { expectType } from 'tsd'
+import { it } from 'vitest'
+import { mapLoad } from './mapLoad'
 
 describe(mapLoad.name, () => {
   it('should allow expanding both K and V types when loading data', () => {

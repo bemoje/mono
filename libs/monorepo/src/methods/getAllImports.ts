@@ -6,7 +6,9 @@ import { MonoRepo } from '../MonoRepo'
 export function getAllImports(repo: MonoRepo) {
   return repo.workspaces.flatMap((ws) => {
     return ws.tsFiles
-      .filter((ts) => ts.isSourceFile)
+      .filter((ts) => {
+        return ts.isSourceFile
+      })
       .flatMap((ts) => {
         return ts.tsCode.imports.flatMap((imp) => {
           return imp

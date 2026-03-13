@@ -1,110 +1,68 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { forEachIterable } from './forEachIterable'
+import { it } from 'vitest'
 
 describe(forEachIterable.name, () => {
   it('examples', () => {
     expect(() => {
-      // collect values and keys
-      const entries: Array<[string, number]> = [
-        ['a', 1],
-        ['b', 2],
-        ['c', 3],
-      ]
-      const values: number[] = []
-      const keys: string[] = []
-
-      forEachIterable(entries, (value, key) => {
-        values.push(value)
-        keys.push(key)
+      // iterate numbers
+      const numbers = [1, 2, 3, 4, 5]
+      const results: number[] = []
+      forEachIterable(numbers, (n) => {
+        results.push(n * 2)
       })
-
-      assert.deepStrictEqual(values, [1, 2, 3], 'values collected')
-      assert.deepStrictEqual(keys, ['a', 'b', 'c'], 'keys collected')
-
-      // side effects
-      let sum = 0
-      forEachIterable(entries, (value) => {
-        sum += value
-      })
-      assert.strictEqual(sum, 6, 'sum calculated')
+      assert.deepStrictEqual(results, [2, 4, 6, 8, 10], 'forEach with transformation')
     }).not.toThrow()
   })
 
-  it('should iterate over all entries', () => {
-    const entries: Array<[string, number]> = [
-      ['x', 10],
-      ['y', 20],
-      ['z', 30],
-    ]
-    const results: Array<[string, number]> = []
-
-    forEachIterable(entries, (value, key) => {
-      results.push([key, value])
+  it('should execute callback for each element', () => {
+    const values = [1, 2, 3, 4]
+    const results: number[] = []
+    forEachIterable(values, (v) => {
+      results.push(v)
     })
-
-    expect(results).toEqual([
-      ['x', 10],
-      ['y', 20],
-      ['z', 30],
-    ])
+    expect(results).toEqual([1, 2, 3, 4])
   })
 
   it('should handle empty iterable', () => {
-    let callCount = 0
+    let called = false
     forEachIterable([], () => {
-      callCount++
+      called = true
     })
-    expect(callCount).toBe(0)
+    expect(called).toBe(false)
   })
 
-  it('should execute callback for each entry in correct order', () => {
-    const entries: Array<[number, string]> = [
-      [1, 'first'],
-      [2, 'second'],
-      [3, 'third'],
-    ]
-    const order: number[] = []
-
-    forEachIterable(entries, (value, key) => {
-      order.push(key)
+  it('should work with Set', () => {
+    const set = new Set([1, 2, 3])
+    const results: number[] = []
+    forEachIterable(set, (value) => {
+      results.push(value)
     })
-
-    expect(order).toEqual([1, 2, 3])
+    expect(results).toEqual([1, 2, 3])
   })
 
-  it('should work with Map entries', () => {
+  it('should work with Map values', () => {
     const map = new Map([
-      ['a', 100],
-      ['b', 200],
+      ['a', 1],
+      ['b', 2],
     ])
-    const collected: Array<[string, number]> = []
-
-    forEachIterable(map, (value, key) => {
-      collected.push([key, value])
+    const results: Array<[string, number]> = []
+    forEachIterable(map, (entry) => {
+      results.push(entry)
     })
-
-    expect(collected).toEqual([
-      ['a', 100],
-      ['b', 200],
+    expect(results).toEqual([
+      ['a', 1],
+      ['b', 2],
     ])
   })
 
   it('should allow side effects', () => {
-    const entries: Array<[string, number]> = [
-      ['a', 5],
-      ['b', 10],
-      ['c', 15],
-    ]
-    let total = 0
-    let keyCount = 0
-
-    forEachIterable(entries, (value, key) => {
-      total += value
-      keyCount++
+    let sum = 0
+    forEachIterable([1, 2, 3, 4], (value) => {
+      sum += value
     })
-
-    expect(total).toBe(30)
-    expect(keyCount).toBe(3)
+    expect(sum).toBe(10)
   })
 })

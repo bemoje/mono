@@ -7,5 +7,5 @@
  * ```
  */
 export function strWrapInParenthesis(input: string): string {
-  return '(' + input + ')'
+  return `(${input})`
 }

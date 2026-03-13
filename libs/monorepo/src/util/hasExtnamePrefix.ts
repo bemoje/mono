@@ -1,5 +1,5 @@
-import { Arrayable } from 'type-fest'
-import { SemanticExtnamePrefix } from './SemanticExtnamePrefix'
+import type { Arrayable } from 'type-fest'
+import type { SemanticExtnamePrefix } from './SemanticExtnamePrefix'
 import SemanticExtnamePrefixes from './SemanticExtnamePrefixes'
 
 /**
@@ -7,7 +7,7 @@ import SemanticExtnamePrefixes from './SemanticExtnamePrefixes'
  */
 export function hasExtnamePrefix(
   tsFilepath: string,
-  prefixes: Arrayable<SemanticExtnamePrefix> = SemanticExtnamePrefixes as unknown as SemanticExtnamePrefix[],
+  prefixes: Arrayable<SemanticExtnamePrefix> = SemanticExtnamePrefixes as unknown as SemanticExtnamePrefix[]
 ) {
-  return new RegExp('[.](' + [prefixes].flat(2).join('|') + ')[.][^/\\\\]+$').test(tsFilepath)
+  return new RegExp(`[.](${[prefixes].flat(2).join('|')})[.][^/\\\\]+$`).test(tsFilepath)
 }

@@ -1,16 +1,42 @@
 {
   "name": "@mono/config",
-  "version": "0.0.0",
+  "version": "1.1.4",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
+  "description": "Configuration file management with JSON persistence and TypeBox schema validation.",
+  "keywords": [
+    "config",
+    "configuration",
+    "json",
+    "persistence",
+    "typebox",
+    "schema",
+    "validation",
+    "utilities",
+    "typescript"
+  ],
   "scripts": {
-    "indexts": "devkit clean index-ts",
-    "build": "node esbuild.mjs"
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
-    "@bemoje/devkit": "0.1.0"
+    "@mono/os": "workspace:^",
+    "@mono/tschema": "workspace:^",
+    "@types/fs-extra": "^11.0.4",
+    "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.48",
+    "fs-extra": "^11.3.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./ConfigFile": "./src/core/ConfigFile.ts",
+    "./ConfigDataStrategy": "./src/interfaces/ConfigDataStrategy.ts",
+    "./ConfigValidationStrategy": "./src/interfaces/ConfigValidationStrategy.ts",
+    "./JsonFileStrategy": "./src/strategies/JsonFileStrategy.ts",
+    "./SchemaConfigStrategy": "./src/strategies/SchemaConfigStrategy.ts"
   }
 }

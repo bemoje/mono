@@ -1,4 +1,4 @@
-import { DeepObject } from './DeepObject'
+import type { DeepObject } from './DeepObject'
 
 /**
  * Recursively defined array that can contain objects+arrays with values of a given type V.

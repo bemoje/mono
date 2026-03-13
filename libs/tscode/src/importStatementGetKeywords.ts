@@ -13,7 +13,9 @@ export function importStatementGetKeywords(line: string) {
     line
       .match(/^import +(type +)?/)?.[1]
       ?.split(/ +/g)
-      .map((s) => s.trim())
+      .map((s) => {
+        return s.trim()
+      })
       .filter(Boolean) || []
   )
 }

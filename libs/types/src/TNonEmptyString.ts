@@ -1,4 +1,4 @@
-import { TStringNotOfLength } from './TStringNotOfLength'
+import type { TStringNotOfLength } from './TStringNotOfLength'
 
 /**
  * A type representing a string of length >= 1

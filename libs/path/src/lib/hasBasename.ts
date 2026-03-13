@@ -1,5 +1,5 @@
+import type { Arrayable } from 'type-fest'
 import upath from 'upath'
-import { Arrayable } from 'type-fest'
 
 /**
  * Checks if a file path has any of the specified basenames.

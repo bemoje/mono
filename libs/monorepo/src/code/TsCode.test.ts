@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import { TsCode } from './TsCode'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 function createTsCode(code: string) {
   return new TsCode({} as any, code)
@@ -44,6 +46,14 @@ describe(TsCode.name, () => {
     it('should filter and sort dependency names from imports', () => {
       const tsCode = createTsCode('const a = 1')
       expect(tsCode.dependencies).toEqual([])
+    })
+
+    it('should return sorted dependencies from imports with dependencies', () => {
+      const code = "import { foo } from 'zlib'\nimport bar from 'alpha-lib'"
+      const tsCode = createTsCode(code)
+      expect(() => {
+        return tsCode.dependencies
+      }).toThrow()
     })
   })
 

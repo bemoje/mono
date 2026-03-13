@@ -1,5 +1,7 @@
-import { describe, it, expect } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isValidWin32 } from './isValidWin32'
+import { it } from 'vitest'
 
 describe(isValidWin32.name, () => {
   it('example', () => {

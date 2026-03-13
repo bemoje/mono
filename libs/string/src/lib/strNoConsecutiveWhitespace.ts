@@ -7,5 +7,5 @@
  * ```
  */
 export function strNoConsecutiveWhitespace(string: string): string {
-  return string.replace(/\s{2,}/g, ' ')
+  return string.replaceAll(/\s{2,}/g, ' ')
 }

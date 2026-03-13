@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import { dateString } from './dateString'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(dateString.name, () => {
   const testDateString = '2000-01-01'
@@ -7,7 +9,9 @@ describe(dateString.name, () => {
   const testTimestamp = testDate.getTime()
 
   it('should use time now as argument default', () => {
-    const isDateString = (v: string) => /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(v)
+    const isDateString = (v: string) => {
+      return /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(v)
+    }
     expect(isDateString(dateString())).toBe(true)
   })
   it('should accept Date argument', () => {

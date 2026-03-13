@@ -1,5 +1,5 @@
-import { Class } from 'type-fest'
-import { IView } from './IView'
+import type { Class } from 'type-fest'
+import type { IView } from './IView'
 
 /**
  * Inherits a single prototype property from a target class to a viewer class with proxification.
@@ -7,10 +7,12 @@ import { IView } from './IView'
 export function inheritProxifiedPrototypeProperty<Viewer extends IView<Target>, Target extends object>(
   ViewerClass: Class<Viewer>,
   TargetClass: Class<Target>,
-  key: keyof Target,
+  key: keyof Target
 ) {
   const des = Reflect.getOwnPropertyDescriptor(TargetClass.prototype, key)
-  if (!des) return
+  if (!des) {
+    return
+  }
 
   if (des.value && typeof des.value === 'function') {
     return Object.defineProperty(ViewerClass.prototype, key, {

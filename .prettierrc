@@ -1,18 +1,19 @@
 {
   "quoteProps": "consistent",
   "singleQuote": true,
-  "trailingComma": "all",
+  "trailingComma": "es5",
   "printWidth": 115,
   "semi": false,
   "arrowParens": "always",
-  "proseWrap": "preserve",
   "endOfLine": "lf",
   "objectWrap": "preserve",
   "bracketSameLine": true,
   "bracketSpacing": true,
   "tabWidth": 2,
-  "singleAttributePerLine": true,
-  "jsxSingleQuote": true,
   "useTabs": false,
-  "htmlWhitespaceSensitivity": "strict"
+  "proseWrap": "always",
+  "overrides": [
+    { "files": ["*.jsonc", "*.json"], "options": { "trailingComma": "none", "printWidth": 80 } },
+    { "files": ["*.md"], "options": { "proseWrap": "never" } }
+  ]
 }

@@ -9,12 +9,18 @@
  * ```
  */
 export const isNumArrayAscending = (v: unknown) => {
-  if (!Array.isArray(v)) return false
-  for (let i = 0; i < v.length; i++) {
-    if (typeof v[i] !== 'number' || !Number.isFinite(v[i])) return false
+  if (!Array.isArray(v)) {
+    return false
+  }
+  for (const element of v) {
+    if (typeof element !== 'number' || !Number.isFinite(element)) {
+      return false
+    }
   }
   for (let i = 1; i < v.length; i++) {
-    if (v[i] < v[i - 1]) return false
+    if (v[i] < v[i - 1]) {
+      return false
+    }
   }
   return true
 }

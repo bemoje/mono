@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strCountCharOccurances } from './strCountCharOccurances'
-import { describe, expect, it } from 'vitest'
 
 describe('strCountCharOccurances', () => {
   it('works with empty string', () => {
@@ -25,12 +27,12 @@ describe('strCountCharOccurances', () => {
   })
 
   it('should throw an error if the char parameter is not a single character string of length 1', () => {
-    expect(() => strCountCharOccurances('hello world', 'hello')).toThrow(
-      'Expected char to be a single character string of length 1.',
-    )
-    expect(() => strCountCharOccurances('hello world', '')).toThrow(
-      'Expected char to be a single character string of length 1.',
-    )
+    expect(() => {
+      return strCountCharOccurances('hello world', 'hello')
+    }).toThrow('Expected char to be a single character string of length 1.')
+    expect(() => {
+      return strCountCharOccurances('hello world', '')
+    }).toThrow('Expected char to be a single character string of length 1.')
   })
 
   it('should handle empty string input', () => {

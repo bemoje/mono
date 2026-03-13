@@ -1,23 +1,41 @@
-import { round } from '@mono/number'
-import { Any } from '@mono/types'
-import { isPromise } from 'node:util/types'
+import type { Logger } from './createLogger'
+import colors from 'ansi-colors'
+import { createLogger } from './createLogger'
+import humanizeDuration from 'humanize-duration'
+import { isPromise } from 'util/types'
 
 /**
- * Executes a task and logs the execution time with the specified name.
+ * Executes a task and logs the execution time.
  */
-export function timer(name: string, task: (...args: any[]) => Any | Promise<Any>) {
+export function timer<T>(
+  arg: string | [name: string, description: string],
+  task: (log: Logger, name: string) => T
+): T {
   const t0 = process.hrtime.bigint()
-  const printResult = () =>
-    console.debug({ timer: name, ms: round(Number(process.hrtime.bigint() - t0) / 1000000, 3) })
-  const rv = task()
+  const [name, description] = Array.isArray(arg) ? arg : [arg, '']
+  const log = createLogger(name)
 
-  if (!isPromise(rv)) {
-    printResult()
-    return rv
+  if (name && description) {
+    log.start(description)
   }
 
-  return rv.then((retval) => {
-    printResult()
+  const retval = task(log, name)
+
+  if (!isPromise(retval)) {
+    return done(retval)
+  }
+
+  return (retval as Promise<Awaited<T>>).then((result) => {
+    return done(result)
+  }) as T
+
+  function done(retval: T) {
+    if (process.exitCode) {
+      return retval
+    }
+    const ns = process.hrtime.bigint() - t0
+    const ms = Math.floor(Number(ns) / 1_000_000)
+    log.done(colors.dim(humanizeDuration(ms)))
     return retval
-  })
+  }
 }

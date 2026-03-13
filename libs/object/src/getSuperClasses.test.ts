@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getSuperClasses } from './getSuperClasses'
+import { it } from 'vitest'
 
 describe(getSuperClasses.name, () => {
   class A {}

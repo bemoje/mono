@@ -1,4 +1,4 @@
-import { Any } from '@mono/types'
+import type { Any } from '@mono/types'
 
 /**
  * Creates a function that merges objects based on a predicate function.

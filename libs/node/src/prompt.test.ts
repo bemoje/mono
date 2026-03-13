@@ -1,21 +1,19 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import assert from 'node:assert'
+import { afterEach } from 'vitest'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { prompt } from './prompt'
+import { vi } from 'vitest'
 
 const { mockCreateInterface } = vi.hoisted(() => {
-  return {
-    mockCreateInterface: vi.fn(),
-  }
+  return { mockCreateInterface: vi.fn() }
 })
 
 // Mock readline
-vi.mock('node:readline', async () => {
-  return {
-    default: {
-      createInterface: mockCreateInterface,
-    },
-    createInterface: mockCreateInterface,
-  }
+vi.mock('readline', async () => {
+  return { default: { createInterface: mockCreateInterface }, createInterface: mockCreateInterface }
 })
 
 describe(prompt.name, () => {
@@ -24,10 +22,7 @@ describe(prompt.name, () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    mockRl = {
-      question: vi.fn(),
-      close: vi.fn(),
-    }
+    mockRl = { question: vi.fn(), close: vi.fn() }
 
     mockCreateInterface.mockReturnValue(mockRl)
   })
@@ -68,10 +63,7 @@ describe(prompt.name, () => {
       expect(result).toBe(userInput)
       expect(mockRl.question).toHaveBeenCalledWith('Enter something:', expect.any(Function))
       expect(mockRl.close).toHaveBeenCalled()
-      expect(mockCreateInterface).toHaveBeenCalledWith({
-        input: process.stdin,
-        output: process.stdout,
-      })
+      expect(mockCreateInterface).toHaveBeenCalledWith({ input: process.stdin, output: process.stdout })
     })
 
     it('should trim user input', async () => {
@@ -198,10 +190,7 @@ describe(prompt.name, () => {
 
       await prompt('Test question:')
 
-      expect(mockCreateInterface).toHaveBeenCalledWith({
-        input: process.stdin,
-        output: process.stdout,
-      })
+      expect(mockCreateInterface).toHaveBeenCalledWith({ input: process.stdin, output: process.stdout })
     })
 
     it('should close readline interface after completion', async () => {
@@ -319,7 +308,9 @@ describe(prompt.name, () => {
     it('should handle numeric validation', async () => {
       const numberValidator = (input: string) => {
         const num = parseInt(input)
-        if (isNaN(num) || num <= 0) return ''
+        if (isNaN(num) || num <= 0) {
+          return ''
+        }
         return num.toString()
       }
 
@@ -358,7 +349,9 @@ describe(prompt.name, () => {
 
   describe('async callback behavior', () => {
     it('should handle synchronous callback correctly', async () => {
-      const syncCallback = (input: string) => input.trim().toLowerCase()
+      const syncCallback = (input: string) => {
+        return input.trim().toLowerCase()
+      }
 
       mockRl.question.mockImplementation((question: string, callback: (answer: string) => void) => {
         callback('  HELLO WORLD  ')
@@ -370,7 +363,9 @@ describe(prompt.name, () => {
     })
 
     it('should work with callback that always returns empty (infinite loop protection)', async () => {
-      const alwaysFailCallback = () => ''
+      const alwaysFailCallback = () => {
+        return ''
+      }
 
       let callCount = 0
       mockRl.question.mockImplementation((question: string, callback: (answer: string) => void) => {
@@ -385,7 +380,9 @@ describe(prompt.name, () => {
 
       // Override the callback after many calls to prevent infinite loop in test
       const wrappedCallback = (input: string) => {
-        if (input === 'break') return 'success'
+        if (input === 'break') {
+          return 'success'
+        }
         return alwaysFailCallback()
       }
 

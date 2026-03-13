@@ -1,7 +1,8 @@
-import { assertValidSchema } from '@mono/tschema'
-import { ConfigValidationStrategy } from '../interfaces/ConfigValidationStrategy'
-import { Static, TSchema } from '@sinclair/typebox'
+import type { ConfigValidationStrategy } from '../interfaces/ConfigValidationStrategy'
+import type { Static } from '@sinclair/typebox'
+import type { TSchema } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
+import { assertValidSchema } from '@mono/tschema'
 
 /**
  * Strategy for validating configuration data against a TypeBox schema and applying default values.

@@ -23,12 +23,15 @@ export async function injectBrowserHelpers(page: Page): Promise<void> {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(globalThis as any).__getVisibleSpans = (el: Element): string[] => {
-      return (
-        Array.from(el.querySelectorAll('span'))
-          .filter((span) => !span.className.includes('visually-hidden') && span.hasAttribute('aria-hidden'))
+      return Array.from(el.querySelectorAll('span'))
+        .filter((span) => {
+          return !span.className.includes('visually-hidden') && span.hasAttribute('aria-hidden')
+        })
+
+        .map((span) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .map((span) => (globalThis as any).__getTextWithBreaks(span))
-      )
+          return (globalThis as any).__getTextWithBreaks(span)
+        })
     }
 
     /**
@@ -40,7 +43,8 @@ export async function injectBrowserHelpers(page: Page): Promise<void> {
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(globalThis as any).__extractMedia = (
-      li: Element,
+      li: Element
+      // eslint-disable-next-line complexity
     ): { mediaLinks: { title: string; url: string }[]; mediaTexts: string[] } => {
       const FILENAME_RE = /\.(jpe?g|png|gif|webp|svg|bmp|tiff?|pdf|doc|docx|pptx?|xlsx?|mp[34])$/i
       const mediaLinks: { title: string; url: string }[] = []
@@ -50,15 +54,21 @@ export async function injectBrowserHelpers(page: Page): Promise<void> {
       const logoImg = allImgs[0] // first image is the entity/company logo
       const mediaImgUrls: string[] = []
       for (const img of allImgs) {
-        if (img === logoImg) continue
-        if (img.src) mediaImgUrls.push(img.src)
+        if (img === logoImg) {
+          continue
+        }
+        if (img.src) {
+          mediaImgUrls.push(img.src)
+        }
       }
 
       // --- Collect filename-matching visible spans ---
       const filenameTexts: string[] = []
       for (const span of li.querySelectorAll('span[aria-hidden="true"]')) {
         const txt = (span.textContent || '').trim()
-        if (FILENAME_RE.test(txt)) filenameTexts.push(txt)
+        if (FILENAME_RE.test(txt)) {
+          filenameTexts.push(txt)
+        }
       }
 
       // Pair filenames with image URLs by position
@@ -72,14 +82,20 @@ export async function injectBrowserHelpers(page: Page): Promise<void> {
         const href = a.getAttribute('href') ?? ''
         const isRedirect = href.includes('/redirect')
         const isExternal = href.startsWith('http') && !href.includes('linkedin.com')
-        if (!isRedirect && !isExternal) continue
-        if (a.querySelector('img') && a.querySelector('img') !== logoImg) continue
+        if (!isRedirect && !isExternal) {
+          continue
+        }
+        if (a.querySelector('img') && a.querySelector('img') !== logoImg) {
+          continue
+        }
 
         let url = href
         try {
           const u = new URL(href, location.origin)
           const redir = u.searchParams.get('url')
-          if (redir) url = redir
+          if (redir) {
+            url = redir
+          }
         } catch {
           /* ignore malformed URLs */
         }
@@ -91,14 +107,18 @@ export async function injectBrowserHelpers(page: Page): Promise<void> {
       // --- Build mediaTexts: everything from the first filename onward is media ---
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const allSpans: string[] = (globalThis as any).__getVisibleSpans(li)
-      const cutIdx = allSpans.findIndex((s: string) => FILENAME_RE.test(s))
-      const mediaTexts = cutIdx !== -1 ? allSpans.slice(cutIdx) : []
+      const cutIdx = allSpans.findIndex((s: string) => {
+        return FILENAME_RE.test(s)
+      })
+      const mediaTexts = cutIdx === -1 ? [] : allSpans.slice(cutIdx)
 
       // Also mark the common noise label that appears in media sections
       if (!mediaTexts.includes('Other contributors')) {
         // Check if it appears after any media link title in the full span list
         const ocIdx = allSpans.indexOf('Other contributors')
-        if (ocIdx !== -1) mediaTexts.push('Other contributors')
+        if (ocIdx !== -1) {
+          mediaTexts.push('Other contributors')
+        }
       }
 
       return { mediaLinks, mediaTexts }

@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { entriesArray } from './entriesArray'
 import { ExtMap } from './ExtMap'
+import { describe } from 'vitest'
+import { entriesArray } from './entriesArray'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(entriesArray.name, () => {
   it('should return an array of all key-value pairs', () => {

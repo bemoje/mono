@@ -1,14 +1,16 @@
-import fs from 'node:fs'
-import { readJsonSync } from 'fs-extra/esm'
-import path from 'upath'
 import { AbstractBase } from './common/AbstractBase'
-import { Inspector, Parenting } from '@mono/composition'
-import { lazyProp } from '@mono/decorators'
-import { type PackageJson } from '@mono/types'
+import type { CompilerOptions } from 'typescript'
+import { Inspector } from '@mono/composition'
+import type { PackageJson } from '@mono/types'
+import { Parenting } from '@mono/composition'
+import type { SetFieldType } from 'type-fest'
+import type { TsConfigJson } from 'type-fest'
 import { Workspace } from './repo/Workspace'
-import { TsConfigJson, SetFieldType } from 'type-fest'
-import { CompilerOptions } from 'typescript'
+import fs from 'fs'
 import { getRepoRootDirpath } from './util/getRepoRootDirpath'
+import { lazyProp } from '@mono/decorators'
+import path from 'upath'
+import { readJsonSync } from 'fs-extra/esm'
 
 /**
  * Represents a monorepo with workspace management, TypeScript configuration, and dependency analysis capabilities.
@@ -31,7 +33,7 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
   }
 
   get monoRepo(): MonoRepo {
-    return super.findParentDeep<MonoRepo>((m) => m instanceof MonoRepo) || this
+    return this
   }
 
   get packageJsonPath(): string {
@@ -45,7 +47,9 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
   @lazyProp(5000)
   get tsconfigBase() {
     const o = readJsonSync(this.tsconfigBaseJsonPath) as TsConfigJson
-    if (!o.compilerOptions) o.compilerOptions = {}
+    if (!o.compilerOptions) {
+      o.compilerOptions = {}
+    }
     o.compilerOptions.paths = o.compilerOptions.paths || this.tsconfigBasePaths
 
     return o as SetFieldType<
@@ -61,7 +65,9 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
 
   @lazyProp(5000)
   get tsconfigBasePaths(): Record<string, string[]> {
-    if (!fs.existsSync(this.tsconfigBasePathsJsonPath)) return {}
+    if (!fs.existsSync(this.tsconfigBasePathsJsonPath)) {
+      return {}
+    }
     return readJsonSync(this.tsconfigBasePathsJsonPath).compilerOptions?.paths ?? {}
   }
 
@@ -81,25 +87,27 @@ export class MonoRepo<P extends null = null> extends AbstractBase<P> {
     if (!this.packageJson.workspaces) {
       throw new Error(`MonoRepo package.json missing 'workspaces' field: ${this.packageJsonPath}`)
     }
-    return this.packageJson.workspaces.map((workspacePath: string) => {
-      return path.join(this.path, workspacePath.replace(/\*$/, ''))
-    })
+    return this.packageJson.workspaces
+      .filter((ws) => {
+        return ws !== '.'
+      })
+      .map((workspacePath: string) => {
+        return path.join(this.path, workspacePath.replace(/\*$/, ''))
+      })
   }
 
   @lazyProp(5000)
   get workspacePaths() {
-    return this.workspacesRootPaths
-      .map((workspacePath: string) => {
-        return fs
-          .readdirSync(workspacePath, { withFileTypes: true })
-          .filter((dirent: fs.Dirent) => {
-            return dirent.isDirectory()
-          })
-          .map((dirent: fs.Dirent) => {
-            return path.join(workspacePath, dirent.name)
-          })
-      })
-      .flat()
+    return this.workspacesRootPaths.flatMap((workspacePath: string) => {
+      return fs
+        .readdirSync(workspacePath, { withFileTypes: true })
+        .filter((dirent: fs.Dirent) => {
+          return dirent.isDirectory()
+        })
+        .map((dirent: fs.Dirent) => {
+          return path.join(workspacePath, dirent.name)
+        })
+    })
   }
 
   @lazyProp

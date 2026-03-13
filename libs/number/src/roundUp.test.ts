@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { roundUp } from './roundUp'
-import { describe, expect, it } from 'vitest'
 
 describe('roundUp', () => {
   it('correctly rounds up number', () => {

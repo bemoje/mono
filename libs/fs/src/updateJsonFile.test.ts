@@ -1,15 +1,16 @@
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import fs from 'fs-extra'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
-import assert from 'node:assert'
+import { it } from 'vitest'
 import { updateJsonFile } from './updateJsonFile'
+import { vi } from 'vitest'
 
 // Mock fs-extra
-vi.mock('fs-extra', () => ({
-  default: {
-    readJson: vi.fn(),
-    outputJson: vi.fn(),
-  },
-}))
+vi.mock('fs-extra', () => {
+  return { default: { readJson: vi.fn(), outputJson: vi.fn() } }
+})
 
 const mockFs = fs as any
 
@@ -27,11 +28,15 @@ describe(updateJsonFile.name, () => {
       mockFs.readJson.mockResolvedValue({ name: 'test', value: 42 })
 
       // Create JSON file
-      const result1 = await updateJsonFile(testFile, () => ({ name: 'test', value: 42 }))
+      const result1 = await updateJsonFile(testFile, () => {
+        return { name: 'test', value: 42 }
+      })
       assert.deepStrictEqual(result1, { name: 'test', value: 42 })
 
       // Update existing JSON
-      const result2 = await updateJsonFile(testFile, (data: any) => ({ ...data, updated: true }))
+      const result2 = await updateJsonFile(testFile, (data: any) => {
+        return { ...data, updated: true }
+      })
       assert.deepStrictEqual(result2, { name: 'test', value: 42, updated: true })
 
       // Verify file content
@@ -47,7 +52,13 @@ describe(updateJsonFile.name, () => {
 
     mockFs.readJson.mockRejectedValue(new Error('File not found'))
 
-    const result = await updateJsonFile(testFile, (data) => ({ ...data, count: data.count + 1 }), defaultValue)
+    const result = await updateJsonFile(
+      testFile,
+      (data) => {
+        return { ...data, count: data.count + 1 }
+      },
+      defaultValue
+    )
 
     expect(result).toEqual({ default: true, count: 1 })
     expect(mockFs.outputJson).toHaveBeenCalledWith(testFile, { default: true, count: 1 })
@@ -59,7 +70,13 @@ describe(updateJsonFile.name, () => {
     const defaultValue = { recovered: true }
     mockFs.readJson.mockRejectedValue(new Error('Invalid JSON'))
 
-    const result = await updateJsonFile(testFile, (data) => ({ ...data, fixed: true }), defaultValue)
+    const result = await updateJsonFile(
+      testFile,
+      (data) => {
+        return { ...data, fixed: true }
+      },
+      defaultValue
+    )
 
     expect(result).toEqual({ recovered: true, fixed: true })
     expect(mockFs.outputJson).toHaveBeenCalledWith(testFile, { recovered: true, fixed: true })
@@ -73,10 +90,12 @@ describe(updateJsonFile.name, () => {
     const result = await updateJsonFile(
       testFile,
       async (data) => {
-        await new Promise((resolve) => setTimeout(resolve, 10))
+        await new Promise((resolve) => {
+          return setTimeout(resolve, 10)
+        })
         return { ...data, async: true }
       },
-      { initial: true },
+      { initial: true }
     )
 
     expect(result).toEqual({ initial: true, async: true })

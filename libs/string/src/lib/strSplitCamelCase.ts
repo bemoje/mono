@@ -12,8 +12,12 @@ import { strIsUpperCase } from './strIsUpperCase'
  * ```
  */
 export function strSplitCamelCase(word: string): string[] {
-  if (!word) return []
-  if (word.length <= 2) return [word]
+  if (!word) {
+    return []
+  }
+  if (word.length <= 2) {
+    return [word]
+  }
   const result: string[] = []
   const lastCharIndex = word.length - 1
   let lastSplitIndex = 0
@@ -29,15 +33,19 @@ export function strSplitCamelCase(word: string): string[] {
     }
     if (foundCamelCase && i === lastCharIndex) {
       const sub = word.substring(lastSplitIndex)
-      if (sub) result.push(sub)
+      if (sub) {
+        result.push(sub)
+      }
     }
   }
-  if (!foundCamelCase) result.push(word)
+  if (!foundCamelCase) {
+    result.push(word)
+  }
   return result
 }
 
 const regInteger = /\d+/g
-const regSpecial = /[^\w]+/g
+const regSpecial = /\W+/g
 
 function isWordSplitIndex(word: string, index: number) {
   return (

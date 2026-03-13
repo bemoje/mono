@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { getAllImports } from './getAllImports'
 import { MonoRepo } from '../MonoRepo'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { getAllImports } from './getAllImports'
+import { it } from 'vitest'
 
 describe(getAllImports.name, () => {
   it('should return empty array when no workspaces', () => {
@@ -9,19 +11,13 @@ describe(getAllImports.name, () => {
   })
 
   it('should return empty array when no source files', () => {
-    const repo = {
-      workspaces: [{ tsFiles: [] }],
-    } as unknown as MonoRepo
+    const repo = { workspaces: [{ tsFiles: [] }] } as unknown as MonoRepo
     expect(getAllImports(repo)).toEqual([])
   })
 
   it('should skip non-source files', () => {
     const repo = {
-      workspaces: [
-        {
-          tsFiles: [{ isSourceFile: false, tsCode: { imports: [{ module: { from: 'a' } }] } }],
-        },
-      ],
+      workspaces: [{ tsFiles: [{ isSourceFile: false, tsCode: { imports: [{ module: { from: 'a' } }] } }] }],
     } as unknown as MonoRepo
     expect(getAllImports(repo)).toEqual([])
   })
@@ -39,9 +35,7 @@ describe(getAllImports.name, () => {
             { isSourceFile: false, tsCode: { imports: [{ module: { from: 'skipped' } }] } },
           ],
         },
-        {
-          tsFiles: [],
-        },
+        { tsFiles: [] },
       ],
     } as unknown as MonoRepo
     const result = getAllImports(repo)
@@ -50,11 +44,7 @@ describe(getAllImports.name, () => {
 
   it('should return empty array when source file has no imports', () => {
     const repo = {
-      workspaces: [
-        {
-          tsFiles: [{ isSourceFile: true, tsCode: { imports: [] } }],
-        },
-      ],
+      workspaces: [{ tsFiles: [{ isSourceFile: true, tsCode: { imports: [] } }] }],
     } as unknown as MonoRepo
     expect(getAllImports(repo)).toEqual([])
   })

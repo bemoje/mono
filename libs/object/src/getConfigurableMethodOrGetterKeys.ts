@@ -8,9 +8,15 @@
 export function getConfigurableMethodOrGetterKeys<T extends object>(obj: T): string[] {
   return Object.getOwnPropertyNames(obj).filter((key) => {
     const des = Object.getOwnPropertyDescriptor(obj, key)!
-    if (!des.configurable) return false
-    if (typeof des.value === 'function') return true
-    if (typeof des.get === 'function') return true
+    if (!des.configurable) {
+      return false
+    }
+    if (typeof des.value === 'function') {
+      return true
+    }
+    if (typeof des.get === 'function') {
+      return true
+    }
     return false
   })
 }

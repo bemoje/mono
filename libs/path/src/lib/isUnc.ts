@@ -4,5 +4,5 @@
  * @returns A boolean indicating whether the filepath is a UNC path.
  */
 export function isUnc(filepath: string): boolean {
-  return /^[\\/]{2,}[^\\/]+[\\/]+[^\\/]+/.test(filepath)
+  return /^[/\\]{2,}[^/\\]+[/\\]+[^/\\]+/.test(filepath)
 }

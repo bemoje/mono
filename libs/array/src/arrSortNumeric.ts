@@ -13,8 +13,12 @@
  */
 export function arrSortNumeric(input: Array<number | bigint | boolean>): Array<number | bigint | boolean> {
   return input.sort((a: number | bigint | boolean, b: number | bigint | boolean) => {
-    if (a < b) return -1
-    if (a > b) return 1
+    if (a < b) {
+      return -1
+    }
+    if (a > b) {
+      return 1
+    }
     return 0
   })
 }

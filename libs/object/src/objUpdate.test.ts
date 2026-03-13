@@ -1,9 +1,13 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { objUpdate } from './objUpdate'
-import { describe, expect, it } from 'vitest'
 
 describe('objUpdate', () => {
   type CB = (value: number | undefined, key: PropertyKey) => number
-  const callback: CB = (value, key) => (value ? value * 2 : 0)
+  const callback: CB = (value, key) => {
+    return value ? value * 2 : 0
+  }
 
   it('should update the value of a specific key in an object', () => {
     const obj = { a: 1, b: 2 }

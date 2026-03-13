@@ -1,12 +1,16 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isAccessorDescriptor } from './isAccessorDescriptor'
+import { it } from 'vitest'
 
 describe(isAccessorDescriptor.name, () => {
   it('examples', () => {
     expect(() => {
       const obj = {}
       Object.defineProperty(obj, 'prop', {
-        get: () => 'value',
+        get: () => {
+          return 'value'
+        },
         enumerable: true,
         configurable: true,
       })
@@ -23,18 +27,15 @@ describe(isAccessorDescriptor.name, () => {
   })
 
   it('should return false for descriptor without getter or setter', () => {
-    const descriptor: PropertyDescriptor = {
-      value: 'test',
-      writable: true,
-      enumerable: true,
-      configurable: true,
-    }
+    const descriptor: PropertyDescriptor = { value: 'test', writable: true, enumerable: true, configurable: true }
     expect(isAccessorDescriptor(descriptor)).toBe(false)
   })
 
   it('should return false for descriptor with writable property', () => {
     const descriptor: PropertyDescriptor = {
-      get: () => 'test',
+      get: () => {
+        return 'test'
+      },
       writable: true,
       enumerable: true,
       configurable: true,
@@ -44,7 +45,9 @@ describe(isAccessorDescriptor.name, () => {
 
   it('should return true for descriptor with getter only', () => {
     const descriptor: PropertyDescriptor = {
-      get: () => 'test',
+      get: () => {
+        return 'test'
+      },
       enumerable: true,
       configurable: true,
     }
@@ -52,17 +55,15 @@ describe(isAccessorDescriptor.name, () => {
   })
 
   it('should return true for descriptor with setter only', () => {
-    const descriptor: PropertyDescriptor = {
-      set: () => {},
-      enumerable: true,
-      configurable: true,
-    }
+    const descriptor: PropertyDescriptor = { set: () => {}, enumerable: true, configurable: true }
     expect(isAccessorDescriptor(descriptor)).toBe(true)
   })
 
   it('should return true for descriptor with both getter and setter', () => {
     const descriptor: PropertyDescriptor = {
-      get: () => 'test',
+      get: () => {
+        return 'test'
+      },
       set: () => {},
       enumerable: true,
       configurable: true,

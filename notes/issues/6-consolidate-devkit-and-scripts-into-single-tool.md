@@ -6,45 +6,19 @@ The scripts in the `s` are used in many places.
 
 **Here is a search of: `node s/` in the codebase:**
 
-package.json:
-11 "scripts": {
-12: "r": "node s/run.mjs",
-13 "clean": "echo '\nCLEAN...' && yarn clean:fixOwnWsImports && yarn clean:indexts && yarn clean:ensureVitestImports && yarn clean:removeEmptyWsFiles && yarn clean:replaceBadDashChars",
+package.json: 11 "scripts": { 12: "r": "node s/run.mjs", 13 "clean": "echo '\nCLEAN...' && yarn clean:fixOwnWsImports && yarn clean:indexts && yarn clean:ensureVitestImports && yarn clean:removeEmptyWsFiles && yarn clean:replaceBadDashChars",
 
-15 "clean:indexts": "yarn workspaces foreach -Apt --verbose run indexts",
-16: "clean:ensureVitestImports": "node s/clean/ensureVitestImports.mjs",
-17: "clean:removeEmptyWsFiles": "node s/clean/removeEmptyWsFiles.mjs",
-18 "build": "echo '\nBUILD...' && yarn workspaces foreach -Apt --verbose --exclude mono run build",
-19: "clean:replaceBadDashChars": "node s/clean/replaceBadDashChars.mjs",
-20 "insight": "echo '\nINSIGHT...' && yarn insight:knip && yarn insight:filesWithMissingCoverage && yarn insight:linesOfCode",
-21: "insight:checkLibsTsDoc": "node s/insight/checkLibsTsDoc.mjs",
-22: "insight:filesWithMissingCoverage": "echo 'Files with incomplete code coverage:' && node s/insight/filesWithMissingCoverage.mjs --check",
-23 "insight:knip": "knip --config knip.jsonc --cache --no-config-hints",
-24: "insight:linesOfCode": "node s/insight/linesOfCode.mjs",
-25: "docs": "echo '\nDOCS...' && node s/docs/writeReadme.mjs",
-26 "lint": "echo '\nLINT...' && eslint '{libs,apps,s}/\*_/_' --fix -c eslint.config.mjs --cache --ignore-pattern apps/playground",
+15 "clean:indexts": "yarn workspaces foreach -Apt --verbose run indexts", 16: "clean:ensureVitestImports": "node s/clean/ensureVitestImports.mjs", 17: "clean:removeEmptyWsFiles": "node s/clean/removeEmptyWsFiles.mjs", 18 "build": "echo '\nBUILD...' && yarn workspaces foreach -Apt --verbose --exclude mono run build", 19: "clean:replaceBadDashChars": "node s/clean/replaceBadDashChars.mjs", 20 "insight": "echo '\nINSIGHT...' && yarn insight:knip && yarn insight:filesWithMissingCoverage && yarn insight:linesOfCode", 21: "insight:checkLibsTsDoc": "node s/insight/checkLibsTsDoc.mjs", 22: "insight:filesWithMissingCoverage": "echo 'Files with incomplete code coverage:' && node s/insight/filesWithMissingCoverage.mjs --check", 23 "insight:knip": "knip --config knip.jsonc --cache --no-config-hints", 24: "insight:linesOfCode": "node s/insight/linesOfCode.mjs", 25: "docs": "echo '\nDOCS...' && node s/docs/writeReadme.mjs", 26 "lint": "echo '\nLINT...' && eslint '{libs,apps,s}/\*_/_' --fix -c eslint.config.mjs --cache --ignore-pattern apps/playground",
 
-35 "DK": "node .dist/devkit.cjs",
-36: "ws": "node s/wsRun.mjs"
-37 },
+35 "DK": "node .dist/devkit.cjs", 36: "ws": "node s/wsRun.mjs" 37 },
 
-.github\prompts\ensure-code-coverage.prompt.md:
-12
-13: Get the files that do not have full code coverage: run `node s/insight/filesWithMissingCoverage.mjs`
-14
+.github\prompts\ensure-code-coverage.prompt.md: 12 13: Get the files that do not have full code coverage: run `node s/insight/filesWithMissingCoverage.mjs` 14
 
-18
-19: Finally, when processing of all files is complete, run the tests with `yarn test-coverage` and then verify that all files have full code coverage by running `node s/insight/filesWithMissingCoverage.mjs` again and ensuring that no files are printed.
+18 19: Finally, when processing of all files is complete, run the tests with `yarn test-coverage` and then verify that all files have full code coverage by running `node s/insight/filesWithMissingCoverage.mjs` again and ensuring that no files are printed.
 
-.vscode\tasks.json:
-8 "type": "shell",
-9: "command": "node s/run.mjs ${relativeFile}",
-10 "args": [],
+.vscode\tasks.json: 8 "type": "shell", 9: "command": "node s/run.mjs ${relativeFile}", 10 "args": [],
 
-apps\playground\src\imports.ts:
-98 })
-99: .concat(...cp.execSync(`node s/insight/listLibsImportStatements.mjs`).toString().trim().split('\n'))
-100
+apps\playground\src\imports.ts: 98 }) 99: .concat(...cp.execSync(`node s/insight/listLibsImportStatements.mjs`).toString().trim().split('\n')) 100
 
 ---
 
@@ -64,24 +38,13 @@ So I will need to have built versions of the devkit and publish maybe to npm or 
 
 6 results - 2 files
 
-package.json:
-13 "clean": "echo '\nCLEAN...' && yarn clean:fixOwnWsImports && yarn clean:indexts && yarn clean:ensureVitestImports && yarn clean:removeEmptyWsFiles && yarn clean:replaceBadDashChars",
-14: "clean:fixOwnWsImports": "echo 'fixOwnWsImports...' && node .dist/devkit.cjs deps fix -f imports -y",
-15 "clean:indexts": "yarn workspaces foreach -Apt --verbose run indexts",
+package.json: 13 "clean": "echo '\nCLEAN...' && yarn clean:fixOwnWsImports && yarn clean:indexts && yarn clean:ensureVitestImports && yarn clean:removeEmptyWsFiles && yarn clean:replaceBadDashChars", 14: "clean:fixOwnWsImports": "echo 'fixOwnWsImports...' && node .dist/devkit.cjs deps fix -f imports -y", 15 "clean:indexts": "yarn workspaces foreach -Apt --verbose run indexts",
 
-33 "precommit": "echo '\nPRECOMMIT...' && yarn install && yarn clean && yarn typecheck && yarn lint && yarn build && yarn test-coverage && yarn insight && yarn docs && yarn format",
-34: "dk": "yarn workspace devkit build && node .dist/devkit.cjs",
-35: "DK": "node .dist/devkit.cjs",
-36 "ws": "node s/wsRun.mjs"
+33 "precommit": "echo '\nPRECOMMIT...' && yarn install && yarn clean && yarn typecheck && yarn lint && yarn build && yarn test-coverage && yarn insight && yarn docs && yarn format", 34: "dk": "yarn workspace devkit build && node .dist/devkit.cjs", 35: "DK": "node .dist/devkit.cjs", 36 "ws": "node s/wsRun.mjs"
 
-apps\devkit\package.json:
-1 {
-2: "name": "devkit",
-3 "description": "Development utilities for the monorepo.",
+apps\devkit\package.json: 1 { 2: "name": "devkit", 3 "description": "Development utilities for the monorepo.",
 
-9 "build": "node esbuild.mjs",
-10: "buildPackage": "node ../../s/util/buildcli.mjs devkit"
-11 }
+9 "build": "node esbuild.mjs", 10: "buildPackage": "node ../../s/util/buildcli.mjs devkit" 11 }
 
 Yes, absolutely - this is a significant restructuring effort. I've audited the full scope of the problem. Here's a comprehensive action plan:
 
@@ -91,12 +54,12 @@ Yes, absolutely - this is a significant restructuring effort. I've audited the f
 
 ### The Core Problems (summary from audit)
 
-| Problem                 | Detail                                                                                                                                                                                                                 |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Dual tooling**        | s scripts (13+ files) and devkit (CLI with 4 command groups) overlap and cross-reference each other                                                                                                                    |
+| Problem | Detail |
+| --- | --- |
+| **Dual tooling** | s scripts (13+ files) and devkit (CLI with 4 command groups) overlap and cross-reference each other |
 | **Bootstrapping cycle** | devkit depends on 7 `@mono/*` packages (`monorepo`, `map`, `tscode`, `terminal`, `template`, `config`, `stacktrace`) which must be built first - but building them uses util scripts, and fixing the repo needs devkit |
-| **Fragile wiring**      | Every lib's esbuild.mjs imports buildLibsWorkspace.mjs; every lib's package.json references indextsWs.mjs; root package.json mixes `node mono.` and `node .dist/devkit.cjs`                                            |
-| **No fallback**         | If the repo is broken (can't build), there is no way to run devkit to fix it                                                                                                                                           |
+| **Fragile wiring** | Every lib's esbuild.mjs imports buildLibsWorkspace.mjs; every lib's package.json references indextsWs.mjs; root package.json mixes `node mono.` and `node .dist/devkit.cjs` |
+| **No fallback** | If the repo is broken (can't build), there is no way to run devkit to fix it |
 
 ---
 
@@ -126,9 +89,9 @@ Yes, absolutely - this is a significant restructuring effort. I've audited the f
 12. **Absorb util shared functions** into devkit's internal lib (these are the foundation: `getRepoRootDirpath`, `buildFile`, `buildLibsWorkspace`, `getAllWorkspace*`, etc.)
 13. **Absorb clean** → `devkit clean` subcommands:
     - `ensureVitestImports` → `devkit clean vitest-imports`
-    - `indextsWs` → `devkit clean index-ts` (already per-workspace)
-    - `removeEmptyWsFiles` → `devkit clean empty-files`
-    - `replaceBadDashChars` → `devkit clean dash-chars`
+    - `indextsWs` → `devkit fix-index-ts` (already per-workspace)
+    - `removeEmptyWsFiles` → `devkit fix-empty-files`
+    - `replaceBadDashChars` → `devkit fix-dash-chars`
 14. **Absorb insight** → `devkit insight` subcommands:
     - `filesWithMissingCoverage` → `devkit insight coverage`
     - `linesOfCode` → `devkit insight loc`
@@ -157,7 +120,7 @@ Yes, absolutely - this is a significant restructuring effort. I've audited the f
 23. **Update every lib's esbuild.mjs** - replace `import { buildLibsWorkspace } from buildLibsWorkspace.mjs'` with either:
     - a devkit CLI call: `devkit build <workspace>`, or
     - keep a minimal standalone esbuild.mjs wrapper that calls the now-built-in devkit function
-24. **Update every lib's package.json** - replace `"indexts": "node ../../s/clean/indextsWs.mjs"` with `node devkit.cjs clean index-ts`
+24. **Update every lib's package.json** - replace `"indexts": "node ../../s/clean/indextsWs.mjs"` with `node devkit.cjs fix-index-ts`
 25. **Update root package.json scripts** - replace all `node mono.` and `node devkit.cjs ...` references with unified `node devkit.cjs <command>` calls
 26. **Update tasks.json** - change run command
 27. **Update .github prompts** - update references to old script paths
@@ -181,11 +144,11 @@ Yes, absolutely - this is a significant restructuring effort. I've audited the f
 
 ### Suggested Execution Order & Risk Notes
 
-| Priority                  | Why                                                                                        |
-| ------------------------- | ------------------------------------------------------------------------------------------ |
-| **Phase 1 first**         | Until devkit has zero `@mono/*` deps, you can't solve the bootstrap problem                |
-| **Phase 3 early**         | Committing the built artifact is quick and gives you a safety net for the rest of the work |
-| **Phase 2 incrementally** | Migrate one s script at a time, update its consumers (Phase 4), test, repeat               |
-| **Phase 5 last**          | Only delete s after everything is migrated and validated                                   |
+| Priority | Why |
+| --- | --- |
+| **Phase 1 first** | Until devkit has zero `@mono/*` deps, you can't solve the bootstrap problem |
+| **Phase 3 early** | Committing the built artifact is quick and gives you a safety net for the rest of the work |
+| **Phase 2 incrementally** | Migrate one s script at a time, update its consumers (Phase 4), test, repeat |
+| **Phase 5 last** | Only delete s after everything is migrated and validated |
 
 The riskiest part is **Phase 1** (inlining `@mono/*` dependencies). The `@mono/monorepo` package is likely the largest - I'd start by understanding exactly how much of it devkit actually uses, and inline only the needed functions.

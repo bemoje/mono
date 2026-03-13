@@ -1,5 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { tsDocExtractAllComments, getNamedExportTsDocSummary } from './tsdoc'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { getNamedExportTsDocSummary } from './tsdoc'
+import { it } from 'vitest'
+import { tsDocExtractAllComments } from './tsdoc'
 
 describe(tsDocExtractAllComments.name, () => {
   it('should extract a single TSDoc block comment', () => {

@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isEnumerable } from './isEnumerable'
+import { it } from 'vitest'
 
 describe(isEnumerable.name, () => {
   it('examples', () => {

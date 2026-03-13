@@ -1,8 +1,21 @@
 import { forEach } from 'iter-tools'
 
 /**
- * Execute a callback function for each entry in a map-like iterable.
+ * Execute a callback function for each element in an iterable.
+ *
+ * @param collection - The iterable to iterate over
+ * @param callback - A function to execute for each element
+ *
+ * @example
+ * ```ts
+ * const numbers = [1, 2, 3, 4, 5]
+ * forEachIterable(numbers, (n) => {
+ *   console.log(n)
+ * })
+ * ```
  */
-export function forEachIterable<K, V>(mapLike: Iterable<[K, V]>, callback: (value: V, key: K) => void): void {
-  return forEach(([k, v]: [K, V]) => callback(v, k), mapLike)
+export function forEachIterable<T>(collection: Iterable<T>, callback: (value: T) => void): void {
+  forEach((value: T) => {
+    callback(value)
+  }, collection)
 }

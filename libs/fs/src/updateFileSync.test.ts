@@ -1,16 +1,16 @@
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import fs from 'fs-extra'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
-import assert from 'node:assert'
+import { it } from 'vitest'
 import { updateFileSync } from './updateFileSync'
+import { vi } from 'vitest'
 
 // Mock fs-extra
-vi.mock('fs-extra', () => ({
-  default: {
-    ensureFileSync: vi.fn(),
-    readFileSync: vi.fn(),
-    outputFileSync: vi.fn(),
-  },
-}))
+vi.mock('fs-extra', () => {
+  return { default: { ensureFileSync: vi.fn(), readFileSync: vi.fn(), outputFileSync: vi.fn() } }
+})
 
 const mockFs = fs as any
 
@@ -27,13 +27,17 @@ describe(updateFileSync.name, () => {
       mockFs.readFileSync.mockReturnValue('Hello, World!')
 
       // Create and update a file
-      updateFileSync(testFile, () => 'Hello, World!')
+      updateFileSync(testFile, () => {
+        return 'Hello, World!'
+      })
       let content = fs.readFileSync(testFile, 'utf8')
       assert.deepStrictEqual(content, 'Hello, World!')
 
       // Update existing content
       mockFs.readFileSync.mockReturnValue('HELLO, WORLD!')
-      updateFileSync(testFile, (content) => content.toUpperCase())
+      updateFileSync(testFile, (content) => {
+        return content.toUpperCase()
+      })
       content = fs.readFileSync(testFile, 'utf8')
       assert.deepStrictEqual(content, 'HELLO, WORLD!')
     }).not.toThrow()
@@ -44,7 +48,9 @@ describe(updateFileSync.name, () => {
 
     mockFs.readFileSync.mockReturnValue('')
 
-    updateFileSync(testFile, () => 'test content')
+    updateFileSync(testFile, () => {
+      return 'test content'
+    })
 
     expect(mockFs.ensureFileSync).toHaveBeenCalledWith(testFile)
     expect(mockFs.outputFileSync).toHaveBeenCalledWith(testFile, 'test content')
@@ -56,8 +62,12 @@ describe(updateFileSync.name, () => {
     mockFs.readFileSync.mockReturnValueOnce('')
     mockFs.readFileSync.mockReturnValueOnce('original')
 
-    updateFileSync(testFile, () => 'original')
-    updateFileSync(testFile, (content) => content + ' updated')
+    updateFileSync(testFile, () => {
+      return 'original'
+    })
+    updateFileSync(testFile, (content) => {
+      return `${content} updated`
+    })
 
     expect(mockFs.outputFileSync).toHaveBeenCalledWith(testFile, 'original updated')
   })

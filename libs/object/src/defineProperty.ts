@@ -1,5 +1,5 @@
-import { AccessorDescriptor } from './isAccessorDescriptor'
-import { ValueDescriptor } from './isValueDescriptor'
+import type { AccessorDescriptor } from './isAccessorDescriptor'
+import type { ValueDescriptor } from './isValueDescriptor'
 
 /**
  * Utility function for defining properties on objects with enhanced descriptor handling.
@@ -7,7 +7,7 @@ import { ValueDescriptor } from './isValueDescriptor'
 export function defineProperty<T extends object>(
   obj: T, //
   key: PropertyKey,
-  des: ValueDescriptor<T> | AccessorDescriptor<T>,
+  des: ValueDescriptor<T> | AccessorDescriptor<T>
 ) {
   return Object.defineProperty<T>(obj, key, { configurable: true, ...des })
 }

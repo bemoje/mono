@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strPrependLines } from './strPrependLines'
-import { describe, expect, it } from 'vitest'
 
 describe(strPrependLines.name, () => {
   it('should prepend each line of a string with the specified string', () => {

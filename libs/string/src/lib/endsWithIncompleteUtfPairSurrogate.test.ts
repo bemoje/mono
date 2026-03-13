@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
 import { endsWithIncompleteUtfPairSurrogate } from './endsWithIncompleteUtfPairSurrogate'
-import { describe, expect, it } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('endsWithIncompleteUtfPairSurrogate', () => {
   const HIGH_SURROGATE_START = 55_296
@@ -15,14 +17,14 @@ describe('endsWithIncompleteUtfPairSurrogate', () => {
 
   describe('boundary tests', () => {
     it('valid', () => {
-      expect(endsWithIncompleteUtfPairSurrogate('abc' + String.fromCharCode(HIGH_SURROGATE_START))).toBe(true)
-      expect(endsWithIncompleteUtfPairSurrogate('abc' + String.fromCharCode(HIGH_SURROGATE_START + 1))).toBe(true)
-      expect(endsWithIncompleteUtfPairSurrogate('abc' + String.fromCharCode(HIGH_SURROGATE_END - 1))).toBe(true)
-      expect(endsWithIncompleteUtfPairSurrogate('abc' + String.fromCharCode(HIGH_SURROGATE_END))).toBe(true)
+      expect(endsWithIncompleteUtfPairSurrogate(`abc${String.fromCharCode(HIGH_SURROGATE_START)}`)).toBe(true)
+      expect(endsWithIncompleteUtfPairSurrogate(`abc${String.fromCharCode(HIGH_SURROGATE_START + 1)}`)).toBe(true)
+      expect(endsWithIncompleteUtfPairSurrogate(`abc${String.fromCharCode(HIGH_SURROGATE_END - 1)}`)).toBe(true)
+      expect(endsWithIncompleteUtfPairSurrogate(`abc${String.fromCharCode(HIGH_SURROGATE_END)}`)).toBe(true)
     })
     it('invalid', () => {
-      expect(endsWithIncompleteUtfPairSurrogate('abc' + String.fromCharCode(HIGH_SURROGATE_START - 1))).toBe(false)
-      expect(endsWithIncompleteUtfPairSurrogate('abc' + String.fromCharCode(HIGH_SURROGATE_END + 1))).toBe(false)
+      expect(endsWithIncompleteUtfPairSurrogate(`abc${String.fromCharCode(HIGH_SURROGATE_START - 1)}`)).toBe(false)
+      expect(endsWithIncompleteUtfPairSurrogate(`abc${String.fromCharCode(HIGH_SURROGATE_END + 1)}`)).toBe(false)
     })
   })
 

@@ -1,11 +1,11 @@
-import { ValueOf } from '@mono/types'
+import type { ValueOf } from '@mono/types'
 
 /**
  * Mutably filter an object's own properties based on a given predicate.
  */
 export function filterObjectMutable<T extends object>(
   obj: T,
-  predicate: (value: ValueOf<T>, key: keyof T, obj: T) => boolean,
+  predicate: (value: ValueOf<T>, key: keyof T, obj: T) => boolean
 ) {
   for (const k of Reflect.ownKeys(obj)) {
     const key = k as keyof typeof obj

@@ -1,5 +1,10 @@
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterAll } from 'vitest'
+import { beforeAll } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { hasCooldownElapsed } from './hasCooldownElapsed'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 describe('hasCooldownElapsed', () => {
   it('should be defined', () => {

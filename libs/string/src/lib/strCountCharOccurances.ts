@@ -9,10 +9,14 @@
  * ```
  */
 export function strCountCharOccurances(input: string, char: string): number {
-  if (char.length !== 1) throw new Error('Expected char to be a single character string of length 1.')
+  if (char.length !== 1) {
+    throw new Error('Expected char to be a single character string of length 1.')
+  }
   let result = 0
   for (const c of input) {
-    if (c === char) result++
+    if (c === char) {
+      result++
+    }
   }
   return result
 }

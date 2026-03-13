@@ -1,246 +1,372 @@
-# @mono/cli
+# @bemoje/cli
 
-A type-safe CLI composer that can parse argv and generate help without execution coupling.
+A type-safe CLI framework for building command-line interfaces with typed arguments, options, subcommands, and auto-generated help - without execution coupling.
 
-## Key Features
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/) [![Module](https://img.shields.io/badge/Module-ESM-yellow)](https://nodejs.org/api/esm.html)
 
-- **🎯 Composition-Focused**: Build command structures without execution logic.
-- **🔒 Type-Safe**: Full TypeScript support with type inference for arguments and options
-- **🎨 Flexible Help**: Fork of commander.js Help class with enhanced API and adapter support
-- **✅ Validation**: Built-in CLI argument ordering validation and name conflict detection
+## Exports
 
-## Quick Start
+<!-- EXPORTS_START -->
 
-```ts
-import { Command } from '@mono/cli'
+- [**Command**](./src/lib/Command.ts): a type-safe CLI composer that can parse argv and generate help without execution coupling.
+- [**Help**](./src/lib/Help.ts): This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the expected interface of the Command instance to parse, are both similar, but different and not compatible without custom adaptations,
+- [**findCommand**](./src/lib/helpers/findCommand.ts): Finds subcommand by name or alias
+- [**findOption**](./src/lib/helpers/findOption.ts): Finds option by name, short name or long name
+- [**getCommandAncestors**](./src/lib/helpers/getCommandAncestors.ts): Returns all ancestor commands excluding this command
+- [**getCommandAndAncestors**](./src/lib/helpers/getCommandAndAncestors.ts): Returns command and all ancestor commands in hierarchy
+- [**parseOptionFlags**](./src/lib/helpers/parseOptionFlags.ts): Parses option flags string into its components
 
-const cmd = new Command('myapp')
-  .setVersion('1.0.0')
-  .setDescription('My awesome CLI application')
-  .addArgument('<input>', 'Input file path')
-  .addArgument('[output]', 'Output file path', { defaultValue: 'out.txt' })
-  .addOption('-v, --verbose', 'Enable verbose output')
-  .addOption('-f, --format <type>', 'Output format', { choices: ['json', 'xml', 'yaml'] })
+<!-- EXPORTS_END -->
 
-console.log(cmd.parseArgv(['input.txt', '-v', '-f', 'json']))
-// {
-//   command: [Getter],
-//   arguments: [ 'input.txt', 'out.txt' ],
-//   options: { verbose: true, format: 'json' }
-// }
+## Installation
+
+```bash
+npm install @bemoje/cli
 ```
 
-## Command Definition
+## Features
 
-### Basic Setup
+- **Full type inference** - Arguments, options, and parsed results are fully typed. The types update as you chain `.addArgument()` and `.addOption()` calls.
+- **Declarative, chainable API** - Build commands fluently with method chaining; each call returns a narrowed type.
+- **Subcommand hierarchies** - Nest commands arbitrarily deep. Options are inherited by subcommands. Aliases are auto-generated.
+- **Auto-generated help** - Colorized, grouped, and wrapped help output from your command definitions. Fully customizable via the `Help` class.
+- **Built-in `--help`, `--debug`, and `--version` flags** - Automatically added to root commands.
+- **Option hooks** - Register side-effect actions that trigger when specific options are set (e.g., `--help` prints help and sets `process.exitCode`).
+- **Parse-only design** - `parseArgv()` returns a result object with `args`, `opts`, `errors`, `hooks`, and an `execute()` method. You control when and whether execution happens.
+- **Validation** - Missing required arguments, unknown options, and invalid choices are reported as errors on the result.
+- **Variadic arguments and options** - Both arguments and options support variadic (`...`) syntax to collect multiple values into arrays.
+- **Environment variable defaults** - Options can fall back to environment variables via the `env` option.
+- **Argument and option choices** - Restrict allowed values with `choices` arrays; violations are reported as validation errors.
+- **Negatable boolean flags** - Pass `--no-<flag>` to set a boolean option to `false`.
+- **kebab-case to camelCase mapping** - Multi-word option names like `--output-dir` are automatically available as `opts.outputDir`.
+- **Hidden commands and options** - Exclude items from help output while keeping them functional.
+- **Grouped help sections** - Organize options and subcommands into named groups in the help output.
+
+## Usage
+
+### Basic Command
 
 ```ts
-const cmd = new Command('myapp')
-  .setVersion('1.0.0')
-  .setDescription('Application description')
-  .setSummary('Short summary for help')
-  .setAliases(['app', 'my-app'])
+import { Command } from '@bemoje/cli'
+
+const cli = new Command('greet')
+  .setDescription('Greet someone')
+  .addArgument('<name>')
+  .addOption('-l, --loud', { description: 'Shout the greeting' })
+  .setAction((name, opts) => {
+    const msg = `Hello, ${name}!`
+    console.log(opts.loud ? msg.toUpperCase() : msg)
+  })
+
+cli.parseArgv(process.argv.slice(2))
 ```
 
-### Arguments (Positional)
+### Arguments
 
-Arguments follow strict ordering rules: required → optional → variadic
+Arguments are positional values parsed from `argv`. They support required (`<name>`), optional (`[name]`), and variadic (`<name...>`, `[name...]`) forms.
 
 ```ts
-// Required argument
-cmd.addArgument('<input>', 'Input file path')
+const cmd = new Command('copy')
+  .addArgument('<source>') // required string
+  .addArgument('[destination]', { defaultValue: '.' }) // optional with default
+  .setAction((source, destination, opts) => {
+    console.log(`Copying ${source} to ${destination}`)
+  })
 
-// Optional argument with default
-cmd.addArgument('[output]', 'Output file path', { defaultValue: 'dist/output.txt' })
-
-// Required variadic (multiple values)
-cmd.addArgument('<files...>', 'Multiple input files')
-
-// Optional variadic with defaults
-cmd.addArgument('[patterns...]', 'Glob patterns', { defaultValue: ['**/*.js'] })
+cmd.parseArgv(['file.txt'])
+// args: ['file.txt', '.']
 ```
 
-### Options (Named Parameters)
+**Variadic arguments** collect all remaining positional values into an array. Only the last argument may be variadic.
 
 ```ts
-// Boolean flag
-cmd.addOption('-v, --verbose', 'Enable verbose output')
-
-// Required string option
-cmd.addOption('-f, --format <type>', 'Output format')
-
-// Optional string option with default
-cmd.addOption('-o, --output [path]', 'Output directory', { defaultValue: 'dist' })
-
-// Required variadic option
-cmd.addOption('-i, --include <patterns...>', 'Include patterns')
-
-// Optional variadic option with defaults
-cmd.addOption('-e, --exclude [patterns...]', 'Exclude patterns', {
-  defaultValue: ['node_modules', '.git'],
+const cmd = new Command('concat').addArgument('<files...>').setAction((files, opts) => {
+  // files is string[]
+  console.log(`Concatenating: ${files.join(', ')}`)
 })
 
-// Option with choices and environment variable
-cmd.addOption('-l, --log-level [level]', 'Log level', {
-  choices: ['error', 'warn', 'info', 'debug'],
-  defaultValue: 'info',
-  env: 'LOG_LEVEL',
+cmd.parseArgv(['a.txt', 'b.txt', 'c.txt'])
+// args: [['a.txt', 'b.txt', 'c.txt']]
+```
+
+**Choices** can restrict which values are accepted:
+
+```ts
+const cmd = new Command('deploy').addArgument('<env>', { choices: ['dev', 'staging', 'prod'] })
+```
+
+**Ordering rules** are enforced at both the type level and at runtime:
+
+- Required arguments must come before optional ones
+- Only the last argument may be variadic
+- A command with arguments cannot have subcommands (and vice versa)
+
+### Options
+
+Options are named flags parsed from `argv`. The format is always `-<short>, --<long> [value-syntax]`.
+
+```ts
+const cmd = new Command('build')
+  .addOption('-o, --output <dir>', { description: 'Output directory' }) // required string
+  .addOption('-m, --minify', { description: 'Minify output' }) // boolean flag
+  .addOption('-w, --watch [mode]', { description: 'Watch mode', defaultValue: 'poll' }) // optional string with default
+  .setAction((opts) => {
+    console.log(opts.output) // string
+    console.log(opts.minify) // boolean | undefined
+    console.log(opts.watch) // string
+  })
+```
+
+**Variadic options** collect multiple values into an array:
+
+```ts
+const cmd = new Command('lint')
+  .addOption('-i, --include <patterns...>', { description: 'Include globs' }) // required: string[]
+  .addOption('-e, --exclude [patterns...]', { description: 'Exclude globs', defaultValue: ['node_modules'] })
+
+cmd.parseArgv(['-i', 'src', 'lib', '-e', 'test'])
+// opts.include: ['src', 'lib']
+// opts.exclude: ['test']
+```
+
+**Option choices** restrict valid values:
+
+```ts
+const cmd = new Command('format').addOption('-f, --format <type>', {
+  description: 'Output format',
+  choices: ['json', 'xml', 'yaml'],
 })
 ```
 
-### Global Options
-
-Options defined on parent commands are available to subcommands:
+**Environment variable defaults** let options fall back to env vars:
 
 ```ts
-const app = new Command('myapp').addOption('-c, --config <file>', 'Config file')
+const cmd = new Command('deploy').addOption('-t, --token <value>', {
+  description: 'Auth token',
+  env: 'AUTH_TOKEN',
+})
+// If AUTH_TOKEN is set and --token is not passed, opts.token defaults to process.env.AUTH_TOKEN
+```
 
-app.subcommand('build').addOption('-w, --watch', 'Watch mode')
+**Hidden options** are excluded from help output:
 
-// Both --config and --watch are available to 'build' subcommand
-const result = app.parseArgv(['build', '--config', 'myconfig.json', '--watch'])
+```ts
+const cmd = new Command('tool').addOption('-x, --experimental', {
+  description: 'Experimental feature',
+  hidden: true,
+})
+```
+
+**Grouped options** appear under custom headings in help:
+
+```ts
+const cmd = new Command('server')
+  .addOption('-p, --port <n>', { description: 'Port number', group: 'Network:' })
+  .addOption('-H, --host [addr]', { description: 'Host address', group: 'Network:' })
+  .addOption('-v, --verbose', { description: 'Verbose logging', group: 'Logging:' })
+```
+
+**Negatable flags** - any boolean option can be negated with `--no-<name>`:
+
+```ts
+const cmd = new Command('build').addOption('-c, --color', { description: 'Colorize output' })
+
+cmd.parseArgv(['--no-color'])
+// opts.color: false
+```
+
+**kebab-case to camelCase** - multi-word option names are automatically camelCased:
+
+```ts
+const cmd = new Command('build').addOption('-o, --output-dir <path>', { description: 'Output directory' })
+
+cmd.parseArgv(['--output-dir', '/tmp'])
+// opts.outputDir: '/tmp'
 ```
 
 ### Subcommands
 
+Use `.command()` to create a subcommand and get it back, or `.addCommand()` to add one via callback and get the parent back for chaining.
+
+Options defined on the parent are automatically inherited by subcommands. Aliases are auto-generated from subcommand name initials (e.g., `build-project` gets alias `bp`).
+
 ```ts
-const cmd = new Command('git')
+const cli = new Command('git')
+  .setDescription('A version control system')
+  .addOption('-v, --verbose', { description: 'Verbose output' })
 
-// Create subcommand
-const add = cmd
-  .subcommand('add')
-  .setDescription('Add files to staging area')
-  .addArgument('<files...>', 'Files to add')
-  .addOption('-A, --all', 'Add all files')
+  .addCommand('clone', (sub) =>
+    sub
+      .setDescription('Clone a repository')
+      .addArgument('<url>')
+      .addOption('-d, --depth <n>', { description: 'Shallow clone depth' })
+      .setAction((url, opts) => {
+        // opts.verbose is inherited from parent
+        console.log(`Cloning ${url} with depth ${opts.depth ?? 'full'}`)
+      })
+  )
 
-const commit = cmd
-  .subcommand('commit')
-  .setDescription('Create a commit')
-  .addArgument('[message]', 'Commit message')
-  .addOption('-m, --message <msg>', 'Commit message')
-  .addOption('-a, --all', 'Commit all changes')
+  .addCommand('status', (sub) =>
+    sub
+      .setDescription('Show working tree status')
+      .addOption('-s, --short', { description: 'Short format output' })
+      .setAction((opts) => {
+        console.log('Status:', opts.short ? 'clean' : 'On branch main...')
+      })
+  )
 
-// Parsing automatically routes to subcommands
-const result = cmd.parseArgv(['add', 'file1.js', 'file2.js', '-A'])
-// result.command === add subcommand instance
+cli.parseArgv(['clone', 'https://github.com/user/repo', '-d', '1'])
 ```
 
-## Help System
-
-### Rendering Help
+**Aliases** can also be set manually:
 
 ```ts
-import { Help } from '@mono/cli'
-
-// Use help formatting (requires Help instance)
-const help = new Help()
-console.log(cmd.renderHelp(help))
-
-// Customize help configuration
-const customHelp = new Help()
-customHelp.helpWidth = 100
-customHelp.sortOptions = true
-customHelp.showGlobalOptions = true
-console.log(cmd.renderHelp(customHelp))
+const cli = new Command('app')
+cli.command('install').setAliases('i', 'add')
 ```
 
-### Help Configuration
+### Parsing and Execution
 
-Configure help behavior per command:
+`parseArgv()` does not execute the action - it returns a result object:
 
 ```ts
-cmd.setHelpConfiguration({
-  sortOptions: true,
-  sortSubcommands: true,
-  showGlobalOptions: false,
-  helpWidth: 80,
+const cli = new Command('tool')
+  .addArgument('<input>')
+  .addOption('-v, --verbose', { description: 'Verbose' })
+  .setAction((input, opts) => {
+    console.log(`Processing ${input}`)
+  })
+
+const result = cli.parseArgv(['file.txt', '-v'])
+
+result.path // string[] - subcommand path segments
+result.name // string   - command name
+result.argv // string[] - the argv that was parsed
+result.args // [string] - typed parsed arguments
+result.opts // { verbose: true } - typed parsed options
+result.errors // string[] | undefined - validation errors
+result.hooks // HookDefinition[] - triggered hooks
+result.cmd // Command - the matched command instance
+
+// Execute the action (and any triggered hooks) when you're ready:
+await result.execute()
+```
+
+**Validation errors** are collected, not thrown. Check `result.errors` before executing:
+
+```ts
+const result = cli.parseArgv([])
+if (result.errors) {
+  console.error(result.errors.join('\n'))
+  process.exitCode = 1
+} else {
+  await result.execute()
+}
+```
+
+When `execute()` is called, hooks run first (in order). If any hook sets `process.exitCode`, execution stops. Then the main action runs inside a timer that provides a logger.
+
+### Option Hooks
+
+Hooks let you attach side-effect actions that run when a specific option is set. The built-in `--help`, `--debug`, and `--version` flags are all implemented as hooks.
+
+```ts
+const cli = new Command('tool')
+  .addOption('-c, --clean', { description: 'Clean before running' })
+  .addOptionHook('clean', ({ cmd, opts }) => {
+    console.log('Cleaning build artifacts...')
+    // Hook runs before the main action
+  })
+  .setAction((opts) => {
+    console.log('Running tool...')
+  })
+```
+
+Hooks are evaluated in registration order. If a hook sets `process.exitCode`, subsequent hooks and the main action are skipped.
+
+### Help Output
+
+Help is auto-generated with ANSI color support, word wrapping, and section grouping.
+
+```ts
+const cli = new Command('my-tool')
+  .setVersion('1.0.0')
+  .setDescription('A great CLI tool')
+  .addArgument('<input>')
+  .addOption('-v, --verbose', { description: 'Verbose output' })
+
+// Render help string (with ANSI colors)
+console.log(cli.renderHelp())
+
+// Render plain text (no ANSI)
+console.log(cli.renderHelp({ noColor: true }))
+```
+
+**Customize help rendering** via `.helpConfiguration()`:
+
+```ts
+cli.helpConfiguration((help) => {
+  help.sortSubcommands = false
+  help.sortOptions = false
+  help.helpWidth = 120
 })
 ```
 
-### Custom Help Styling
+The `Help` class exposes many styleable and overridable methods for full control over the output format:
 
-It may be more convenient to extend the Help class for more extensive customization.
+| Method                      | Purpose                                       |
+| --------------------------- | --------------------------------------------- |
+| `styleTitle(str)`           | Style section headings ("Usage:", "Options:") |
+| `styleUsage(str)`           | Style the usage line                          |
+| `styleOptionTerm(str)`      | Style option flags                            |
+| `styleSubcommandTerm(str)`  | Style subcommand entries                      |
+| `styleArgumentTerm(str)`    | Style argument entries                        |
+| `styleDescriptionText(str)` | Base style for all descriptions               |
+| `formatItem(term, w, desc)` | Format a term/description pair with padding   |
+| `boxWrap(str, width)`       | Wrap text at whitespace to fit width          |
+
+### Type Safety
+
+The `Command` class tracks argument and option types through generics that update with each chained call. This means your action handler receives correctly typed parameters:
 
 ```ts
-import { Help } from '@mono/cli'
-
-class ColoredHelp extends Help {
-  styleTitle(str: string): string {
-    return `\x1b[1m${str}\x1b[0m` // Bold
-  }
-
-  styleOptionText(str: string): string {
-    return `\x1b[36m${str}\x1b[0m` // Cyan
-  }
-
-  styleArgumentText(str: string): string {
-    return `\x1b[33m${str}\x1b[0m` // Yellow
-  }
-}
-
-console.log(cmd.renderHelp(new ColoredHelp()))
+const cmd = new Command('example')
+  .addArgument('<name>') // A = [string]
+  .addArgument('[count]', { defaultValue: '1' }) // A = [string, string]
+  .addOption('-v, --verbose', {}) // O = { verbose?: boolean, ... }
+  .addOption('-f, --format <type>', {}) // O = { verbose?: boolean, format: string, ... }
+  .setAction((name, count, opts) => {
+    // name: string, count: string, opts: { verbose?: boolean, format: string, ... }
+  })
 ```
 
-## Validation
+Invalid argument orderings (e.g., required after optional, anything after variadic) are caught at the **type level** - TypeScript will reject the code before it runs.
 
-Commands automatically validate:
-
-- Argument ordering (required before optional before variadic)
+### Helpers
 
 ```ts
-cmd.addArgument('[optional]', 'Optional arg').addArgument('<required>', 'Required arg')
-//=> ❌ Error!
-```
+import {
+  findCommand,
+  findOption,
+  parseOptionFlags,
+  getCommandAncestors,
+  getCommandAndAncestors,
+} from '@bemoje/cli'
 
-- Unique option names and short flags, including globals across parent/child commands
+// Find a subcommand by name or alias
+const sub = findCommand(cli, 'clone') // Command | undefined
+const sub2 = findCommand(cli, 'c') // also works with aliases
 
-```ts
-cmd.addOption('-v, --verbose', 'Verbose output').addOption('-v, --video', 'Video mode')
-//=> ❌ Error!
-```
+// Find an option by name, short flag, or long flag
+const opt = findOption(cli, 'verbose') // Option | undefined
+const opt2 = findOption(cli, '-v') // by short flag
+const opt3 = findOption(cli, '--verbose') // by long flag
 
-- Single variadic argument per command
+// Parse raw flag syntax into components
+parseOptionFlags('-o, --output <dir>')
+// => { short: 'o', long: 'output', name: 'output', argName: 'dir' }
 
-```ts
-cmd.addArgument('<files...>', 'First variadic').addArgument('<more...>', 'Second variadic')
-//=> ❌ Error!
-```
-
-## Command Class
-
-**Constructor**:
-
-```ts
-- new (name: string, parent?: Command): Command
-```
-
-**Structure Methods**:
-
-```ts
-- addArgument(usage, description, options?): this
-- addOption(usage, description, options?): this
-- subcommand(name: string): Command
-```
-
-**Configuration Methods**:
-
-```ts
-- setVersion(version?: string): this
-- setName(name: string): this
-- setDescription(...lines: string[]): this
-- setSummary(summary?: string): this
-- setHidden(hidden?: boolean): this
-- setGroup(group?: string): this
-- setHelpConfiguration(config?: Partial<IHelp>): this
-- extendHelpConfiguration(config: Partial<IHelp>): this
-- setAliases(...aliases: (string | string[])[]): this
-- addAliases(...aliases: (string | string[])[]): this
-- setParent(parent: Command | null): this
-```
-
-**Parsing & Help**:
-
-```ts
-- parseArgv(argv?: string[], globalOptions?: OptionDescriptor[]): ParseResult
-- renderHelp(help: IHelp): string
+// Navigate command hierarchy
+getCommandAncestors(sub) // parent commands (excluding self)
+getCommandAndAncestors(sub) // [self, parent, grandparent, ...]
 ```

@@ -3,7 +3,9 @@
  */
 export function staticClassKeysOf<T extends new (...args: any[]) => unknown>(cls: T): StaticClassKeyof<T>[] {
   const keys = Object.getOwnPropertyNames(cls)
-  return keys.filter((key) => !ignoreKeys.includes(key as IgnoreKey)) as StaticClassKeyof<T>[]
+  return keys.filter((key) => {
+    return !ignoreKeys.includes(key as IgnoreKey)
+  }) as StaticClassKeyof<T>[]
 }
 
 /**

@@ -1,5 +1,5 @@
-import { getClassChain } from './getClassChain'
 import type { AnyConstructor } from '@mono/types'
+import { getClassChain } from './getClassChain'
 
 /**
  * Get the immediate superclass of a target.

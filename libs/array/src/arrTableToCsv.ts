@@ -21,7 +21,9 @@ export function arrTableToCsv<T>(input: T[][], delimiter = ';', replaceLinebreak
   return input
     .map((row) => {
       return row
-        .map((item) => String(item).replace(new RegExp(';', 'g'), '').replace(/\r*\n/g, replaceLinebreakWith))
+        .map((item) => {
+          return String(item).replaceAll(new RegExp(';', 'g'), '').replaceAll(/\r*\n/g, replaceLinebreakWith)
+        })
         .join(delimiter)
     })
     .join('\n')

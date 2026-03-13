@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strIsUpperCase } from './strIsUpperCase'
-import { describe, expect, it } from 'vitest'
 
 describe('strIsUpperCase', () => {
   it('example', () => {

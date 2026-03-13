@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isStringWithNoSpacesOrDashes } from './isStringWithNoSpacesOrDashes'
-import { describe, expect, it } from 'vitest'
+import { it } from 'vitest'
 
 describe(isStringWithNoSpacesOrDashes.name, () => {
   it('should return true if the value is a string with no spaces or dashes', () => {

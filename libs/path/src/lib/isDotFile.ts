@@ -4,5 +4,5 @@
  * @returns A boolean indicating whether the filepath is a dotfile.
  */
 export function isDotFile(filepath: string): boolean {
-  return /(?:^|[\\/])(\.(?!\.)[^\\/]+)$/.test(filepath)
+  return /(?:^|[/\\])(\.(?!\.)[^/\\]+)$/.test(filepath)
 }

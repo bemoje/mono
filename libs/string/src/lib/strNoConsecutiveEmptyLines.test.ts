@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strNoConsecutiveEmptyLines } from './strNoConsecutiveEmptyLines'
-import { describe, expect, it } from 'vitest'
 
 describe('strNoConsecutiveEmptyLines', () => {
   it('should remove consecutive empty lines', () => {

@@ -1,28 +1,25 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import assert from 'node:assert'
-import readline from 'node:readline'
+import { afterEach } from 'vitest'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
 import { confirmPrompt } from './confirmPrompt'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import readline from 'readline'
+import { vi } from 'vitest'
 
 // Mock readline module
-vi.mock('node:readline', () => ({
-  default: {
-    createInterface: vi.fn(),
-  },
-}))
+vi.mock('readline', () => {
+  return { default: { createInterface: vi.fn() } }
+})
 
 const mockedReadline = vi.mocked(readline)
 
 describe(confirmPrompt.name, () => {
-  let mockRl: {
-    question: ReturnType<typeof vi.fn>
-    close: ReturnType<typeof vi.fn>
-  }
+  let mockRl: { question: ReturnType<typeof vi.fn>; close: ReturnType<typeof vi.fn> }
 
   beforeEach(() => {
-    mockRl = {
-      question: vi.fn(),
-      close: vi.fn(),
-    }
+    mockRl = { question: vi.fn(), close: vi.fn() }
     mockedReadline.createInterface.mockReturnValue(mockRl as any)
   })
 
@@ -56,10 +53,7 @@ describe(confirmPrompt.name, () => {
 
       await confirmPrompt('Test message')
 
-      expect(mockedReadline.createInterface).toHaveBeenCalledWith({
-        input: process.stdin,
-        output: process.stdout,
-      })
+      expect(mockedReadline.createInterface).toHaveBeenCalledWith({ input: process.stdin, output: process.stdout })
     })
 
     it('should close readline interface after getting answer', async () => {
@@ -190,9 +184,15 @@ describe(confirmPrompt.name, () => {
   describe('edge cases', () => {
     it('should handle multiple consecutive prompts', async () => {
       mockRl.question
-        .mockImplementationOnce((message, callback) => callback('y'))
-        .mockImplementationOnce((message, callback) => callback('n'))
-        .mockImplementationOnce((message, callback) => callback('Y'))
+        .mockImplementationOnce((message, callback) => {
+          return callback('y')
+        })
+        .mockImplementationOnce((message, callback) => {
+          return callback('n')
+        })
+        .mockImplementationOnce((message, callback) => {
+          return callback('Y')
+        })
 
       const result1 = await confirmPrompt('First question?')
       const result2 = await confirmPrompt('Second question?')
@@ -213,7 +213,7 @@ describe(confirmPrompt.name, () => {
 
       expect(mockRl.question).toHaveBeenCalledWith(
         'Delete file "test.txt" with símböls & émojis 🚀? (y/n): ',
-        expect.any(Function),
+        expect.any(Function)
       )
     })
 

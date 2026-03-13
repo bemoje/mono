@@ -1,17 +1,29 @@
-import { glob } from 'glob'
 import fs from 'fs-extra'
+import { glob } from 'glob'
 import strip from 'strip-comments'
 
 /**
  * Calculates the total lines of code in the project by category.
  */
 export async function getLinesOfCode() {
-  const ts = (await glob('{libs,apps,packages}/*/{src,examples}/**/*.ts')).filter(
-    (p) => !/[./\\](wip|old|temp|playground)[./\\]/.test(p),
+  const ts = (await glob('{libs,apps,packages}/*/{src,examples}/**/*.ts')).filter((p) => {
+    return !/[./\\](wip|old|temp|playground)[./\\]/.test(p)
+  })
+  const source = countLines(
+    ts.filter((p) => {
+      return !/[./\\](test|examples|benchmark)[./\\]/.test(p)
+    })
   )
-  const source = countLines(ts.filter((p) => !/[./\\](test|examples|benchmark)[./\\]/.test(p)))
-  const test = countLines(ts.filter((p) => p.endsWith('.test.ts')))
-  const examples = countLines(ts.filter((p) => /[./\\](examples|benchmark)[./\\]/.test(p)))
+  const test = countLines(
+    ts.filter((p) => {
+      return p.endsWith('.test.ts')
+    })
+  )
+  const examples = countLines(
+    ts.filter((p) => {
+      return /[./\\](examples|benchmark)[./\\]/.test(p)
+    })
+  )
   const total = {
     files: source.files + test.files + examples.files,
     lines: source.lines + test.lines + examples.lines,
@@ -25,11 +37,15 @@ function countLines(paths: string[]) {
     const noComments = strip(code, { block: true, line: true })
     const compact = noComments
       .split('\n')
-      .map((line: string) => line.trim())
+      .map((line: string) => {
+        return line.trim()
+      })
       .filter(Boolean)
     return compact.length
   })
   const files = paths.length
-  const lines = arr.reduce((a, b) => a + b, 0)
+  const lines = arr.reduce((a, b) => {
+    return a + b
+  }, 0)
   return { files, lines }
 }

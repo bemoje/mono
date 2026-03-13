@@ -9,5 +9,5 @@
  * ```
  */
 export function importStatementStripKeywords(line: string) {
-  return line.replace(/^import +(type +)?/g, '')
+  return line.replaceAll(/^import +(type +)?/g, '')
 }

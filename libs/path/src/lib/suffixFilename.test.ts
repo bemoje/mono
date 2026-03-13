@@ -1,4 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { suffixFilename } from './suffixFilename'
 
 describe(suffixFilename.name, function () {

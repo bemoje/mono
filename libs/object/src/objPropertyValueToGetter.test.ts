@@ -1,11 +1,14 @@
-import { describe, expect, it } from 'vitest'
-
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { objPropertyValueToGetter } from './objPropertyValueToGetter'
 
 describe('objPropertyValueToGetter', () => {
   it('should throw an error if the property does not exist on the object', () => {
     const obj = {}
-    expect(() => objPropertyValueToGetter(obj, 'prop')).toThrow()
+    expect(() => {
+      return objPropertyValueToGetter(obj, 'prop')
+    }).toThrow()
   })
 
   it('should set the property as a getter', () => {
@@ -39,7 +42,9 @@ describe('objPropertyValueToGetter', () => {
 
   it('should throw an error if property descriptor is not found', () => {
     const obj = { a: 1, b: 2, c: 3 }
-    expect(() => objPropertyValueToGetter(obj, 'd')).toThrowError("Property descriptor for 'd' not found.")
+    expect(() => {
+      return objPropertyValueToGetter(obj, 'd')
+    }).toThrowError("Property descriptor for 'd' not found.")
   })
 
   it('should handle symbol properties', () => {

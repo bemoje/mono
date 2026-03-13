@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { tsSortImports } from './tsSortImports'
 
 describe(tsSortImports.name, () => {
@@ -114,7 +116,7 @@ const code = 'here'`
       const code = `const test = 'value'
 console.log(test)`
 
-      expect(tsSortImports(code)).toBe(code + '\n')
+      expect(tsSortImports(code)).toBe(`${code}\n`)
     })
 
     it('should handle only imports', () => {
@@ -130,7 +132,9 @@ import { a } from 'a'`
     it('should handle CRLF line endings', () => {
       const code = "import { b } from 'b'\r\nimport { a } from 'a'\r\n\r\nconst test = 'value'"
 
-      expect(() => tsSortImports(code)).not.toThrow()
+      expect(() => {
+        return tsSortImports(code)
+      }).not.toThrow()
     })
   })
 
@@ -142,18 +146,8 @@ import { a } from 'a'
 const test = 'value'`
 
       const imports = [
-        {
-          start: 0,
-          end: 1,
-          match: "import { b } from 'b'",
-          matchOneLine: "import { b } from 'b'",
-        },
-        {
-          start: 1,
-          end: 2,
-          match: "import { a } from 'a'",
-          matchOneLine: "import { a } from 'a'",
-        },
+        { start: 0, end: 1, match: "import { b } from 'b'", matchOneLine: "import { b } from 'b'" },
+        { start: 1, end: 2, match: "import { a } from 'a'", matchOneLine: "import { a } from 'a'" },
       ]
 
       const result = tsSortImports(code, imports)

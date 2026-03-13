@@ -1,0 +1,51 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "tasks": {
+    "fix:indexts": { "dependsOn": [] },
+    "fix:fixMissingDependencies": { "dependsOn": [] },
+    "lint:fix": { "dependsOn": ["fix:indexts", "fix:fixMissingDependencies"] },
+    "format:write:all": { "dependsOn": ["lint:fix"] },
+
+    "precommit:write": {
+      "dependsOn": [
+        "fix:indexts",
+        "fix:fixMissingDependencies",
+        "lint:fix",
+        "format:write:all"
+      ],
+      "cache": false
+    },
+    "typecheck": { "dependsOn": ["precommit:write"] },
+    "check:tsdoc": { "dependsOn": ["precommit:write"] },
+    "check:knip": { "dependsOn": ["precommit:write"] },
+
+    "test-coverage": {
+      "dependsOn": ["precommit:write"],
+      "outputs": [".coverage/**"],
+      "cache": false
+    },
+    "test-coverage-full": { "dependsOn": ["test-coverage", "precommit:write"] },
+    "readme": { "dependsOn": ["test-coverage", "precommit:write"] },
+    "build:all": {
+      // "outputLogs": "hash-only",
+      "cache": false,
+      "dependsOn": ["mono#readme", "mono#precommit:write"]
+    },
+    "runall": {
+      "dependsOn": [
+        "precommit:write",
+        "typecheck",
+        "check:knip",
+        "check:tsdoc",
+        "test-coverage",
+        "test-coverage-full",
+        "readme",
+        "build:all"
+      ],
+      "cache": false
+    }
+  },
+  "remoteCache": { "signature": true },
+  // "ui": "stream-with-experimental-timestamps"
+  "ui": "tui"
+}

@@ -1,14 +1,16 @@
+import { CHROME_PROFILE_PATH } from './constants'
+import type { CliOptions } from './types/CliOptions'
+import type { Logger } from '@mono/node'
+import { closeBrowserPages } from './utils/closeBrowserPages'
 import puppeteer from 'puppeteer'
-import { scrapeProfile } from './linkedin/scrapeProfile'
-import { scrapeSkills } from './linkedin/scrapeSkills'
-import { scrapeRecommendations } from './linkedin/scrapeRecommendations'
-import { scrapeProjects } from './linkedin/scrapeProjects'
 import { scrapeEducation } from './linkedin/scrapeEducation'
 import { scrapeExperience } from './linkedin/scrapeExperience'
-import { CliOptions } from './types/CliOptions'
-import { CHROME_PROFILE_PATH } from './constants'
+import { scrapeProfile } from './linkedin/scrapeProfile'
+import { scrapeProjects } from './linkedin/scrapeProjects'
+import { scrapeRecommendations } from './linkedin/scrapeRecommendations'
+import { scrapeSkills } from './linkedin/scrapeSkills'
 
-export async function scrapeLinkedIn(options: CliOptions): Promise<void> {
+export async function scrapeLinkedIn(options: CliOptions, logger: Logger): Promise<void> {
   const browser = await puppeteer.launch({
     headless: options.headless ? 'shell' : false,
     userDataDir: CHROME_PROFILE_PATH,
@@ -16,20 +18,24 @@ export async function scrapeLinkedIn(options: CliOptions): Promise<void> {
     defaultViewport: null,
   })
 
+  const scrapers = [
+    scrapeProfile, //
+    scrapeSkills,
+    scrapeRecommendations,
+    scrapeProjects,
+    scrapeExperience,
+    scrapeEducation,
+  ]
+
   try {
-    await Promise.all([
-      scrapeProfile(browser, options),
-      scrapeSkills(browser, options),
-      scrapeRecommendations(browser, options),
-      scrapeProjects(browser, options),
-      scrapeExperience(browser, options),
-      scrapeEducation(browser, options),
-    ])
+    await Promise.all(
+      scrapers.map((fn) => {
+        return fn(browser, options, logger)
+      })
+    )
   } finally {
     if (!options.keepOpen) {
-      for (const page of await browser.pages()) {
-        await page.close().catch(() => {})
-      }
+      await closeBrowserPages(browser)
       await browser.close()
     }
   }

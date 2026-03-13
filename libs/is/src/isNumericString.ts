@@ -3,7 +3,9 @@
  */
 export function isNumericString(string: string): boolean {
   const trim = string.trim()
-  if (!trim) return false
+  if (!trim) {
+    return false
+  }
   const n = Number(trim)
   return !isNaN(n) && isFinite(n)
 }

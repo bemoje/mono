@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strUnwrap } from './strUnwrap'
-import { describe, expect, it } from 'vitest'
 
 describe('strUnwrap', () => {
   it('should remove the left and right strings from the input string', () => {

@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { parseOptionFlags } from './parseOptionFlags'
 
 describe(parseOptionFlags.name, () => {
@@ -38,7 +40,11 @@ describe(parseOptionFlags.name, () => {
   })
 
   it('should throw for invalid option format', () => {
-    expect(() => parseOptionFlags('--verbose' as never)).toThrow('Invalid option format')
-    expect(() => parseOptionFlags('invalid' as never)).toThrow('Invalid option format')
+    expect(() => {
+      return parseOptionFlags('--verbose' as never)
+    }).toThrow('Invalid option format')
+    expect(() => {
+      return parseOptionFlags('invalid' as never)
+    }).toThrow('Invalid option format')
   })
 })

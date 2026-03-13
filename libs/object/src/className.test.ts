@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import { className } from './className'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(className.name, () => {
   it('should return the class name of a class instance', () => {

@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import { TableFormatter } from './TableFormatter'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(TableFormatter.name, () => {
   it('should render basic table', () => {
@@ -86,7 +88,7 @@ describe(TableFormatter.name, () => {
         ['Name', 'Age'],
         ['Alice', 30],
       ],
-      { color: true },
+      { color: true }
     )
     const actual = table.toString()
     expect(actual).toBeDefined()
@@ -99,7 +101,13 @@ describe(TableFormatter.name, () => {
         ['Name', 'Age'],
         ['Alice', 30],
       ],
-      { color: { separator: (s: string) => `[${s}]` } },
+      {
+        color: {
+          separator: (s: string) => {
+            return `[${s}]`
+          },
+        },
+      }
     )
     const actual = table.toString()
     expect(actual).toBeDefined()
@@ -114,8 +122,10 @@ describe(TableFormatter.name, () => {
       ],
       {
         color: true,
-        grayOutRow: (row) => row[0] === 'Bob',
-      },
+        grayOutRow: (row) => {
+          return row[0] === 'Bob'
+        },
+      }
     )
     const actual = table.toString()
     expect(actual).toBeDefined()
@@ -130,8 +140,10 @@ describe(TableFormatter.name, () => {
       ],
       {
         color: true,
-        grayOutRow: () => false,
-      },
+        grayOutRow: () => {
+          return false
+        },
+      }
     )
     const actual = table.toString()
     expect(actual).toBeDefined()
@@ -143,7 +155,7 @@ describe(TableFormatter.name, () => {
         ['A', 'B'],
         ['1', '2'],
       ],
-      { columnSeparator: ' - ' },
+      { columnSeparator: ' - ' }
     )
     const actual = table.toString()
     expect(actual).toContain(' - ')
@@ -155,7 +167,7 @@ describe(TableFormatter.name, () => {
         ['A', 'B'],
         ['1', '2'],
       ],
-      { headerRowSeparator: '=' },
+      { headerRowSeparator: '=' }
     )
     const actual = table.toString()
     expect(actual).toContain('=====')
@@ -166,7 +178,9 @@ describe(TableFormatter.name, () => {
       ['Name', 'Value'],
       ['Alice', Symbol('test') as never],
     ])
-    expect(() => table.toString()).toThrow('Unexpected cell value type')
+    expect(() => {
+      return table.toString()
+    }).toThrow('Unexpected cell value type')
   })
 
   it('should handle negative float numbers', () => {
@@ -189,7 +203,9 @@ describe(TableFormatter.name, () => {
     void table.stringsTable
     // Mutate table data to inject unexpected type after cellToString has already run
     ;(table.table[1] as unknown[])[1] = Symbol('test')
-    expect(() => table.formattedRows).toThrow('Unexpected cell value type')
+    expect(() => {
+      return table.formattedRows
+    }).toThrow('Unexpected cell value type')
   })
 
   it('should throw on unexpected boolean representation in formatBoolean', () => {
@@ -200,7 +216,9 @@ describe(TableFormatter.name, () => {
     // Access stringsTable to populate it, then mutate the string representation
     const strings = table.stringsTable
     strings[1][1] = 'maybe'
-    expect(() => table.formattedRows).toThrow('Unexpected boolean representation')
+    expect(() => {
+      return table.formattedRows
+    }).toThrow('Unexpected boolean representation')
   })
 
   it('should handle grayOutRow for header row', () => {
@@ -211,8 +229,10 @@ describe(TableFormatter.name, () => {
       ],
       {
         color: true,
-        grayOutRow: () => true,
-      },
+        grayOutRow: () => {
+          return true
+        },
+      }
     )
     const actual = table.toString()
     expect(actual).toBeDefined()

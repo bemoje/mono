@@ -1,6 +1,9 @@
-import { lazyProp } from '@mono/decorators'
-import type { IHelp, IArgument, ICommand, IOption } from './types'
+import type { Argument } from './types'
 import C from 'ansi-colors'
+import type { ICommand } from './types'
+import type { IHelp } from './types'
+import type { Option } from './types'
+import { lazyProp } from '@mono/decorators'
 
 /**
  * This is a fork of the Help class from the 'commander' npm package. The Help class method names as well as the
@@ -27,7 +30,9 @@ export class Help implements IHelp {
    */
   @lazyProp
   visibleCommands(): ICommand[] {
-    const res = this.cmd.commands.filter((c) => !c.hidden)
+    const res = Object.values(this.cmd.commands).filter((c) => {
+      return !c.hidden
+    })
     if (this.sortSubcommands) {
       res.sort((a: ICommand, b: ICommand) => {
         return a.name.localeCompare(b.name)
@@ -39,8 +44,8 @@ export class Help implements IHelp {
   /**
    * Compare options for sort.
    */
-  compareOptions(a: IOption, b: IOption): number {
-    const getSortKey = (option: IOption): string => {
+  compareOptions(a: Option, b: Option): number {
+    const getSortKey = (option: Option): string => {
       // WYSIWYG for order displayed in help. Short used for comparison if present. No special handling for negated.
       return option.short ? option.short.replace(/^-/, '') : option.long!.replace(/^--/, '')
     }
@@ -51,9 +56,13 @@ export class Help implements IHelp {
    * Get an array of the visible options. Includes a placeholder for the implicit help option, if there is one.
    */
   @lazyProp
-  visibleOptions(): IOption[] {
-    const res = this.cmd.options.filter((option: IOption) => !option.hidden)
-    if (this.sortOptions) res.sort(this.compareOptions)
+  visibleOptions(): Option[] {
+    const res = this.cmd.options.filter((option: Option) => {
+      return !option.hidden
+    })
+    if (this.sortOptions) {
+      res.sort(this.compareOptions)
+    }
     return res
   }
 
@@ -61,39 +70,39 @@ export class Help implements IHelp {
    * Get an array of the arguments if any have a description.
    */
   @lazyProp
-  visibleArguments(): IArgument[] {
-    // If there are any arguments with a description then return all the arguments.
-    if (this.cmd.arguments.find((argument: IArgument) => argument.description)) {
-      return [...this.cmd.arguments]
-    }
-    return []
+  visibleArguments(): Argument[] {
+    return this.cmd.arguments.slice()
   }
 
   /**
    * Get the command term to show in the list of subcommands.
    */
   subcommandTerm(sub: ICommand): string {
-    const args = sub.arguments.map((arg) => arg.usage).join(' ')
+    const args = sub.arguments
+      .map((arg) => {
+        return arg.usage
+      })
+      .join(' ')
     return (
-      (sub.aliases[0] ? sub.aliases[0].padEnd(this.longestSubcommandAliasLength(), ' ') + ' | ' : '') +
+      (sub.aliases[0] ? `${sub.aliases[0].padEnd(this.longestSubcommandAliasLength(), ' ')} | ` : '') +
       sub.name +
-      (sub.options.length ? ' ' + this.usageDisplayOptionsAs : '') + // simplistic check for non-help option
-      (args ? ' ' + args : '')
+      (sub.options.length ? ` ${this.usageDisplayOptionsAs}` : '') + // simplistic check for non-help option
+      (args ? ` ${args}` : '')
     )
   }
 
   /**
    * Get the option term to show in the list of options.
    */
-  optionTerm(option: IOption): string {
+  optionTerm(option: Option): string {
     return option.flags
   }
 
   /**
    * Get the argument term to show in the list of arguments.
    */
-  argumentTerm(argument: IArgument): string {
-    return argument.name
+  argumentTerm(argument: Argument): string {
+    return argument.usage
   }
 
   /**
@@ -101,7 +110,12 @@ export class Help implements IHelp {
    */
   @lazyProp
   longestSubcommandAliasLength(): number {
-    return Math.max(0, ...this.visibleCommands().map((c) => c.aliases[0]?.length || 0))
+    return Math.max(
+      0,
+      ...this.visibleCommands().map((c) => {
+        return c.aliases[0]?.length || 0
+      })
+    )
   }
 
   /**
@@ -141,39 +155,35 @@ export class Help implements IHelp {
     // Usage
     let path = ''
     for (let ancestor = this.cmd.parent; ancestor; ancestor = ancestor.parent) {
-      path = ancestor.name + ' ' + path
+      path = `${ancestor.name} ${path}`
     }
 
-    let cmdName = this.cmd.name
-    if (this.cmd.aliases[0]) {
-      cmdName += '|' + this.cmd.aliases[0]
-    }
-
-    return (
-      path +
-      cmdName +
-      ' ' +
-      [
-        ...(this.cmd.commands.length ? [this.usageDisplaySubcommandAs] : []),
-        ...(this.cmd.options.length ? [this.usageDisplayOptionsAs] : []),
-        ...this.cmd.arguments.map((arg) => {
-          return arg.required
-            ? arg.variadic
-              ? `<${arg.name}...>`
-              : `<${arg.name}>`
-            : arg.variadic
-              ? `[${arg.name}...]`
-              : `[${arg.name}]`
-        }),
-      ].join(' ')
-    )
+    return `${path + this.cmd.name} ${[
+      ...(Object.keys(this.cmd.commands).length ? [this.usageDisplaySubcommandAs] : []),
+      ...(this.cmd.options.length ? [this.usageDisplayOptionsAs] : []),
+      ...this.cmd.arguments.map((arg) => {
+        return arg.required
+          ? arg.variadic
+            ? `<${arg.name}...>`
+            : `<${arg.name}>`
+          : arg.variadic
+            ? `[${arg.name}...]`
+            : `[${arg.name}]`
+      }),
+    ].join(' ')}`.trim()
   }
 
   /**
    * Get the description for the command.
    */
   commandDescription(): string {
-    return this.cmd.description
+    let res = ''
+    if (this.cmd.aliases.length) {
+      res += `Aliases: ${this.cmd.aliases.join(', ')}`
+      res += '\n\n'
+    }
+    res += this.cmd.description
+    return res
   }
 
   /**
@@ -181,23 +191,29 @@ export class Help implements IHelp {
    * (Fallback to description for backwards compatibility.)
    */
   subcommandDescription(sub: ICommand): string {
-    return sub.summary || (sub.description.includes('\n') ? sub.description.split('\n')[0] : '')
+    return (
+      sub.summary ||
+      (sub.description?.includes('\n') ? sub.description.trim().split('\n')[0] : sub.description.trim())
+    )
   }
 
   /**
    * Get the option description to show in the list of options.
    */
-  optionDescription(option: IOption): string {
+  optionDescription(option: Option): string {
     const extraInfo: string[] = []
 
     if (option.choices) {
+      const choices = option.choices.length > 5 ? option.choices.slice(0, 5).concat(['...']) : option.choices
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${option.choices.map((choice: string) => String(choice)).join(', ')}`,
+        `choices: ${choices.join(', ')}`
       )
     }
     if (option.defaultValue && !(Array.isArray(option.defaultValue) && option.defaultValue.length === 0)) {
-      extraInfo.push(`default: ${option.defaultValueDescription || String(option.defaultValue)}`)
+      extraInfo.push(
+        `default: ${option.defaultValueDescription || JSON.stringify(option.defaultValue).replaceAll('"', '')}`
+      )
     }
 
     if (option.env !== undefined) {
@@ -211,22 +227,25 @@ export class Help implements IHelp {
       return extraDescription
     }
 
-    return option.description
+    return option.description ?? ''
   }
 
   /**
    * Get the argument description to show in the list of arguments.
    */
-  argumentDescription(argument: IArgument): string {
+  argumentDescription(argument: Argument): string {
     const extraInfo: string[] = []
     if (argument.choices) {
+      const choices = argument.choices.length > 5 ? argument.choices.slice(0, 5).concat(['...']) : argument.choices
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${argument.choices.map((choice: string) => String(choice)).join(', ')}`,
+        `choices: ${choices.join(', ')}`
       )
     }
-    if (argument.defaultValue !== undefined) {
-      extraInfo.push(`default: ${argument.defaultValueDescription || String(argument.defaultValue)}`)
+    if (argument.defaultValue && !(Array.isArray(argument.defaultValue) && argument.defaultValue.length === 0)) {
+      extraInfo.push(
+        `default: ${argument.defaultValueDescription || JSON.stringify(argument.defaultValue).replaceAll('"', '')}`
+      )
     }
     if (extraInfo.length > 0) {
       const extraDescription = `(${extraInfo.join(', ')})`
@@ -235,30 +254,34 @@ export class Help implements IHelp {
       }
       return extraDescription
     }
-    return argument.description
+    return argument.description ?? ''
   }
 
   /**
    * Format a list of items, given a heading and an array of formatted items.
    */
   formatItemList(heading: string, items: string[]): string[] {
-    if (items.length === 0) return []
+    if (items.length === 0) {
+      return []
+    }
     return [this.styleTitle(heading), ...items, '']
   }
 
   /**
    * Group items by their help group heading.
    */
-  groupItems<T extends ICommand | IOption>(
+  groupItems<T extends ICommand | Option>(
     unsortedItems: T[],
     visibleItems: T[],
-    getGroup: (item: T) => string,
+    getGroup: (item: T) => string
   ): Map<string, T[]> {
     const result = new Map<string, T[]>()
     // Add groups in order of appearance in unsortedItems.
     unsortedItems.forEach((item: T) => {
       const group = getGroup(item)
-      if (!result.has(group)) result.set(group, [])
+      if (!result.has(group)) {
+        result.set(group, [])
+      }
     })
     // Add items in order of appearance in visibleItems.
     visibleItems.forEach((item: T) => {
@@ -276,8 +299,8 @@ export class Help implements IHelp {
    */
   displayWidth(str: string): number {
     // eslint-disable-next-line no-control-regex
-    const sgrPattern = /\x1b\[\d*(;\d*)*m/g
-    return str.replace(sgrPattern, '').length
+    const sgrPattern = /\u001b\[\d*(;\d*)*m/g
+    return str.replaceAll(sgrPattern, '').length
   }
 
   /**
@@ -295,11 +318,22 @@ export class Help implements IHelp {
     //    command subcommand [opts] [cmd] <foo> [bar]
     return str
       .split(' ')
-      .map((word: string) => {
-        if (word === this.usageDisplaySubcommandAs) return C.blue(word)
-        if (word === this.usageDisplayOptionsAs) return C.blue(word)
-        if (word[0] === '<') return C.red(word)
-        if (word[0] === '[') return C.cyan(word)
+      .map((word: string, index, arr) => {
+        if (word === this.usageDisplaySubcommandAs) {
+          return C.green(word)
+        }
+        if (word === this.usageDisplayOptionsAs) {
+          return C.blue(word)
+        }
+        if (word[0] === '<') {
+          return C.red(word)
+        }
+        if (word[0] === '[') {
+          return C.cyan(word)
+        }
+        if (arr[index + 1]?.startsWith('[')) {
+          return C.magenta(word)
+        }
         return this.styleCommandText(word) // Restrict to initial words?
       })
       .join(' ')
@@ -323,7 +357,7 @@ export class Help implements IHelp {
    * Style subcommand descriptions for display in help output.
    */
   styleSubcommandDescription(str: string): string {
-    return C.gray(this.styleDescriptionText(str))
+    return this.styleDescriptionText(str)
   }
 
   /**
@@ -337,7 +371,7 @@ export class Help implements IHelp {
    * Base style used by descriptions. Override in subclass to apply custom formatting.
    */
   styleDescriptionText(str: string): string {
-    return str
+    return C.gray(str)
   }
 
   /**
@@ -353,14 +387,24 @@ export class Help implements IHelp {
   styleSubcommandTerm(str: string): string {
     // This is very like usage with lots of parts! Assume default string which is formed like:
     //    subcommand [opts] <foo> [bar]
-    return str
+    const res = str
       .split(' ')
       .map((word: string) => {
-        if (word === this.usageDisplayOptionsAs) return this.styleOptionText(word)
-        if (word[0] === '[' || word[0] === '<') return this.styleArgumentText(word)
+        if (word === this.usageDisplayOptionsAs) {
+          return C.dim(word)
+        }
+        if (word[0] === '[' || word[0] === '<') {
+          return C.dim(word)
+        }
         return this.styleSubcommandText(word) // Restrict to initial words?
       })
       .join(' ')
+    const split = res.split('|')
+    if (split.length === 1) {
+      return res
+    }
+    split[0] = C.green(split[0])
+    return split.join('|')
   }
 
   /**
@@ -406,7 +450,7 @@ export class Help implements IHelp {
     return Math.max(
       this.longestOptionTermLength(),
       this.longestSubcommandTermLength(),
-      this.longestArgumentTermLength(),
+      this.longestArgumentTermLength()
     )
   }
 
@@ -414,7 +458,7 @@ export class Help implements IHelp {
    * Detect manually wrapped and indented strings by checking for line break followed by whitespace.
    */
   preformatted(str: string): boolean {
-    return /\n[^\S\r\n]/.test(str)
+    return /\n[^\S\n\r]/.test(str)
   }
 
   /**
@@ -427,7 +471,9 @@ export class Help implements IHelp {
   formatItem(term: string, termWidth: number, description: string): string {
     const itemIndent = 2
     const itemIndentStr = ' '.repeat(itemIndent)
-    if (!description) return itemIndentStr + term
+    if (!description) {
+      return itemIndentStr + term
+    }
 
     // Pad the term out to a consistent width, so descriptions are aligned.
     const paddedTerm = term.padEnd(termWidth + term.length - this.displayWidth(term))
@@ -441,7 +487,7 @@ export class Help implements IHelp {
       formattedDescription = description
     } else {
       const wrappedDescription = this.boxWrap(description, remainingWidth)
-      formattedDescription = wrappedDescription.replace(/\n/g, '\n' + ' '.repeat(termWidth + spacerWidth))
+      formattedDescription = wrappedDescription.replaceAll('\n', `\n${' '.repeat(termWidth + spacerWidth)}`)
     }
 
     // Construct and overall indent.
@@ -449,7 +495,7 @@ export class Help implements IHelp {
       itemIndentStr +
       paddedTerm +
       ' '.repeat(spacerWidth) +
-      formattedDescription.replace(/\n/g, `\n${itemIndentStr}`)
+      formattedDescription.replaceAll('\n', `\n${itemIndentStr}`)
     )
   }
 
@@ -458,11 +504,13 @@ export class Help implements IHelp {
    * Wrapping is skipped if the width is less than `minWidthToWrap`.
    */
   boxWrap(str: string, width: number): string {
-    if (width < this.minWidthToWrap) return str
+    if (width < this.minWidthToWrap) {
+      return str
+    }
 
     const rawLines = str.split(/\r\n|\n/)
     // split up text by whitespace
-    const chunkPattern = /[\s]*[^\s]+/g
+    const chunkPattern = /\s*\S+/g
     const wrappedLines: string[] = []
     rawLines.forEach((line: string) => {
       const chunks = line.match(chunkPattern)
@@ -507,27 +555,25 @@ export class Help implements IHelp {
     }
 
     // Arguments
-    const argumentList = this.visibleArguments().map((argument: IArgument) => {
+    const argumentList = this.visibleArguments().map((argument: Argument) => {
       return this.formatItem(
         this.styleArgumentTerm(this.argumentTerm(argument)),
         this.padWidth(),
-        this.styleArgumentDescription(this.argumentDescription(argument)),
+        this.styleArgumentDescription(this.argumentDescription(argument))
       )
     })
     output = output.concat(this.formatItemList('Arguments:', argumentList))
 
     // Options
-    const optionGroups = this.groupItems(
-      this.cmd.options,
-      this.visibleOptions(),
-      (option: IOption) => option.group ?? 'Options:',
-    )
+    const optionGroups = this.groupItems(this.cmd.options, this.visibleOptions(), (option: Option) => {
+      return option.group ?? 'Options:'
+    })
     optionGroups.forEach((options, group) => {
-      const optionList = options.map((option: IOption) => {
+      const optionList = options.map((option: Option) => {
         return this.formatItem(
           this.styleOptionTerm(this.optionTerm(option)),
           this.padWidth(),
-          this.styleOptionDescription(this.optionDescription(option)),
+          this.styleOptionDescription(this.optionDescription(option))
         )
       })
       output = output.concat(this.formatItemList(group, optionList))
@@ -535,17 +581,19 @@ export class Help implements IHelp {
 
     // Commands
     const commandGroups = this.groupItems(
-      this.cmd.commands,
+      Object.values(this.cmd.commands),
       this.visibleCommands(),
 
-      (sub: ICommand) => sub.group || 'Commands:',
+      (sub: ICommand) => {
+        return sub.group || 'Commands:'
+      }
     )
     commandGroups.forEach((commands, group) => {
       const commandList = commands.map((sub: ICommand) => {
         return this.formatItem(
           this.styleSubcommandTerm(this.subcommandTerm(sub)),
           this.padWidth(),
-          this.styleSubcommandDescription(this.subcommandDescription(sub)),
+          this.styleSubcommandDescription(this.subcommandDescription(sub))
         )
       })
       output = output.concat(this.formatItemList(group, commandList))

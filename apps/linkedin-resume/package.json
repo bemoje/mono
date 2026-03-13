@@ -1,7 +1,7 @@
 {
   "name": "linkedin-resume",
-  "description": "A CLI tool to generate a LinkedIn resume in PDF format.",
-  "version": "0.3.2",
+  "description": "A CLI tool to generate a LinkedIn resume in PDF, HTML, and Markdown formats.",
+  "version": "0.4.2",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "main": "dist/cli.mjs",
@@ -32,8 +32,28 @@
     "url": "https://github.com/bemoje/mono.git",
     "directory": "apps/linkedin-resume"
   },
-  "homepage": "https://github.com/bemoje/mono/blob/main/apps/linkedin-resume/README.md",
   "scripts": {
-    "build": "node esbuild.mjs"
+    "build": "yarn build:bundle && yarn build:publint && yarn build:attw",
+    "build:bundle": "node esbuild.mjs",
+    "build:publint": "npx --yes publint --level warning --pack npm",
+    "build:attw": "yarn attw --pack .",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.48",
+    "commander": "^14.0.3",
+    "fs-extra": "^11.3.4",
+    "puppeteer": "^24.38.0",
+    "upath": "^2.0.1"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
+    "@mono/config": "workspace:^",
+    "@mono/node": "workspace:^",
+    "@mono/object": "workspace:^",
+    "@mono/os": "workspace:^",
+    "@mono/stacktrace": "workspace:^",
+    "@mono/types": "workspace:^",
+    "@types/fs-extra": "^11.0.4"
   }
 }

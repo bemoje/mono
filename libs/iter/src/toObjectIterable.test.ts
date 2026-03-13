@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { toObjectIterable } from './toObjectIterable'
 
 describe(toObjectIterable.name, () => {
@@ -70,10 +72,7 @@ describe(toObjectIterable.name, () => {
       ['user2', { id: 2, name: 'Jane' }],
     ]
     const result = toObjectIterable(entries)
-    expect(result).toEqual({
-      user1: { id: 1, name: 'John' },
-      user2: { id: 2, name: 'Jane' },
-    })
+    expect(result).toEqual({ user1: { id: 1, name: 'John' }, user2: { id: 2, name: 'Jane' } })
   })
 
   it('should preserve value references', () => {
@@ -109,5 +108,18 @@ describe(toObjectIterable.name, () => {
     // TypeScript should infer: Record<'name' | 'age', string | number>
     expect(result.name).toBe('Bob')
     expect(result.age).toBe(42)
+  })
+
+  it('should stringify non-propertykey keys', () => {
+    const objKey = { id: 1 }
+    const entries: Array<[any, number]> = [
+      [objKey, 100],
+      [123, 200],
+      [Symbol('test'), 300],
+    ]
+    const result = toObjectIterable(entries)
+    expect(result['[object Object]']).toBe(100)
+    expect(result[123]).toBe(200)
+    expect(typeof Object.getOwnPropertySymbols(result)[0]).toBe('symbol')
   })
 })

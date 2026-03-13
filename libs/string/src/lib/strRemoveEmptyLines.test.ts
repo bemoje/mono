@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strRemoveEmptyLines } from './strRemoveEmptyLines'
-import { describe, expect, it } from 'vitest'
 
 describe('strRemoveEmptyLines', () => {
   it('removes all lines that are empty or only contain whitespace', () => {
@@ -16,7 +18,7 @@ describe('strRemoveEmptyLines', () => {
       ' ',
     ].join('\n')
     expect(strRemoveEmptyLines(str)).toBe(
-      ['list:', ' 1. some text', ' 2. some text', '   a. some text', '   b. some text'].join('\n'),
+      ['list:', ' 1. some text', ' 2. some text', '   a. some text', '   b. some text'].join('\n')
     )
   })
 

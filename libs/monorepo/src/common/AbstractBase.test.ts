@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import { AbstractBase } from './AbstractBase'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 class ConcreteBase extends AbstractBase {
   constructor(parent: any) {
@@ -35,14 +37,18 @@ describe(AbstractBase.name, () => {
       const grandparent = new ConcreteBase(null)
       const parent = new ConcreteBase(grandparent)
       const child = new ConcreteBase(parent)
-      const found = child.findParentDeep((p) => p === grandparent)
+      const found = child.findParentDeep((p) => {
+        return p === grandparent
+      })
       expect(found).toBe(grandparent)
     })
 
     it('should return undefined when no parent matches', () => {
       const parent = new ConcreteBase(null)
       const child = new ConcreteBase(parent)
-      const found = child.findParentDeep(() => false)
+      const found = child.findParentDeep(() => {
+        return false
+      })
       expect(found).toBeUndefined()
     })
   })
@@ -61,7 +67,9 @@ describe(AbstractBase.name, () => {
         }
       }
       const child = new ConcreteBase(null)
-      expect(() => child.getParentDeep(OtherBase)).toThrow('Parent of type OtherBase not found.')
+      expect(() => {
+        return child.getParentDeep(OtherBase)
+      }).toThrow('Parent of type OtherBase not found.')
     })
   })
 })

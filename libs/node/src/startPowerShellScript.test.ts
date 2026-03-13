@@ -1,26 +1,27 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { startPowerShellScript } from './startPowerShellScript'
+import { vi } from 'vitest'
 
 const startPowerShellScriptEmitter = startPowerShellScript.emitterSync
 
 const { mockExec, mockExecAsync } = vi.hoisted(() => {
-  return {
-    mockExec: vi.fn(),
-    mockExecAsync: vi.fn(),
-  }
+  return { mockExec: vi.fn(), mockExecAsync: vi.fn() }
 })
 
 // Mock child_process and util
-vi.mock('node:child_process', async () => {
-  return {
-    exec: mockExec,
-  }
+vi.mock('child_process', async () => {
+  return { exec: mockExec }
 })
 
-vi.mock('node:util', async () => {
+vi.mock('util', async () => {
   return {
-    promisify: vi.fn(() => mockExecAsync),
+    promisify: vi.fn(() => {
+      return mockExecAsync
+    }),
   }
 })
 
@@ -53,10 +54,7 @@ describe('startPowerShellScript', () => {
 
       const result = await startPowerShellScript('test-script.ps1')
 
-      expect(result).toEqual({
-        stdout: mockStdout,
-        stderr: mockStderr,
-      })
+      expect(result).toEqual({ stdout: mockStdout, stderr: mockStderr })
 
       expect(mockExecAsync).toHaveBeenCalledWith('test-script.ps1', { shell: 'powershell.exe' })
     })
@@ -113,21 +111,14 @@ describe('startPowerShellScript', () => {
 
       const result = await startPowerShellScript('script-with-warnings.ps1')
 
-      expect(result).toEqual({
-        stdout: mockStdout,
-        stderr: mockStderr,
-      })
+      expect(result).toEqual({ stdout: mockStdout, stderr: mockStderr })
     })
   })
 
   describe(startPowerShellScriptEmitter.name, () => {
     it('examples', () => {
       expect(() => {
-        const mockChild = {
-          stdout: { on: vi.fn() },
-          stderr: { on: vi.fn() },
-          on: vi.fn(),
-        }
+        const mockChild = { stdout: { on: vi.fn() }, stderr: { on: vi.fn() }, on: vi.fn() }
 
         mockExec.mockReturnValue(mockChild as any)
 
@@ -142,11 +133,7 @@ describe('startPowerShellScript', () => {
     })
 
     it('should return child process for streaming output', () => {
-      const mockChild = {
-        stdout: { on: vi.fn() },
-        stderr: { on: vi.fn() },
-        on: vi.fn(),
-      }
+      const mockChild = { stdout: { on: vi.fn() }, stderr: { on: vi.fn() }, on: vi.fn() }
 
       mockExec.mockReturnValue(mockChild as any)
 
@@ -157,11 +144,7 @@ describe('startPowerShellScript', () => {
     })
 
     it('should handle script with arguments for streaming', () => {
-      const mockChild = {
-        stdout: { on: vi.fn() },
-        stderr: { on: vi.fn() },
-        on: vi.fn(),
-      }
+      const mockChild = { stdout: { on: vi.fn() }, stderr: { on: vi.fn() }, on: vi.fn() }
 
       mockExec.mockReturnValue(mockChild as any)
 
@@ -172,11 +155,7 @@ describe('startPowerShellScript', () => {
     })
 
     it('should handle arguments with special characters for streaming', () => {
-      const mockChild = {
-        stdout: { on: vi.fn() },
-        stderr: { on: vi.fn() },
-        on: vi.fn(),
-      }
+      const mockChild = { stdout: { on: vi.fn() }, stderr: { on: vi.fn() }, on: vi.fn() }
 
       mockExec.mockReturnValue(mockChild as any)
 
@@ -204,7 +183,7 @@ describe('startPowerShellScript', () => {
 
       expect(mockExecAsync).toHaveBeenCalledWith(
         'script.ps1 simple "arg with spaces" \'arg"with"quotes\' another-simple',
-        { shell: 'powershell.exe' },
+        { shell: 'powershell.exe' }
       )
     })
 

@@ -1,16 +1,18 @@
-import type { TFunction } from '@mono/types'
-import { FunctionProfiler, FunctionProfilerResult } from '../FunctionProfiler/FunctionProfiler'
+import { FunctionProfiler } from '../internal/FunctionProfiler/FunctionProfiler'
+import type { FunctionProfilerResult } from '../internal/FunctionProfiler/FunctionProfiler'
 import type { FunctionPrototype } from '@mono/types'
-import { inspect, InspectOptions } from 'node:util'
-import { isFunction } from 'es-toolkit/predicate'
-import { ModuleMethodProfilerFactory } from '../ProfilerFactory/ModuleMethodProfilerFactory'
-import { profilerWrap } from '../FunctionProfiler/profilerWrap'
-import { ProfilerWrapMethodsStrategy } from '../ProfilerWrapMethodsStrategy/ProfilerWrapMethodsStrategy'
-import { PrototypeMethodProfilerFactory } from '../ProfilerFactory/PrototypeMethodProfilerFactory'
-import { setName } from '@mono/fn'
-import { StandaloneFunctionIdentifier } from '../FunctionIdentifier/StandaloneFunctionIdentifier'
-import { StaticMethodProfilerFactory } from '../ProfilerFactory/StaticMethodProfilerFactory'
+import type { InspectOptions } from 'util'
+import { ModuleMethodProfilerFactory } from '../internal/ProfilerFactory/ModuleMethodProfilerFactory'
+import { ProfilerWrapMethodsStrategy } from '../internal/ProfilerWrapMethodsStrategy/ProfilerWrapMethodsStrategy'
+import { PrototypeMethodProfilerFactory } from '../internal/ProfilerFactory/PrototypeMethodProfilerFactory'
+import { StandaloneFunctionIdentifier } from '../internal/FunctionIdentifier/StandaloneFunctionIdentifier'
+import { StaticMethodProfilerFactory } from '../internal/ProfilerFactory/StaticMethodProfilerFactory'
+import type { TFunction } from '@mono/types'
 import { TableFormatter } from '@mono/table'
+import { inspect } from 'util'
+import { isFunction } from 'es-toolkit/predicate'
+import { profilerWrap } from '../internal/FunctionProfiler/profilerWrap'
+import { setName } from '@mono/fn'
 import { wrapMethods } from '@mono/fn'
 
 /**
@@ -35,14 +37,14 @@ export class Profiler {
    */
   static class<T extends FunctionPrototype & { profiler?: ProfilerClassOptions }>(
     target: T,
-    options?: ProfilerClassOptions,
+    options?: ProfilerClassOptions
   ): T
 
   /**
    * Class profiling decorator
    */
   static class<T extends FunctionPrototype & { profiler?: ProfilerClassOptions }>(
-    options: ProfilerClassOptions,
+    options: ProfilerClassOptions
   ): (target: T) => T
 
   /**
@@ -50,7 +52,7 @@ export class Profiler {
    */
   static class<T extends FunctionPrototype & { profiler?: ProfilerClassOptions }>(
     targetOrOptions: T | ProfilerClassOptions,
-    options?: ProfilerClassOptions,
+    options?: ProfilerClassOptions
   ) {
     if (isFunction(targetOrOptions)) {
       const target = targetOrOptions
@@ -58,13 +60,15 @@ export class Profiler {
       Profiler.classPrototype(target, options?.ignorePrototypeKeys)
       return target
     } else {
-      return (target: T) => Profiler.class(target, targetOrOptions as ProfilerClassOptions | undefined)
+      return (target: T) => {
+        return Profiler.class(target, targetOrOptions as ProfilerClassOptions | undefined)
+      }
     }
   }
 
   static classStatic<T extends FunctionPrototype & { profiler?: ProfilerClassOptions }>(
     target: T,
-    ignoreKeys?: Iterable<string | symbol>,
+    ignoreKeys?: Iterable<string | symbol>
   ) {
     if (Profiler.enabled) {
       wrapMethods(
@@ -72,7 +76,7 @@ export class Profiler {
         new ProfilerWrapMethodsStrategy(new StaticMethodProfilerFactory(target), [
           ...(ignoreKeys ?? []),
           ...(target.profiler?.ignoreStaticKeys ?? []),
-        ]),
+        ])
       )
     }
     return target
@@ -80,7 +84,7 @@ export class Profiler {
 
   static classPrototype<T extends FunctionPrototype & { profiler?: ProfilerClassOptions }>(
     target: T,
-    ignoreKeys?: Iterable<string | symbol>,
+    ignoreKeys?: Iterable<string | symbol>
   ) {
     if (Profiler.enabled) {
       wrapMethods(
@@ -88,7 +92,7 @@ export class Profiler {
         new ProfilerWrapMethodsStrategy(new PrototypeMethodProfilerFactory(target.prototype), [
           ...(ignoreKeys ?? []),
           ...(target.profiler?.ignorePrototypeKeys ?? []),
-        ]),
+        ])
       )
     }
     return target
@@ -98,7 +102,7 @@ export class Profiler {
     if (Profiler.enabled) {
       wrapMethods(
         target,
-        new ProfilerWrapMethodsStrategy(new ModuleMethodProfilerFactory(moduleName, target), ignoreKeys),
+        new ProfilerWrapMethodsStrategy(new ModuleMethodProfilerFactory(moduleName, target), ignoreKeys)
       )
     }
     return target
@@ -108,7 +112,9 @@ export class Profiler {
   static fn<T extends TFunction>(name: string, func: T): T
   static fn<T extends TFunction>(nameOrFunc: T, maybeFunc?: T) {
     const func: T = isFunction(nameOrFunc) ? nameOrFunc : setName(nameOrFunc, maybeFunc as T)
-    if (!func.name) throw new Error('Function must have a name:\n' + func.toString())
+    if (!func.name) {
+      throw new Error(`Function must have a name:\n${func.toString()}`)
+    }
     if (Profiler.enabled) {
       return profilerWrap(func, new FunctionProfiler(new StandaloneFunctionIdentifier(func)))
     }
@@ -121,21 +127,29 @@ export class Profiler {
     })
 
     const sortkey1 = options?.sortBy ?? ('calls' as keyof FunctionProfilerResult)
-    const sortValue1 = (entry: ProfilerResultReadableEntry) => entry[1][sortkey1] ?? -1
+    const sortValue1 = (entry: ProfilerResultReadableEntry) => {
+      return entry[1][sortkey1] ?? -1
+    }
 
     const sortKey2: keyof FunctionProfilerResult = sortkey1 === 'calls' ? 'totalTimeUs' : 'calls'
-    const sortValue2 = (entry: ProfilerResultReadableEntry) => entry[1][sortKey2] ?? -1
+    const sortValue2 = (entry: ProfilerResultReadableEntry) => {
+      return entry[1][sortKey2] ?? -1
+    }
 
     return results.sort((a: ProfilerResultReadableEntry, b: ProfilerResultReadableEntry) => {
       const comparision = sortValue1(a) - sortValue1(b)
-      if (comparision !== 0) return comparision
+      if (comparision !== 0) {
+        return comparision
+      }
       return sortValue2(a) - sortValue2(b)
     })
   }
 
   static printResults(options?: PrintProfilerResultsOptions) {
     let entries = this.getResults(options)
-    if (options?.update) entries = options.update(entries)
+    if (options?.update) {
+      entries = options.update(entries)
+    }
 
     const headers = ['Execution time (microseconds)', 'calls', 'total', 'avg', 'min', 'max']
     const rows = entries.map(([method, stats]) => {
@@ -144,12 +158,16 @@ export class Profiler {
     const table = [headers, ...rows] as (string | number)[][]
 
     const formatter = new TableFormatter(table, {
-      color: options?.noColor ? false : true,
-      grayOutRow: (row) => row[1] === 0,
+      color: !options?.noColor,
+      grayOutRow: (row) => {
+        return row[1] === 0
+      },
     })
 
     console.log()
-    formatter.formattedLines.forEach((line) => console.log(line))
+    formatter.formattedLines.forEach((line) => {
+      return console.log(line)
+    })
     console.log()
   }
 
@@ -168,9 +186,7 @@ type ProfilerClassOptions = {
   ignorePrototypeKeys?: Iterable<string | symbol>
 }
 
-type GetProfilerResultsOptions = {
-  sortBy?: keyof FunctionProfilerResult
-}
+type GetProfilerResultsOptions = { sortBy?: keyof FunctionProfilerResult }
 
 type PrintProfilerResultsOptions = {
   sortBy?: keyof FunctionProfilerResult

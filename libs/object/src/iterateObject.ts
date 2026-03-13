@@ -33,7 +33,7 @@ export interface IterateObjectYield<T extends object = object, V = unknown> {
  * - Preserves traversal order
  */
 export function* iterateObject<T extends object = object, V = unknown>(
-  root: T,
+  root: T
 ): Generator<IterateObjectYield<T, V>> {
   const seen = new WeakSet()
   const stack: Pick<IterateObjectYield<T, V>, 'value' | 'propertyPathArray' | 'object'>[] = [
@@ -44,7 +44,9 @@ export function* iterateObject<T extends object = object, V = unknown>(
     const { value: current, propertyPathArray, object } = stack.pop()!
 
     if (typeof current === 'object' && current !== null) {
-      if (seen.has(current)) continue
+      if (seen.has(current)) {
+        continue
+      }
       seen.add(current)
 
       // yield the object/array itself before traversing into it
@@ -56,9 +58,11 @@ export function* iterateObject<T extends object = object, V = unknown>(
           root,
           propertyPathArray,
           propertyPath: propertyPathArray
-            .map((s) => (typeof s === 'string' ? s : '[' + s + ']'))
+            .map((s) => {
+              return typeof s === 'string' ? s : `[${s}]`
+            })
             .join('.')
-            .replace(/\.\[/g, '['),
+            .replaceAll('.[', '['),
           isLeaf: false,
           nodeType: Array.isArray(current) ? 'array' : 'object',
         }
@@ -67,22 +71,14 @@ export function* iterateObject<T extends object = object, V = unknown>(
       if (Array.isArray(current)) {
         // push array elements in reverse order so they're processed in forward order
         for (let i = current.length - 1; i >= 0; i--) {
-          stack.push({
-            value: current[i],
-            propertyPathArray: propertyPathArray.concat(i),
-            object: current,
-          })
+          stack.push({ value: current[i], propertyPathArray: propertyPathArray.concat(i), object: current })
         }
       } else {
         // push object entries in reverse order so they're processed in forward order
         const entries = Object.entries(current)
         for (let i = entries.length - 1; i >= 0; i--) {
           const [key, value] = entries[i]
-          stack.push({
-            value: value,
-            propertyPathArray: propertyPathArray.concat(key),
-            object: current,
-          })
+          stack.push({ value: value, propertyPathArray: propertyPathArray.concat(key), object: current })
         }
       }
     } else {
@@ -94,9 +90,11 @@ export function* iterateObject<T extends object = object, V = unknown>(
         root,
         propertyPathArray,
         propertyPath: propertyPathArray
-          .map((s) => (typeof s === 'string' ? s : '[' + s + ']'))
+          .map((s) => {
+            return typeof s === 'string' ? s : `[${s}]`
+          })
           .join('.')
-          .replace(/\.\[/g, '['),
+          .replaceAll('.[', '['),
         isLeaf: true,
         nodeType: 'object',
       }

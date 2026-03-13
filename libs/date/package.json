@@ -1,16 +1,47 @@
 {
   "name": "@mono/date",
-  "version": "0.0.1",
+  "version": "1.1.3",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
+  "description": "Lightweight date and time utilities for formatting, time-unit conversion, and duration measurement.",
+  "keywords": [
+    "date",
+    "time",
+    "formatting",
+    "duration",
+    "conversion",
+    "measurement",
+    "utilities",
+    "typescript"
+  ],
   "scripts": {
-    "indexts": "devkit clean index-ts",
-    "build": "node esbuild.mjs"
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
-    "@bemoje/devkit": "0.1.0"
+    "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "enhanced-ms": "^4.2.0"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./Timer": "./src/Timer.ts",
+    "./dateString": "./src/dateString.ts",
+    "./daysToMs": "./src/daysToMs.ts",
+    "./getWeek": "./src/getWeek.ts",
+    "./hasCooldownElapsed": "./src/hasCooldownElapsed.ts",
+    "./hoursToMs": "./src/hoursToMs.ts",
+    "./minutesToMs": "./src/minutesToMs.ts",
+    "./monthNameDa": "./src/monthNameDa.ts",
+    "./monthNameDaRelative": "./src/monthNameDaRelative.ts",
+    "./msSinceDate": "./src/msSinceDate.ts",
+    "./secondsToMs": "./src/secondsToMs.ts",
+    "./stripTime": "./src/stripTime.ts",
+    "./today": "./src/today.ts",
+    "./yesterday": "./src/yesterday.ts"
   }
 }

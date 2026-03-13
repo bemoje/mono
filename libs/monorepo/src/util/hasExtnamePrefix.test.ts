@@ -1,6 +1,8 @@
-import { describe, it, expect } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { hasExtnamePrefix } from './hasExtnamePrefix'
+import { it } from 'vitest'
 
 describe(hasExtnamePrefix.name, () => {
   it('examples', () => {

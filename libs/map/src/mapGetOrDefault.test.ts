@@ -1,5 +1,8 @@
-import { describe, expect, it, vitest } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { mapGetOrDefault } from './mapGetOrDefault'
+import { vitest } from 'vitest'
 
 describe(mapGetOrDefault.name, () => {
   it('should return the value for the key if it exists in the map', () => {

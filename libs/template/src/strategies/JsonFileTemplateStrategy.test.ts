@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest'
-import assert from 'node:assert'
-import { Type } from '@sinclair/typebox'
 import { JsonFileTemplateStrategy } from './JsonFileTemplateStrategy'
+import { Type } from '@sinclair/typebox'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(JsonFileTemplateStrategy.name, () => {
   it('examples', () => {
@@ -17,28 +19,16 @@ describe(JsonFileTemplateStrategy.name, () => {
       assert.deepStrictEqual(rendered, template)
 
       // With schema validation
-      const schema = Type.Object({
-        name: Type.String(),
-        version: Type.String(),
-        author: Type.String(),
-      })
+      const schema = Type.Object({ name: Type.String(), version: Type.String(), author: Type.String() })
 
       const typedStrategy = new JsonFileTemplateStrategy(schema)
-      const typedTemplate = {
-        name: '{{packageName}}',
-        version: '{{version}}',
-        author: '{{author}}',
-      }
+      const typedTemplate = { name: '{{packageName}}', version: '{{version}}', author: '{{author}}' }
 
       const typedStringified = typedStrategy.templateToString(typedTemplate)
       const populatedJson = '{\n  "name": "my-package",\n  "version": "2.0.0",\n  "author": "Developer"\n}'
       const typedRendered = typedStrategy.render(populatedJson)
 
-      assert.deepStrictEqual(typedRendered, {
-        name: 'my-package',
-        version: '2.0.0',
-        author: 'Developer',
-      })
+      assert.deepStrictEqual(typedRendered, { name: 'my-package', version: '2.0.0', author: 'Developer' })
     }).not.toThrow()
   })
 
@@ -51,10 +41,7 @@ describe(JsonFileTemplateStrategy.name, () => {
     })
 
     it('should initialize with provided schema', () => {
-      const schema = Type.Object({
-        name: Type.String(),
-        version: Type.String(),
-      })
+      const schema = Type.Object({ name: Type.String(), version: Type.String() })
 
       const strategy = new JsonFileTemplateStrategy(schema)
 
@@ -83,12 +70,7 @@ describe(JsonFileTemplateStrategy.name, () => {
 
     it('should handle nested objects', () => {
       const strategy = new JsonFileTemplateStrategy()
-      const template = {
-        config: {
-          debug: true,
-          port: 3000,
-        },
-      }
+      const template = { config: { debug: true, port: 3000 } }
 
       const result = strategy.templateToString(template)
 
@@ -97,10 +79,7 @@ describe(JsonFileTemplateStrategy.name, () => {
 
     it('should handle arrays', () => {
       const strategy = new JsonFileTemplateStrategy()
-      const template = {
-        items: ['a', 'b', 'c'],
-        count: 3,
-      }
+      const template = { items: ['a', 'b', 'c'], count: 3 }
 
       const result = strategy.templateToString(template)
 
@@ -109,10 +88,7 @@ describe(JsonFileTemplateStrategy.name, () => {
 
     it('should handle template variables', () => {
       const strategy = new JsonFileTemplateStrategy()
-      const template = {
-        name: '{{packageName}}',
-        version: '{{version}}',
-      }
+      const template = { name: '{{packageName}}', version: '{{version}}' }
 
       const result = strategy.templateToString(template)
 
@@ -154,15 +130,7 @@ describe(JsonFileTemplateStrategy.name, () => {
 
       const result = strategy.render(jsonString)
 
-      expect(result).toEqual({
-        config: {
-          debug: true,
-          settings: {
-            theme: 'dark',
-          },
-        },
-        version: '1.0.0',
-      })
+      expect(result).toEqual({ config: { debug: true, settings: { theme: 'dark' } }, version: '1.0.0' })
     })
   })
 
@@ -194,10 +162,7 @@ describe(JsonFileTemplateStrategy.name, () => {
         name: 'test-package',
         version: '1.2.3',
         dependencies: ['lodash', 'express'],
-        config: {
-          env: 'production',
-          debug: false,
-        },
+        config: { env: 'production', debug: false },
       }
 
       const stringified = strategy.templateToString(original)

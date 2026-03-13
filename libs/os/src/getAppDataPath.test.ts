@@ -1,17 +1,26 @@
-import os from 'node:os'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getAppDataPath } from './getAppDataPath'
-
-vi.mock('./getOS', () => ({ getOS: vi.fn(() => 'windows') }))
-
 import { getOS } from './getOS'
+import { it } from 'vitest'
+import os from 'os'
+import { vi } from 'vitest'
+
+vi.mock('./getOS', () => {
+  return {
+    getOS: vi.fn(() => {
+      return 'windows'
+    }),
+  }
+})
 const getOSMock = vi.mocked(getOS)
 
 describe(getAppDataPath.name, () => {
-  const originalAppData = process.env['APPDATA']
+  const originalAppData = process.env.APPDATA
 
   afterEach(() => {
-    process.env['APPDATA'] = originalAppData
+    process.env.APPDATA = originalAppData
     getOSMock.mockReturnValue('windows')
     vi.restoreAllMocks()
   })
@@ -24,30 +33,32 @@ describe(getAppDataPath.name, () => {
 
   describe('when APPDATA env is not set', () => {
     it('should resolve windows path', () => {
-      delete process.env['APPDATA']
+      delete process.env.APPDATA
       getOSMock.mockReturnValue('windows')
       const result = getAppDataPath()
       expect(result).toContain('AppData')
     })
 
     it('should resolve osx path', () => {
-      delete process.env['APPDATA']
+      delete process.env.APPDATA
       getOSMock.mockReturnValue('osx')
       const result = getAppDataPath()
       expect(result).toContain('Application Support')
     })
 
     it('should resolve linux path', () => {
-      delete process.env['APPDATA']
+      delete process.env.APPDATA
       getOSMock.mockReturnValue('linux')
       const result = getAppDataPath()
       expect(result).toContain('.config')
     })
 
     it('should throw for unknown OS', () => {
-      delete process.env['APPDATA']
+      delete process.env.APPDATA
       getOSMock.mockReturnValue('unknown')
-      expect(() => getAppDataPath()).toThrow('Could not find an appropriate app data path')
+      expect(() => {
+        return getAppDataPath()
+      }).toThrow('Could not find an appropriate app data path')
     })
   })
 

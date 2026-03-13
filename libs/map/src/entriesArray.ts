@@ -1,4 +1,4 @@
-import { GenericMap } from './types'
+import type { GenericMap } from '@mono/types'
 
 /**
  * Returns an array of all key-value pairs in the map.

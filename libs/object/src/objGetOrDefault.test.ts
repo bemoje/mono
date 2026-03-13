@@ -1,6 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, expect, it, vitest } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { objGetOrDefault } from './objGetOrDefault'
+import { vitest } from 'vitest'
 
 describe(objGetOrDefault.name, () => {
   describe('object overload', () => {

@@ -4,7 +4,7 @@
 export function* arrTableIterateAsObjects<T>(
   rows: T[][],
   headers: string[],
-  ignoreHeaders: Set<string> = new Set(),
+  ignoreHeaders: Set<string> = new Set()
 ) {
   if (!headers.length) {
     throw new Error('No headers provided')
@@ -20,15 +20,17 @@ export function* arrTableIterateAsObjects<T>(
     throw new Error('All headers are ignored')
   }
 
-  for (let r = 0; r < rows.length; r++) {
-    if (rows[r].length !== headers.length) {
-      throw new Error(`Row ${r} has ${rows[r].length} columns, but expected ${headers.length}`)
+  for (const [r, row] of rows.entries()) {
+    if (row.length !== headers.length) {
+      throw new Error(`Row ${r} has ${row.length} columns, but expected ${headers.length}`)
     }
 
     const o: Record<string, T> = {}
-    for (let c = 0; c < headers.length; c++) {
-      if (ignoreHeaders.has(headers[c])) continue
-      o[headers[c]] = rows[r][c]
+    for (const [c, header] of headers.entries()) {
+      if (ignoreHeaders.has(header)) {
+        continue
+      }
+      o[header] = row[c]
     }
     yield o
   }

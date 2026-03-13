@@ -1,4 +1,4 @@
-import { StringKeyOf } from '@mono/types'
+import type { StringKeyOf } from '@mono/types'
 
 /**
  * Same as Object.keys except the keys are typed as string keys of T.

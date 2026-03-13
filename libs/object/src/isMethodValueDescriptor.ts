@@ -1,11 +1,12 @@
-import { Any } from '@mono/types'
-import { ValueDescriptorAttributes, DescriptorValue } from './isValueDescriptor'
+import type { Any } from '@mono/types'
+import type { DescriptorValue } from './isValueDescriptor'
+import type { ValueDescriptorAttributes } from './isValueDescriptor'
 
 /**
  * Checks if a property descriptor represents a method (function value descriptor).
  */
 export function isMethodValueDescriptor(
-  descriptor: PropertyDescriptor,
+  descriptor: PropertyDescriptor
 ): descriptor is TypedValuePropertyDescriptor<typeof Function.prototype> {
   return typeof descriptor.value === 'function' && descriptor.value !== Function.prototype
 }

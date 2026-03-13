@@ -1,8 +1,12 @@
 {
   "name": "playground",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "yarn@4.3.1",
   "private": true,
   "sideEffects": false,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@bemoje/array": "3.2.5",
+    "@bemoje/cli": "3.1.4"
+  }
 }

@@ -1,6 +1,8 @@
-import { streamToString } from './streamToString'
 import { StringStream } from './StringStream'
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { streamToString } from './streamToString'
 
 describe(StringStream.name, () => {
   it('example', async () => {

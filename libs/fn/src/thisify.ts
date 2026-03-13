@@ -1,19 +1,19 @@
 import type { Any } from '@mono/types'
-import { ArraySlice } from 'type-fest'
-import { preserveNameAndLength } from './preserveNameAndLength'
+import type { ArraySlice } from 'type-fest'
+import { setNameAndLength } from './setNameAndLength'
 
 /**
  * Converts a function to a class method by making the 'this' context the first argument.
  */
 export function thisify<T, Args extends Any[], Ret>(
-  fn: (target: T, ...args: Args) => Ret,
+  fn: (target: T, ...args: Args) => Ret
 ): (this: T, ...args: Args) => Ret {
-  return preserveNameAndLength(
+  return setNameAndLength(
     fn,
     function f(this: T, ...args: Args): Ret {
       return fn(this, ...args)
     },
-    -1,
+    -1
   )
 }
 

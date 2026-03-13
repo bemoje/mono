@@ -1,11 +1,13 @@
-import { ConfigDataStrategy } from '../interfaces/ConfigDataStrategy'
-import { ConfigValidationStrategy } from '../interfaces/ConfigValidationStrategy'
+import type { ConfigDataStrategy } from '../interfaces/ConfigDataStrategy'
+import type { ConfigValidationStrategy } from '../interfaces/ConfigValidationStrategy'
 import { JsonFileStrategy } from '../strategies/JsonFileStrategy'
 import { SchemaConfigStrategy } from '../strategies/SchemaConfigStrategy'
-import { Static, TSchema } from '@sinclair/typebox'
+import type { Static } from '@sinclair/typebox'
+import type { TSchema } from '@sinclair/typebox'
 
 /**
  * Configuration file manager that provides schema validation and file I/O using the Strategy pattern.
+ * Ensures that only one instance of ConfigFile exists per file path, and allows for loading and updating configuration data with validation and default values applied.
  */
 export class ConfigFile<Schema extends TSchema> {
   protected static instances = new Map<string, ConfigFile<TSchema>>()

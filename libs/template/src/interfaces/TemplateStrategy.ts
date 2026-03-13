@@ -1,4 +1,5 @@
-import type { Static, TSchema } from '@sinclair/typebox'
+import type { Static } from '@sinclair/typebox'
+import type { TSchema } from '@sinclair/typebox'
 
 /**
  * Strategy interface for template processing operations.

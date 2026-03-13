@@ -1,4 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { toWin32 } from './toWin32'
 
 describe(toWin32.name, () => {

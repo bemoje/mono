@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { getKeysPreset } from './getKeysPreset'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getKeys } from './getKeys'
+import { getKeysPreset } from './getKeysPreset'
+import { it } from 'vitest'
 
 describe(getKeys.name, () => {
   it('GetKeys', () => {
@@ -11,12 +13,7 @@ describe(getKeys.name, () => {
   const nonEnumKey = 'nonEnum'
   const enumSym = Symbol('enum')
   const nonEnumSym = Symbol('nonEnum')
-  const obj = {
-    [enumKey]: true,
-    [nonEnumKey]: true,
-    [enumSym]: true,
-    [nonEnumSym]: true,
-  }
+  const obj = { [enumKey]: true, [nonEnumKey]: true, [enumSym]: true, [nonEnumSym]: true }
   Object.defineProperty(obj, nonEnumKey, { enumerable: false })
   Object.defineProperty(obj, nonEnumSym, { enumerable: false })
 

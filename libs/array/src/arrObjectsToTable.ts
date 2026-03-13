@@ -20,17 +20,14 @@ import { arrObjectsUniqueKeys } from './arrObjectsUniqueKeys'
  */
 export function arrObjectsToTable<T, E>(
   objects: Record<string, T | undefined>[],
-  options: {
-    headers?: string[]
-    emptyCell?: E
-  } = {},
+  options: { headers?: string[]; emptyCell?: E } = {}
 ): Array<Array<string | T | E>> {
   const headers = options?.headers?.slice() || arrObjectsUniqueKeys(objects)
   const table: Array<Array<string | T | E>> = [headers]
   for (const o of objects) {
     const row = headers.map((header) => {
       const value = o[header]
-      return value !== undefined ? value : (options.emptyCell as E)
+      return value === undefined ? (options.emptyCell as E) : value
     })
     table.push(row)
   }

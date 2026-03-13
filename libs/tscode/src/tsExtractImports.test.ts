@@ -1,5 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { tsExtractImports, TsExtractImportsResult } from './tsExtractImports'
+import type { TsExtractImportsResult } from './tsExtractImports'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { tsExtractImports } from './tsExtractImports'
 
 describe(tsExtractImports.name, () => {
   it('should return an empty array for an empty code string', () => {
@@ -9,27 +12,22 @@ describe(tsExtractImports.name, () => {
   })
 
   it('should correctly extract a single import statement without braces', () => {
-    const code = "import { module } from 'node:module'"
+    const code = "import { module } from 'module'"
     const result: TsExtractImportsResult[] = [
       {
         start: 0,
         end: 1,
-        match: "import { module } from 'node:module'",
-        matchOneLine: "import { module } from 'node:module'",
+        match: "import { module } from 'module'",
+        matchOneLine: "import { module } from 'module'",
       },
     ]
     expect(tsExtractImports(code)).toEqual(result)
   })
 
   it('should correctly extract a single import statement with braces', () => {
-    const code = "import module from 'node:module'"
+    const code = "import module from 'module'"
     const result: TsExtractImportsResult[] = [
-      {
-        start: 0,
-        end: 1,
-        match: "import module from 'node:module'",
-        matchOneLine: "import module from 'node:module'",
-      },
+      { start: 0, end: 1, match: "import module from 'module'", matchOneLine: "import module from 'module'" },
     ]
     expect(tsExtractImports(code)).toEqual(result)
   })

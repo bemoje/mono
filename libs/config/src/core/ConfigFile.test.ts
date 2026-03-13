@@ -1,10 +1,15 @@
-import { describe, expect, it, beforeEach, afterEach } from 'vitest'
-import assert from 'node:assert'
-import fs from 'fs-extra'
-import upath from 'upath'
-import { Type, Static } from '@sinclair/typebox'
 import { ConfigFile } from './ConfigFile'
+import type { Static } from '@sinclair/typebox'
+import { Type } from '@sinclair/typebox'
+import { afterEach } from 'vitest'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import fs from 'fs-extra'
 import { getTempDataPath } from '@mono/os'
+import { it } from 'vitest'
+import upath from 'upath'
 
 describe(ConfigFile.name, () => {
   const testDir = getTempDataPath('ConfigFile')
@@ -21,15 +26,9 @@ describe(ConfigFile.name, () => {
         logging: Type.Boolean({ default: true }),
         debug: Type.Boolean({ default: false }),
       },
-      { default: {} },
+      { default: {} }
     ),
-    database: Type.Optional(
-      Type.Object({
-        host: Type.String(),
-        port: Type.Number(),
-        name: Type.String(),
-      }),
-    ),
+    database: Type.Optional(Type.Object({ host: Type.String(), port: Type.Number(), name: Type.String() })),
   })
 
   type AppConfig = Static<typeof appConfigSchema>
@@ -57,11 +56,9 @@ describe(ConfigFile.name, () => {
       assert.strictEqual(config.features.auth, true, 'default auth feature should be applied')
 
       // Update config
-      const updatedConfig = configFile.update((current) => ({
-        ...current,
-        appName: 'Updated App',
-        port: 8080,
-      }))
+      const updatedConfig = configFile.update((current) => {
+        return { ...current, appName: 'Updated App', port: 8080 }
+      })
 
       assert.strictEqual(updatedConfig.appName, 'Updated App', 'app name should be updated')
       assert.strictEqual(updatedConfig.port, 8080, 'port should be updated')
@@ -116,11 +113,7 @@ describe(ConfigFile.name, () => {
         appName: 'My App',
         version: '1.0.0',
         port: 3000,
-        features: {
-          auth: true,
-          logging: true,
-          debug: false,
-        },
+        features: { auth: true, logging: true, debug: false },
       })
 
       // Should also save the defaults to file
@@ -143,11 +136,7 @@ describe(ConfigFile.name, () => {
         appName: 'Existing App',
         version: '1.0.0', // default
         port: 8080,
-        features: {
-          auth: true,
-          logging: true,
-          debug: false,
-        },
+        features: { auth: true, logging: true, debug: false },
       })
 
       // Should save merged config back to file
@@ -159,16 +148,8 @@ describe(ConfigFile.name, () => {
         appName: 'Test App',
         version: '2.0.0',
         port: 4000,
-        features: {
-          auth: false,
-          logging: true,
-          debug: true,
-        },
-        database: {
-          host: 'localhost',
-          port: 5432,
-          name: 'testdb',
-        },
+        features: { auth: false, logging: true, debug: true },
+        database: { host: 'localhost', port: 5432, name: 'testdb' },
       }
       fs.outputJsonSync(testConfigPath, existingConfig)
 
@@ -193,7 +174,9 @@ describe(ConfigFile.name, () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
       // Should throw since JSON parsing fails
-      expect(() => configFile.load()).not.toThrow()
+      expect(() => {
+        return configFile.load()
+      }).not.toThrow()
     })
   })
 
@@ -201,21 +184,15 @@ describe(ConfigFile.name, () => {
     it('should update config and apply defaults', () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
-      const updatedConfig = configFile.update((current) => ({
-        ...current,
-        appName: 'Updated App',
-        port: 9000,
-      }))
+      const updatedConfig = configFile.update((current) => {
+        return { ...current, appName: 'Updated App', port: 9000 }
+      })
 
       expect(updatedConfig).toEqual({
         appName: 'Updated App',
         version: '1.0.0',
         port: 9000,
-        features: {
-          auth: true,
-          logging: true,
-          debug: false,
-        },
+        features: { auth: true, logging: true, debug: false },
       })
 
       // Should save updated config to file
@@ -227,54 +204,32 @@ describe(ConfigFile.name, () => {
         appName: 'Initial App',
         version: '1.5.0',
         port: 5000,
-        features: {
-          auth: false,
-          logging: true,
-          debug: true,
-        },
+        features: { auth: false, logging: true, debug: true },
       }
       fs.outputJsonSync(testConfigPath, initialConfig)
 
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
-      const updatedConfig = configFile.update((current) => ({
-        ...current,
-        appName: 'Modified App',
-        features: {
-          ...current.features,
-          debug: false,
-        },
-      }))
+      const updatedConfig = configFile.update((current) => {
+        return { ...current, appName: 'Modified App', features: { ...current.features, debug: false } }
+      })
 
       expect(updatedConfig).toEqual({
         appName: 'Modified App',
         version: '1.5.0',
         port: 5000,
-        features: {
-          auth: false,
-          logging: true,
-          debug: false,
-        },
+        features: { auth: false, logging: true, debug: false },
       })
     })
 
     it('should add optional fields', () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
-      const updatedConfig = configFile.update((current) => ({
-        ...current,
-        database: {
-          host: 'localhost',
-          port: 5432,
-          name: 'mydb',
-        },
-      }))
-
-      expect(updatedConfig.database).toEqual({
-        host: 'localhost',
-        port: 5432,
-        name: 'mydb',
+      const updatedConfig = configFile.update((current) => {
+        return { ...current, database: { host: 'localhost', port: 5432, name: 'mydb' } }
       })
+
+      expect(updatedConfig.database).toEqual({ host: 'localhost', port: 5432, name: 'mydb' })
 
       expect(fs.readJsonSync(testConfigPath)).toEqual(updatedConfig)
     })
@@ -283,26 +238,25 @@ describe(ConfigFile.name, () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
       expect(() => {
-        configFile.update((current) => ({
-          ...current,
-          port: -1, // invalid port
-        }))
+        configFile.update((current) => {
+          return {
+            ...current,
+            port: -1, // invalid port
+          }
+        })
       }).toThrow('Invalid config.')
     })
 
     it('should handle multiple updates', () => {
       const configFile = new ConfigFile(appConfigSchema, testConfigPath)
 
-      const firstUpdate = configFile.update((current) => ({
-        ...current,
-        appName: 'First Update',
-      }))
+      const firstUpdate = configFile.update((current) => {
+        return { ...current, appName: 'First Update' }
+      })
 
-      const secondUpdate = configFile.update((current) => ({
-        ...current,
-        appName: 'Second Update',
-        port: 7000,
-      }))
+      const secondUpdate = configFile.update((current) => {
+        return { ...current, appName: 'Second Update', port: 7000 }
+      })
 
       expect(firstUpdate.appName).toBe('First Update')
       expect(secondUpdate.appName).toBe('Second Update')
@@ -319,16 +273,8 @@ describe(ConfigFile.name, () => {
         appName: 'Test App',
         version: '1.0.0',
         port: 3000,
-        features: {
-          auth: true,
-          logging: true,
-          debug: false,
-        },
-        database: {
-          host: 'localhost',
-          port: 5432,
-          name: 'testdb',
-        },
+        features: { auth: true, logging: true, debug: false },
+        database: { host: 'localhost', port: 5432, name: 'testdb' },
       }
       fs.outputJsonSync(testConfigPath, initialConfig)
 
@@ -347,7 +293,9 @@ describe(ConfigFile.name, () => {
   describe('singleton behavior', () => {
     it('should maintain singleton instances across operations', () => {
       const configFile1 = new ConfigFile(appConfigSchema, testConfigPath)
-      configFile1.update((current) => ({ ...current, appName: 'Singleton Test' }))
+      configFile1.update((current) => {
+        return { ...current, appName: 'Singleton Test' }
+      })
 
       const configFile2 = new ConfigFile(appConfigSchema, testConfigPath)
       const config = configFile2.load()

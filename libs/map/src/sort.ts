@@ -1,4 +1,4 @@
-import { GenericMap } from './types'
+import type { GenericMap } from '@mono/types'
 
 /**
  * Sorts the map entries using a custom comparison function and updates the map in place.
@@ -22,7 +22,7 @@ import { GenericMap } from './types'
  */
 export function sort<K, V>(
   ins: GenericMap<K, V, 'set' | 'clear' | typeof Symbol.iterator>,
-  compare: (a: [K, V], b: [K, V]) => number,
+  compare: (a: [K, V], b: [K, V]) => number
 ): GenericMap<K, V, 'set' | 'clear' | typeof Symbol.iterator> {
   const entries = Array.from(ins).sort(compare)
   ins.clear()

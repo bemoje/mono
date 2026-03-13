@@ -1,4 +1,4 @@
-import { ValueOf } from '@mono/types'
+import type { ValueOf } from '@mono/types'
 
 /**
  * Converts an object to a Map.

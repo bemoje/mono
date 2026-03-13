@@ -1,15 +1,37 @@
 {
   "name": "@mono/stacktrace",
+  "version": "1.1.3",
   "packageManager": "yarn@4.3.1",
-  "private": true,
   "module": "src/index.ts",
   "sideEffects": false,
   "type": "module",
+  "description": "Beautiful, color-formatted stack trace output for Node.js errors with syntax-highlighted file paths and structured error properties.",
+  "keywords": [
+    "stacktrace",
+    "stack-trace",
+    "error",
+    "formatting",
+    "color",
+    "syntax-highlighting",
+    "node",
+    "utilities",
+    "typescript"
+  ],
   "scripts": {
-    "indexts": "devkit clean index-ts",
-    "build": "node esbuild.mjs"
+    "build": "node '../../scripts/build-lib-bundle.mjs'",
+    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
-    "@bemoje/devkit": "0.1.0"
+    "tsup": "^8.5.1"
+  },
+  "dependencies": {
+    "ansi-colors": "^4.1.3",
+    "stacktrace-parser": "^0.1.11",
+    "upath": "^2.0.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./enablePrettyStackTrace": "./src/enablePrettyStackTrace.ts",
+    "./prettyStackTrace": "./src/prettyStackTrace.ts"
   }
 }

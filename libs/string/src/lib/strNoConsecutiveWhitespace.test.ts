@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strNoConsecutiveWhitespace } from './strNoConsecutiveWhitespace'
-import { describe, expect, it } from 'vitest'
 
 describe('strNoConsecutiveWhitespace', () => {
   it('should replace consecutive whitespace characters with a single space', () => {

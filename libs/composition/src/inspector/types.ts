@@ -1,8 +1,8 @@
-import type { InspectOptions as NativeInspectOptions } from 'node:util'
+import type { InspectOptions } from 'util'
 import type { InspectorTarget } from './Inspector'
 
 export interface InspectorOptions {
-  inspect?: NativeInspectOptions
+  inspect?: InspectOptions
   ignoreValues?: IgnoreValuesOptions
   keys?: (string | symbol)[]
   autoAddBooleanKeys?: boolean
@@ -30,7 +30,7 @@ export type InspectFilter = <T extends InspectorTarget>(
   value: unknown,
   key: string | symbol,
   depth: number,
-  object: T,
+  object: T
 ) => boolean
 
 export type ClassInspectorMixin = typeof Function.prototype & { inspector: InspectorOptions }

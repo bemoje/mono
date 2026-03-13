@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isConstructor } from './isConstructor'
+import { it } from 'vitest'
 
 describe(isConstructor.name, () => {
   describe('true', () => {

@@ -1,7 +1,9 @@
-import { GenericMap, mapGetOrDefault, TimeoutWeakMap } from '@mono/map'
+import type { GenericMap } from '@mono/types'
+import { TimeoutWeakMap } from '@mono/map'
 import { isFunction } from 'es-toolkit/predicate'
-import { ms } from 'enhanced-ms'
+import { mapGetOrDefault } from '@mono/map'
 import { memoizeSync } from './memoizeSync'
+import { ms } from 'enhanced-ms'
 
 /**
  * Decorator to memoize a method or getter accessor property.
@@ -13,14 +15,14 @@ export function lazyProp(target: object, key: string, descriptor: PropertyDescri
  * @param maxAge The maximum age of the memoized value as number (ms) or descriptive string (e.g. '10 min'). Uses 'ms' library: https://github.com/zeit/ms
  */
 export function lazyProp(
-  maxAge: number | string,
+  maxAge: number | string
 ): (target: object, key: string, descriptor: PropertyDescriptor) => PropertyDescriptor
 
 //
 export function lazyProp(
   targetOrTimeout: object | number | string,
   key?: string,
-  descriptor?: PropertyDescriptor,
+  descriptor?: PropertyDescriptor
 ) {
   if (typeof targetOrTimeout === 'number' || typeof targetOrTimeout === 'string') {
     const maxAge = typeof targetOrTimeout === 'number' ? targetOrTimeout : ms(targetOrTimeout)
@@ -37,7 +39,9 @@ function createLazyPropDecorator<K extends object, V>(map: GenericMap<K, V, 'get
 
     if (isFunction(get)) {
       descriptor.get = function () {
-        return mapGetOrDefault(map, this as K, () => get.call(this))
+        return mapGetOrDefault(map, this as K, () => {
+          return get.call(this)
+        })
       }
       return descriptor
     }

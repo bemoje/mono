@@ -1,12 +1,14 @@
-import fs from 'node:fs'
-import path from '@mono/path'
+import * as path from '@mono/path'
 import { AbstractBase } from '../common/AbstractBase'
-import { Inspector, Parenting } from '@mono/composition'
-import { lazyProp } from '@mono/decorators'
-import type { Stats } from 'node:fs'
-import { Workspace } from '../repo/Workspace'
-import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
+import { Inspector } from '@mono/composition'
+import { Parenting } from '@mono/composition'
 import { SemanticExtnamePrefix } from '../util/SemanticExtnamePrefix'
+import type { Stats } from 'fs'
+import type { Workspace } from '../repo/Workspace'
+import fs from 'fs'
+import { hasExtnamePrefix } from '../util/hasExtnamePrefix'
+import { lazyProp } from '@mono/decorators'
+import upath from 'upath'
 
 @Parenting.compose
 /**
@@ -15,15 +17,13 @@ import { SemanticExtnamePrefix } from '../util/SemanticExtnamePrefix'
  * @template P - The type of parent workspace this file belongs to, extends Workspace by default
  */
 export class File<P extends Workspace = Workspace> extends AbstractBase<P> {
-  static readonly inspector = Inspector.compose(File, {
-    keys: ['relative'],
-  })
+  static readonly inspector = Inspector.compose(File, { keys: ['relative'] })
 
   readonly path: string
 
   constructor(parent: P, filepath: string) {
     super(parent)
-    this.path = path.normalize(filepath)
+    this.path = upath.normalize(filepath)
   }
 
   @lazyProp(1000)
@@ -50,7 +50,7 @@ export class File<P extends Workspace = Workspace> extends AbstractBase<P> {
     return hasExtnamePrefix(this.path, SemanticExtnamePrefix.test)
   }
   get isIndexFile() {
-    return path.parse(this.path).name === 'index'
+    return upath.parse(this.path).name === 'index'
   }
 
   get isSourceFile() {

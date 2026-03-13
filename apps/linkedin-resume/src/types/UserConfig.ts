@@ -1,29 +1,27 @@
-import {
-  ResumeEducation,
-  ResumeLanguage,
-  ResumeRecommendation,
-  ResumeWork,
-  ResumeProject,
-  ResumeProfile,
-  ResumeSkill,
-} from './Resume'
-import { PickPrimitive } from '@mono/types'
+import type { PickPrimitive } from '@mono/types'
+import type { ResumeEducation } from './Resume'
+import type { ResumeLanguage } from './Resume'
+import type { ResumeProject } from './Resume'
+import type { ResumeRecommendation } from './Resume'
+import type { ResumeSkill } from './Resume'
+import type { ResumeSocial } from './Resume'
+import type { ResumeWork } from './Resume'
 
 export interface UserConfig {
   /**
    * LinkedIn username, used to construct profile URLs and links to recommendations. Also serves as a unique identifier for the candidate. Required for LinkedIn scraping and rendering accurate profile links in the resume.
    */
-  linkedInUsername: string
+  username: string
 
   /**
    * Filepath where the generated PDF resume will be saved. Supports environment variables (e.g., $USERPROFILE) which will be expanded to their actual values. The directory will be created if it does not exist. Defaults to: "$USERPROFILE/Desktop/resume.pdf".
    */
-  outputFilepath: string
+  outpath: string
 
   /**
    * Additional profiles to include in the resume, such as GitHub, Twitter, etc. Each profile should specify the network name, username, and URL. These will be rendered in the contact section of the resume and can also be used to link to projects or other relevant information.
    */
-  profiles: ResumeProfile[]
+  social: ResumeSocial[]
 
   /**
    * Defines which entries to omit for each section of the resume when rendering.
@@ -40,7 +38,7 @@ export interface UserConfigIgnore {
    */
   work?: true | Partial<PickPrimitive<ResumeWork>>[]
   /**
-   * If set to true, all education entries will be ignored. If set to an array of partial objects, only education entries matching the specified primitive values (e.g., institution, area) will be ignored.
+   * If set to true, all education entries will be ignored. If set to an array of partial objects, only education entries matching the specified primitive values (e.g., name, area) will be ignored.
    */
   education?: true | Partial<PickPrimitive<ResumeEducation>>[]
   /**

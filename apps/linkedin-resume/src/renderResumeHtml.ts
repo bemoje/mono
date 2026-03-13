@@ -1,13 +1,15 @@
-import fs from 'fs-extra'
 import { DIST_PATH } from './constants'
-import upath from 'upath'
+import type { Logger } from '@mono/node'
+import type { Resume } from './types/Resume'
+import type { ResumeWork } from './types/Resume'
 import css from './renderResumeHtml.css'
-import type { Resume, ResumeWork } from './types/Resume'
-import { loadUserConfig } from './loadUserConfig'
-import { entriesOf } from '@mono/object'
+import fs from 'fs-extra'
+import { loadResumeJson } from './LoadResumeJson'
+import upath from 'upath'
+import { userConfigFile } from './userConfigFile'
 
-export async function renderResumeHtml(): Promise<void> {
-  const resume = await loadResume()
+export async function renderResumeHtml(logger: Logger): Promise<void> {
+  const resume = await loadResumeJson()
 
   const lines: string[] = []
   lines.push(`<!DOCTYPE html>`)
@@ -15,7 +17,7 @@ export async function renderResumeHtml(): Promise<void> {
   lines.push(`<head>`)
   lines.push(`<meta charset="utf-8" />`)
   lines.push(`<meta name="viewport" content="width=device-width, initial-scale=1" />`)
-  lines.push(`<title>CV - ${esc(resume.basics.name)}</title>`)
+  lines.push(`<title>Resume - ${esc(resume.basics.name)}</title>`)
   lines.push(`<link rel="stylesheet" href="resume.css" />`)
   lines.push(`</head>`)
   lines.push(`<body>`)
@@ -34,19 +36,21 @@ export async function renderResumeHtml(): Promise<void> {
 
   const html = lines
     .join('\n')
-    .replace(/[>] *[<]/g, '>\n<')
+    .replaceAll(/> *</g, '>\n<')
     .split('\n')
-    .map((line) => line.trimStart())
+    .map((line) => {
+      return line.trimStart()
+    })
     .filter(Boolean)
     .join('\n')
 
   const outPath = upath.join(DIST_PATH, 'resume.html')
   await fs.outputFile(outPath, html)
-  console.log(`output: ${outPath}`)
+  logger.log(outPath)
 
   const cssPath = upath.join(DIST_PATH, 'resume.css')
   await fs.outputFile(cssPath, css)
-  console.log(`output: ${cssPath}`)
+  logger.log(cssPath)
 }
 
 function renderProfile(resume: Resume): string {
@@ -60,14 +64,18 @@ function renderProfile(resume: Resume): string {
       <img class="profile-photo" src="${esc(b.image)}" alt="${esc(b.name)}" />
       <div class="profile-info">
         <h1>${esc(b.name)}</h1>
-        <p class="profile-headline">${esc(b.label)}</p>
+        <p class="profile-headline">${esc(b.headline)}</p>
         <p class="profile-location">${esc(locationStr)}</p>
         <div class="profile-contact">
           ${b.email ? `<a href="mailto:${esc(b.email)}">${esc(b.email)}</a>` : ''}
           ${b.phone ? `<a href="tel:${esc(b.phone)}">${esc(b.phone)}</a>` : ''}
         </div>
         <div class="profile-links">
-          ${(b.profiles ?? []).map((p) => `<a href="${esc(p.url)}" class="profile-link">${esc(p.network)}</a>`).join(' ')}
+          ${(b.social ?? [])
+            .map((p) => {
+              return `<a href="${esc(p.url)}" class="profile-link">${esc(p.network)}</a>`
+            })
+            .join(' ')}
         </div>
       </div>
     </div>
@@ -75,18 +83,20 @@ function renderProfile(resume: Resume): string {
 }
 
 function renderAbout(resume: Resume): string {
-  if (!resume.basics.summary) return ''
+  if (!resume.basics.summary) {
+    return ''
+  }
   const lines = ['']
   lines.push(`<div class="card">`)
   lines.push(`<h2>About</h2>`)
   lines.push(`<div class="about-text">`)
   lines.push(`${nl2p(resume.basics.summary)}`)
   lines.push(`</div>`)
-  if (resume.basics.skills?.length) {
+  if (resume.basics.topSkills?.length) {
     lines.push(`<div class="entry">`)
     lines.push(`<div class="entry-content">`)
     lines.push(`<div class="skill-pills">`)
-    resume.basics.skills.forEach((s) => {
+    resume.basics.topSkills.forEach((s) => {
       lines.push(`<span class="pill">${esc(s)}</span>`)
     })
     lines.push(`</div>`)
@@ -103,7 +113,9 @@ interface ExperienceGroup {
 }
 
 function renderExperience(resume: Resume): string {
-  if (!resume.work?.length) return ''
+  if (!resume.work?.length) {
+    return ''
+  }
 
   // Group consecutive entries by company
   const groups: ExperienceGroup[] = []
@@ -120,7 +132,11 @@ function renderExperience(resume: Resume): string {
   <div class="card">
     <h2>Experience</h2>
     <div class="entries">
-      ${groups.map((g) => renderExperienceGroup(g)).join('\n')}
+      ${groups
+        .map((g) => {
+          return renderExperienceGroup(g)
+        })
+        .join('\n')}
     </div>
   </div>`
 }
@@ -150,7 +166,11 @@ function renderExperienceGroup(group: ExperienceGroup): string {
         <h3 class="entry-title">${esc(group.company)}</h3>
         <p class="entry-meta">${formatDateRange(last.startDate, first.endDate)}</p>
         <div class="sub-roles">
-          ${group.roles.map((job) => renderSubRole(job)).join('\n')}
+          ${group.roles
+            .map((job) => {
+              return renderSubRole(job)
+            })
+            .join('\n')}
         </div>
       </div>
     </div>`
@@ -158,15 +178,16 @@ function renderExperienceGroup(group: ExperienceGroup): string {
 
 function renderSubRole(job: ResumeWork): string {
   return `
-        <div class="sub-role">
-          <div class="sub-role-dot"></div>
-          <div class="sub-role-content">
-            <h4 class="entry-title">${esc(job.position)}</h4>
-            <p class="entry-meta">${formatDateRange(job.startDate, job.endDate)}${job.duration ? ` · ${esc(job.duration)}` : ''}</p>
-            ${job.location ? `<p class="entry-meta">${esc(job.location)}</p>` : ''}
-            ${renderJobBody(job)}
-          </div>
-        </div>`
+    <div class="sub-role">
+      <div class="sub-role-dot"></div>
+      <div class="sub-role-content">
+        <h4 class="entry-title">${esc(job.position)}</h4>
+        <p class="entry-meta">${formatDateRange(job.startDate, job.endDate)}${job.duration ? ` · ${esc(job.duration)}` : ''}</p>
+        ${job.location ? `<p class="entry-meta">${esc(job.location)}</p>` : ''}
+        ${renderJobBody(job)}
+      </div>
+    </div>
+  `
 }
 
 function renderJobBody(job: ResumeWork): string {
@@ -175,50 +196,76 @@ function renderJobBody(job: ResumeWork): string {
     html += `<p class="entry-description">${esc(job.summary)}</p>`
   }
   if (job.highlights?.length) {
-    html += `<ul class="entry-highlights">${job.highlights.map((h) => `<li>${esc(h)}</li>`).join('\n')}</ul>`
+    html += `<ul class="entry-highlights">${job.highlights
+      .map((h) => {
+        return `<li>${esc(h)}</li>`
+      })
+      .join('\n')}</ul>`
   }
   if (job.skills?.length) {
-    const names = job.skills.map((s) => (typeof s === 'string' ? s : (s as { name: string }).name))
-    html += `<div class="skill-pills">${names.map((s) => `<span class="pill">${esc(s)}</span>`).join('\n')}</div>`
+    const names = job.skills.map((s) => {
+      return typeof s === 'string' ? s : (s as { name: string }).name
+    })
+    html += `<div class="skill-pills">${names
+      .map((s) => {
+        return `<span class="pill">${esc(s)}</span>`
+      })
+      .join('\n')}</div>`
   }
   return html
 }
 
 function renderEducation(resume: Resume): string {
-  if (!resume.education?.length) return ''
+  if (!resume.education?.length) {
+    return ''
+  }
   return `
   <div class="card">
     <h2>Education</h2>
     <div class="entries">
       ${resume.education
-        .map(
-          (edu) => `
+        .map((edu) => {
+          return `
         <div class="entry">
-          <div class="entry-logo">${entryLogo(edu, 'institution')}</div>
+          <div class="entry-logo">${entryLogo(edu)}</div>
           <div class="entry-content">
-            <h3 class="entry-title">${esc(edu.institution)}</h3>
+            <h3 class="entry-title">${esc(edu.name)}</h3>
             ${edu.area ? `<p class="entry-subtitle">${esc(edu.area)}</p>` : ''}
             ${edu.studyType ? `<p class="entry-meta">${esc(edu.studyType)}</p>` : ''}
             <p class="entry-meta">${formatDateRange(edu.startDate, edu.endDate)}</p>
             ${edu.courses?.length ? `<p class="entry-description"><strong>Courses:</strong> ${edu.courses.map(esc).join(', ')}</p>` : ''}
-            ${edu.skills?.length ? `<div class="skill-pills">${edu.skills.map((s) => `<span class="pill">${esc(s)}</span>`).join('\n')}</div>` : ''}
+            ${
+              edu.skills?.length
+                ? `<div class="skill-pills">${edu.skills
+                    .map((s) => {
+                      return `<span class="pill">${esc(s)}</span>`
+                    })
+                    .join('\n')}</div>`
+                : ''
+            }
           </div>
-        </div>`,
-        )
+        </div>`
+        })
         .join('\n')}
     </div>
   </div>`
 }
 
 function renderSkills(resume: Resume): string {
-  if (!resume.skills?.length) return ''
+  if (!resume.skills?.length) {
+    return ''
+  }
   return `
   <div class="card">
     <h2>Skills</h2>
     <div class="skills-sections">
       <div class="skill-category">
         <div class="skill-pills">
-          ${resume.skills.map((skill) => `<span class="pill">${esc(skill.name)}</span>`).join('\n')}
+          ${resume.skills
+            .map((skill) => {
+              return `<span class="pill">${esc(skill.name)}</span>`
+            })
+            .join('\n')}
         </div>
       </div>
     </div>
@@ -226,14 +273,16 @@ function renderSkills(resume: Resume): string {
 }
 
 function renderProjects(resume: Resume): string {
-  if (!resume.projects?.length) return ''
+  if (!resume.projects?.length) {
+    return ''
+  }
   return `
   <div class="card">
     <h2>Projects</h2>
     <div class="entries">
       ${resume.projects
-        .map(
-          (proj) => `
+        .map((proj) => {
+          return `
         <div class="entry">
           <div class="entry-logo">${entryLogo(proj)}</div>
           <div class="entry-content">
@@ -241,41 +290,72 @@ function renderProjects(resume: Resume): string {
             ${proj.entity ? `<p class="entry-subtitle">Associated with ${esc(proj.entity)}</p>` : ''}
             <p class="entry-meta">${formatDateRange(proj.startDate, proj.endDate)}</p>
             ${proj.description ? `<p class="entry-description">${esc(proj.description)}</p>` : ''}
-            ${proj.highlights?.length ? `<ul class="entry-highlights">${proj.highlights.map((h) => `<li>${esc(h)}</li>`).join('\n')}</ul>` : ''}
-            ${proj.skills?.length ? `<div class="skill-pills">${proj.skills.map((s) => `<span class="pill">${esc(s)}</span>`).join('\n')}</div>` : ''}
-            ${proj.mediaLinks?.length ? `<div class="media-links">${proj.mediaLinks.map((m) => `<a href="${esc(m.url)}" class="media-link" target="_blank" rel="noopener">${esc(m.title)} ↗</a>`).join('\n')}</div>` : ''}
+            ${
+              proj.highlights?.length
+                ? `<ul class="entry-highlights">${proj.highlights
+                    .map((h) => {
+                      return `<li>${esc(h)}</li>`
+                    })
+                    .join('\n')}</ul>`
+                : ''
+            }
+            ${
+              proj.skills?.length
+                ? `<div class="skill-pills">${proj.skills
+                    .map((s) => {
+                      return `<span class="pill">${esc(s)}</span>`
+                    })
+                    .join('\n')}</div>`
+                : ''
+            }
+            ${
+              proj.mediaLinks?.length
+                ? `<div class="media-links">${proj.mediaLinks
+                    .map((m) => {
+                      return `<a href="${esc(m.url)}" class="media-link" target="_blank" rel="noopener">${esc(m.title)} ↗</a>`
+                    })
+                    .join('\n')}</div>`
+                : ''
+            }
           </div>
-        </div>`,
-        )
+        </div>`
+        })
         .join('\n')}
     </div>
   </div>`
 }
 
 function renderLanguages(resume: Resume): string {
-  if (!resume.languages?.length) return ''
+  if (!resume.languages?.length) {
+    return ''
+  }
   return `
   <div class="card">
     <h2>Languages</h2>
     <div class="languages-list">
-      ${resume.languages.map((l) => `<div class="language-item"><span class="language-name">${esc(l.language)}</span><span class="language-fluency">${esc(l.fluency)}</span></div>`).join('\n')}
+      ${resume.languages
+        .map((l) => {
+          return `<div class="language-item"><span class="language-name">${esc(l.language)}</span><span class="language-fluency">${esc(l.fluency)}</span></div>`
+        })
+        .join('\n')}
     </div>
   </div>`
 }
 
 function renderRecommendations(resume: Resume): string {
-  const linkedInProfile = resume.basics.profiles.find((p) => p.network.toLowerCase() === 'linkedin')
-  const username = linkedInProfile?.username ?? ''
+  const username = userConfigFile.load().username
   const href = `https://www.linkedin.com/in/${username}/details/recommendations/?locale=en_US`
 
-  if (!resume.recommendations?.length) return ''
+  if (!resume.recommendations?.length) {
+    return ''
+  }
   return `
   <div class="card">
     <h2 class="recommendations-heading">Recommendations <a href="${esc(href)}" class="recommendations-link">View on LinkedIn ↗</a></h2>
     <div class="entries">
       ${resume.recommendations
-        .map(
-          (rec) => `
+        .map((rec) => {
+          return `
         <div class="entry">
           <div class="entry-logo">${rec.logoUrl ? `<img class="entry-logo-img recommendation-photo" src="${esc(rec.logoUrl)}" alt="${esc(rec.name)}" />` : companyInitial(rec.name)}</div>
           <div class="entry-content">
@@ -284,8 +364,8 @@ function renderRecommendations(resume: Resume): string {
             ${rec.date ? `<p class="entry-meta">${esc(rec.date)}</p>` : ''}
             ${rec.relationship ? `<p class="entry-meta recommendation-relationship">${esc(rec.relationship)}</p>` : ''}
           </div>
-        </div>`,
-        )
+        </div>`
+        })
         .join('\n')}
     </div>
   </div>`
@@ -293,52 +373,20 @@ function renderRecommendations(resume: Resume): string {
 
 // --- Utils ---
 
-async function loadResume() {
-  const resume = (await fs.readJson(upath.join(DIST_PATH, 'resume.json'))) as Resume
-
-  const userConfig = await loadUserConfig()
-
-  if (userConfig.ignore) {
-    const ignore = userConfig.ignore
-    const keys = ['work', 'education', 'projects', 'skills', 'languages', 'recommendations'] as const
-
-    for (const section of keys) {
-      const entries = resume[section]
-      const rules = ignore[section]
-
-      if (!rules || !entries) {
-        continue
-      }
-
-      const filteredSection =
-        rules === true
-          ? undefined
-          : entries.filter((item) => {
-              return !rules.some((rule) => {
-                return entriesOf(rule).every(([key, value]) => {
-                  return item[key] === value
-                })
-              })
-            })
-
-      Reflect.set(resume, section, filteredSection)
-    }
-  }
-  return resume
-}
-
 function esc(s: string): string {
   return (s ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
 }
 
 function formatDate(d: string | undefined): string {
-  if (!d) return 'Present'
-  const date = new Date(d.length <= 7 ? d + '-01' : d)
+  if (!d) {
+    return 'Present'
+  }
+  const date = new Date(d.length <= 7 ? `${d}-01` : d)
   return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
@@ -349,7 +397,9 @@ function formatDateRange(start: string, end: string | undefined): string {
 function nl2p(text: string): string {
   return text
     .split(/\n+/)
-    .map((p) => `<p>${esc(p)}</p>`)
+    .map((p) => {
+      return `<p>${esc(p)}</p>`
+    })
     .join('\n')
 }
 
@@ -358,13 +408,9 @@ function companyInitial(name: string): string {
   return `<div class="logo-placeholder">${letter}</div>`
 }
 
-function entryLogo(
-  item: { logoUrl?: string; name?: string; institution?: string },
-  nameField: 'name' | 'institution' = 'name',
-): string {
-  const label = (nameField === 'institution' ? (item as { institution?: string }).institution : item.name) ?? ''
+function entryLogo(item: { logoUrl?: string; name: string }): string {
   if (item.logoUrl) {
-    return `<img class="entry-logo-img" src="${esc(item.logoUrl)}" alt="${esc(label)}" />`
+    return `<img class="entry-logo-img" src="${esc(item.logoUrl)}" alt="${esc(item.name)}" />`
   }
-  return companyInitial(label)
+  return companyInitial(item.name)
 }

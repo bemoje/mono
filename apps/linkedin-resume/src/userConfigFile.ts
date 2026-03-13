@@ -1,27 +1,19 @@
+import { CONFIG_PATH } from './constants'
 import { ConfigFile } from '@mono/config'
 import { Type } from '@sinclair/typebox'
-import { CONFIG_PATH } from './constants'
-import { UserConfig } from './types/UserConfig'
+import type { UserConfig } from './types/UserConfig'
 
 export const UserConfigSchema = Type.Object(
   {
-    linkedInUsername: Type.String({ default: '' }),
-    outputFilepath: Type.String({ default: '$USERPROFILE/Desktop/resume.pdf' }),
-    profiles: Type.Array(
+    username: Type.String({ default: '' }),
+    outpath: Type.String({ default: '$USERPROFILE/Desktop/resume.pdf' }),
+    social: Type.Array(
       Type.Object({
         network: Type.String({ default: '' }),
         username: Type.String({ default: '' }),
         url: Type.String({ default: '' }),
       }),
-      {
-        default: [
-          {
-            network: 'GitHub',
-            username: 'USER_NAME',
-            url: 'https://github.com/USER_NAME',
-          },
-        ],
-      },
+      { default: [] }
     ),
     ignore: Type.Optional(
       Type.Object(
@@ -40,30 +32,25 @@ export const UserConfigSchema = Type.Object(
                   summary: Type.Optional(Type.String()),
                   logoUrl: Type.Optional(Type.String()),
                 }),
-                {
-                  default: [],
-                },
+                { default: [] }
               ),
-            ]),
+            ])
           ),
           education: Type.Optional(
             Type.Union([
               Type.Literal(true),
               Type.Array(
                 Type.Object({
-                  institution: Type.Optional(Type.String()),
+                  name: Type.Optional(Type.String()),
                   area: Type.Optional(Type.String()),
                   studyType: Type.Optional(Type.String()),
                   startDate: Type.Optional(Type.String()),
                   endDate: Type.Optional(Type.String()),
-                  score: Type.Optional(Type.String()),
                   logoUrl: Type.Optional(Type.String()),
                 }),
-                {
-                  default: [],
-                },
+                { default: [] }
               ),
-            ]),
+            ])
           ),
           projects: Type.Optional(
             Type.Union([
@@ -79,38 +66,24 @@ export const UserConfigSchema = Type.Object(
                   url: Type.Optional(Type.String()),
                   logoUrl: Type.Optional(Type.String()),
                 }),
-                {
-                  default: [],
-                },
+                { default: [] }
               ),
-            ]),
+            ])
           ),
           skills: Type.Optional(
             Type.Union([
               Type.Literal(true),
-              Type.Array(
-                Type.Object({
-                  name: Type.Optional(Type.String()),
-                }),
-                {
-                  default: [],
-                },
-              ),
-            ]),
+              Type.Array(Type.Object({ name: Type.Optional(Type.String()) }), { default: [] }),
+            ])
           ),
           languages: Type.Optional(
             Type.Union([
               Type.Literal(true),
               Type.Array(
-                Type.Object({
-                  language: Type.Optional(Type.String()),
-                  fluency: Type.Optional(Type.String()),
-                }),
-                {
-                  default: [],
-                },
+                Type.Object({ language: Type.Optional(Type.String()), fluency: Type.Optional(Type.String()) }),
+                { default: [] }
               ),
-            ]),
+            ])
           ),
           recommendations: Type.Optional(
             Type.Union([
@@ -123,22 +96,16 @@ export const UserConfigSchema = Type.Object(
                   relationship: Type.Optional(Type.String()),
                   logoUrl: Type.Optional(Type.String()),
                 }),
-                {
-                  default: [],
-                },
+                { default: [] }
               ),
-            ]),
+            ])
           ),
         },
-        {
-          default: {},
-        },
-      ),
+        { default: {} }
+      )
     ),
   },
-  {
-    default: {},
-  },
+  { default: {} }
 )
 
 export const userConfigFile = new ConfigFile(UserConfigSchema, CONFIG_PATH)

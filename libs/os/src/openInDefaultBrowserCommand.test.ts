@@ -1,13 +1,17 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Mock dependencies
-vi.mock('./getOS', () => ({
-  getOS: vi.fn(),
-}))
-vi.mock('./getDefaultBrowserWindows', () => ({
-  getDefaultBrowserWindows: vi.fn(),
-}))
+vi.mock('./getOS', () => {
+  return { getOS: vi.fn() }
+})
+vi.mock('./getDefaultBrowserWindows', () => {
+  return { getDefaultBrowserWindows: vi.fn() }
+})
 
 describe('openInDefaultBrowserCommand', () => {
   let mockGetOS: any
@@ -100,7 +104,9 @@ describe('openInDefaultBrowserCommand', () => {
   it('should throw error for unknown OS', () => {
     mockGetOS.mockReturnValue('unknown')
 
-    expect(() => openInDefaultBrowserCommand()).toThrow('Unknown OS: unknown')
+    expect(() => {
+      return openInDefaultBrowserCommand()
+    }).toThrow('Unknown OS: unknown')
     expect(mockGetDefaultBrowserWindows).not.toHaveBeenCalled()
   })
 })

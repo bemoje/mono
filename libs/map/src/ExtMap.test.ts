@@ -1,6 +1,8 @@
-import { describe, it, expect } from 'vitest'
 import { ExtMap } from './ExtMap'
-import { inspect } from 'node:util'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { inspect } from 'util'
+import { it } from 'vitest'
 
 describe('ExtMap', () => {
   describe('constructor', () => {
@@ -62,13 +64,17 @@ describe('ExtMap', () => {
   describe('update()', () => {
     it('updates a value with the result of the update function', () => {
       const map = new ExtMap<string, number>([['a', 1]])
-      map.update('a', (v) => (v ?? 0) + 10)
+      map.update('a', (v) => {
+        return (v ?? 0) + 10
+      })
       expect(map.get('a')).toBe(11)
     })
 
     it('sets a value if key does not exist', () => {
       const map = new ExtMap<string, number>()
-      map.update('a', (v) => (v ?? 0) + 5)
+      map.update('a', (v) => {
+        return (v ?? 0) + 5
+      })
       expect(map.get('a')).toBe(5)
     })
 
@@ -84,7 +90,9 @@ describe('ExtMap', () => {
 
     it('returns this for chaining', () => {
       const map = new ExtMap<string, number>()
-      const result = map.update('a', () => 1)
+      const result = map.update('a', () => {
+        return 1
+      })
       expect(result).toBe(map)
     })
   })
@@ -92,13 +100,17 @@ describe('ExtMap', () => {
   describe('getOrDefault()', () => {
     it('returns existing value if key exists', () => {
       const map = new ExtMap<string, number>([['a', 1]])
-      const value = map.getOrDefault('a', () => 999)
+      const value = map.getOrDefault('a', () => {
+        return 999
+      })
       expect(value).toBe(1)
     })
 
     it('creates and stores default value if key does not exist', () => {
       const map = new ExtMap<string, number>()
-      const value = map.getOrDefault('a', () => 42)
+      const value = map.getOrDefault('a', () => {
+        return 42
+      })
       expect(value).toBe(42)
       expect(map.get('a')).toBe(42) // Value was stored
     })
@@ -106,7 +118,9 @@ describe('ExtMap', () => {
     it('handles undefined values correctly', () => {
       const map = new ExtMap<string, number | undefined>()
       map.set('a', undefined)
-      const value = map.getOrDefault('a', () => 42)
+      const value = map.getOrDefault('a', () => {
+        return 42
+      })
       expect(value).toBeUndefined()
     })
 
@@ -128,7 +142,9 @@ describe('ExtMap', () => {
         ['b', 2],
       ])
 
-      map.sort(([k1], [k2]) => k1.localeCompare(k2))
+      map.sort(([k1], [k2]) => {
+        return k1.localeCompare(k2)
+      })
 
       const entries = Array.from(map.entries())
       expect(entries).toEqual([
@@ -140,7 +156,9 @@ describe('ExtMap', () => {
 
     it('returns this for chaining', () => {
       const map = new ExtMap<string, number>([['a', 1]])
-      const result = map.sort(() => 0)
+      const result = map.sort(() => {
+        return 0
+      })
       expect(result).toBe(map)
     })
   })
@@ -153,7 +171,9 @@ describe('ExtMap', () => {
         ['b', 2],
       ])
 
-      map.sortByKeys((a, b) => a.localeCompare(b))
+      map.sortByKeys((a, b) => {
+        return a.localeCompare(b)
+      })
 
       const entries = Array.from(map.entries())
       expect(entries).toEqual([
@@ -165,7 +185,9 @@ describe('ExtMap', () => {
 
     it('returns this for chaining', () => {
       const map = new ExtMap<string, number>([['a', 1]])
-      const result = map.sortByKeys(() => 0)
+      const result = map.sortByKeys(() => {
+        return 0
+      })
       expect(result).toBe(map)
     })
   })
@@ -178,7 +200,9 @@ describe('ExtMap', () => {
         ['b', 2],
       ])
 
-      map.sortByValues((a, b) => a - b)
+      map.sortByValues((a, b) => {
+        return a - b
+      })
 
       const entries = Array.from(map.entries())
       expect(entries).toEqual([
@@ -190,7 +214,9 @@ describe('ExtMap', () => {
 
     it('returns this for chaining', () => {
       const map = new ExtMap<string, number>([['a', 1]])
-      const result = map.sortByValues(() => 0)
+      const result = map.sortByValues(() => {
+        return 0
+      })
       expect(result).toBe(map)
     })
   })
@@ -240,7 +266,9 @@ describe('ExtMap', () => {
         ['c', 3],
       ])
 
-      const doubled = map.mapValues((v) => v * 2)
+      const doubled = map.mapValues((v) => {
+        return v * 2
+      })
 
       expect(doubled.get('a')).toBe(2)
       expect(doubled.get('b')).toBe(4)
@@ -257,7 +285,9 @@ describe('ExtMap', () => {
         ['c', 3],
       ])
 
-      const uppercased = map.mapKeys((k) => k.toUpperCase())
+      const uppercased = map.mapKeys((k) => {
+        return k.toUpperCase()
+      })
 
       expect(uppercased.get('A')).toBe(1)
       expect(uppercased.get('B')).toBe(2)
@@ -275,7 +305,9 @@ describe('ExtMap', () => {
         ['d', 4],
       ])
 
-      const evens = map.filter((v) => v % 2 === 0)
+      const evens = map.filter((v) => {
+        return v % 2 === 0
+      })
 
       expect(evens.size).toBe(2)
       expect(evens.get('b')).toBe(2)
@@ -315,7 +347,9 @@ describe('ExtMap', () => {
         ['c', 3],
       ])
 
-      const sum = map.reduce((acc, value) => acc + value, 0)
+      const sum = map.reduce((acc, value) => {
+        return acc + value
+      }, 0)
 
       expect(sum).toBe(6)
     })

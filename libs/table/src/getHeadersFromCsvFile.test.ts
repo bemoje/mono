@@ -1,11 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getHeadersFromCsvFile } from './getHeadersFromCsvFile'
+import { it } from 'vitest'
 import { readFileFirstLine } from '@mono/fs'
+import { vi } from 'vitest'
 
 vi.mock('@mono/fs', () => {
-  return {
-    readFileFirstLine: vi.fn(),
-  }
+  return { readFileFirstLine: vi.fn() }
 })
 
 describe(getHeadersFromCsvFile.name, () => {

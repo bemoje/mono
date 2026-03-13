@@ -1,56 +1,95 @@
-import { Any } from '@mono/types'
+import type { Validator } from '@mono/types'
+import { ValidatorError } from './ValidatorError'
+import type { ValidatorResult } from '@mono/types'
+import { isPromise } from 'es-toolkit/predicate'
+import { isString } from 'es-toolkit/predicate'
 
 /**
- * Ensures a value meets validation criteria, throwing an error if it doesn't.
+ * Validates a value using the provided sync or async validator function(s).
+ * If validation fails, an error is thrown with details about the failure.
+ * Validators can return strings indicating the reason for failure, which will be included in the error message.
+ *
+ * @param value - The value to be validated.
+ * @param validator - A single validator function or an array of validator functions to validate the value against.
+ * @param options - Optional settings for validation, including negation and custom error handling.
+ * @returns The original value if validation is successful; otherwise, an error is thrown.
+ * @throws {ValidatorError} if validation fails, containing details about the input, expected outcome, and cause of failure.
+ *
+ * @example
+ * ```ts
+ * ensureThat(42, Number.isInteger)
+ * //=> 42
+ * ensureThat(-3.142, [Number.isInteger, (n) => n > 0 ? true : 'Must be positive'])
+ * // => throws ValidatorError { cause: { isInteger: false, [1]: false } }
+ * ```
  */
-export function ensureThat<T, V extends T | unknown>(
+export function ensureThat<T extends Validator, V extends Parameters<T>[0]>(
   value: V,
-  validator: TValidator<T, V>,
-  options: { Err?: new (...args: any[]) => Any; args?: Any[]; is?: boolean } = {},
-) {
-  const result = validator(value, ...(options.args ?? []))
+  validator: T | T[],
+  options?: { message?: string; negate?: boolean }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any> extends ReturnType<T> ? Promise<V> : V {
+  const validators = [validator].flat(2) as T[]
+  const retvals = validators.map((v) => {
+    return v(value)
+  })
+  const isAsync = retvals.some(isPromise)
 
-  if (!(result instanceof Promise)) {
-    return handleResult(value, validator, options, result)
+  // eslint-disable-next-line unicorn/prefer-ternary
+  if (isAsync) {
+    return Promise.all(
+      retvals.map(async (r) => {
+        return await r
+      })
+    ).then((awaited) => {
+      return handleResult(validators, awaited, value, options)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }) as Promise<any> extends ReturnType<T> ? Promise<V> : V
+  } else {
+    return handleResult(validators, retvals as ValidatorResult[], value, options)
+  }
+}
+
+function handleResult<T extends Validator, V extends Parameters<T>[0]>(
+  validators: T[],
+  retvals: ValidatorResult[],
+  value: V,
+  opts?: { message?: string; negate?: boolean }
+) {
+  const negate = !!opts?.negate
+  const expected = !negate
+  const causeEntries = validators
+    .map((validator, i) => {
+      const retval = retvals[i]
+      const actual = isString(retval) ? false : !!retval
+      const valid = actual === expected
+      if (!valid) {
+        const res = isString(retval) ? retval.trim() : actual
+        const name = validator.name
+        return [name || `[${i}]`, res]
+      }
+    })
+    .filter((v): v is [string, string] => {
+      return !!v
+    })
+
+  if (!causeEntries.length) {
+    return value as Parameters<T>[0]
   }
 
-  return new Promise((resolve, reject) => {
-    result
-      .then((r) => {
-        resolve(handleResult(value, validator, options, r))
-      })
-      .catch((e) => {
-        reject(e)
-      })
-  })
+  const message =
+    opts?.message?.trim() ||
+    [
+      `Expected [${validators
+        .map((o, i) => {
+          return o.name || `[${i}]`
+        })
+        .join(', ')}]`,
+      `to return '${expected}'`,
+      `for input: '${String(value).slice(0, 30)}'`,
+    ]
+      .filter(Boolean)
+      .join(' ')
+
+  throw new ValidatorError(message, { input: value, negate: negate, cause: Object.fromEntries(causeEntries) })
 }
-
-function handleResult<T, V extends T | unknown>(
-  value: V,
-  validator: TSyncValidator<T, V> | TAsyncValidator<T, V>,
-  options: { Err?: new (...args: any[]) => Any; args?: Any[]; is?: boolean },
-  result: string | boolean,
-): T {
-  const expected = options.is ?? true
-  if (result === expected) return value as unknown as T
-
-  const ErrorConstructor = options.Err ?? Error
-  throw new ErrorConstructor(
-    typeof result === 'string' //
-      ? `${result}. Got: ${value}`
-      : `Expected '${validator.name}'. Got: ${value}`,
-  )
-}
-
-export type TValidator<T, V extends T | unknown> = TSyncValidator<T, V> | TAsyncValidator<T, V>
-
-export type TSyncValidator<T, V extends T | unknown> =
-  | ((value: V, ...args: any[]) => boolean)
-  | ((value: T | unknown, ...args: any[]) => value is T)
-  | ((value: V, ...args: any[]) => boolean | string)
-  | ((value: V, ...args: any[]) => true | string)
-
-export type TAsyncValidator<T, V extends T | unknown> =
-  | ((value: V, ...args: any[]) => Promise<boolean>)
-  | ((value: V, ...args: any[]) => Promise<boolean | string>)
-  | ((value: V, ...args: any[]) => Promise<true | string>)

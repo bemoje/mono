@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import { Parenting } from './Parenting'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(Parenting.name, () => {
   describe(Parenting.compose.name, () => {

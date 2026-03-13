@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import { arrSwap } from './arrSwap'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('arrSwap', () => {
   it('example', () => {

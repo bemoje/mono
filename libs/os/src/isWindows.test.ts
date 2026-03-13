@@ -1,11 +1,13 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import assert from 'node:assert'
+import { afterEach } from 'vitest'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Mock process globally for each test
-const mockProcess = {
-  platform: 'win32',
-  env: {},
-}
+const mockProcess = { platform: 'win32', env: {} }
 
 describe('isWindows', () => {
   let isWindows: any

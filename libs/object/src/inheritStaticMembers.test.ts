@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest'
-
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { inheritStaticMembers } from './inheritStaticMembers'
+import { it } from 'vitest'
 
 describe('inheritStaticMembers', () => {
   it('should copy static members from source to target', () => {

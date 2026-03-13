@@ -1,6 +1,9 @@
-import { describe, it, expect, vi } from 'vitest'
-import upath from 'upath'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { toCwdRelative } from './toCwdRelative'
+import upath from 'upath'
+import { vi } from 'vitest'
 
 describe(toCwdRelative.name, () => {
   it('examples', () => {

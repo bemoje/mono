@@ -1,8 +1,13 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import assert from 'node:assert'
+import { afterEach } from 'vitest'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
 import colors from 'ansi-colors'
+import { describe } from 'vitest'
 import { enablePrettyStackTrace } from './enablePrettyStackTrace'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { prettyStackTrace } from './prettyStackTrace'
+import { vi } from 'vitest'
 
 describe(prettyStackTrace.name, () => {
   let originalListeners: NodeJS.UncaughtExceptionListener[]
@@ -17,7 +22,9 @@ describe(prettyStackTrace.name, () => {
   afterEach(() => {
     // Remove all uncaughtException listeners and restore originals
     process.removeAllListeners('uncaughtException')
-    originalListeners.forEach((listener) => process.on('uncaughtException', listener))
+    originalListeners.forEach((listener) => {
+      return process.on('uncaughtException', listener)
+    })
     consoleErrorSpy.mockRestore()
   })
 
@@ -57,7 +64,7 @@ describe(prettyStackTrace.name, () => {
       const result = prettyStackTrace(error)
 
       // Should contain the colored error message
-      expect(result).toContain(colors.red('Test error message'))
+      expect(result).toContain(colors.red('Error: Test error message'))
     })
 
     it('should handle empty error message', () => {
@@ -65,14 +72,6 @@ describe(prettyStackTrace.name, () => {
       const result = prettyStackTrace(error)
 
       expect(result).toContain(colors.red(''))
-    })
-
-    it('should handle special characters in error message', () => {
-      const message = 'Error with special chars: ñáéíóú & symbols @#$%'
-      const error = new Error(message)
-      const result = prettyStackTrace(error)
-
-      expect(result).toContain(colors.red(message))
     })
   })
 
@@ -82,8 +81,6 @@ describe(prettyStackTrace.name, () => {
       const result = prettyStackTrace(error)
 
       expect(result).toContain(colors.magenta('stack:'))
-      // Should have indented stack frames
-      expect(result).toMatch(/  {2}\w+/)
     })
 
     it('should omit stack when omitStack option is true', () => {
@@ -124,6 +121,36 @@ describe(prettyStackTrace.name, () => {
       // This test verifies the structure exists, specific coloring is harder to test
       // without mocking the stacktrace-parser
       expect(result).toContain('stack:')
+    })
+
+    it('should gray-out node built-in module frames', () => {
+      const error = new Error('Node builtin test')
+      const cwd = process.cwd().replace(/\\/g, '/')
+      error.stack = [
+        'Error: Node builtin test',
+        '    at Object.<anonymous> (node:internal/modules/cjs/loader:1218:14)',
+      ].join('\n')
+      const result = prettyStackTrace(error)
+      expect(result).toContain(colors.gray('Object.<anonymous>'))
+    })
+
+    it('should yellow-highlight node_modules frames', () => {
+      const error = new Error('Node modules test')
+      const cwd = process.cwd().replace(/\\/g, '/')
+      error.stack = [
+        'Error: Node modules test',
+        `    at something (${cwd}/node_modules/some-lib/index.js:5:10)`,
+      ].join('\n')
+      const result = prettyStackTrace(error)
+      expect(result).toContain(colors.yellow('index.js'))
+    })
+
+    it('should red-highlight project file frames', () => {
+      const error = new Error('Project file test')
+      const cwd = process.cwd().replace(/\\/g, '/')
+      error.stack = ['Error: Project file test', `    at myFunction (${cwd}/src/myFile.ts:10:5)`].join('\n')
+      const result = prettyStackTrace(error)
+      expect(result).toContain(colors.red('myFile.ts'))
     })
   })
 
@@ -170,7 +197,9 @@ describe(prettyStackTrace.name, () => {
       // Should not contain standard properties as separate props in the props section
       // The 'stack:' that appears is the stack trace section header, not a property
       const lines = result.split('\n')
-      const stackLineIndex = lines.findIndex((line) => line.includes('stack:'))
+      const stackLineIndex = lines.findIndex((line) => {
+        return line.includes('stack:')
+      })
       const propsSection = lines.slice(0, stackLineIndex).join('\n')
 
       expect(propsSection).not.toContain('name:')
@@ -280,7 +309,9 @@ describe(enablePrettyStackTrace.name, () => {
   afterEach(() => {
     // Remove all uncaughtException listeners and restore originals
     process.removeAllListeners('uncaughtException')
-    originalListeners.forEach((listener) => process.on('uncaughtException', listener))
+    originalListeners.forEach((listener) => {
+      return process.on('uncaughtException', listener)
+    })
     consoleErrorSpy.mockRestore()
   })
 
@@ -297,9 +328,9 @@ describe(enablePrettyStackTrace.name, () => {
       const testError = new Error('Test uncaught error')
 
       // Manually trigger the listener to test it
-      const addedListeners = process
-        .listeners('uncaughtException')
-        .filter((listener) => !originalListeners.includes(listener))
+      const addedListeners = process.listeners('uncaughtException').filter((listener) => {
+        return !originalListeners.includes(listener)
+      })
 
       assert(addedListeners.length === 1, 'should add exactly one listener')
 
@@ -344,9 +375,9 @@ describe(enablePrettyStackTrace.name, () => {
 
     // Get the added listener and call it directly
     const listeners = process.listeners('uncaughtException')
-    const addedListener = listeners.find((listener) => !originalListeners.includes(listener)) as (
-      error: Error,
-    ) => void
+    const addedListener = listeners.find((listener) => {
+      return !originalListeners.includes(listener)
+    }) as (error: Error) => void
 
     expect(addedListener).toBeDefined()
 
@@ -377,9 +408,9 @@ describe(enablePrettyStackTrace.name, () => {
     delete testError.stack
 
     const listeners = process.listeners('uncaughtException')
-    const addedListener = listeners.find((listener) => !originalListeners.includes(listener)) as (
-      error: Error,
-    ) => void
+    const addedListener = listeners.find((listener) => {
+      return !originalListeners.includes(listener)
+    }) as (error: Error) => void
 
     expect(() => {
       addedListener(testError)

@@ -1,49 +1,53 @@
+import { CONFIG_PATH } from './constants'
+import type { CliOptions } from './types/CliOptions'
 import { Command } from 'commander'
-import { scrapeLinkedIn } from './scrapeLinkedIn'
+import cp from 'child_process'
+import description from './core/description'
+import { loadUserConfig } from './loadUserConfig'
+import { renderPdfFromHtml } from './renderPdfFromHtml'
 import { renderResumeHtml } from './renderResumeHtml'
 import { renderResumeJson } from './renderResumeJson'
-import { renderPdfFromHtml } from './renderPdfFromHtml'
-import { loadUserConfig } from './loadUserConfig'
-import type { CliOptions } from './types/CliOptions'
-import { CONFIG_PATH, DIST_PATH } from './constants'
-import fs from 'fs-extra'
-import cp from 'child_process'
-import { ensureUserLoggedInToLinkedIn } from './linkedin/ensureUserLoggedInToLinkedIn'
-import description from './core/description'
+import { renderResumeMd } from './renderResumeMd'
+import { scrapeLinkedIn } from './scrapeLinkedIn'
+import { timer } from '@mono/node'
+import { userLogin } from './userLogin'
 import version from './core/version'
 
 const cli = new Command('linkedin-resume')
   .version(version)
   .description(description)
 
-  .argument('[outputFilepath]', 'Optional filepath. Defaults to value set in config file.')
+  .option('-o, --outpath <filepath>', 'output filepath (overrides config)')
 
-  .option('--debug', 'enable debug output')
-  .option('--render', 'skip scraping, only render')
-  .option('--no-headless', 'show scraping browser window')
-  .option('--keep-open', 'keep browser open after scraping')
+  .option('-d, --debug', 'enable debug output')
+  .option('-r, --render', 'skip scraping, only render')
+  .option('-n, --no-headless', 'show scraping browser window')
+  .option('-k, --keep-open', 'keep browser open after scraping')
 
-  .action(async (outputFilepath: string, options: CliOptions) => {
-    if (options.debug) {
-      console.log({ argv: process.argv })
-      console.dir({ config: await loadUserConfig() }, { depth: null })
-    }
+  .action(async (options: CliOptions) => {
+    await timer('', async (logger) => {
+      const config = await loadUserConfig()
 
-    if (!options.render) {
-      console.log('\nEnsuring logged in to LinkedIn...')
-      await ensureUserLoggedInToLinkedIn()
+      if (options.debug) {
+        logger.debug({ argv: process.argv, config, options })
+      }
 
-      console.log('\nClearing previous scrape data...')
-      await fs.emptyDir(DIST_PATH)
+      if (!options.render) {
+        await timer('login', (logger) => {
+          return userLogin(options, logger)
+        })
+        await timer('scrape', (logger) => {
+          return scrapeLinkedIn(options, logger)
+        })
+      }
 
-      console.log('\nScraping LinkedIn...')
-      await scrapeLinkedIn(options)
-    }
-
-    console.log('\nRendering resume...')
-    await renderResumeJson()
-    await renderResumeHtml()
-    await renderPdfFromHtml(outputFilepath, options)
+      await timer('render', async (logger) => {
+        await renderResumeJson(logger)
+        await renderResumeHtml(logger)
+        await renderResumeMd(logger)
+        await renderPdfFromHtml(options, logger)
+      })
+    })
   })
 
 cli

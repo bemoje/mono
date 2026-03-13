@@ -15,6 +15,11 @@
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
     "exactOptionalPropertyTypes": false,
-    "isolatedModules": true
-  }
+    "isolatedModules": true,
+    // "isolatedDeclarations": true,
+    "declaration": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true
+  },
+  "exclude": ["libs/*/dist/**/*"]
 }

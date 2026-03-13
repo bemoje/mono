@@ -1,9 +1,13 @@
-import { isString } from 'es-toolkit/predicate'
 import { IsArrayWhereEach } from './IsArrayWhereEach'
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { isString } from 'es-toolkit/predicate'
+import { it } from 'vitest'
 
 describe(IsArrayWhereEach.name, () => {
-  const isLengthOf2 = (value: unknown) => (value as string).length === 2
+  const isLengthOf2 = (value: unknown) => {
+    return (value as string).length === 2
+  }
   const isValid = IsArrayWhereEach([isLengthOf2, isString])
 
   it('should return true for valid arrays', () => {
@@ -26,10 +30,25 @@ describe(IsArrayWhereEach.name, () => {
   })
 
   it('should throw if no name provided and not all validators are named functions', () => {
-    expect(() => IsArrayWhereEach([() => true])).toThrow()
+    expect(() => {
+      return IsArrayWhereEach([
+        () => {
+          return true
+        },
+      ])
+    }).toThrow()
   })
 
   it('should not throw if a name provided but not all validators are named functions', () => {
-    expect(() => IsArrayWhereEach([() => true], 'isAnything')).not.toThrow()
+    expect(() => {
+      return IsArrayWhereEach(
+        [
+          () => {
+            return true
+          },
+        ],
+        'isAnything'
+      )
+    }).not.toThrow()
   })
 })

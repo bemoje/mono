@@ -6,12 +6,12 @@ import fs from 'fs-extra'
 export function updateJsonFileSync<T extends object, R extends object>(
   filepath: string,
   update: (parsedFileContent: T) => R,
-  defaultValue: T = {} as T,
+  defaultValue: T = {} as T
 ): R {
   let content = defaultValue
   try {
     content = fs.readJsonSync(filepath)
-  } catch (error) {
+  } catch (_) {
     //
   }
   const updated = update(content)

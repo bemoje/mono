@@ -1,10 +1,13 @@
-import { describe, expect, it } from 'vitest'
-
 import { createObjectMerger } from './createObjectMerger'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe(createObjectMerger.name, () => {
   it('should merge objects based on the predicate function', () => {
-    const merge = createObjectMerger((value) => value != null)
+    const merge = createObjectMerger((value) => {
+      return value != null
+    })
     const target = { a: 1, b: 2, c: 3 }
     const source1 = { a: 5, b: null, c: undefined, d: 5 }
     const result = merge(target, source1)

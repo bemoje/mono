@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { inheritProxifiedPrototype } from './inheritProxifiedPrototype'
+import { it } from 'vitest'
 
 describe(inheritProxifiedPrototype.name, () => {
   it('should inherit methods from target class to viewer class', () => {

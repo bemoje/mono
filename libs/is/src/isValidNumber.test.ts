@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { isValidNumber } from './isValidNumber'
-import { describe, expect, it } from 'vitest'
+import { it } from 'vitest'
 
 describe('isValidNumber', () => {
   it('should return true for valid numbers', () => {

@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { getOwnProperty } from './getOwnProperty'
+import { it } from 'vitest'
 
 describe(getOwnProperty.name, () => {
   const obj = { age: 30 }

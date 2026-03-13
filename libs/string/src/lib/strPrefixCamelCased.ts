@@ -1,4 +1,4 @@
-import { strFirstCharToUpperCase } from './strFirstCharToUpperCase'
+import { upperFirst } from 'es-toolkit/string'
 
 /**
  * Prepend a camelCased string.
@@ -6,5 +6,5 @@ import { strFirstCharToUpperCase } from './strFirstCharToUpperCase'
  * Examples: @see strToGetterMethodName, @see strToSetterMethodName
  */
 export function strPrefixCamelCased(str: string, prefix: string): string {
-  return prefix + strFirstCharToUpperCase(str)
+  return prefix + upperFirst(str)
 }

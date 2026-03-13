@@ -1,4 +1,4 @@
-import { StringKeyOf } from '@mono/types'
+import type { StringKeyOf } from '@mono/types'
 
 /**
  * Get the values of an object with type-safe return value.

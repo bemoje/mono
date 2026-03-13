@@ -1,24 +1,30 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
-import assert from 'node:assert'
 import { Stats } from 'fs-extra'
-
-// Mock walkdir
-vi.mock('walkdir', () => ({
-  default: {
-    sync: vi.fn(),
-  },
-}))
-
-// Mock upath
-vi.mock('upath', () => ({
-  default: {
-    normalizeSafe: vi.fn((p: string) => p.replace(/\\/g, '/')),
-    basename: vi.fn((p: string) => p.split('/').pop() || ''),
-  },
-}))
-
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 import { walkDirectory } from './walkDirectory'
 import walkdir from 'walkdir'
+
+// Mock walkdir
+vi.mock('walkdir', () => {
+  return { default: { sync: vi.fn() } }
+})
+// Mock upath
+vi.mock('upath', () => {
+  return {
+    default: {
+      normalizeSafe: vi.fn((p: string) => {
+        return p.replace(/\\/g, '/')
+      }),
+      basename: vi.fn((p: string) => {
+        return p.split('/').pop() || ''
+      }),
+    },
+  }
+})
 
 const mockSync = walkdir.sync as any
 
@@ -46,12 +52,7 @@ describe(walkDirectory.name, () => {
       const result = walkDirectory('/test', {})
 
       expect(result).toEqual(['/test/file1.txt', '/test/file2.txt'])
-      expect(mockSync).toHaveBeenCalledWith(
-        '/test',
-        expect.objectContaining({
-          return_object: false,
-        }),
-      )
+      expect(mockSync).toHaveBeenCalledWith('/test', expect.objectContaining({ return_object: false }))
     })
 
     it('should normalize paths', () => {
@@ -64,14 +65,25 @@ describe(walkDirectory.name, () => {
   })
 
   describe('with stats option', () => {
-    const mockFileStats = { isFile: () => true, isDirectory: () => false } as Stats
-    const mockDirStats = { isFile: () => false, isDirectory: () => true } as Stats
+    const mockFileStats = {
+      isFile: () => {
+        return true
+      },
+      isDirectory: () => {
+        return false
+      },
+    } as Stats
+    const mockDirStats = {
+      isFile: () => {
+        return false
+      },
+      isDirectory: () => {
+        return true
+      },
+    } as Stats
 
     it('should return array of [path, stats] tuples when stats is true', () => {
-      mockSync.mockReturnValue({
-        '/test/file1.txt': mockFileStats,
-        '/test/dir1': mockDirStats,
-      })
+      mockSync.mockReturnValue({ '/test/file1.txt': mockFileStats, '/test/dir1': mockDirStats })
 
       const result = walkDirectory('/test', { stats: true })
 
@@ -79,18 +91,27 @@ describe(walkDirectory.name, () => {
         ['/test/file1.txt', mockFileStats],
         ['/test/dir1', mockDirStats],
       ])
-      expect(mockSync).toHaveBeenCalledWith(
-        '/test',
-        expect.objectContaining({
-          return_object: true,
-        }),
-      )
+      expect(mockSync).toHaveBeenCalledWith('/test', expect.objectContaining({ return_object: true }))
     })
   })
 
   describe('with only option', () => {
-    const mockFileStats = { isFile: () => true, isDirectory: () => false } as Stats
-    const mockDirStats = { isFile: () => false, isDirectory: () => true } as Stats
+    const mockFileStats = {
+      isFile: () => {
+        return true
+      },
+      isDirectory: () => {
+        return false
+      },
+    } as Stats
+    const mockDirStats = {
+      isFile: () => {
+        return false
+      },
+      isDirectory: () => {
+        return true
+      },
+    } as Stats
 
     it('should filter to only files when only="files"', () => {
       mockSync.mockReturnValue({
@@ -117,10 +138,7 @@ describe(walkDirectory.name, () => {
     })
 
     it('should return stats when both only and stats options are used', () => {
-      mockSync.mockReturnValue({
-        '/test/file1.txt': mockFileStats,
-        '/test/dir1': mockDirStats,
-      })
+      mockSync.mockReturnValue({ '/test/file1.txt': mockFileStats, '/test/dir1': mockDirStats })
 
       const result = walkDirectory('/test', { only: 'files', stats: true })
 
@@ -134,12 +152,7 @@ describe(walkDirectory.name, () => {
 
       walkDirectory('/test', { maxDepth: 2 })
 
-      expect(mockSync).toHaveBeenCalledWith(
-        '/test',
-        expect.objectContaining({
-          max_depth: 2,
-        }),
-      )
+      expect(mockSync).toHaveBeenCalledWith('/test', expect.objectContaining({ max_depth: 2 }))
     })
 
     it('should convert followSymlinks option', () => {
@@ -147,12 +160,7 @@ describe(walkDirectory.name, () => {
 
       walkDirectory('/test', { followSymlinks: true })
 
-      expect(mockSync).toHaveBeenCalledWith(
-        '/test',
-        expect.objectContaining({
-          follow_symlinks: true,
-        }),
-      )
+      expect(mockSync).toHaveBeenCalledWith('/test', expect.objectContaining({ follow_symlinks: true }))
     })
 
     it('should convert ignoreInodes option', () => {
@@ -160,17 +168,14 @@ describe(walkDirectory.name, () => {
 
       walkDirectory('/test', { ignoreInodes: true })
 
-      expect(mockSync).toHaveBeenCalledWith(
-        '/test',
-        expect.objectContaining({
-          track_inodes: false,
-        }),
-      )
+      expect(mockSync).toHaveBeenCalledWith('/test', expect.objectContaining({ track_inodes: false }))
     })
 
     it('should convert filter option', () => {
       mockSync.mockReturnValue([])
-      const filterFn = vi.fn(() => true)
+      const filterFn = vi.fn(() => {
+        return true
+      })
 
       walkDirectory('/test', { filter: filterFn })
 
@@ -185,7 +190,9 @@ describe(walkDirectory.name, () => {
 
     it('should return empty array when filter returns false', () => {
       mockSync.mockReturnValue([])
-      const filterFn = vi.fn(() => false)
+      const filterFn = vi.fn(() => {
+        return false
+      })
 
       walkDirectory('/test', { filter: filterFn })
 
@@ -213,8 +220,22 @@ describe(walkDirectory.name, () => {
     })
 
     it('should handle mixed file types with filtering', () => {
-      const mockFileStats = { isFile: () => true, isDirectory: () => false } as Stats
-      const mockDirStats = { isFile: () => false, isDirectory: () => true } as Stats
+      const mockFileStats = {
+        isFile: () => {
+          return true
+        },
+        isDirectory: () => {
+          return false
+        },
+      } as Stats
+      const mockDirStats = {
+        isFile: () => {
+          return false
+        },
+        isDirectory: () => {
+          return true
+        },
+      } as Stats
 
       mockSync.mockReturnValue({
         '/test/file.txt': mockFileStats,

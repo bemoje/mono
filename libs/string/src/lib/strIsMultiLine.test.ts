@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strIsMultiLine } from './strIsMultiLine'
-import { describe, expect, it } from 'vitest'
 
 describe('strIsMultiLine', () => {
   it('should return true if the string contains multiple lines', () => {

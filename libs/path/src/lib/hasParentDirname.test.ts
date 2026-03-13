@@ -1,6 +1,8 @@
-import { describe, it, expect } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
 import { hasParentDirname } from './hasParentDirname'
+import { it } from 'vitest'
 
 describe(hasParentDirname.name, () => {
   it('examples', () => {
@@ -9,13 +11,13 @@ describe(hasParentDirname.name, () => {
       assert.deepStrictEqual(
         hasParentDirname('src/components/Button.tsx', 'components'),
         true,
-        'should find components parent',
+        'should find components parent'
       )
       assert.deepStrictEqual(hasParentDirname('src/utils/helpers.ts', 'src'), true, 'should find src parent')
       assert.deepStrictEqual(
         hasParentDirname('project/src/index.ts', 'project'),
         true,
-        'should find project parent',
+        'should find project parent'
       )
       assert.deepStrictEqual(hasParentDirname('file.ts', 'src'), false, 'should not find non-existent parent')
     }).not.toThrow()

@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { objSize } from './objSize'
-import { describe, expect, it } from 'vitest'
 
 describe('objSize', () => {
   it('should return 0 for an empty object', () => {

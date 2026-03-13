@@ -1,5 +1,7 @@
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 import { strToCharSet } from './strToCharSet'
-import { describe, expect, it } from 'vitest'
 
 describe('strToCharSet', () => {
   it('should return a set of unique characters from a string', () => {

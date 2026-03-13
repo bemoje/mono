@@ -21,8 +21,10 @@ export async function autoScroll(page: Page): Promise<void> {
       setTimeout(() => {
         clearInterval(timer)
         resolve()
-      }, 60000)
+      }, 60_000)
     })
   })
-  await new Promise((r) => setTimeout(r, 1000))
+  await new Promise((r) => {
+    return setTimeout(r, 1000)
+  })
 }

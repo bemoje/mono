@@ -1,26 +1,23 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
-import assert from 'node:assert'
+import assert from 'assert'
+import { beforeEach } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
+import { vi } from 'vitest'
 
 // Mock dependencies
-vi.mock('fs-extra', () => ({
-  default: {
-    exists: vi.fn(),
-    stat: vi.fn(),
-  },
-  exists: vi.fn(),
-  stat: vi.fn(),
-}))
-vi.mock('node:child_process', () => ({
-  spawn: vi.fn(),
-}))
-vi.mock('node:util', () => ({
-  default: {
-    promisify: vi.fn(),
-  },
-}))
-vi.mock('./isWindows', () => ({
-  isWindows: vi.fn(),
-}))
+vi.mock('fs-extra', () => {
+  return { default: { exists: vi.fn(), stat: vi.fn() }, exists: vi.fn(), stat: vi.fn() }
+})
+vi.mock('child_process', () => {
+  return { spawn: vi.fn() }
+})
+vi.mock('util', () => {
+  return { default: { promisify: vi.fn() } }
+})
+vi.mock('./isWindows', () => {
+  return { isWindows: vi.fn() }
+})
 
 describe('winExplorerOpenDirectory', () => {
   let mockFs: any
@@ -35,8 +32,8 @@ describe('winExplorerOpenDirectory', () => {
 
     // Get fresh mocks
     const fs = await import('fs-extra')
-    const { spawn } = await import('node:child_process')
-    const util = await import('node:util')
+    const { spawn } = await import('child_process')
+    const util = await import('util')
     const { isWindows } = await import('./isWindows')
 
     mockFs = vi.mocked(fs.default)
@@ -52,7 +49,11 @@ describe('winExplorerOpenDirectory', () => {
     expect(async () => {
       mockIsWindows.mockReturnValue(true)
       ;(mockFs.exists as any).mockResolvedValue(true)
-      ;(mockFs.stat as any).mockResolvedValue({ isFile: () => false })
+      ;(mockFs.stat as any).mockResolvedValue({
+        isFile: () => {
+          return false
+        },
+      })
       const mockPromisifiedSpawn = vi.fn().mockResolvedValue(undefined)
       mockUtil.promisify.mockReturnValue(mockPromisifiedSpawn)
 
@@ -65,7 +66,11 @@ describe('winExplorerOpenDirectory', () => {
   it('should open directory when path exists and is directory', async () => {
     mockIsWindows.mockReturnValue(true)
     ;(mockFs.exists as any).mockResolvedValue(true)
-    ;(mockFs.stat as any).mockResolvedValue({ isFile: () => false })
+    ;(mockFs.stat as any).mockResolvedValue({
+      isFile: () => {
+        return false
+      },
+    })
     const mockPromisifiedSpawn = vi.fn().mockResolvedValue(undefined)
     mockUtil.promisify.mockReturnValue(mockPromisifiedSpawn)
 
@@ -77,7 +82,11 @@ describe('winExplorerOpenDirectory', () => {
   it('should open parent directory when path is a file', async () => {
     mockIsWindows.mockReturnValue(true)
     ;(mockFs.exists as any).mockResolvedValue(true)
-    ;(mockFs.stat as any).mockResolvedValue({ isFile: () => true })
+    ;(mockFs.stat as any).mockResolvedValue({
+      isFile: () => {
+        return true
+      },
+    })
     const mockPromisifiedSpawn = vi.fn().mockResolvedValue(undefined)
     mockUtil.promisify.mockReturnValue(mockPromisifiedSpawn)
 

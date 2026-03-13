@@ -1,5 +1,7 @@
 import { bytesToKilobytes } from './bytesToKilobytes'
-import { describe, expect, it } from 'vitest'
+import { describe } from 'vitest'
+import { expect } from 'vitest'
+import { it } from 'vitest'
 
 describe('bytesToKilobytes', () => {
   it('should convert bytes to megabytes', () => {
