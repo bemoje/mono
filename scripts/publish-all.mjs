@@ -1,16 +1,18 @@
 import cp from 'child_process'
 import fs from 'fs-extra'
 
-// ensure logged in to npm before publishing
-try {
-  const whoami = cp.execSync(`npm whoami`, { shell: true, stdio: 'pipe', encoding: 'utf-8' }).trim()
-  if (whoami.split('\n').length === 1) {
-    console.log('whoami:', whoami)
-  } else {
-    throw new Error('Not logged in')
+if (!process.env.CI) {
+  // ensure logged in to npm before publishing
+  try {
+    const whoami = cp.execSync(`npm whoami`, { shell: true, stdio: 'pipe', encoding: 'utf-8' }).trim()
+    if (whoami.split('\n').length === 1) {
+      console.log('whoami:', whoami)
+    } else {
+      throw new Error('Not logged in')
+    }
+  } catch (_) {
+    cp.execSync(`npm login`, { shell: true, stdio: 'inherit' })
   }
-} catch (_) {
-  cp.execSync(`npm login`, { shell: true, stdio: 'inherit' })
 }
 
 const upCommands = []
