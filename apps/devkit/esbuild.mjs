@@ -123,4 +123,19 @@ await fs.outputFile(
   )
 )
 
-console.log(colors.green('✓ Build validated'))
+console.log(colors.green('✓ Build completed'))
+
+if (!process.env.CI) {
+  cp.execSync('npx --yes publint --level warning --pack npm', {
+    cwd: distDirpath,
+    stdio: 'inherit',
+    encoding: 'utf8',
+    // shell: 'powershell',
+  })
+  cp.execSync('npx --yes @arethetypeswrong/cli --pack dist', {
+    stdio: 'inherit',
+    encoding: 'utf8',
+    // shell: 'powershell', //
+  })
+  console.log(colors.green('✓ Build validation success'))
+}

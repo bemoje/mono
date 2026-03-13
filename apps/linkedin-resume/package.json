@@ -34,9 +34,7 @@
   },
   "scripts": {
     "build": "node esbuild.mjs",
-    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
-    "build:attw": "yarn attw --pack dist",
-    "npmPublish": "yarn build && yarn build:publint && yarn build:attw && cd dist && npm publish && cd ../../"
+    "npmPublish": "npm publish && cd ../../"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.34.48",
@@ -46,7 +44,6 @@
     "upath": "^2.0.1"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.2",
     "@mono/config": "workspace:^",
     "@mono/node": "workspace:^",
     "@mono/object": "workspace:^",

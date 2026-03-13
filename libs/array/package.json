@@ -8,7 +8,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "node '../../scripts/build-lib-bundle.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "npmPublish": "cd dist && npm publish && cd ../../"
   },
   "keywords": [
     "array",

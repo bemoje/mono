@@ -1,5 +1,6 @@
 import * as esbuild from 'esbuild'
 import colors from 'ansi-colors'
+import cp from 'child_process'
 import fs from 'fs-extra'
 import upath from 'upath'
 
@@ -72,4 +73,19 @@ await fs.outputFile(
 
 await fs.copyFile(upath.joinSafe(wsDirpath, 'README.md'), upath.joinSafe(distDir, 'README.md'))
 
-console.log(colors.green('✓ Build validated'))
+console.log(colors.green('✓ Build completed'))
+
+if (!process.env.CI) {
+  cp.execSync('npx --yes publint --level warning --pack npm', {
+    cwd: distDir,
+    stdio: 'inherit',
+    encoding: 'utf8',
+    // shell: 'powershell',
+  })
+  cp.execSync('npx --yes @arethetypeswrong/cli --pack dist', {
+    stdio: 'inherit',
+    encoding: 'utf8',
+    // shell: 'powershell', //
+  })
+  console.log(colors.green('✓ Build validation success'))
+}

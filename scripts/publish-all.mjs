@@ -87,13 +87,14 @@ function publish(dir, ws) {
     )
 
     try {
-      cp.execSync(`yarn workspace ${pkg.name} exec "cd dist && npm publish && cd ../"`, {
+      cp.execSync(`yarn workspace ${pkg.name} run npmPublish`, {
         stdio: 'inherit',
         shell: true,
       })
       upCommands.push(`yarn up ${distPkg.name}@${distPkg.version}`)
     } catch (error) {
       console.error(`Failed to publish ${dir}/${ws}:`, error.message)
+      process.exitCode = 1
     }
   }
 }
