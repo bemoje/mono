@@ -1,9 +1,9 @@
-import onetime from 'onetime'
+import { once } from 'es-toolkit'
 
 export const onExit = (() => {
   const callbacks = new Set<NodeJS.ExitListener>()
 
-  const onExit = onetime((code: number) => {
+  const onExit = once((code: number) => {
     callbacks.forEach((fn) => {
       fn(code)
     })

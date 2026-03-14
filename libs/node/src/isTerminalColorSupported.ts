@@ -1,9 +1,9 @@
-import onetime from 'onetime'
+import { once } from 'es-toolkit'
 
 /**
  * Check if colored terminal output is (probably) supported.
  */
-export const isTerminalColorSupported = onetime(function isTerminalColorSupported() {
+export const isTerminalColorSupported = once(function isTerminalColorSupported() {
   const { FORCE_COLOR, NODE_DISABLE_COLORS, NO_COLOR, TERM } = process.env
   return (
     !NODE_DISABLE_COLORS &&
