@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Comprehensive object manipulation utilities for property definition, traversal, filtering, mapping, prototype chains, and descriptor management.",
   "keywords": [
     "object",

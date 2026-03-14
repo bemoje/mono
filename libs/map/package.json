@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Extended Map class and utilities for sorting, filtering, mapping, and managing key-value data.",
   "keywords": [
     "map",
@@ -21,13 +25,13 @@
   },
   "devDependencies": {
     "@mono/composition": "workspace:^",
-    "@mono/fn": "workspace:^",
     "@mono/iter": "workspace:^",
     "@mono/object": "workspace:^",
     "@mono/types": "workspace:^",
     "tsup": "^8.5.1"
   },
   "dependencies": {
+    "@bemoje/fn": "^2.0.0",
     "iter-tools": "^7.5.4",
     "mnemonist": "^0.40.3"
   },

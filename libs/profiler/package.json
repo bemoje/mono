@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Performance profiling utilities for measuring execution time of functions, class methods, and modules.",
   "keywords": [
     "profiler",

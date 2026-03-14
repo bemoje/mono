@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Utility functions for working with iterables, especially map-like key-value pair structures.",
   "keywords": [
     "iter",

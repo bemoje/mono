@@ -4,6 +4,10 @@
   "packageManager": "yarn@4.3.1",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "type": "module",
   "description": "Beautiful, color-formatted stack trace output for Node.js errors with syntax-highlighted file paths and structured error properties.",
   "keywords": [

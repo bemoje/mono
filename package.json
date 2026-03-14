@@ -42,7 +42,7 @@
     "publish:devkit": "yarn workspace devkit run build && cd apps/devkit/dist && npm publish && cd ../../../",
     "publish:linkedin-resume": "yarn workspace linkedin-resume run build && cd apps/linkedin-resume && npm publish && cd ../../",
     "publish-all": "node scripts/publish-all.mjs",
-    "wsp": "yarn workspaces foreach --parallel --all --jobs unlimited --topological --exclude mono --verbose --include",
+    "wsp": "yarn workspaces foreach --parallel --all --jobs 10 --topological --exclude mono --verbose --include",
     "wss": "yarn workspaces foreach --all --topological --exclude mono --verbose --include",
     "ws": "node scripts/ws.mjs",
     "ts": "yarn tsx --import 'tsconfig-paths/register' --import './scripts/enablePrettyStackTrace.ts' --import 'dotenv/config'",
@@ -58,9 +58,9 @@
     "@clack/prompts": "^1.1.0"
   },
   "devDependencies": {
-    "@bemoje/devkit": "4.3.1",
-    "@bemoje/eslint": "1.2.0",
-    "@bemoje/stacktrace": "1.1.3",
+    "@bemoje/devkit": "^5.0.1",
+    "@bemoje/eslint": "^2.0.0",
+    "@bemoje/stacktrace": "^2.0.0",
     "@changesets/cli": "^2.30.0",
     "@eslint/js": "^10.0.1",
     "@mono/monorepo": "workspace:^",
@@ -107,7 +107,6 @@
     "inquirer-checkbox-plus-plus": "^1.1.1",
     "iter-tools": "^7.5.4",
     "mnemonist": "^0.40.3",
-    "onetime": "^7.0.0",
     "string-argv": "^0.3.2",
     "upath": "^2.0.1"
   },

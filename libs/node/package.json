@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Node.js utilities for process execution, logging, timing, streams, and system monitoring.",
   "keywords": [
     "node",
@@ -32,7 +36,6 @@
     "cli-table": "^0.3.11",
     "es-toolkit": "^1.45.1",
     "humanize-duration": "^3.33.2",
-    "onetime": "^7.0.0",
     "upath": "^2.0.1"
   },
   "exports": {

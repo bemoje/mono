@@ -1,15 +1,16 @@
 {
   "name": "devkit",
   "description": "Development utilities for the monorepo.",
-  "version": "4.3.1",
+  "version": "5.0.1",
   "packageManager": "yarn@4.3.1",
   "type": "module",
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "scripts": {
-    "build": "yarn build:bundle && yarn build:publint && yarn build:attw",
-    "build:bundle": "node esbuild.mjs",
-    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
-    "build:attw": "yarn attw --pack dist",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "build": "node esbuild.mjs",
+    "npmPublish": "cd dist && npm publish"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.34.48",
@@ -19,7 +20,6 @@
     "fs-extra": "^11.3.4",
     "glob": "^11.1.0",
     "mnemonist": "^0.40.3",
-    "onetime": "^7.0.0",
     "prompts": "^2.4.2",
     "string-argv": "^0.3.2",
     "strip-comments": "2.0.1",
@@ -27,7 +27,6 @@
     "upath": "^2.0.1"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.2",
     "@mono/cli": "workspace:^",
     "@mono/config": "workspace:^",
     "@mono/map": "workspace:^",

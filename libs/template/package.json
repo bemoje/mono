@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "A TypeScript template engine with schema validation and pluggable rendering strategies.",
   "keywords": [
     "template",

@@ -6,7 +6,7 @@
   "sideEffects": false,
   "type": "module",
   "dependencies": {
-    "@bemoje/array": "3.2.5",
-    "@bemoje/cli": "3.1.4"
+    "@bemoje/array": "^4.0.0",
+    "@bemoje/cli": "^4.0.0"
   }
 }

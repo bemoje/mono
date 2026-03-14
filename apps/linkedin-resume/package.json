@@ -1,12 +1,10 @@
 {
   "name": "linkedin-resume",
   "description": "A CLI tool to generate a LinkedIn resume in PDF, HTML, and Markdown formats.",
-  "version": "0.4.2",
+  "version": "1.0.1",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "main": "dist/cli.mjs",
-  "bin": "dist/cli.mjs",
-  "license": "MIT",
+  "preferGlobal": true,
   "keywords": [
     "linkedin",
     "resume",
@@ -16,28 +14,12 @@
     "scraper",
     "puppeteer"
   ],
-  "engines": {
-    "node": ">=18"
-  },
-  "files": [
-    "dist/cli.mjs",
-    "dist/linkedin-resume.cjs",
-    "resume.schema.json"
-  ],
   "publishConfig": {
     "access": "public"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bemoje/mono.git",
-    "directory": "apps/linkedin-resume"
-  },
   "scripts": {
-    "build": "yarn build:bundle && yarn build:publint && yarn build:attw",
-    "build:bundle": "node esbuild.mjs",
-    "build:publint": "npx --yes publint --level warning --pack npm",
-    "build:attw": "yarn attw --pack .",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "build": "node esbuild.mjs",
+    "npmPublish": "cd dist && npm publish"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.34.48",
@@ -47,7 +29,6 @@
     "upath": "^2.0.1"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.2",
     "@mono/config": "workspace:^",
     "@mono/node": "workspace:^",
     "@mono/object": "workspace:^",

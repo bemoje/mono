@@ -4,6 +4,9 @@
   "version": "0.2.5",
   "packageManager": "yarn@4.3.1",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@clack/core": "^1.1.0",
     "@clack/prompts": "^1.1.0",
@@ -29,15 +32,11 @@
     "tool"
   ],
   "scripts": {
-    "build": "yarn build:bundle && yarn build:publint && yarn build:attw",
-    "build:bundle": "node esbuild.mjs",
-    "build:publint": "cd dist && npx --yes publint --level warning --pack npm",
-    "build:attw": "yarn attw --pack dist",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "build": "node esbuild.mjs",
+    "npmPublish": "cd dist && npm publish"
   },
   "preferGlobal": true,
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.2",
     "@mono/node": "workspace:^",
     "@types/fs-extra": "^11.0.4",
     "@types/memoizee": "^0.4.12"
