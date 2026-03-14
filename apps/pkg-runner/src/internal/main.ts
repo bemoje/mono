@@ -9,6 +9,18 @@ import fs from 'fs-extra'
 import { isCancel } from '@clack/prompts'
 import { onCancel } from './onCancel'
 
+if (
+  process.argv.slice(2).some((arg) => {
+    return ['-h', '--help'].includes(arg)
+  })
+) {
+  console.log('Usage: pkg-runner [options]')
+  console.log('')
+  console.log('Options:')
+  console.log('  -h, --help     Show this help message')
+  process.exit(0)
+}
+
 export async function main() {
   clearTerminal()
 
