@@ -28,6 +28,7 @@
     "@mono/iter": "workspace:^",
     "@mono/object": "workspace:^",
     "@mono/types": "workspace:^",
+    "tsd": "^0.31.2",
     "tsup": "^8.5.1"
   },
   "dependencies": {

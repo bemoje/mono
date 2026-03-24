@@ -17,6 +17,7 @@
     "ansi-colors": "^4.1.3",
     "cli-table": "^0.3.11",
     "es-toolkit": "^1.45.1",
+    "esbuild": "^0.25.12",
     "fs-extra": "^11.3.4",
     "glob": "^11.1.0",
     "mnemonist": "^0.40.3",
@@ -37,7 +38,9 @@
     "@mono/template": "workspace:^",
     "@types/cli-table": "^0.3.4",
     "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.3.1",
     "@types/prompts": "^2.4.9",
-    "@types/strip-comments": "^2.0.4"
+    "@types/strip-comments": "^2.0.4",
+    "typescript": "5.5.4"
   }
 }
