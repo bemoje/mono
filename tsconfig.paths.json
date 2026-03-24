@@ -32,7 +32,7 @@
       "@mono/date": ["./libs/date/src/index.ts"],
       "@mono/crypto": ["./libs/crypto/src/index.ts"],
       "@mono/cli": ["./libs/cli/src/index.ts"],
-      "scripts/*": ["./scripts/*"]
+      "@mono/scripts/*": ["./scripts/*"]
     }
   }
 }

@@ -179,6 +179,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bemoje/stacktrace@npm:^1.0.1":
+  version: 1.1.3
+  resolution: "@bemoje/stacktrace@npm:1.1.3"
+  dependencies:
+    ansi-colors: "npm:^4.1.3"
+    stacktrace-parser: "npm:^0.1.11"
+    upath: "npm:^2.0.1"
+  checksum: 10c0/6f9b760084403f7046adbdc164bae41e65a3dd3223ebe578c2b0cf9fcc53bd4a126d317e76905a983bda0d4eab3f4d517bebb99af8b411190b5b8bbe5eac356f
+  languageName: node
+  linkType: hard
+
 "@bemoje/stacktrace@npm:^2.0.0":
   version: 2.0.0
   resolution: "@bemoje/stacktrace@npm:2.0.0"
@@ -1301,6 +1312,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mono/number@workspace:libs/number"
   dependencies:
+    es-toolkit: "npm:^1.45.1"
     tsup: "npm:^8.5.1"
   languageName: unknown
   linkType: soft
@@ -1384,6 +1396,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@mono/scripts@workspace:scripts":
+  version: 0.0.0-use.local
+  resolution: "@mono/scripts@workspace:scripts"
+  dependencies:
+    "@bemoje/stacktrace": "npm:^1.0.1"
+    "@mono/monorepo": "workspace:^"
+    es-toolkit: "npm:^1.45.1"
+  languageName: unknown
+  linkType: soft
+
 "@mono/stacktrace@workspace:^, @mono/stacktrace@workspace:libs/stacktrace":
   version: 0.0.0-use.local
   resolution: "@mono/stacktrace@workspace:libs/stacktrace"
@@ -1413,6 +1435,7 @@ __metadata:
     "@mono/number": "workspace:^"
     "@mono/string": "workspace:^"
     ansi-colors: "npm:^4.1.3"
+    es-toolkit: "npm:^1.45.1"
     tsup: "npm:^8.5.1"
   languageName: unknown
   linkType: soft
@@ -5764,7 +5787,6 @@ __metadata:
     date-fns: "npm:^4.1.0"
     dotenv: "npm:^17.3.1"
     enquirer: "npm:^2.4.1"
-    es-toolkit: "npm:^1.44.0"
     esbuild: "npm:^0.23.0"
     eslint: "npm:^10.0.2"
     eslint-config-prettier: "npm:^9.1.0"

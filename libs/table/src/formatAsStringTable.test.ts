@@ -4,7 +4,7 @@ import { expect } from 'vitest'
 import { format } from 'date-fns'
 import { formatAsStringTable } from './formatAsStringTable'
 import { it } from 'vitest'
-import { startCase } from 'es-toolkit/string'
+import { startCase } from 'es-toolkit'
 import { vi } from 'vitest'
 
 describe('formatAsStringTable', () => {

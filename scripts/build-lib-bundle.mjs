@@ -3,14 +3,14 @@ import cp from 'node:child_process'
 import fs from 'fs-extra'
 import upath from 'upath'
 
-const repoRootDirpath = (() => {
-  const parts = upath.normalizeSafe(import.meta.dirname).split('/')
-  const i = parts.lastIndexOf('mono')
-  if (i === -1) {
-    throw new Error('Could not find repo root directory')
-  }
-  return parts.slice(0, i + 1).join('/')
-})()
+// const repoRootDirpath = (() => {
+//   const parts = upath.normalizeSafe(import.meta.dirname).split('/')
+//   const i = parts.lastIndexOf('mono')
+//   if (i === -1) {
+//     throw new Error('Could not find repo root directory')
+//   }
+//   return parts.slice(0, i + 1).join('/')
+// })()
 
 const wsDirpath = process.cwd()
 const distDir = upath.joinSafe(wsDirpath, 'dist')
