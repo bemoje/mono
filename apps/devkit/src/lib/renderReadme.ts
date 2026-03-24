@@ -119,7 +119,7 @@ export async function renderLibsExportedModules({ logger: log }: { logger: Logge
     }
 
     libsExports.push(
-      `- [**libs/${libName}**](./libs/${libName}/README.md): ${
+      `- [**libs/${libName}**](/libs/${libName}/README.md): ${
         (await fs.readJson(`libs/${libName}/package.json`)).description
       }`
     )
