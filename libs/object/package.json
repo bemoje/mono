@@ -1,6 +1,6 @@
 {
   "name": "@mono/object",
-  "version": "2.2.3",
+  "version": "3.0.0",
   "packageManager": "yarn@4.3.1",
   "type": "module",
   "module": "src/index.ts",
@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "build": "node '../../scripts/build-lib-bundle.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "npmPublish": "cd dist && npm publish && cd ../../"
   },
   "devDependencies": {
     "@mono/types": "workspace:^",

@@ -1,6 +1,6 @@
 {
   "name": "@mono/array",
-  "version": "3.2.5",
+  "version": "4.0.0",
   "description": "Array manipulation and table processing utilities for TypeScript.",
   "packageManager": "yarn@4.3.1",
   "type": "module",
@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "node '../../scripts/build-lib-bundle.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "npmPublish": "cd dist && npm publish && cd ../../"
   },
   "keywords": [
     "array",

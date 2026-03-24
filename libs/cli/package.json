@@ -1,6 +1,6 @@
 {
   "name": "@mono/cli",
-  "version": "3.1.4",
+  "version": "4.0.0",
   "description": "A type-safe CLI framework for building command-line interfaces with typed arguments, options, subcommands, and auto-generated help - without execution coupling.",
   "packageManager": "yarn@4.3.1",
   "type": "module",
@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "build": "node '../../scripts/build-lib-bundle.mjs'",
-    "npmPublish": "yarn build && cd dist && npm publish && cd ../../"
+    "npmPublish": "cd dist && npm publish && cd ../../"
   },
   "dependencies": {
     "ansi-colors": "^4.1.3",
