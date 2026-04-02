@@ -74,6 +74,6 @@ export async function createLibsWorkspaceAction(workspaceName: string, options: 
     templates.files.indexTs.renderString()
   )
 
-  cliExec(`yarn install`, { ...options, cwd: rootPath })
-  cliExec(`yarn install`, { ...options, cwd: CWD })
+  await cliExec(`yarn install`, { ...options, cwd: rootPath })
+  await cliExec(`yarn install`, { ...options, cwd: CWD })
 }
