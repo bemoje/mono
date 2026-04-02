@@ -36,11 +36,13 @@
     "@mono/path": "workspace:^",
     "@mono/prompt": "workspace:^",
     "@mono/template": "workspace:^",
+    "@types/bun": "^1",
     "@types/cli-table": "^0.3.4",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.3.1",
     "@types/prompts": "^2.4.9",
     "@types/strip-comments": "^2.0.4",
+    "bun": "^1.3.11",
     "typescript": "^5.5.4"
   }
 }

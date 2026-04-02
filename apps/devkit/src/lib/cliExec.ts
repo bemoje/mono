@@ -1,15 +1,8 @@
 import { $ } from 'execa'
-//@ts-expect-error
-import escalade from 'https://deno.land/escalade/sync.ts'
-
-const res = escalade(process.cwd(), (dir) => {
-  return dir === 'repos'
-})
-console.log(res)
 
 export async function cliExec(
   command: string,
-  options: Parameters<typeof $>[1] & {
+  opts: Parameters<typeof $>[1] & {
     dryRun?: boolean
     quiet?: boolean
     cwd?: string
@@ -25,27 +18,27 @@ export async function cliExec(
     // detatch: true,
   }
 
-  if (options.debug) {
+  if (opts.debug) {
     console.debug(`Executing command: ${command}`)
     console.debug(`defaults:`, defaults)
-    console.debug(`options:`, { defaults, options })
+    console.debug(`options:`, { defaults, opts })
   }
 
   const merged = {
     ...defaults,
-    ...options,
+    ...opts,
 
-    verbose: options.debug ? 'full' : 'none',
-    silent: options.silent && !options.debug,
-    quiet: (options.quiet || options.silent) && !options.debug,
+    verbose: opts.debug ? 'full' : 'none',
+    silent: opts.silent && !opts.debug,
+    quiet: (opts.quiet || opts.silent) && !opts.debug,
 
-    stdout: options.debug ? 'inherit' : options.silent ? 'ignore' : options.quiet ? 'pipe' : 'inherit',
-    stderr: options.debug ? 'inherit' : options.silent ? 'ignore' : options.quiet ? 'pipe' : 'inherit',
-    cwd: options.cwd ?? process.cwd(),
+    stdout: opts.debug ? 'inherit' : opts.silent ? 'ignore' : opts.quiet ? 'pipe' : 'inherit',
+    stderr: opts.debug ? 'inherit' : opts.silent ? 'ignore' : opts.quiet ? 'pipe' : 'inherit',
+    cwd: opts.cwd ?? process.cwd(),
   } as const
 
-  if (options.dryRun) {
-    if (!options.quiet) {
+  if (opts.dryRun) {
+    if (!opts.quiet) {
       console.log(`dryRun enabled. Skipping command: ${command}`)
     }
     return

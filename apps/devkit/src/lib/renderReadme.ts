@@ -3,7 +3,7 @@ import { arrTableToMarkdown } from '@mono/array'
 import cp from 'child_process'
 import fs from 'fs-extra'
 import { getLinesOfCode } from './getLinesOfCode'
-import { getRepoPackageJson } from './getRepoPackageJson'
+import { getRootPackageJson } from './getRootPackageJson'
 import { importLibs } from './importLibs'
 import { outputFileIfChanged } from './outputFileIfChanged'
 import { parseLibsTsDocSummaries } from './parseLibsTsDocSummaries'
@@ -175,11 +175,11 @@ export async function getNpmPkgDescription(name: string): Promise<string> {
 }
 
 export async function getRepoDescription(): Promise<string> {
-  return (await getRepoPackageJson()).description
+  return (await getRootPackageJson()).description
 }
 
 export async function getRepoName(): Promise<string> {
-  return (await getRepoPackageJson()).name
+  return (await getRootPackageJson()).name
 }
 
 export async function renderCoverageSummary(): Promise<string> {

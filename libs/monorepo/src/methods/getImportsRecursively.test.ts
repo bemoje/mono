@@ -6,7 +6,7 @@ import { expect } from 'vitest'
 import fs from 'fs-extra'
 import { getAllWorkspacePackageJsonPaths } from './getAllWorkspacePackageJsonPaths'
 import { getImportsRecursively } from './getImportsRecursively'
-import { getRepoPackageJson } from './getRepoPackageJson'
+import { getRootPackageJson } from './getRootPackageJson'
 import { it } from 'vitest'
 import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
 import { vi } from 'vitest'
@@ -37,8 +37,8 @@ vi.mock('fs-extra', () => {
 vi.mock('./getAllWorkspacePackageJsonPaths', () => {
   return { getAllWorkspacePackageJsonPaths: vi.fn() }
 })
-vi.mock('./getRepoPackageJson', () => {
-  return { getRepoPackageJson: vi.fn() }
+vi.mock('./getRootPackageJson', () => {
+  return { getRootPackageJson: vi.fn() }
 })
 vi.mock('../util/resolveModuleImportPath', () => {
   return { resolveModuleImportPath: vi.fn() }
@@ -64,7 +64,7 @@ vi.mock('upath', () => {
 const mockMonoRepo = vi.mocked(MonoRepo)
 const mockFs = vi.mocked(fs)
 const mockGetAllPkgPaths = vi.mocked(getAllWorkspacePackageJsonPaths)
-const mockGetRepoPkg = vi.mocked(getRepoPackageJson)
+const mockGetRepoPkg = vi.mocked(getRootPackageJson)
 const mockResolve = vi.mocked(resolveModuleImportPath)
 
 interface MockImport {

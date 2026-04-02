@@ -13,3 +13,8 @@ export async function getEmptyWsFiles(): Promise<string[]> {
       return upath.relative(process.cwd(), upath.joinSafe(d.parentPath, d.name))
     })
 }
+
+//
+if (import.meta.main) {
+  void getEmptyWsFiles()
+}

@@ -1,21 +1,21 @@
 import fs from 'fs-extra'
-import { once } from 'es-toolkit'
-import path from 'upath'
+import { memoize } from 'es-toolkit'
+import upath from 'upath'
 
 /**
  * Get the root directory path of the monorepo by finding the package.json with workspaces configuration.
  */
-export const getRepoRootDirpath = once(function getRepoRootDirpath() {
-  return (function recurse(dirpath = process.cwd()) {
-    dirpath = path.normalizeSafe(dirpath)
-    const pkgpath = path.joinSafe(dirpath, 'package.json')
-    if (fs.existsSync(pkgpath) && fs.readJsonSync(pkgpath)?.workspaces) {
+export const getRepoRootDirpath = memoize((fspath: string = process.cwd()) => {
+  return (function recurse(dirpath: string) {
+    dirpath = upath.normalizeSafe(dirpath)
+    const pkgpath = upath.joinSafe(dirpath, 'package.json')
+    if (fs.existsSync(pkgpath) && !!fs.readJsonSync(pkgpath, { throws: false })?.workspaces?.join('')) {
       return dirpath
     }
-    const parent = path.dirname(dirpath)
-    if (parent !== dirpath) {
-      return recurse(parent)
+    const parent = upath.dirname(dirpath)
+    if (parent === dirpath) {
+      throw new Error(`Could not find repo root from current dir: ${fspath}`)
     }
-    throw new Error(`Could not find repo root from process.cwd(): ${process.cwd()}`)
-  })()
+    return recurse(parent)
+  })(fspath)
 })

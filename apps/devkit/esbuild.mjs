@@ -1,4 +1,5 @@
 import * as esbuild from 'esbuild'
+import Bun from 'bun'
 import colors from 'ansi-colors'
 import cp from 'child_process'
 import fs from 'fs-extra'
@@ -50,6 +51,22 @@ if (process.env.CI) {
 console.log('Build started')
 await fs.emptyDir(distDir)
 
+await Bun.build({
+  entryPoints: [indexFilepath],
+  bundle: true,
+  outfile: indexOutFilepath,
+  tsconfig: tsconfigFilepath,
+  platform: 'node',
+  format: 'cjs',
+  target: ['node20', 'esnext'],
+  minify: false,
+  mainFields: ['module', 'main'],
+  treeShaking: true,
+  // external: Object.keys(pkg.dependencies),
+  banner: { js: '#!/usr/bin/env node' },
+  logOverride: { 'empty-import-meta': 'silent' },
+})
+
 await esbuild.build({
   entryPoints: [indexFilepath],
   bundle: true,
@@ -61,7 +78,7 @@ await esbuild.build({
   minify: false,
   mainFields: ['module', 'main'],
   treeShaking: true,
-  external: Object.keys(pkg.dependencies),
+  // external: Object.keys(pkg.dependencies),
   banner: { js: '#!/usr/bin/env node' },
   logOverride: { 'empty-import-meta': 'silent' },
 })
@@ -83,6 +100,7 @@ await fs.outputFile(
       author: rootPkg.author,
       repository: { ...rootPkg.repository, directory: `apps/${wsDirname}` },
       scripts: undefined,
+      dependencies: undefined,
       devDependencies: undefined,
       packageManager: undefined,
       publishConfig: undefined,

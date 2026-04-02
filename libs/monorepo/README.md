@@ -30,8 +30,8 @@ Monorepo workspace management, package discovery, and TypeScript code processing
 - [**getAllWorkspacePackageNames**](./src/methods/getAllWorkspacePackageNames.ts): Gets all workspace package names.
 - [**getAllWorkspacePaths**](./src/methods/getAllWorkspacePaths.ts): Returns an array of all workspace directory paths.
 - [**getImportsRecursively**](./src/methods/getImportsRecursively.ts): Recursively retrieves all imports for the given entry points, categorizing them into external, builtin, and internal dependencies.
-- [**getRepoPackageJson**](./src/methods/getRepoPackageJson.ts): Reads the repository's root package.json file.
-- [**getRepoPackageJsonPath**](./src/methods/getRepoPackageJsonPath.ts): Gets the absolute path to the repository's package.json file.
+- [**getRootPackageJson**](./src/methods/getRootPackageJson.ts): Reads the repository's root package.json file.
+- [**getRootPackageJsonPath**](./src/methods/getRootPackageJsonPath.ts): Gets the absolute path to the repository's package.json file.
 - [**getRepoRootDirpath**](./src/util/getRepoRootDirpath.ts): Get the root directory path of the monorepo by finding the package.json with workspaces configuration.
 - [**getWorkspaceDirpaths**](./src/util/getWorkspaceDirpaths.ts): Get all workspace directory paths by reading the workspace patterns from the root package.json.
 - [**hasExtnamePrefix**](./src/util/hasExtnamePrefix.ts): Checks if a file path has any of the specified semantic extension prefixes (e.g., .test.ts).
