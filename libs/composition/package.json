@@ -36,7 +36,7 @@
     "@mono/tschema": "workspace:^",
     "@mono/types": "workspace:^",
     "tsup": "^8.5.1",
-    "type-fest": "5.4.4"
+    "type-fest": "^5.4.4"
   },
   "exports": {
     ".": "./src/index.ts",

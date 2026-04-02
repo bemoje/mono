@@ -41,6 +41,6 @@
     "@types/node": "^24.3.1",
     "@types/prompts": "^2.4.9",
     "@types/strip-comments": "^2.0.4",
-    "typescript": "5.5.4"
+    "typescript": "^5.5.4"
   }
 }

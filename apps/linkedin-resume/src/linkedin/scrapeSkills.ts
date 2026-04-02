@@ -8,6 +8,7 @@ import { injectBrowserHelpers } from './utils/injectBrowserHelpers'
 import { onScrapeError } from './utils/onScrapeError'
 import { patchEsbuildHelpers } from './utils/patchEsbuildHelpers'
 import { scrapeOutputJson } from './utils/scrapeOutputJson'
+import { setTimeout } from 'timers/promises'
 import { userConfigFile } from '../userConfigFile'
 
 export async function scrapeSkills(browser: Browser, options: CliOptions, logger: Logger): Promise<void> {
@@ -19,6 +20,11 @@ export async function scrapeSkills(browser: Browser, options: CliOptions, logger
     const username = userConfigFile.load().username
     await page.goto(getPageUrl(username, 'skills'), { waitUntil: 'domcontentloaded', timeout: 20_000 })
 
+    await setTimeout(2500)
+
+    await patchEsbuildHelpers(page)
+    await injectBrowserHelpers(page)
+
     try {
       await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 15_000 })
     } catch {
@@ -26,9 +32,8 @@ export async function scrapeSkills(browser: Browser, options: CliOptions, logger
       // eslint-disable-next-line no-throw-literal
       throw 'ignore'
     }
+
     await autoScroll(page)
-    await patchEsbuildHelpers(page)
-    await injectBrowserHelpers(page)
 
     const rawEntries = await page.evaluate(() => {
       const container = document.querySelector('.scaffold-finite-scroll__content')

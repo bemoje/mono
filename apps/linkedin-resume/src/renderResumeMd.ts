@@ -30,7 +30,7 @@ export async function renderResumeMd(logger: Logger): Promise<void> {
 function renderProfile(resume: Resume): string {
   const b = resume.basics
   const loc = b.location
-  const locationStr = [loc.city, loc.region, loc.countryCode].filter(Boolean).join(', ')
+  const locationStr = [loc?.city, loc?.region, loc?.countryCode].filter(Boolean).join(', ')
   const lines: string[] = []
 
   lines.push(`# ${b.name}`)
