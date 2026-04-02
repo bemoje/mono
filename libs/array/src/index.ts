@@ -1,3 +1,4 @@
+export * from './arrTableToMarkdown'
 export * from './arrFindIndices'
 export * from './arrGetOrDefault'
 export * from './arrHasDuplicates'

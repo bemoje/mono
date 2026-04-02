@@ -1,7 +1,7 @@
 import type { Logger } from '@mono/node'
 import { MonoRepo } from '@mono/monorepo'
 import colors from 'ansi-colors'
-import { confirmPrompt } from '../lib/confirmPrompt'
+import { confirmPrompt } from '@mono/terminal'
 import fs from 'fs-extra'
 import upath from 'upath'
 

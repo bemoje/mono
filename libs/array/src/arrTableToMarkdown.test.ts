@@ -1,16 +1,16 @@
-import { arrayTableToMarkdown } from './arrayTableToMarkdown'
+import { arrTableToMarkdown } from './arrTableToMarkdown'
 import { describe } from 'vitest'
 import { expect } from 'vitest'
 import { it } from 'vitest'
 
-describe(arrayTableToMarkdown.name, () => {
+describe(arrTableToMarkdown.name, () => {
   it('should convert a simple table to markdown', () => {
     const table = [
       ['Name', 'Age'],
       ['Alice', '30'],
       ['Bob', '25'],
     ]
-    const result = arrayTableToMarkdown(table)
+    const result = arrTableToMarkdown(table)
     expect(result).toBe(['| Name  | Age |', '| ----- | --- |', '| Alice | 30  |', '| Bob   | 25  |'].join('\n'))
   })
 
@@ -19,7 +19,7 @@ describe(arrayTableToMarkdown.name, () => {
       ['A', 'LongerHeader'],
       ['Short', 'B'],
     ]
-    const result = arrayTableToMarkdown(table)
+    const result = arrTableToMarkdown(table)
     const lines = result.split('\n')
     expect(lines[0]).toBe('| A     | LongerHeader |')
     expect(lines[1]).toBe('| ----- | ------------ |')
@@ -28,19 +28,19 @@ describe(arrayTableToMarkdown.name, () => {
 
   it('should handle a single-row table (header only)', () => {
     const table = [['Col1', 'Col2']]
-    const result = arrayTableToMarkdown(table)
+    const result = arrTableToMarkdown(table)
     expect(result).toBe(['| Col1 | Col2 |', '| ---- | ---- |'].join('\n'))
   })
 
   it('should handle a single-column table', () => {
     const table = [['Header'], ['Value']]
-    const result = arrayTableToMarkdown(table)
+    const result = arrTableToMarkdown(table)
     expect(result).toBe(['| Header |', '| ------ |', '| Value  |'].join('\n'))
   })
 
   it('should throw on empty table', () => {
     expect(() => {
-      return arrayTableToMarkdown([])
+      return arrTableToMarkdown([])
     }).toThrow('Invalid table')
   })
 
@@ -50,7 +50,7 @@ describe(arrayTableToMarkdown.name, () => {
       ['C', 'D', 'E'],
     ]
     expect(() => {
-      return arrayTableToMarkdown(table)
+      return arrTableToMarkdown(table)
     }).toThrow('Invalid table')
   })
 })

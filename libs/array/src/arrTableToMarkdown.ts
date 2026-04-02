@@ -1,7 +1,7 @@
 /**
  * Converts a 2D table to a markdown table string.
  */
-export function arrayTableToMarkdown(table: string[][]): string {
+export function arrTableToMarkdown(table: string[][]): string {
   if (
     table.length === 0 ||
     table.some((row) => {

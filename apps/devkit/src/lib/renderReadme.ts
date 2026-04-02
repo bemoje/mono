@@ -1,5 +1,5 @@
 import type { Logger } from '@mono/node'
-import { arrayTableToMarkdown } from './arrayTableToMarkdown'
+import { arrTableToMarkdown } from '@mono/array'
 import cp from 'child_process'
 import fs from 'fs-extra'
 import { getLinesOfCode } from './getLinesOfCode'
@@ -190,7 +190,7 @@ export async function renderCoverageSummary(): Promise<string> {
   const coverageData = await fs.readJson(coverageJsonPath)
   const { total } = coverageData
 
-  return arrayTableToMarkdown([
+  return arrTableToMarkdown([
     ['Metric', 'Total', 'Covered', 'Percentage'],
     ['Lines', total.lines.total, total.lines.covered, `${total.lines.pct}%`].map(String),
     ['Functions', total.functions.total, total.functions.covered, `${total.functions.pct}%`].map(String),
@@ -208,7 +208,7 @@ export async function getNpmPkgDescriptions(placeholders: [string, string][]) {
 
 export async function renderLinesOfCodeTable(): Promise<string> {
   const counts = await getLinesOfCode()
-  return arrayTableToMarkdown([
+  return arrTableToMarkdown([
     ['file type', 'files', 'lines of code'],
     ...Object.entries(counts).map(([k, v]) => {
       return [k, String(v.files), String(v.lines)]

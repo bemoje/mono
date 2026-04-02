@@ -29,61 +29,61 @@ const queue = new AsyncDependencyQueue({
     'fix': {
       dependencies: ['install'],
       run: async () => {
-        await exe({})(`yarn fix`)
+        await xegg({})(`yarn fix`)
       },
     },
     'lint:fix': {
       dependencies: ['install', 'fix'],
       run: async () => {
-        await exe({})(`yarn lint:fix`)
+        await xegg({})(`yarn lint:fix`)
       },
     },
     'format:write:all': {
       dependencies: ['install', 'fix', 'lint:fix'],
       run: async () => {
-        await exe({})(`yarn format:write:all`)
+        await xegg({})(`yarn format:write:all`)
       },
     },
     'typecheck': {
       dependencies: ['install', 'fix', 'lint:fix', 'format:write:all'],
       run: async () => {
-        await exe({})(`yarn typecheck`)
+        await xegg({})(`yarn typecheck`)
       },
     },
     'check': {
       dependencies: ['install', 'fix', 'lint:fix', 'format:write:all'],
       run: async () => {
-        await exe({})(`yarn check`)
+        await xegg({})(`yarn check`)
       },
     },
     'build': {
       dependencies: ['install', 'fix', 'lint:fix', 'format:write:all', 'typecheck'],
       run: async () => {
-        await exe({})(`yarn build`)
+        await xegg({})(`yarn build`)
       },
     },
     'test-coverage': {
       dependencies: ['install', 'fix', 'lint:fix', 'format:write:all'],
       run: async () => {
-        await exe({})(`yarn test-coverage`)
+        await xegg({})(`yarn test-coverage`)
       },
     },
     'test-coverage-full': {
       dependencies: ['install', 'test-coverage'],
       run: async () => {
-        await exe({})(`yarn test-coverage-full`)
+        await xegg({})(`yarn test-coverage-full`)
       },
     },
     'readme': {
       dependencies: ['install', 'format:write:all', 'test-coverage'],
       run: async () => {
-        await exe({})(`yarn readme`)
+        await xegg({})(`yarn readme`)
       },
     },
   },
 })
 
-const exe = function exe(...args: any[]) {
+const xegg = function xegg(...args: any[]) {
   if (typeof args[0] === 'string') {
     args.unshift({})
   }
@@ -92,16 +92,6 @@ const exe = function exe(...args: any[]) {
     opts.stdio ??= 'inherit'
     opts.env ??= {}
     opts.env.FORCE_COLOR ??= 'true'
-    if (process.platform === 'win32') {
-      if (opts.shell === true) {
-        opts.shell = 'powershell'
-      } else if (
-        (opts.shell && opts.shell.endsWith('bash.exe') && opts.shell.includes('system32')) ||
-        /^bash(\.exe)?$/.test(String(opts.shell))
-      ) {
-        opts.shell = 'C:/Program Files/Git/bin/bash.exe'
-      }
-    }
   }
   // @ts-ignore
   return $(...args)
@@ -113,7 +103,7 @@ await queue.run()
 //   yield line
 // }
 
-// await exe({
+// await xegg({
 //   stdout: [transform, 'inherit'],
 //   // shell: 'C:/Program Files/Git/bin/bash.exe',
 //   shell: true,
