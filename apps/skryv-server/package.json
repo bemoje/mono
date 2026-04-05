@@ -1,0 +1,15 @@
+{
+  "name": "@mono/skryv-server",
+  "description": "End-to-end encrypted messaging app - Bun WebSocket relay server.",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "yarn@4.3.1",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch run src/index.ts",
+    "start": "bun run src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

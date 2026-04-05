@@ -1,6 +1,6 @@
 {
-  "name": "skryv",
-  "description": "End-to-end encrypted messaging app.",
+  "name": "@mono/skryv",
+  "description": "End-to-end encrypted messaging app - Vue frontend.",
   "private": true,
   "version": "0.0.0",
   "packageManager": "yarn@4.3.1",
@@ -14,7 +14,6 @@
     "vue": "^3.5.30"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.11",
     "@types/node": "^24.12.0",
     "@vitejs/plugin-vue": "^6.0.5",
     "@vue/tsconfig": "^0.9.0",

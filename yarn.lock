@@ -179,6 +179,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bemoje/iter@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@bemoje/iter@npm:2.0.0"
+  dependencies:
+    iter-tools: "npm:^7.5.4"
+  checksum: 10c0/9d1a65036b90c080e802d7fe2764b8f08e19fff1c462713eaa251187ea5419ed001711f5d4193646833f36eb34dadb0bcd49c5f4f88e3e0fcff6d20fe202fc6e
+  languageName: node
+  linkType: hard
+
+"@bemoje/object@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@bemoje/object@npm:3.0.0"
+  checksum: 10c0/4d7a6cf0dd0b0992f6ab5a4214d828b9558278c1e038bba0ad821dada3595065c24ab0b5aea93535d206dc11745a22c7a979125446a39d2862fe87c7f6fb5bf0
+  languageName: node
+  linkType: hard
+
 "@bemoje/stacktrace@npm:^1.0.1":
   version: 1.1.3
   resolution: "@bemoje/stacktrace@npm:1.1.3"
@@ -1461,18 +1477,45 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mono/scripts@workspace:scripts"
   dependencies:
+    "@bemoje/iter": "npm:^2.0.0"
+    "@bemoje/object": "npm:^3.0.0"
     "@bemoje/stacktrace": "npm:^1.0.1"
     "@types/execa": "npm:^2.0.2"
     "@types/node": "npm:^24.3.1"
     "@types/object-hash": "npm:^3.0.6"
+    "@types/strip-comments": "npm:^2.0.4"
     ansi-colors: "npm:^4.1.3"
     es-toolkit: "npm:^1.45.1"
     execa: "npm:^9.6.1"
     fs-extra: "npm:^11.3.4"
     glob: "npm:^11.1.0"
+    jsonc-simple-parser: "npm:^3.0.0"
     object-hash: "npm:^3.0.0"
+    strip-comments: "npm:2.0.1"
     typescript: "npm:^5.5.4"
     upath: "npm:^2.0.1"
+  languageName: unknown
+  linkType: soft
+
+"@mono/skryv-server@workspace:apps/skryv-server":
+  version: 0.0.0-use.local
+  resolution: "@mono/skryv-server@workspace:apps/skryv-server"
+  dependencies:
+    "@types/bun": "npm:latest"
+  languageName: unknown
+  linkType: soft
+
+"@mono/skryv@workspace:apps/skryv":
+  version: 0.0.0-use.local
+  resolution: "@mono/skryv@workspace:apps/skryv"
+  dependencies:
+    "@types/node": "npm:^24.12.0"
+    "@vitejs/plugin-vue": "npm:^6.0.5"
+    "@vue/tsconfig": "npm:^0.9.0"
+    typescript: "npm:^6.0.2"
+    vite: "npm:^8.0.1"
+    vue: "npm:^3.5.30"
+    vue-tsc: "npm:^3.2.5"
   languageName: unknown
   linkType: soft
 
@@ -2440,7 +2483,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/bun@npm:^1, @types/bun@npm:^1.3.11":
+"@types/bun@npm:^1, @types/bun@npm:^1.3.11, @types/bun@npm:latest":
   version: 1.3.11
   resolution: "@types/bun@npm:1.3.11"
   dependencies:
@@ -4106,18 +4149,17 @@ __metadata:
     "@types/fs-extra": "npm:^11.0.4"
     "@types/node": "npm:^24.3.1"
     "@types/prompts": "npm:^2.4.9"
-    "@types/strip-comments": "npm:^2.0.4"
     ansi-colors: "npm:^4.1.3"
     bun: "npm:^1.3.11"
     cli-table: "npm:^0.3.11"
     es-toolkit: "npm:^1.45.1"
     esbuild: "npm:^0.25.12"
+    execa: "npm:^9.6.1"
     fs-extra: "npm:^11.3.4"
     glob: "npm:^11.1.0"
     mnemonist: "npm:^0.40.3"
     prompts: "npm:^2.4.2"
     string-argv: "npm:^0.3.2"
-    strip-comments: "npm:2.0.1"
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:^5.5.4"
     upath: "npm:^2.0.1"
@@ -5853,6 +5895,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsonc-simple-parser@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "jsonc-simple-parser@npm:3.0.0"
+  dependencies:
+    reghex: "npm:^3.0.2"
+  checksum: 10c0/feaa19019b7c512d90d3331eecab4eb15e38db49f5ac72db81106b7145fd1fa034dd88781daaed88566655ccfb04d010397fb4e1e463b32b0be5383d8a7801d4
+  languageName: node
+  linkType: hard
+
 "jsonfile@npm:^4.0.0":
   version: 4.0.0
   resolution: "jsonfile@npm:4.0.0"
@@ -7573,6 +7624,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"reghex@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "reghex@npm:3.0.2"
+  checksum: 10c0/dabc5999fd2dc3462b8ab04a603dc178c108bd9d1491e1e2a647a96a807cf6cae3b89ae3620000432c1d4e49869fac3fc8a8600f9acfc9f0e70d0971f98beb35
+  languageName: node
+  linkType: hard
+
 "regjsparser@npm:^0.13.0":
   version: 0.13.0
   resolution: "regjsparser@npm:0.13.0"
@@ -7918,21 +7976,6 @@ __metadata:
   checksum: 10c0/230ac975cca485b7f6fe2b96a711aa62a6a26ead3e6fb8ba17c5a00d61b8bed0d7adc21f5626b70d7c33c62ff4e63933017a6462942c719d1980bb0b1207ad46
   languageName: node
   linkType: hard
-
-"skryv@workspace:apps/skryv":
-  version: 0.0.0-use.local
-  resolution: "skryv@workspace:apps/skryv"
-  dependencies:
-    "@types/bun": "npm:^1.3.11"
-    "@types/node": "npm:^24.12.0"
-    "@vitejs/plugin-vue": "npm:^6.0.5"
-    "@vue/tsconfig": "npm:^0.9.0"
-    typescript: "npm:^6.0.2"
-    vite: "npm:^8.0.1"
-    vue: "npm:^3.5.30"
-    vue-tsc: "npm:^3.2.5"
-  languageName: unknown
-  linkType: soft
 
 "slash@npm:^3.0.0":
   version: 3.0.0

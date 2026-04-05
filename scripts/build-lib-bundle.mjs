@@ -58,7 +58,7 @@ async function createBuildHash() {
     process.exit(0)
   }
 
-  const buildHashFilepath = upath.joinSafe(wsDirpath, '.cache', '.build.hash')
+  const buildHashFilepath = upath.joinSafe(rootDirpath, '.cache', `${wsDirname}.build.hash`)
 
   console.log(colors.green(`Changes detected. New hash: ${buildHash}`))
 

@@ -1,4 +1,0 @@
-[serve.static]
-env = "PUBLIC_*"  # only inline env vars starting with PUBLIC_ (recommended)
-# env = "inline"  # inline all environment variables
-# env = "disable" # disable env var replacement (default)
