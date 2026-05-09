@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  background: #0d0d0d;
+  color: #e0e0e0;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+#app {
+  min-height: 100%;
+}
