@@ -8,7 +8,6 @@ async function main() {
   const hasNewArticles = createNewArticleChecker()
 
   while (true) {
-    const start = Date.now()
     try {
       if (!(await hasNewArticles())) {
         await new Promise((resolve) => {

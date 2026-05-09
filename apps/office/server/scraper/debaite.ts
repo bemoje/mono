@@ -3,6 +3,9 @@ import cp from 'child_process'
 import db from '../db'
 import { parseTime } from './playwright'
 
+/**
+ * Removes click-bait from news article heading.
+ */
 export const debaite = (() => {
   return async (article: Article): Promise<Article> => {
     const existing = db.prepare(`SELECT heading, summary FROM articles WHERE url = ?`).get(article.url) as any

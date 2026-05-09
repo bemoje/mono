@@ -22,7 +22,7 @@ function onMousedown(event: MouseEvent) {
 
 <template>
   <article
-    class="group bg-white rounded-lg border px-3 py-2.5 cursor-pointer transition-all duration-150 relative overflow-hidden"
+    class="article group bg-white rounded-lg border px-3 py-2.5 cursor-pointer transition-all duration-150 relative overflow-hidden"
     :class="
       isFocused
         ? 'border-blue-400 ring-2 ring-blue-100 shadow-md'
@@ -64,14 +64,14 @@ function onMousedown(event: MouseEvent) {
 
     <div
       v-if="mode !== 'hidden' && isFocused"
-      class="mt-2.5 pt-2.5 border-t border-slate-100 text-sm text-slate-700 leading-relaxed bg-slate-50/50 -mx-3 -mb-2.5 px-3 py-2.5">
+      class="article-summary mt-2.5 pt-2.5 border-t border-slate-100 text-sm text-slate-700 leading-relaxed bg-slate-50/50 -mx-3 -mb-2.5 px-3 py-2.5">
       {{ summaryStr }}
     </div>
 
     <!-- Actions Menu Overlay -->
     <div
       v-if="mode === 'actions' && isFocused"
-      class="absolute inset-0 bg-slate-900/95 backdrop-blur-sm shadow-xl flex items-center justify-center p-4 z-10">
+      class="article-actions absolute inset-0 bg-slate-900/95 backdrop-blur-sm shadow-xl flex items-center justify-center p-4 z-10">
       <div class="flex gap-4">
         <a
           :href="article.url"
