@@ -54,7 +54,8 @@
     "script:npmEnsureLoggedIn": "node ./scripts/npmEnsureLoggedIn.mjs",
     "createWorkspaceHash": "yarn tsx ./scripts/createWorkspaceHash.ts",
     "prepare": "husky",
-    "release": "yarn build:all && yarn publish-all"
+    "release": "yarn build:all && yarn publish-all",
+    "office": "yarn workspace @mono/office"
   },
   "devDependencies": {
     "@bemoje/devkit": "^5.0.1",

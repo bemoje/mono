@@ -1,347 +1,106 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
-import { useSkryv } from './useSkryv'
+import { useArticleStore } from './stores/articleStore'
+import { storeToRefs } from 'pinia'
 
-const { state, messages, relayedBlobs, error, createRoom, joinRoom, sendMessage, disconnect } = useSkryv()
+const store = useArticleStore()
+const { articles, currentIndex, articleRefs } = storeToRefs(store)
 
-const passphrase = ref('')
-const joinRoomId = ref('')
-const joinSalt = ref('')
-const msgInput = ref('')
-const showDebug = ref(false)
+const { setFocus, resetHiddenArticles } = store
 
-// Room info returned when creating
-const createdRoomId = ref('')
-const createdSalt = ref('')
+import { useSettingsStore } from './stores/settings'
+import ArticleItem from './components/ArticleItem.vue'
+const settingsStore = useSettingsStore()
 
-async function handleCreate() {
-  if (!passphrase.value.trim()) return
-  const info = await createRoom(passphrase.value)
-  if (info) {
-    createdRoomId.value = info.roomId
-    createdSalt.value = info.salt
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+articleRefs // used in template ref
+
+function onMousedown(event: MouseEvent, index: number) {
+  if ((event.target as HTMLElement).tagName !== 'A') {
+    if (currentIndex.value === index) {
+      setFocus(-1)
+    } else {
+      setFocus(index)
+    }
   }
-}
-
-async function handleJoin() {
-  if (!passphrase.value.trim() || !joinRoomId.value.trim() || !joinSalt.value.trim()) return
-  await joinRoom(passphrase.value, joinRoomId.value.trim(), joinSalt.value.trim())
-}
-
-async function handleSend() {
-  if (!msgInput.value.trim()) return
-  await sendMessage(msgInput.value)
-  msgInput.value = ''
-}
-
-function truncate(s: string, n: number) {
-  return s.length > n ? s.slice(0, n) + '...' : s
 }
 </script>
 
 <template>
-  <div class="app">
-    <header>
-      <h1>Office</h1>
-      <p class="subtitle">End-to-end encrypted messaging. The server sees nothing.</p>
-      <span class="state-badge" :class="state">{{ state }}</span>
-    </header>
-
-    <!-- Error -->
-    <div v-if="error" class="error">{{ error }}</div>
-
-    <!-- Phase: Disconnected - Setup -->
-    <section v-if="state === 'disconnected'" class="setup">
-      <div class="field">
-        <label>Passphrase <small>(exchanged physically)</small></label>
-        <input v-model="passphrase" type="password" placeholder="correct horse battery staple" />
-      </div>
-
-      <div class="actions">
-        <div class="action-group">
-          <h3>Create a room</h3>
-          <button @click="handleCreate" :disabled="!passphrase.trim()">Create Room</button>
-        </div>
-
-        <div class="divider">or</div>
-
-        <div class="action-group">
-          <h3>Join a room</h3>
-          <div class="field">
-            <label>Room ID</label>
-            <input v-model="joinRoomId" placeholder="from your peer" />
-          </div>
-          <div class="field">
-            <label>Salt</label>
-            <input v-model="joinSalt" placeholder="from your peer" />
-          </div>
-          <button @click="handleJoin" :disabled="!passphrase.trim() || !joinRoomId.trim() || !joinSalt.trim()">
-            Join Room
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Phase: Waiting for peer -->
-    <section v-if="state === 'waiting'" class="waiting">
-      <p>Room created. Share these with your peer (in person!):</p>
-      <div class="share-info">
-        <div class="field">
-          <label>Room ID</label>
-          <code>{{ createdRoomId }}</code>
-        </div>
-        <div class="field">
-          <label>Salt</label>
-          <code>{{ createdSalt }}</code>
-        </div>
-      </div>
-      <p class="hint">Waiting for peer to join...</p>
-      <button @click="disconnect">Cancel</button>
-    </section>
-
-    <!-- Phase: Key exchange -->
-    <section v-if="state === 'connecting' || state === 'key-exchange'" class="exchanging">
-      <p>Establishing secure channel...</p>
-    </section>
-
-    <!-- Phase: Ready - Chat -->
-    <section v-if="state === 'ready'" class="chat">
-      <div class="messages">
-        <div v-for="(msg, i) in messages" :key="i" class="message" :class="msg.from">
-          <span class="bubble">{{ msg.text }}</span>
-        </div>
-        <div v-if="messages.length === 0" class="empty">Secure channel established. Say something!</div>
-      </div>
-      <form class="input-row" @submit.prevent="handleSend">
-        <input v-model="msgInput" placeholder="Type a message..." autofocus />
-        <button type="submit" :disabled="!msgInput.trim()">Send</button>
-      </form>
-      <div class="chat-actions">
-        <button class="secondary" @click="showDebug = !showDebug">
-          {{ showDebug ? 'Hide' : 'Show' }} Server View
+  <div class="max-w-4xl mx-auto px-4 py-8 pb-[60vh] font-sans antialiased text-slate-900 selection:bg-blue-200">
+    <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
+      <h1 class="text-3xl font-black tracking-tight text-slate-900 uppercase">DR.DK Nyheder</h1>
+      <div class="flex items-center gap-3">
+        <button
+          @click="resetHiddenArticles"
+          class="px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-200 rounded-md shadow-sm hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors"
+          title="Gendan skjulte artikler">
+          Gendan skjulte
         </button>
-        <button class="danger" @click="disconnect">Disconnect</button>
+        <button
+          @click="settingsStore.toggleSettings"
+          class="p-2 text-slate-600 bg-white border border-slate-200 rounded-md shadow-sm hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors"
+          title="Indstillinger">
+          ⚙️
+        </button>
       </div>
-    </section>
+    </div>
 
-    <!-- Debug: What the server sees -->
-    <section v-if="showDebug && relayedBlobs.length > 0" class="debug">
-      <h3>What the server sees (opaque ciphertext)</h3>
-      <div v-for="(blob, i) in relayedBlobs" :key="i" class="blob" :class="blob.direction">
-        <span class="dir">{{ blob.direction === 'sent' ? 'YOU ->' : '<- PEER' }}</span>
-        <code>{{ truncate(blob.ciphertext, 80) }}</code>
+    <!-- Settings Overlay -->
+    <div
+      v-if="settingsStore.showSettings"
+      class="fixed inset-0 z-50 flex justify-end bg-slate-900/20 backdrop-blur-sm"
+      @click.self="settingsStore.toggleSettings">
+      <div class="w-80 bg-white h-full shadow-2xl p-6 flex flex-col gap-6" @click.stop>
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-bold text-slate-900">Indstillinger</h2>
+          <button @click="settingsStore.toggleSettings" class="text-slate-400 hover:text-slate-900">✕</button>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              v-model="settingsStore.themeMode"
+              class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
+            <span class="text-sm font-medium text-slate-700">Mørk tilstand</span>
+          </label>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              v-model="settingsStore.autoHideRead"
+              class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
+            <span class="text-sm font-medium text-slate-700">Skjul læste artikler auto</span>
+          </label>
+        </div>
       </div>
-    </section>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <ArticleItem
+        v-for="(a, index) in articles"
+        :key="a.url"
+        :article="a"
+        :index="index"
+        :isFocused="currentIndex === index"
+        ref="articleRefs"
+        @mousedown="onMousedown" />
+    </div>
   </div>
 </template>
 
-<style scoped>
-.app {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #e0e0e0;
+<style>
+@font-face {
+  font-family: 'Publik';
+  src: url('https://www.dr.dk/global/fonts/DRPublikUIVF-b49db5333dbc736c65cec4e56338975e.woff2') format('woff2');
+  font-weight: 300 700;
+  font-stretch: 50% 100%;
+  font-display: swap;
 }
-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-header h1 {
-  font-size: 2rem;
-  margin: 0;
-}
-.subtitle {
-  color: #888;
-  font-size: 0.9rem;
-}
-.state-badge {
-  display: inline-block;
-  padding: 0.2rem 0.8rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-.state-badge.disconnected {
-  background: #444;
-}
-.state-badge.connecting,
-.state-badge.key-exchange {
-  background: #7c5c00;
-}
-.state-badge.waiting {
-  background: #1a4a6e;
-}
-.state-badge.ready {
-  background: #1a5e2a;
-}
-
-.error {
-  background: #5a1a1a;
-  border: 1px solid #a33;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  margin-bottom: 1rem;
-}
-.field {
-  margin-bottom: 0.8rem;
-}
-.field label {
-  display: block;
-  font-size: 0.85rem;
-  margin-bottom: 0.3rem;
-  color: #aaa;
-}
-.field small {
-  color: #777;
-}
-input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #555;
-  border-radius: 4px;
-  background: #2a2a2a;
-  color: #e0e0e0;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-button {
-  padding: 0.5rem 1.2rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  background: #3a7bd5;
-  color: white;
-}
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-button.secondary {
-  background: #555;
-}
-button.danger {
-  background: #a33;
-}
-
-.actions {
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
-}
-.action-group {
-  flex: 1;
-}
-.divider {
-  padding-top: 2rem;
-  color: #666;
-  font-style: italic;
-}
-
-.share-info {
-  background: #1a1a2e;
-  padding: 1rem;
-  border-radius: 6px;
-  margin: 1rem 0;
-}
-.share-info code {
-  display: block;
-  word-break: break-all;
-  font-size: 0.85rem;
-  color: #7ec8e3;
-}
-.hint {
-  color: #888;
-  font-style: italic;
-}
-
-.messages {
-  border: 1px solid #333;
-  border-radius: 6px;
-  padding: 1rem;
-  min-height: 200px;
-  max-height: 400px;
-  overflow-y: auto;
-  margin-bottom: 0.8rem;
-  background: #1a1a1a;
-}
-.message {
-  margin-bottom: 0.5rem;
-}
-.message.me {
-  text-align: right;
-}
-.message.peer {
-  text-align: left;
-}
-.bubble {
-  display: inline-block;
-  padding: 0.4rem 0.8rem;
-  border-radius: 12px;
-  max-width: 80%;
-  word-break: break-word;
-}
-.message.me .bubble {
-  background: #1a5e2a;
-}
-.message.peer .bubble {
-  background: #333;
-}
-.empty {
-  color: #666;
-  text-align: center;
-  padding: 2rem 0;
-}
-
-.input-row {
-  display: flex;
-  gap: 0.5rem;
-}
-.input-row input {
-  flex: 1;
-}
-
-.chat-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.8rem;
-  justify-content: flex-end;
-}
-
-.debug {
-  margin-top: 1.5rem;
-  border: 1px solid #555;
-  border-radius: 6px;
-  padding: 1rem;
-  background: #111;
-}
-.debug h3 {
-  margin-top: 0;
-  color: #e8a;
-  font-size: 0.9rem;
-}
-.blob {
-  margin-bottom: 0.4rem;
-  font-size: 0.8rem;
-}
-.blob code {
-  color: #999;
-  word-break: break-all;
-}
-.dir {
-  font-weight: 600;
-  margin-right: 0.5rem;
-}
-.blob.sent .dir {
-  color: #5a5;
-}
-.blob.received .dir {
-  color: #55a;
+body {
+  font-family: Publik, ui-sans-serif, system-ui, sans-serif;
+  background-color: #f8fafc; /* tailwind slate-50 */
 }
 </style>

@@ -1,0 +1,1 @@
+fetch('https://www.dr.dk/nyheder').then(r=>r.text()).then(t=>{ const m = t.match(/class=\hydra-latest-news-page-short-news-article__heading\[^\]*_>.*?<h2[^>]*>.*?<div[^>]*>([^<]+)/sg); console.log(m ? m[0] : 'not found'); })
