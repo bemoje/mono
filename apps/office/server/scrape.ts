@@ -10,9 +10,7 @@ async function main() {
   while (true) {
     try {
       if (!(await hasNewArticles())) {
-        await new Promise((resolve) => {
-          return setTimeout(resolve, 1000 * 60 * 5)
-        })
+        await new Promise((resolve) => setTimeout(resolve, 1000 * 60 * 5))
         continue
       }
     } catch (err) {
@@ -25,9 +23,7 @@ async function main() {
     const updatedArticles = await mapAsync(articles, debaite, { concurrency: 5 })
     console.log(`Updated ${updatedArticles.length} artikler:`)
 
-    await new Promise((resolve) => {
-      return setTimeout(resolve, 60000)
-    })
+    await new Promise((resolve) => setTimeout(resolve, 60000))
   }
 }
 

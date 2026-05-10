@@ -4,6 +4,11 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
 export default defineConfig({
+  root: 'client',
+  build: {
+    outDir: '../dist',
+    emptyOutDir: true,
+  },
   plugins: [vue(), tailwindcss()],
   server: {
     proxy: {

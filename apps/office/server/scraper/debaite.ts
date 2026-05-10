@@ -1,17 +1,23 @@
 import type { Article } from './types'
+import { and } from 'drizzle-orm'
+import { articles } from '../../common/schema'
 import cp from 'child_process'
-import db from '../db'
+import { db } from '../db'
+import { eq } from 'drizzle-orm'
 import { officeApiBaseUrl } from '../config'
-import { parseTime } from './playwright'
 
 /**
  * Removes click-bait from news article heading.
  */
-export const debaite = (() => {
-  return async (article: Article): Promise<Article> => {
-    const existing = db.prepare(`SELECT heading, summary FROM articles WHERE url = ?`).get(article.url) as
-      | { heading?: string; summary?: string }
-      | undefined
+export const debaite = (
+  () =>
+  async (article: Article): Promise<Article> => {
+    const existingRows = await db
+      .select({ heading: articles.heading, summary: articles.summary })
+      .from(articles)
+      .where(and(eq(articles.origin, article.origin), eq(articles.pathname, article.pathname)))
+    const existing = existingRows[0]
+
     if (existing && existing.heading && existing.summary) {
       article.heading = existing.heading
       article.summary = existing.summary
@@ -37,18 +43,13 @@ export const debaite = (() => {
 
       const updated = { ...article, heading: heading.trim(), summary: summary.trim() }
 
-      db.prepare(
-        `
-        INSERT INTO articles (url, type, time, category, heading, summary)
-        VALUES (@url, @type, @time, @category, @heading, @summary)
-        ON CONFLICT(url) DO UPDATE SET
-          heading=excluded.heading,
-          summary=excluded.summary
-      `
-      ).run({
-        ...updated,
-        time: parseTime(updated.time).getTime(),
-      })
+      await db
+        .update(articles)
+        .set({
+          heading: updated.heading,
+          summary: updated.summary,
+        })
+        .where(and(eq(articles.origin, updated.origin), eq(articles.pathname, updated.pathname)))
 
       try {
         await fetch(new URL('/api/stream/scraped', officeApiBaseUrl), {
@@ -65,4 +66,4 @@ export const debaite = (() => {
       return article
     }
   }
-})()
+)()

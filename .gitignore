@@ -18,3 +18,6 @@ temp/
 # Turborepo
 .turbo
 .next/
+apps/office/playwright-report/
+apps/office/test-results/
+apps/office/data/

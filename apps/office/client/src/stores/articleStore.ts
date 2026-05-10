@@ -8,22 +8,17 @@ import { useLocalStorage } from '@vueuse/core'
 import { useMagicKeys } from '@vueuse/core'
 import { useMouse } from '@vueuse/core'
 import { whenever } from '@vueuse/core'
+import type { articlesSelectSchema } from '../../../common/schema'
+import type { z } from 'zod'
 
-export interface Article {
-  type: 'article' | 'card'
-  time: number
-  category: string
-  heading: string
-  summary: string
-  url: string
-}
+export type Article = z.infer<typeof articlesSelectSchema>
 
 export const useArticleStore = defineStore('articles', () => {
   const articles = ref<Article[]>([])
   const currentIndex = ref(-1)
   const articleRefs = ref<HTMLElement[]>([])
-  const viewMode = ref<Record<string, 'hidden' | 'summary' | 'actions'>>({})
-  const removedArticles = useLocalStorage<string[]>('removedArticles', [])
+  const viewMode = ref<Record<number, 'hidden' | 'summary' | 'actions'>>({})
+  const removedArticles = useLocalStorage<number[]>('removedArticles', [])
 
   // Setup Keyboard Shortcuts using VueUse
   const { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Enter, Space, Escape, Delete } = useMagicKeys()
@@ -63,10 +58,10 @@ export const useArticleStore = defineStore('articles', () => {
     return setFocus(Math.min(articles.value.length - 1, nextIndex), true)
   })
 
-  async function trackEvent(event: string, url: string) {
+  async function trackEvent(event: string, articleId: number) {
     try {
       await apiClient.api.analytics.track.$post({
-        json: { event, url },
+        json: { event, articleId },
       })
     } catch (e) {
       console.error('Failed to track event', e)
@@ -77,28 +72,28 @@ export const useArticleStore = defineStore('articles', () => {
     if (currentIndex.value < 0) {
       return
     }
-    const url = articles.value[currentIndex.value]?.url
-    if (!url) {
+    const id = articles.value[currentIndex.value]?.id
+    if (!id) {
       return
     }
 
-    const mode = viewMode.value[url] ?? 'summary'
+    const mode = viewMode.value[id] ?? 'summary'
 
     switch (mode) {
       case 'actions': {
-        viewMode.value[url] = 'summary'
+        viewMode.value[id] = 'summary'
 
         break
       }
       case 'summary': {
-        viewMode.value[url] = 'hidden'
+        viewMode.value[id] = 'hidden'
 
         break
       }
       case 'hidden': {
         // Delete
-        if (!removedArticles.value.includes(url)) {
-          removedArticles.value.push(url)
+        if (!removedArticles.value.includes(id)) {
+          removedArticles.value.push(id)
         }
         articles.value.splice(currentIndex.value, 1)
         setFocus(Math.min(currentIndex.value, Math.max(0, articles.value.length - 1)), true)
@@ -113,18 +108,21 @@ export const useArticleStore = defineStore('articles', () => {
     if (currentIndex.value < 0) {
       return
     }
-    const url = articles.value[currentIndex.value]?.url
-    if (!url) {
+    const id = articles.value[currentIndex.value]?.id
+    const url = articles.value[currentIndex.value]
+      ? `${articles.value[currentIndex.value].origin}${articles.value[currentIndex.value].pathname}`
+      : undefined
+    if (!url || !id) {
       return
     }
 
-    const mode = viewMode.value[url] ?? 'summary'
+    const mode = viewMode.value[id] ?? 'summary'
 
     if (mode === 'hidden') {
-      viewMode.value[url] = 'summary'
-      await trackEvent('expand_summary', url)
+      viewMode.value[id] = 'summary'
+      await trackEvent('expand_summary', id)
     } else if (mode === 'summary') {
-      viewMode.value[url] = 'actions'
+      viewMode.value[id] = 'actions'
     }
   })
 
@@ -133,9 +131,12 @@ export const useArticleStore = defineStore('articles', () => {
       return Enter.value || Space.value
     },
     async () => {
-      const url = articles.value[currentIndex.value]?.url
-      if (url) {
-        await trackEvent('open_url', url)
+      const id = articles.value[currentIndex.value]?.id
+      const url = articles.value[currentIndex.value]
+        ? `${articles.value[currentIndex.value].origin}${articles.value[currentIndex.value].pathname}`
+        : undefined
+      if (url && id) {
+        await trackEvent('open_url', id)
         window.open(url, '_blank')
       }
     }
@@ -149,9 +150,9 @@ export const useArticleStore = defineStore('articles', () => {
     if (currentIndex.value < 0) {
       return
     }
-    const url = articles.value[currentIndex.value]?.url
-    if (url && !removedArticles.value.includes(url)) {
-      removedArticles.value.push(url)
+    const id = articles.value[currentIndex.value]?.id
+    if (id && !removedArticles.value.includes(id)) {
+      removedArticles.value.push(id)
     }
     articles.value.splice(currentIndex.value, 1)
     setFocus(Math.min(currentIndex.value, Math.max(0, articles.value.length - 1)), true)
@@ -183,7 +184,7 @@ export const useArticleStore = defineStore('articles', () => {
         const data = await res.json()
 
         articles.value = (data as unknown as Article[]).filter((a: Article) => {
-          return !removedArticles.value.includes(a.url)
+          return !removedArticles.value.includes(a.id)
         })
       }
     } catch (err) {

@@ -3,7 +3,9 @@ export interface Article {
   time: string
   category: string
   heading: string
-  summary: string
+  summary?: string | null
   body: string[]
   url: string
+  origin: string
+  pathname: string
 }

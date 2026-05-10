@@ -48,9 +48,8 @@ async function browserContextSession<CtxRet>(
   try {
     return await fn({
       context,
-      pageSession: async <PageRet>(fn: (page: Page) => Promise<PageRet>) => {
-        return await browserContextPageSession<PageRet>(context, fn)
-      },
+      pageSession: async <PageRet>(fn: (page: Page) => Promise<PageRet>) =>
+        await browserContextPageSession<PageRet>(context, fn),
     })
   } finally {
     await browserContextTeardown(context)
@@ -91,9 +90,7 @@ export async function browserSession<Ret>(
   try {
     return await browserCallback({
       browser,
-      contextSession: async (options, fn) => {
-        return await browserContextSession(browser, options, fn)
-      },
+      contextSession: async (options, fn) => await browserContextSession(browser, options, fn),
     })
   } finally {
     await browserTeardown(browser)

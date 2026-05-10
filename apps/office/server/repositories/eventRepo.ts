@@ -1,5 +1,6 @@
 import { db } from '../db'
+import { userEvents } from '../../common/schema'
 
-export function insertEvent(event: string, url: string) {
-  db.prepare('INSERT INTO user_events (event, url) VALUES (?, ?)').run(event, url)
+export async function insertEvent(values: typeof userEvents.$inferInsert) {
+  return await db.insert(userEvents).values(values)
 }

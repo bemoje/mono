@@ -13,7 +13,14 @@ const store = useArticleStore()
 
 const timeStr = computed(() => store.formatTime(props.article.time))
 const summaryStr = computed(() => store.formatSummary(props.article))
-const mode = computed(() => store.viewMode[props.article.url])
+const mode = computed(() => store.viewMode[props.article.id])
+const domainStr = computed(() => {
+  try {
+    return new URL(props.article.origin).hostname
+  } catch {
+    return props.article.origin
+  }
+})
 
 function onMousedown(event: MouseEvent) {
   emit('mousedown', event, props.index)
@@ -30,7 +37,7 @@ function onMousedown(event: MouseEvent) {
     "
     @mousedown="onMousedown">
     <div class="flex items-center gap-2 mb-1 opacity-90">
-      <span class="text-[10px] font-bold text-red-600 uppercase tracking-widest">{{ article.category }}</span>
+      <span class="text-[10px] font-bold text-red-600 uppercase tracking-widest">{{ domainStr }}</span>
       <span class="text-xs text-slate-500 font-medium">{{ timeStr }}</span>
     </div>
 
@@ -39,12 +46,12 @@ function onMousedown(event: MouseEvent) {
         {{ article.heading }}
       </div>
       <a
-        :href="article.url"
+        :href="article.origin + article.pathname"
         target="_blank"
         class="text-slate-400 hover:text-blue-600 transition-colors shrink-0"
         title="Åbn original artikel (Enter/Space)"
         @mousedown.stop
-        @click="store.trackEvent('open_url', article.url)">
+        @click="store.trackEvent('open_url', article.id)">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -74,9 +81,9 @@ function onMousedown(event: MouseEvent) {
       class="article-actions absolute inset-0 bg-slate-900/95 backdrop-blur-sm shadow-xl flex items-center justify-center p-4 z-10">
       <div class="flex gap-4">
         <a
-          :href="article.url"
+          :href="article.origin + article.pathname"
           target="_blank"
-          @click="store.trackEvent('open_url', article.url)"
+          @click="store.trackEvent('open_url', article.id)"
           class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-500 transition-colors shadow-lg"
           >Åbn</a
         >

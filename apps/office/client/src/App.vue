@@ -81,7 +81,7 @@ function onMousedown(event: MouseEvent, index: number) {
     <div class="flex flex-col gap-1.5">
       <ArticleItem
         v-for="(a, index) in articles"
-        :key="a.url"
+        :key="a.id"
         :article="a"
         :index="index"
         :isFocused="currentIndex === index"

@@ -1,39 +1,24 @@
-import Database from 'better-sqlite3'
-import type { Database as IDatabase } from 'better-sqlite3'
+import * as schema from '../common/schema'
+import { PGlite } from '@electric-sql/pglite'
+import { drizzle } from 'drizzle-orm/pglite'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
+import { migrate } from 'drizzle-orm/pglite/migrator'
 import path from 'path'
 
-// Find the absolute root of the 'office' workspace folder
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const officeDir = path.resolve(__dirname, '..')
 const dbDir = path.join(officeDir, 'data')
+const DB_FILEPATH = path.join(dbDir, 'dr_nyheder_pg')
 
 if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true })
 }
+export const pgliteDb = new PGlite('file://' + DB_FILEPATH)
 
-export const db: IDatabase = new Database(path.join(dbDir, 'dr_nyheder.db'))
+export const db = drizzle(pgliteDb, { schema })
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS articles (
-    url TEXT PRIMARY KEY,
-    type TEXT NOT NULL,
-    time INTEGER NOT NULL,
-    category TEXT NOT NULL,
-    heading TEXT NOT NULL,
-    summary TEXT,
-    oldHeading TEXT,
-    hidden INTEGER DEFAULT 0,
-    fetchedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-
-  CREATE TABLE IF NOT EXISTS user_events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    event TEXT NOT NULL,
-    url TEXT NOT NULL
-  );
-`)
-
-export default db
+// Automatically run any pending migrations when the DB is initialized
+export const dbInitPromise = migrate(db, { migrationsFolder: path.join(__dirname, 'migrations') }).catch((err) => {
+  console.error('Migration failed', err)
+})

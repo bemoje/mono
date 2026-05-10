@@ -12,36 +12,20 @@ export default {
 
   '*.ts': (files) => {
     const srcFiles = files
-      .map((file) => {
-        return upath.relative(process.cwd(), file)
-      })
-      .filter((file) => {
-        return file.startsWith('libs/') || file.startsWith('apps/')
-      })
-      .filter((file) => {
-        return file.includes('/src/')
-      })
-      .filter((file) => {
-        return file.endsWith('.ts')
-      })
+      .map((file) => upath.relative(process.cwd(), file))
+      .filter((file) => file.startsWith('libs/') || file.startsWith('apps/'))
+      .filter((file) => file.includes('/src/'))
+      .filter((file) => file.endsWith('.ts'))
 
     const wsDirpaths = srcFiles
-      .map((file) => {
-        return file.split('/').slice(0, 2).join('/')
-      })
+      .map((file) => file.split('/').slice(0, 2).join('/'))
       .filter(Boolean)
       .join(' ')
 
     const libDirnames = srcFiles
-      .filter((file) => {
-        return file.startsWith('libs/')
-      })
-      .filter((file) => {
-        return !file.endsWith('.test.ts')
-      })
-      .map((file) => {
-        return file.split('/')[1]
-      })
+      .filter((file) => file.startsWith('libs/'))
+      .filter((file) => !file.endsWith('.test.ts'))
+      .map((file) => file.split('/')[1])
       .filter(Boolean)
       .join(' ')
 
