@@ -1,6 +1,7 @@
 import type { Article } from './types'
 import cp from 'child_process'
 import db from '../db'
+import { officeApiBaseUrl } from '../config'
 import { parseTime } from './playwright'
 
 /**
@@ -8,7 +9,9 @@ import { parseTime } from './playwright'
  */
 export const debaite = (() => {
   return async (article: Article): Promise<Article> => {
-    const existing = db.prepare(`SELECT heading, summary FROM articles WHERE url = ?`).get(article.url) as any
+    const existing = db.prepare(`SELECT heading, summary FROM articles WHERE url = ?`).get(article.url) as
+      | { heading?: string; summary?: string }
+      | undefined
     if (existing && existing.heading && existing.summary) {
       article.heading = existing.heading
       article.summary = existing.summary
@@ -48,11 +51,11 @@ export const debaite = (() => {
       })
 
       try {
-        await fetch('http://localhost:3001/api/stream/scraped', {
+        await fetch(new URL('/api/stream/scraped', officeApiBaseUrl), {
           method: 'POST',
           body: JSON.stringify({ type: 'update' }),
         })
-      } catch (err) {
+      } catch (_err) {
         // IGNORE
       }
 
