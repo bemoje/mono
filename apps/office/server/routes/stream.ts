@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
-
+import z from 'zod'
+import { zValidator } from '@hono/zod-validator'
 let eventListeners: ((data: string) => void)[] = []
 
 const streamRouter = new Hono()
@@ -38,10 +39,20 @@ const streamRouter = new Hono()
         }
       )
   )
-  .post('/scraped', async (c) => {
-    const body = await c.req.text()
-    eventListeners.forEach((listener) => listener(body))
-    return c.text('ok')
-  })
+  .post(
+    '/debaited',
+    zValidator('json', z.object({ id: z.number(), debaitedHeading: z.string(), debaitedSummary: z.string() })),
+    (c) => {
+      const data = c.req.valid('json')
+      for (const listener of eventListeners) {
+        try {
+          listener(JSON.stringify(data))
+        } catch (_e) {
+          console.error('Failed to send event to a listener', _e)
+        }
+      }
+      return c.json({ success: true })
+    }
+  )
 
 export { streamRouter }

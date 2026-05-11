@@ -1,9 +1,30 @@
 import { Hono } from 'hono'
-import { getArticles } from '../repositories/articleRepo'
+import { allArticles } from '../repositories/articleRepo'
+import { insertPublishers } from '../repositories/publisherRepo'
+import { publishersInsertSchema } from '../../common/schema'
+import { publishersSelectSchema } from '../../common/schema'
+import { selectPublishers } from '../repositories/publisherRepo'
+import { zValidator } from '@hono/zod-validator'
 
-const articlesRouter = new Hono().get('/', async (c) => {
-  const articles = await getArticles()
-  return c.json(articles)
+export const articlesRouter = new Hono().get('/', async (c) => {
+  const data = await allArticles()
+
+  return c.json(data)
 })
 
-export { articlesRouter }
+export const publishersRouter = new Hono()
+  //
+  .get('/', zValidator('json', publishersSelectSchema), async (c) => {
+    const data = await selectPublishers()
+    return c.json(data)
+  })
+  .put('/', zValidator('json', publishersInsertSchema), async (c) => {
+    const data = c.req.valid('json')
+    await insertPublishers(data)
+    return c.json(data)
+  })
+// .patch('/', zValidator('json', publishersUpdateSchema), async (c) => {
+//   const data = c.req.valid('json')
+//   await updatePublishers(data)
+//   return c.json(data)
+// })

@@ -8,10 +8,13 @@ import { useLocalStorage } from '@vueuse/core'
 import { useMagicKeys } from '@vueuse/core'
 import { useMouse } from '@vueuse/core'
 import { whenever } from '@vueuse/core'
-import type { articlesSelectSchema } from '../../../common/schema'
-import type { z } from 'zod'
 
-export type Article = z.infer<typeof articlesSelectSchema>
+export type Article = Awaited<ReturnType<typeof fetchArticles>>[number]
+
+async function fetchArticles() {
+  const res = await apiClient.api.articles.$get()
+  return await res.json()
+}
 
 export const useArticleStore = defineStore('articles', () => {
   const articles = ref<Article[]>([])
@@ -110,7 +113,7 @@ export const useArticleStore = defineStore('articles', () => {
     }
     const id = articles.value[currentIndex.value]?.id
     const url = articles.value[currentIndex.value]
-      ? `${articles.value[currentIndex.value].origin}${articles.value[currentIndex.value].pathname}`
+      ? `${articles.value[currentIndex.value].publisher.url}${articles.value[currentIndex.value].pathname}`
       : undefined
     if (!url || !id) {
       return
@@ -127,13 +130,11 @@ export const useArticleStore = defineStore('articles', () => {
   })
 
   whenever(
-    () => {
-      return Enter.value || Space.value
-    },
+    () => Enter.value || Space.value,
     async () => {
       const id = articles.value[currentIndex.value]?.id
       const url = articles.value[currentIndex.value]
-        ? `${articles.value[currentIndex.value].origin}${articles.value[currentIndex.value].pathname}`
+        ? `${articles.value[currentIndex.value].publisher.url}${articles.value[currentIndex.value].pathname}`
         : undefined
       if (url && id) {
         await trackEvent('open_url', id)
@@ -142,9 +143,7 @@ export const useArticleStore = defineStore('articles', () => {
     }
   )
 
-  whenever(Escape, () => {
-    return setFocus(-1)
-  })
+  whenever(Escape, () => setFocus(-1))
 
   whenever(Delete, () => {
     if (currentIndex.value < 0) {
@@ -161,13 +160,13 @@ export const useArticleStore = defineStore('articles', () => {
   let eventSource: EventSource | null = null
 
   onMounted(() => {
-    void fetchArticles()
+    void loadArticles()
 
     // Connect to server-sent events for article updates
     eventSource = new EventSource('/api/stream')
     eventSource.onmessage = (event) => {
       console.log('Received update from server:', event.data)
-      void fetchArticles()
+      void loadArticles()
     }
   })
 
@@ -177,22 +176,12 @@ export const useArticleStore = defineStore('articles', () => {
     }
   })
 
-  async function fetchArticles() {
-    try {
-      const res = await apiClient.api.articles.$get()
-      if (res.ok) {
-        const data = await res.json()
-
-        articles.value = (data as unknown as Article[]).filter((a: Article) => {
-          return !removedArticles.value.includes(a.id)
-        })
-      }
-    } catch (err) {
-      console.error('Failed to load articles', err)
-    }
+  async function loadArticles() {
+    const data = await fetchArticles()
+    articles.value = data.filter((a) => !removedArticles.value.includes(a.id))
   }
 
-  function formatTime(t: number) {
+  function formatTime(t: number | string | Date) {
     if (!t) {
       return ''
     }
@@ -223,7 +212,7 @@ export const useArticleStore = defineStore('articles', () => {
 
   function resetHiddenArticles() {
     removedArticles.value = []
-    void fetchArticles()
+    void loadArticles()
   }
 
   return {

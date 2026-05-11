@@ -1,5 +1,5 @@
 {
-  "id": "8e3aac2c-3cbd-49b0-b4de-8dbbe363ece7",
+  "id": "d3604a3b-1efc-4c56-9ea9-97c03d482351",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,13 +10,43 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "identity": {
+            "type": "byDefault",
+            "name": "articles_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
         },
-        "origin": {
-          "name": "origin",
-          "type": "text",
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "publisher_id": {
+          "name": "publisher_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -26,9 +56,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "time": {
-          "name": "time",
-          "type": "integer",
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -42,14 +78,232 @@
           "name": "summary",
           "type": "text",
           "primaryKey": false,
+          "notNull": true
+        },
+        "debaited_heading": {
+          "name": "debaited_heading",
+          "type": "text",
+          "primaryKey": false,
           "notNull": false
+        },
+        "debaited_summary": {
+          "name": "debaited_summary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "idx_publisher_pathname": {
+          "name": "idx_publisher_pathname",
+          "columns": [
+            {
+              "expression": "publisher_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "pathname",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "articles_publisher_id_publishers_id_fk": {
+          "name": "articles_publisher_id_publishers_id_fk",
+          "tableFrom": "articles",
+          "tableTo": "publishers",
+          "columnsFrom": [
+            "publisher_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.publishers": {
+      "name": "publishers",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "byDefault",
+            "name": "publishers_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "publishers_url_unique": {
+          "name": "publishers_url_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "url"
+          ]
+        }
+      },
       "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.tenants": {
+      "name": "tenants",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "byDefault",
+            "name": "tenants_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "tenants_name_unique": {
+          "name": "tenants_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
+      "policies": {
+        "crud-admin-policy-select": {
+          "name": "crud-admin-policy-select",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "admin"
+          ],
+          "using": "true"
+        },
+        "crud-admin-policy-insert": {
+          "name": "crud-admin-policy-insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "admin"
+          ],
+          "withCheck": "false"
+        },
+        "crud-admin-policy-update": {
+          "name": "crud-admin-policy-update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "admin"
+          ],
+          "using": "false",
+          "withCheck": "false"
+        },
+        "crud-admin-policy-delete": {
+          "name": "crud-admin-policy-delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "admin"
+          ],
+          "using": "false"
+        }
+      },
       "checkConstraints": {},
       "isRLSEnabled": false
     },
@@ -59,15 +313,39 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "identity": {
+            "type": "byDefault",
+            "name": "user_events_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
         },
-        "timestamp": {
-          "name": "timestamp",
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         },
         "event": {
           "name": "event",
@@ -75,8 +353,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "articleId": {
-          "name": "articleId",
+        "article_id": {
+          "name": "article_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -84,12 +362,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "user_events_articleId_articles_id_fk": {
-          "name": "user_events_articleId_articles_id_fk",
+        "user_events_article_id_articles_id_fk": {
+          "name": "user_events_article_id_articles_id_fk",
           "tableFrom": "user_events",
           "tableTo": "articles",
           "columnsFrom": [
-            "articleId"
+            "article_id"
           ],
           "columnsTo": [
             "id"
@@ -108,7 +386,26 @@
   "enums": {},
   "schemas": {},
   "sequences": {},
-  "roles": {},
+  "roles": {
+    "admin": {
+      "name": "admin",
+      "createDb": false,
+      "createRole": false,
+      "inherit": true
+    },
+    "guest": {
+      "name": "guest",
+      "createDb": false,
+      "createRole": false,
+      "inherit": true
+    },
+    "user": {
+      "name": "user",
+      "createDb": false,
+      "createRole": false,
+      "inherit": true
+    }
+  },
   "policies": {},
   "views": {},
   "_meta": {

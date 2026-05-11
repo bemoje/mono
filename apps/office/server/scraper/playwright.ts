@@ -1,27 +1,12 @@
-import type { Article } from './types'
 import { DR_DK_NYHEDER_URL } from './cheerio'
-import type { Page } from 'playwright'
-import { and } from 'drizzle-orm'
+import { articlesInsertSchema } from '../../common/schema'
 import { articles as articlesSchema } from '../../common/schema'
 import { browserSession } from './withBrowser'
 import { db } from '../db'
-import { eq } from 'drizzle-orm'
 import { forEachAsync } from 'es-toolkit'
-import { isNotNull } from 'drizzle-orm'
-
-async function scrapeArticle(page: Page, url: string) {
-  console.log(`Navigerer til artikel: ${url}`)
-  await page.goto(url, {
-    waitUntil: 'domcontentloaded',
-    timeout: 30_000,
-  })
-
-  await page.waitForSelector('article')
-
-  return await page.evaluate(() =>
-    Array.from(document.querySelectorAll('article div.dre-speech')).map((el) => el.textContent?.trim() ?? '')
-  )
-}
+import { publishersInsertSchema } from '../../common/schema'
+import { publishers as publishersSchema } from '../../common/schema'
+import { uniqBy } from 'es-toolkit'
 
 export async function scrapeDR() {
   return await browserSession(
@@ -31,7 +16,7 @@ export async function scrapeDR() {
         context.setDefaultTimeout(30000)
         context.setDefaultNavigationTimeout(30000)
 
-        const articles = await pageSession(async (page) => {
+        const scrapeResult = await pageSession(async (page) => {
           console.log('Navigerer til dr.dk/nyheder...')
           await page.goto(DR_DK_NYHEDER_URL, {
             waitUntil: 'domcontentloaded',
@@ -41,326 +26,139 @@ export async function scrapeDR() {
           await page.waitForSelector('li.hydra-latest-news-page__short-news-item')
 
           return await page.evaluate(() =>
-            Array.from(document.querySelectorAll('li.hydra-latest-news-page__short-news-item')).map((li) => {
-              const article = li.querySelector('article')
-              if (article) {
-                const metaLabels = Array.from(article.querySelectorAll('span.dre-teaser-meta-label')).map(
-                  (el) => el.textContent?.trim() ?? ''
-                )
-                const [category, time] = metaLabels
-                return {
-                  type: 'article',
-                  url:
+            Array.from(document.querySelectorAll('li.hydra-latest-news-page__short-news-item'))
+              // .slice(0, 5) // TODO
+              .map((li) => {
+                const article = li.querySelector('article')
+                if (article) {
+                  const [category, time] = Array.from(article.querySelectorAll('span.dre-teaser-meta-label')).map(
+                    (el) => el.textContent?.trim() ?? ''
+                  )
+
+                  const url =
                     article
                       .querySelector(
                         'div.hydra-latest-news-page-short-news-article__share div.dre-share-link-copy-url__copy-link-hidden'
                       )
-                      ?.innerHTML?.trim() ?? undefined,
-                  time,
-                  category,
-                  heading: article
-                    .querySelector('div.hydra-latest-news-page-short-news-article__heading')
-                    ?.textContent?.trim(),
-                  body: (
-                    article.querySelector(
-                      'div.hydra-latest-news-page-short-news-article__body > div.hydra-latest-news-page-short-news-article__body'
-                    ) as HTMLElement
-                  )?.innerText?.trim(),
-                }
-              }
+                      ?.innerHTML?.trim() || ''
 
-              const card = li.querySelector('div.hydra-latest-news-page-short-news-card')
-              if (card) {
-                const metaLabels = Array.from(
-                  li
-                    .querySelector('div.hydra-latest-news-page-short-news-card__meta')
-                    ?.querySelectorAll('span.dre-teaser-meta-label') ?? []
-                ).map((el) => el.textContent?.trim() ?? '')
-                const [category, time] = metaLabels
-                return {
-                  type: 'card',
-                  url:
+                  const heading =
+                    article
+                      .querySelector('div.hydra-latest-news-page-short-news-article__heading')
+                      ?.textContent?.trim() || ''
+
+                  const summary =
+                    (
+                      article.querySelector(
+                        'div.hydra-latest-news-page-short-news-article__body > div.hydra-latest-news-page-short-news-article__body'
+                      ) as HTMLElement
+                    )?.innerText?.trim() || ''
+
+                  return { url, time, category, heading, summary }
+                }
+
+                const card = li.querySelector('div.hydra-latest-news-page-short-news-card')
+                if (card) {
+                  const [category, time] = Array.from(
+                    li
+                      .querySelector('div.hydra-latest-news-page-short-news-card__meta')
+                      ?.querySelectorAll('span.dre-teaser-meta-label') ?? []
+                  ).map((el) => el.textContent?.trim() ?? '')
+
+                  const url =
                     (
                       li.querySelector(
                         'div.hydra-latest-news-page-short-news-card__title a'
                       ) as HTMLAnchorElement | null
-                    )?.href ?? undefined,
-                  time,
-                  category,
-                  heading: li
-                    .querySelector('div.hydra-latest-news-page-short-news-card__title')
-                    ?.textContent?.trim(),
-                  body:
-                    li.querySelector('p.hydra-latest-news-page-short-news-card__summary')?.innerHTML?.trim() ??
-                    undefined,
+                    )?.href?.trim() || ''
+
+                  const heading =
+                    li.querySelector('div.hydra-latest-news-page-short-news-card__title')?.textContent?.trim() ||
+                    ''
+
+                  const summary =
+                    li.querySelector('p.hydra-latest-news-page-short-news-card__summary')?.innerHTML?.trim() || ''
+
+                  return { url, time, category, heading, summary }
                 }
-              }
-              return null
-            })
+              })
           )
         })
 
-        const filteredItems = articles.filter(
-          (o) =>
-            !!o &&
-            !!o.heading &&
-            !!o.body &&
-            !!o.time &&
-            !!o.category &&
-            !!o.url &&
-            !o.url.includes('dr.dk/sporten/')
-        )
+        // console.log({ scrapeResult })
 
-        const filtered = await Promise.all(
-          filteredItems.map(async (o) => {
-            const parsedUrl = new URL(o!.url!)
-            const origin = parsedUrl.origin
-            const pathname = parsedUrl.pathname
-            const rows = await db
-              .select({ heading: articlesSchema.heading, summary: articlesSchema.summary })
-              .from(articlesSchema)
-              .where(and(eq(articlesSchema.origin, origin), eq(articlesSchema.pathname, pathname)))
-            const cachedRow = rows[0]
+        const cleaned = scrapeResult
+          .filter((o) => !!o)
+          .filter((o): o is Required<typeof o> => Object.values(o).every((v) => !!v))
+          .map((o) => {
+            o = { ...o }
+            const parsedUrl = new URL(o.url)
+            const paths = parsedUrl.pathname.split('/').filter(Boolean)
+            const pathname = '/' + paths.join('/')
+            const area = paths.shift()!
+            const category = paths[0]
 
-            return {
-              ...(cachedRow ? { ...o, heading: cachedRow.heading || o!.heading, summary: cachedRow.summary } : o),
-              type: o!.url!.startsWith('https://www.dr.dk/nyheder/seneste/') ? 'card' : 'article',
-              time: o!.time!,
-              origin,
-              pathname,
-              url: o!.url!,
-              body: o!
-                .body!.split(/\n+/g)
-                .map((line) => line.trim())
-                .filter((line) => !!line),
-            } as Article
+            return { ...o, category, area, parsedUrl, pathname }
           })
-        )
-
-        await Promise.all(
-          filtered.map(async (article) => {
-            try {
-              await db.insert(articlesSchema).values({
-                origin: article.origin,
-                pathname: article.pathname,
-                time: parseTime(article.time).getTime(),
-                heading: article.heading,
-                summary: article.summary ?? null,
-              })
-              // .onConflictDoNothing() // Requires unique constraint, which is currently missing.
-            } catch (_e) {
-              // Ignore insert errors, might be duplicates
+          .map((o) => {
+            const publishedAt = new Date()
+            if (o.time.includes('min. siden')) {
+              const mins = o.time.split(' ')[0]
+              publishedAt.setMinutes(publishedAt.getMinutes() - Number(mins))
+            } else {
+              const [d, hhmm] = o.time.split(' kl. ')
+              const [hh, mm] = hhmm.split(':').map(Number)
+              if (d === 'I går') {
+                publishedAt.setDate(publishedAt.getDate() - 1)
+              }
+              publishedAt.setHours(hh, mm, 0, 0)
             }
+            return { ...o, publishedAt }
           })
-        )
+          .map((o) => ({
+            ...o,
+            publisher: {
+              name: (o.parsedUrl.origin.split('.').slice(-2, -1)[0]! + ' ' + o.area).toUpperCase(),
+              url: [o.parsedUrl.origin, o.area].join('/'),
+            },
+          }))
+
+        const publishersInsertData = uniqBy(
+          cleaned.map((o) => o.publisher),
+          (o) => o.url
+        ).map((o) => publishersInsertSchema.parse(o))
+        // console.log({ publishersInsertData })
+
+        for (const o of publishersInsertData) {
+          await db.insert(publishersSchema).values({ name: o.name, url: o.url }).onConflictDoNothing()
+        }
+
+        const newPublishers = await db.select().from(publishersSchema)
+
+        // console.log({ newPublishers })
+
+        const articlesInsertData = cleaned
+          .map((o) => ({
+            publisherId: newPublishers.find((p) => p.url === o.publisher.url)!.id,
+            pathname: o.pathname,
+            category: o.category,
+            heading: o.heading,
+            summary: o.summary,
+            publishedAt: o.publishedAt,
+          }))
+          .map((o) => articlesInsertSchema.parse(o))
+        // console.log({ articlesInsertData })
 
         await forEachAsync(
-          filtered,
-          async (article) => {
-            if (article.type === 'article') {
-              try {
-                const rows = await db
-                  .select({ summary: articlesSchema.summary })
-                  .from(articlesSchema)
-                  .where(
-                    and(
-                      eq(articlesSchema.origin, article.origin),
-                      eq(articlesSchema.pathname, article.pathname),
-                      isNotNull(articlesSchema.summary)
-                    )
-                  )
-                const cachedRow = rows[0]
-
-                if (cachedRow && cachedRow.summary) return
-
-                const newBody = await pageSession(
-                  async (page) =>
-                    (await scrapeArticle(page, article.url || `${article.origin}${article.pathname}`)) ?? []
-                )
-
-                article.body = newBody
-              } catch (error) {
-                console.error('Fejl ved scraping af artikel:', error)
-              }
-            }
-          },
-
-          { concurrency: 5 }
+          articlesInsertData,
+          async (o) =>
+            (await db
+              .insert(articlesSchema)
+              .values(o)
+              .onConflictDoNothing({
+                target: [articlesSchema.publisherId, articlesSchema.pathname],
+              })) as never
         )
-
-        return filtered
       })
   )
 }
-
-export function parseTime(t: string) {
-  const date = new Date()
-  if (t.includes('min. siden')) {
-    const mins = t.split(' ')[0]
-    date.setMinutes(date.getMinutes() - Number(mins))
-  } else {
-    const [d, hhmm] = t.split(' kl. ')
-    const [hh, mm] = hhmm.split(':').map(Number)
-    date.setHours(hh, mm, 0, 0)
-    if (d === 'I går') {
-      date.setDate(date.getDate() - 1)
-    }
-  }
-  return date
-}
-
-//   const browser = await chromium.launch({ headless: true })
-
-//   const context = await browser.newContext()
-//   context.setDefaultNavigationTimeout(30_000)
-//   context.setDefaultTimeout(30_000)
-
-//   try {
-//     const page = await context.newPage()
-
-//     console.log('Navigerer til dr.dk/nyheder...')
-//     await page.goto(DR_DK_NYHEDER_URL, {
-//       waitUntil: 'domcontentloaded',
-//       timeout: 30_000,
-//     })
-
-//     await page.waitForSelector('li.hydra-latest-news-page__short-news-item')
-
-//     const articles = await page.evaluate(() => {
-//       return Array.from(document.querySelectorAll('li.hydra-latest-news-page__short-news-item')).map((li) => {
-//         const article = li.querySelector('article')
-//         if (article) {
-//           const metaLabels = Array.from(article.querySelectorAll('span.dre-teaser-meta-label')).map((el) => {
-//             return el.textContent?.trim() ?? ''
-//           })
-//           const [category, time] = metaLabels
-//           return {
-//             type: 'article',
-//             url:
-//               article
-//                 .querySelector(
-//                   'div.hydra-latest-news-page-short-news-article__share div.dre-share-link-copy-url__copy-link-hidden'
-//                 )
-//                 ?.innerHTML?.trim() ?? undefined,
-//             time,
-//             category,
-//             heading: article
-//               .querySelector('div.hydra-latest-news-page-short-news-article__heading')
-//               ?.textContent?.trim(),
-//             body: (
-//               article.querySelector(
-//                 'div.hydra-latest-news-page-short-news-article__body > div.hydra-latest-news-page-short-news-article__body'
-//               ) as HTMLElement
-//             )?.innerText?.trim(),
-//           }
-//         }
-
-//         const card = li.querySelector('div.hydra-latest-news-page-short-news-card')
-//         if (card) {
-//           const metaLabels = Array.from(
-//             li
-//               .querySelector('div.hydra-latest-news-page-short-news-card__meta')
-//               ?.querySelectorAll('span.dre-teaser-meta-label') ?? []
-//           ).map((el) => {
-//             return el.textContent?.trim() ?? ''
-//           })
-//           const [category, time] = metaLabels
-//           return {
-//             type: 'card',
-//             url:
-//               (li.querySelector('div.hydra-latest-news-page-short-news-card__title a') as HTMLAnchorElement | null)
-//                 ?.href ?? undefined,
-//             time,
-//             category,
-//             heading: li.querySelector('div.hydra-latest-news-page-short-news-card__title')?.textContent?.trim(),
-//             body:
-//               li.querySelector('p.hydra-latest-news-page-short-news-card__summary')?.innerHTML?.trim() ??
-//               undefined,
-//           }
-//         }
-//         return null
-//       })
-//     })
-
-//     const filtered = articles
-//       .filter((o) => {
-//         return (
-//           !!o &&
-//           !!o.heading &&
-//           !!o.body &&
-//           !!o.time &&
-//           !!o.category &&
-//           !!o.url &&
-//           !o.url.includes('dr.dk/sporten/')
-//         )
-//       })
-//       .map((o) => {
-//         const cachedRow = db.prepare(`SELECT heading, summary FROM articles WHERE url = ?`).get(o!.url!) as any
-
-//         return {
-//           ...(cachedRow ? { ...o, heading: cachedRow.heading || o!.heading, summary: cachedRow.summary } : o),
-//           type: o!.url!.startsWith('https://www.dr.dk/nyheder/seneste/') ? 'card' : 'article',
-//           time: o!.time!,
-//           body: o!
-//             .body!.split(/\n+/g)
-//             .map((line) => {
-//               return line.trim()
-//             })
-//             .filter((line) => {
-//               return !!line
-//             }),
-//         } as Article
-//       })
-
-//     filtered.forEach((article) => {
-//       db.prepare(
-//         `
-//         INSERT INTO articles (url, type, time, category, heading, summary)
-//         VALUES (@url, @type, @time, @category, @heading, @summary)
-//         ON CONFLICT(url) DO NOTHING
-//       `
-//       ).run({
-//         ...article,
-//         time: parseTime(article.time).getTime(),
-//         summary: article.summary ?? null,
-//       })
-//     })
-
-//     await forEachAsync(
-//       filtered,
-//       async (article) => {
-//         if (article.type === 'article') {
-//           try {
-//             const cachedRow = db
-//               .prepare(`SELECT summary FROM articles WHERE url = ? AND summary IS NOT NULL`)
-//               .get(article.url) as any
-//             if (cachedRow && cachedRow.summary) return
-//             const newBody = (await scrapeArticle(context, article.url)) ?? []
-//             article.body = newBody
-//           } catch (error) {
-//             console.error('Fejl ved scraping af artikel:', error)
-//           }
-//         }
-//       },
-//       { concurrency: 5 }
-//     )
-
-//     return filtered
-//   } finally {
-//     await forEachAsync(browser.contexts(), async (context) => {
-//       await forEachAsync(context.pages(), async (page) => {
-//         try {
-//           await page.close()
-//         } catch (_) {
-//           //
-//         }
-
-//         try {
-//           await context.close()
-//         } catch (_) {
-//           //
-//         }
-//       })
-//     })
-//     await browser.close()
-//   }

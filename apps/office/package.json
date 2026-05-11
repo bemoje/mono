@@ -17,17 +17,23 @@
     "scrape": "tsx server/scrape.ts",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "graphql:explorer": "echo \"GraphiQL Interactive UI is active at: http://localhost:5173/api/graphql (requires dev server running)\""
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.4.5",
     "@hono/node-server": "^2.0.2",
     "@hono/zod-validator": "^0.8.0",
     "@vueuse/core": "^14.3.0",
+    "async-retry": "^1.3.3",
     "cheerio": "^1.2.0",
+    "drizzle-graphql": "^0.8.5",
     "drizzle-orm": "^0.45.2",
     "drizzle-zod": "^0.8.3",
+    "graphql": "^16.14.0",
+    "graphql-yoga": "^5.21.0",
     "hono": "^4.12.18",
+    "level": "^10.0.0",
     "pinia": "^3.0.4",
     "vue": "^3.5.34",
     "ws": "^8.20.0",
@@ -36,6 +42,7 @@
   "devDependencies": {
     "@playwright/test": "^1.59.1",
     "@tailwindcss/vite": "^4.3.0",
+    "@types/async-retry": "^1",
     "@types/fs-extra": "^11",
     "@types/node": "^25.6.2",
     "@types/ws": "^8",

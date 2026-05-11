@@ -3,14 +3,10 @@ import { insertEvent } from '../repositories/eventRepo'
 import { userEventsInsertSchema } from '../../common/schema'
 import { zValidator } from '@hono/zod-validator'
 
-const analyticsRouter = new Hono().post(
-  '/track',
-  zValidator('json', userEventsInsertSchema.omit({ id: true, timestamp: true })),
-  async (c) => {
+export const analyticsRouter = new Hono()
+  //
+  .post('/track', zValidator('json', userEventsInsertSchema), async (c) => {
     const validData = c.req.valid('json')
-    await insertEvent({ ...validData, timestamp: new Date() })
+    await insertEvent(validData)
     return c.json({ success: true })
-  }
-)
-
-export { analyticsRouter }
+  })

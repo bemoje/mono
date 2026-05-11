@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { createNewArticleChecker } from './scraper/cheerio'
 import { debaite } from './scraper/debaite'
-import { mapAsync } from 'es-toolkit'
+import { nonDebaitedArticles } from './repositories/articleRepo'
 import { scrapeDR } from './scraper/playwright'
 
 async function main() {
@@ -17,11 +17,11 @@ async function main() {
       console.error('Fejl ved pre-check (fast scrape), vi falder tilbage til Playwright:', err)
     }
 
-    const articles = await scrapeDR()
-    console.log(`Fandt ${articles.length} artikler:`)
+    await scrapeDR()
 
-    const updatedArticles = await mapAsync(articles, debaite, { concurrency: 5 })
-    console.log(`Updated ${updatedArticles.length} artikler:`)
+    for (const article of await nonDebaitedArticles()) {
+      await debaite(article)
+    }
 
     await new Promise((resolve) => setTimeout(resolve, 60000))
   }
