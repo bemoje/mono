@@ -95,3 +95,16 @@ scraperProcess.on('error', (err) => {
 scraperProcess.on('exit', (code) => {
   console.log(`Scraper process exited with code ${code}`)
 })
+
+// // Spawn Drizzle Studio process
+// const dbStudioroPcess = spawn('npx', ['drizzle-kit', 'studio'], {
+//   stdio: 'inherit',
+//   cwd: path.resolve(dirname, '..'),
+//   shell: true,
+// })
+// dbStudioProcess.on('error', (err) => {
+//   console.error('Failed to start Drizzle Studio process:', err)
+// })
+// dbStudioProcess.on('exit', (code) => {
+//   console.log(`Drizzle Studio process exited with code ${code}`)
+// })

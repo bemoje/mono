@@ -30,6 +30,18 @@ function onMousedown(event: MouseEvent, index: number) {
     <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
       <h1 class="text-3xl font-black tracking-tight text-slate-900 uppercase">DR.DK Nyheder</h1>
       <div class="flex items-center gap-3">
+        <a
+          href="http://127.0.0.1:4983"
+          target="_blank"
+          class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors"
+          >DB Studio</a
+        >
+        <a
+          href="http://localhost:5173/api/graphql"
+          target="_blank"
+          class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors"
+          >GraphQL</a
+        >
         <button
           @click="resetHiddenArticles"
           class="px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-200 rounded-md shadow-sm hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors"
