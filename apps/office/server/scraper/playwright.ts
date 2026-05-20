@@ -162,3 +162,5 @@ export async function scrapeDR() {
       })
   )
 }
+
+await scrapeDR()

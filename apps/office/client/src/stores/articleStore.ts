@@ -1,8 +1,10 @@
+import type { ArticleUpdate } from '../../../common/schema'
 import { apiClient } from '../api/client'
 import { defineStore } from 'pinia'
 import { nextTick } from 'vue'
 import { onMounted } from 'vue'
 import { onUnmounted } from 'vue'
+// import { onUnmounted } from 'vue'
 import { ref } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { useMagicKeys } from '@vueuse/core'
@@ -12,8 +14,44 @@ import { whenever } from '@vueuse/core'
 export type Article = Awaited<ReturnType<typeof fetchArticles>>[number]
 
 async function fetchArticles() {
-  const res = await apiClient.api.articles.$get()
+  const res = await apiClient.articles.findAllWithPublisher.$get()
+  if (!res.ok) {
+    throw new Error(`Failed to fetch articles: ${res.status} ${res.statusText}`)
+  }
   return await res.json()
+}
+
+export async function updateArticleDebaitedContent1(
+  variables: Pick<ArticleUpdate, 'id' | 'debaitedHeading' | 'debaitedSummary'>
+) {
+  const response = await fetch('/api/graphql', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      query: `
+      mutation ($id: Int!, $debaitedHeading: String, $debaitedSummary: String) {
+        updateArticles(
+          where: {id: {eq: $id}}
+          set: {debaitedHeading: $debaitedHeading, debaitedSummary: $debaitedSummary}
+        ) {
+          id
+        }
+      }`,
+      variables,
+    }),
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`GraphQL request failed: ${response.status} ${response.statusText} - ${errorText}`)
+  }
+
+  const responseData = await response.json()
+  if (responseData.errors) {
+    throw new Error(`GraphQL errors: ${JSON.stringify(responseData.errors)}`)
+  }
+
+  return responseData.data
 }
 
 export const useArticleStore = defineStore('articles', () => {
@@ -62,13 +100,7 @@ export const useArticleStore = defineStore('articles', () => {
   })
 
   async function trackEvent(event: string, articleId: number) {
-    try {
-      await apiClient.api.analytics.track.$post({
-        json: { event, articleId },
-      })
-    } catch (e) {
-      console.error('Failed to track event', e)
-    }
+    //
   }
 
   whenever(ArrowLeft, () => {
@@ -198,7 +230,7 @@ export const useArticleStore = defineStore('articles', () => {
   }
 
   function formatSummary(a: Article) {
-    return (a.summary || '').replace(/\.\.$/, '.')
+    return (a.debaitedSummary || a.summary || '').replace(/\.\.$/, '.')
   }
 
   function setFocus(index: number, scrollIntoView = false) {

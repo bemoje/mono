@@ -14,13 +14,7 @@ const store = useArticleStore()
 const timeStr = computed(() => store.formatTime(props.article.publishedAt))
 const summaryStr = computed(() => store.formatSummary(props.article))
 const mode = computed(() => store.viewMode[props.article.id])
-const domainStr = computed(() => {
-  try {
-    return new URL(props.article.publisher.url).hostname
-  } catch {
-    return props.article.publisher.url
-  }
-})
+const domainStr = computed(() => props.article.publisher.name)
 
 function onMousedown(event: MouseEvent) {
   emit('mousedown', event, props.index)
@@ -43,7 +37,7 @@ function onMousedown(event: MouseEvent) {
 
     <div class="flex items-start justify-between gap-4">
       <div class="block text-sm font-bold text-slate-900 leading-snug group-hover:text-blue-700">
-        {{ article.heading }}
+        {{ article.debaitedHeading || article.heading }}
       </div>
       <a
         :href="article.publisher.url + article.pathname"

@@ -1,12 +1,12 @@
 import { ApiReponseCache } from '../cache/ApiReponseCache'
-import type { allArticles } from '../repositories/articleRepo'
 import { articles } from 'apps/office/common/schema'
+import type { articlesRepo } from '../repositories/articlesRepo'
 import cp from 'child_process'
 import { db } from '../db'
 import { eq } from 'drizzle-orm'
 import { getAppDataPath } from '@mono/os'
 
-type Article = Omit<Awaited<ReturnType<typeof allArticles>>[number], 'publisher'>
+type Article = Omit<Awaited<ReturnType<typeof articlesRepo.findAllWithPublisher>>[number], 'publisher'>
 
 export const cache = new ApiReponseCache<{ debaitedHeading: string; debaitedSummary: string }>({
   dirpath: getAppDataPath('bemoje', 'office', 'cache', 'claude-article-headlines'),

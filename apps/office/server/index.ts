@@ -1,25 +1,20 @@
 import { Hono } from 'hono'
-import { analyticsRouter } from './routes/analytics'
-import { articlesRouter } from './routes/articles'
+import { articlesRouter } from './routes/articlesRouter'
 import { fileURLToPath } from 'url'
 import { graphqlRouter } from './routes/graphql'
 import path from 'path'
-import { publishersRouter } from './routes/articles'
+import { publishersRouter } from './routes/publishersRouter'
 import { serve } from '@hono/node-server'
-import { spawn } from 'child_process'
 import { streamRouter } from './routes/stream'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-const app = new Hono()
 
-// Mount routes
-const api = app
-  .route('/api/publishers', publishersRouter)
-  .route('/api/articles', articlesRouter)
-  .route('/api/analytics', analyticsRouter)
+const app = new Hono()
   .route('/api/stream', streamRouter)
   .route('/api/graphql', graphqlRouter)
+  .route('/api/publishers', publishersRouter)
+  .route('/api/articles', articlesRouter)
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -58,7 +53,7 @@ const api = app
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
-export type AppType = typeof api
+export type AppType = typeof app
 
 const port = 3001
 console.log(`Server is running on port ${port}`)
@@ -82,29 +77,3 @@ process.on('SIGTERM', () => {
     process.exit(0)
   })
 })
-
-// Spawn long-running scraper process
-const scraperProcess = spawn('npx', ['tsx', 'server/scrape.ts'], {
-  stdio: 'inherit',
-  cwd: path.resolve(dirname, '..'),
-  shell: true,
-})
-scraperProcess.on('error', (err) => {
-  console.error('Failed to start scraper process:', err)
-})
-scraperProcess.on('exit', (code) => {
-  console.log(`Scraper process exited with code ${code}`)
-})
-
-// // Spawn Drizzle Studio process
-// const dbStudioroPcess = spawn('npx', ['drizzle-kit', 'studio'], {
-//   stdio: 'inherit',
-//   cwd: path.resolve(dirname, '..'),
-//   shell: true,
-// })
-// dbStudioProcess.on('error', (err) => {
-//   console.error('Failed to start Drizzle Studio process:', err)
-// })
-// dbStudioProcess.on('exit', (code) => {
-//   console.log(`Drizzle Studio process exited with code ${code}`)
-// })

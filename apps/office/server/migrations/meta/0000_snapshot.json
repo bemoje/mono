@@ -1,5 +1,5 @@
 {
-  "id": "d3604a3b-1efc-4c56-9ea9-97c03d482351",
+  "id": "5164b7a2-4c35-4e2e-b9be-833d41ffa29f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -246,8 +246,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "name": {
-          "name": "name",
+        "VAT": {
+          "name": "VAT",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "company_name": {
+          "name": "company_name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -257,58 +263,27 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "tenants_name_unique": {
-          "name": "tenants_name_unique",
+        "tenants_VAT_unique": {
+          "name": "tenants_VAT_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "name"
+            "VAT"
+          ]
+        },
+        "tenants_company_name_unique": {
+          "name": "tenants_company_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "company_name"
           ]
         }
       },
-      "policies": {
-        "crud-admin-policy-select": {
-          "name": "crud-admin-policy-select",
-          "as": "PERMISSIVE",
-          "for": "SELECT",
-          "to": [
-            "admin"
-          ],
-          "using": "true"
-        },
-        "crud-admin-policy-insert": {
-          "name": "crud-admin-policy-insert",
-          "as": "PERMISSIVE",
-          "for": "INSERT",
-          "to": [
-            "admin"
-          ],
-          "withCheck": "false"
-        },
-        "crud-admin-policy-update": {
-          "name": "crud-admin-policy-update",
-          "as": "PERMISSIVE",
-          "for": "UPDATE",
-          "to": [
-            "admin"
-          ],
-          "using": "false",
-          "withCheck": "false"
-        },
-        "crud-admin-policy-delete": {
-          "name": "crud-admin-policy-delete",
-          "as": "PERMISSIVE",
-          "for": "DELETE",
-          "to": [
-            "admin"
-          ],
-          "using": "false"
-        }
-      },
+      "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.user_events": {
-      "name": "user_events",
+    "public.users": {
+      "name": "users",
       "schema": "",
       "columns": {
         "id": {
@@ -318,7 +293,7 @@
           "notNull": true,
           "identity": {
             "type": "byDefault",
-            "name": "user_events_id_seq",
+            "name": "users_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -347,14 +322,26 @@
           "primaryKey": false,
           "notNull": false
         },
-        "event": {
-          "name": "event",
+        "email": {
+          "name": "email",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "article_id": {
-          "name": "article_id",
+        "password_hash": {
+          "name": "password_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "display_name": {
+          "name": "display_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tenant_id": {
+          "name": "tenant_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -362,12 +349,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "user_events_article_id_articles_id_fk": {
-          "name": "user_events_article_id_articles_id_fk",
-          "tableFrom": "user_events",
-          "tableTo": "articles",
+        "users_tenant_id_tenants_id_fk": {
+          "name": "users_tenant_id_tenants_id_fk",
+          "tableFrom": "users",
+          "tableTo": "tenants",
           "columnsFrom": [
-            "article_id"
+            "tenant_id"
           ],
           "columnsTo": [
             "id"
@@ -377,7 +364,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -386,26 +381,7 @@
   "enums": {},
   "schemas": {},
   "sequences": {},
-  "roles": {
-    "admin": {
-      "name": "admin",
-      "createDb": false,
-      "createRole": false,
-      "inherit": true
-    },
-    "guest": {
-      "name": "guest",
-      "createDb": false,
-      "createRole": false,
-      "inherit": true
-    },
-    "user": {
-      "name": "user",
-      "createDb": false,
-      "createRole": false,
-      "inherit": true
-    }
-  },
+  "roles": {},
   "policies": {},
   "views": {},
   "_meta": {

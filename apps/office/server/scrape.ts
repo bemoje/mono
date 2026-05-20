@@ -1,10 +1,10 @@
 import 'dotenv/config'
+import { articlesRepo } from './repositories/articlesRepo'
 import { createNewArticleChecker } from './scraper/cheerio'
 import { debaite } from './scraper/debaite'
-import { nonDebaitedArticles } from './repositories/articleRepo'
 import { scrapeDR } from './scraper/playwright'
 
-async function main() {
+export async function runScraper() {
   const hasNewArticles = createNewArticleChecker()
 
   while (true) {
@@ -19,7 +19,7 @@ async function main() {
 
     await scrapeDR()
 
-    for (const article of await nonDebaitedArticles()) {
+    for (const article of await articlesRepo.nonDebaited()) {
       await debaite(article)
     }
 
@@ -27,4 +27,6 @@ async function main() {
   }
 }
 
-void main()
+if (import.meta.url === `file://${process.argv[1]}`) {
+  void runScraper()
+}

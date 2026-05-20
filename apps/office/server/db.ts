@@ -19,6 +19,4 @@ export const pgliteDb = new PGlite('file://' + DB_FILEPATH)
 export const db = drizzle(pgliteDb, { schema })
 
 // Automatically run any pending migrations when the DB is initialized
-export const dbInitPromise = migrate(db, { migrationsFolder: path.join(__dirname, 'migrations') }).catch((err) => {
-  console.error('Migration failed', err)
-})
+await migrate(db, { migrationsFolder: path.join(__dirname, 'migrations') })
