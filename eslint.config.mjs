@@ -27,7 +27,7 @@ export default [
 
     rules: {
       // manually enabled in: `.lintstagedrc.json`
-      'arrow-body-style': ['error', 'always'],
+      'arrow-body-style': ['error', 'as-needed'],
 
       // unused-imports
       'unused-imports/no-unused-imports': 'error',

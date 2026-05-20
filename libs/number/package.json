@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Number formatting, rounding, and mathematical utilities.",
   "keywords": [
     "number",
@@ -18,6 +22,9 @@
   "scripts": {
     "build": "node '../../scripts/build-lib-bundle.mjs'",
     "npmPublish": "cd dist && npm publish && cd ../../"
+  },
+  "dependencies": {
+    "es-toolkit": "^1.45.1"
   },
   "devDependencies": {
     "tsup": "^8.5.1"

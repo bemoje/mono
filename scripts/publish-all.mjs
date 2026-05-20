@@ -55,14 +55,19 @@ function publish(dir, ws) {
     return
   }
 
+  const distPkgName = [
+    pkg.publishConfig?.scope ?? (pkg.name.includes('/') ? pkg.name.split('/')[0] : undefined),
+    pkg.publishConfig?.name ?? (pkg.name.includes('/') ? pkg.name.split('/').slice(1).join('/') : pkg.name),
+  ]
+    .filter(Boolean)
+    .join('/')
+
   let distPkg
   try {
     distPkg = fs.readJsonSync(`${dir}/${ws}/dist/package.json`, 'utf-8')
   } catch (error) {
     console.warn(`Failed to read dist/package.json for ${dir}/${ws}:`, error.message)
-
     distPkg = pkg
-    return
   }
 
   const pkgVersion = pkg.version
@@ -73,14 +78,14 @@ function publish(dir, ws) {
 
   let npmVersion
   try {
-    npmVersion = cp.execSync(`npm view ${distPkg.name} version`)
+    npmVersion = cp.execSync(`npm view ${distPkgName} version`)
   } catch (_) {
-    console.warn(`Package @bemoje/${ws} not found in npm registry.`)
+    console.warn(`Package ${distPkgName} not found in npm registry.`)
     npmVersion = '0.0.0'
   }
 
   if (npmVersion.toString().trim() === pkgVersion) {
-    console.log(`${distPkg.name}@${pkgVersion}`)
+    console.log(`${distPkgName}@${pkgVersion}`)
   } else {
     console.warn(
       `Version mismatch for ${ws}: package.json version is ${pkgVersion}, but npm registry version is ${npmVersion.toString().trim()}.`
@@ -91,7 +96,7 @@ function publish(dir, ws) {
         stdio: 'inherit',
         shell: true,
       })
-      upCommands.push(`yarn up ${distPkg.name}@${distPkg.version}`)
+      upCommands.push(`yarn up ${distPkgName}@${distPkg.version}`)
     } catch (error) {
       console.error(`Failed to publish ${dir}/${ws}:`, error.message)
       process.exitCode = 1

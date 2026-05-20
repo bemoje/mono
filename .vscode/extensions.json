@@ -15,6 +15,7 @@
     "jvitor83.types-autoinstaller",
     "shd101wyy.markdown-preview-enhanced",
     "MylesMurphy.prettify-ts",
-    "vitest.explorer"
+    "vitest.explorer",
+    "frigus02.vscode-sql-tagged-template-literals"
   ]
 }

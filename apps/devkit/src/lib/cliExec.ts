@@ -1,15 +1,48 @@
-import { execSync } from 'child_process'
+import { $ } from 'execa'
 
-export function cliExecSync(
+export async function cliExec(
   command: string,
-  options: { dryRun?: boolean; quiet?: boolean; cwd?: string; silent?: boolean } = {}
+  opts: Parameters<typeof $>[1] & {
+    dryRun?: boolean
+    quiet?: boolean
+    cwd?: string
+    silent?: boolean
+    debug?: boolean
+  } = {}
 ) {
-  if (options.dryRun) {
-    if (!options.quiet) {
-      console.log(`dryRun. Command skipped: ${command}`)
+  const defaults = {
+    env: { FORCE_COLOR: 'true' },
+    preferLocal: true,
+    lines: true,
+    // reject: false,
+    // detatch: true,
+  }
+
+  if (opts.debug) {
+    console.debug(`Executing command: ${command}`)
+    console.debug(`defaults:`, defaults)
+    console.debug(`options:`, { defaults, opts })
+  }
+
+  const merged = {
+    ...defaults,
+    ...opts,
+
+    verbose: opts.debug ? 'full' : 'none',
+    silent: opts.silent && !opts.debug,
+    quiet: (opts.quiet || opts.silent) && !opts.debug,
+
+    stdout: opts.debug ? 'inherit' : opts.silent ? 'ignore' : opts.quiet ? 'pipe' : 'inherit',
+    stderr: opts.debug ? 'inherit' : opts.silent ? 'ignore' : opts.quiet ? 'pipe' : 'inherit',
+    cwd: opts.cwd ?? process.cwd(),
+  } as const
+
+  if (opts.dryRun) {
+    if (!opts.quiet) {
+      console.log(`dryRun enabled. Skipping command: ${command}`)
     }
     return
   }
 
-  execSync(command, { stdio: options.quiet ? 'ignore' : 'inherit', cwd: options.cwd ?? process.cwd() })
+  await $(command, merged)
 }

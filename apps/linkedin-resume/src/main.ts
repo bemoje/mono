@@ -2,7 +2,7 @@ import { CONFIG_PATH } from './constants'
 import type { CliOptions } from './types/CliOptions'
 import { Command } from 'commander'
 import cp from 'child_process'
-import description from './core/description'
+import fs from 'fs-extra'
 import { loadUserConfig } from './loadUserConfig'
 import { renderPdfFromHtml } from './renderPdfFromHtml'
 import { renderResumeHtml } from './renderResumeHtml'
@@ -10,12 +10,16 @@ import { renderResumeJson } from './renderResumeJson'
 import { renderResumeMd } from './renderResumeMd'
 import { scrapeLinkedIn } from './scrapeLinkedIn'
 import { timer } from '@mono/node'
+import upath from 'upath'
 import { userLogin } from './userLogin'
-import version from './core/version'
+
+const pkg = fs.readJsonSync(
+  upath.joinSafe(upath.dirname(process.argv[1]), ...(process.argv[1].endsWith('ts') ? ['..'] : []), 'package.json')
+)
 
 const cli = new Command('linkedin-resume')
-  .version(version)
-  .description(description)
+  .version(pkg.version)
+  .description(pkg.description)
 
   .option('-o, --outpath <filepath>', 'output filepath (overrides config)')
 

@@ -4,7 +4,6 @@ import cp from 'child_process'
 import fs from 'fs-extra'
 import upath from 'upath'
 
-console.log('Build started')
 // inline repo root discovery
 const repoRootDirpath = (() => {
   const parts = upath.normalizeSafe(import.meta.dirname).split('/')
@@ -18,105 +17,76 @@ const wsDirpath = upath.normalizeSafe(import.meta.dirname)
 const wsDirname = upath.basename(wsDirpath)
 const tsconfigFilepath = upath.joinSafe(wsDirpath, 'tsconfig.json')
 const indexFilepath = upath.joinSafe(wsDirpath, 'src', 'main.ts')
-const distDirpath = upath.joinSafe(wsDirpath, 'dist')
-const indexOutFilepath = upath.joinSafe(distDirpath, `${wsDirname}.cjs`)
-const indexOutFileTemp = upath.joinSafe(distDirpath, `${wsDirname}-temp.cjs`)
+const distDir = upath.joinSafe(wsDirpath, 'dist')
+const indexOutFilepath = upath.joinSafe(distDir, `${wsDirname}.cjs`)
+const indexOutMjsFilepath = upath.joinSafe(distDir, `./${wsDirname}.mjs`)
 const packageJsonFilepath = upath.joinSafe(wsDirpath, 'package.json')
 const pkg = await fs.readJson(packageJsonFilepath)
-// ensure package details are consistent across package.json and source code, and that version is unique on npm
-void (await (async () => {
-  // check if version already exists on npm, and if so, bump patch version
-  const npmVersion = cp.execSync(`npm view ${pkg.name} version`, { encoding: 'utf8', stderr: 'inherit' })
-  if (npmVersion.trim() === pkg.version) {
-    const semver = pkg.version.split('.')
-    semver[2] = (parseInt(semver[2]) + 1).toString()
-    pkg.version = semver.join('.')
-    console.info(`Version ${npmVersion} already exists on npm. Bumping version to ${pkg.version}...`)
-    await fs.outputFile(packageJsonFilepath, `${JSON.stringify(pkg, null, 2)}\n`)
+const rootPkg = await fs.readJson(upath.joinSafe(repoRootDirpath, 'package.json'))
+
+const distPkgName = [
+  pkg.publishConfig?.scope ?? (pkg.name.includes('/') ? pkg.name.split('/')[0] : undefined),
+  pkg.publishConfig?.name ?? (pkg.name.includes('/') ? pkg.name.split('/').slice(1).join('/') : pkg.name),
+]
+  .filter(Boolean)
+  .join('/')
+
+if (process.env.CI) {
+  let npmVersion
+  try {
+    npmVersion = cp.execSync(`npm view ${distPkgName} version`, { encoding: 'utf8' })
+  } catch (_) {
+    console.error(`Package ${distPkgName} not found in npm registry.`)
+    process.exit(1)
   }
 
-  // update version in source code
-  const cmdVersionFilepath = upath.joinSafe(wsDirpath, 'src', 'core', 'version.ts')
-  const cmdVersionSrc = await fs.readFile(cmdVersionFilepath, 'utf-8')
-  const cmdVersionSplit = cmdVersionSrc.split(/["'`]/)
-  const cmdVersion = cmdVersionSplit[1]
-  if (cmdVersion !== pkg.version) {
-    console.info(
-      `Version mismatch: src/core/version.ts (${cmdVersion}) vs package.json (${pkg.version}). Updating src/core/version.ts...`
-    )
-    const cmdVersionSrcNew = cmdVersionSplit
-      .map((part, i) => {
-        return i === 1 ? pkg.version : part
-      })
-      .join('`')
-    await fs.outputFile(cmdVersionFilepath, cmdVersionSrcNew)
+  if (npmVersion.toString().trim() === pkg.version) {
+    console.log(colors.green(`Package ${distPkgName}@${pkg.version} is already published. Skipping build.`))
+    process.exit(0)
   }
+}
 
-  // update description in source code
-  const cmdDescriptionFilepath = upath.joinSafe(wsDirpath, 'src', 'core', 'description.ts')
-  const cmdDescriptionSrc = await fs.readFile(cmdDescriptionFilepath, 'utf-8')
-  const cmdDescriptionSplit = cmdDescriptionSrc.split(/["'`]/)
-  const cmdDescription = cmdDescriptionSplit[1]
-  if (cmdDescription !== pkg.description) {
-    console.info(
-      `Description mismatch: src/core/description.ts (${cmdDescription}) vs package.json (${pkg.description}). Updating src/core/description.ts...`
-    )
-    const cmdDescriptionSrcNew = cmdDescriptionSplit
-      .map((part, i) => {
-        return i === 1 ? pkg.description : part
-      })
-      .join('`')
-    await fs.outputFile(cmdDescriptionFilepath, cmdDescriptionSrcNew)
-  }
-})())
 // build with esbuild
+console.log('Build started')
+await fs.emptyDir(distDir)
+
 await esbuild.build({
   entryPoints: [indexFilepath],
   bundle: true,
-  outfile: indexOutFileTemp,
+  outfile: indexOutFilepath,
   tsconfig: tsconfigFilepath,
   platform: 'node',
   format: 'cjs',
   target: ['node20', 'esnext'],
   minify: false,
-  keepNames: true,
   mainFields: ['module', 'main'],
-  sourcemap: true,
   treeShaking: true,
-  external: ['esbuild', 'type-fest', 'd', 'tsconfig-paths'],
+  // external: Object.keys(pkg.dependencies),
   banner: { js: '#!/usr/bin/env node' },
   logOverride: { 'empty-import-meta': 'silent' },
 })
-// validate the built artifact
-const stdout = cp
-  .execSync(`node ${indexOutFileTemp} --help`, { cwd: repoRootDirpath, stderr: 'inherit' })
-  .toString()
-if (typeof stdout !== 'string' || !stdout) {
-  console.error(`Build did not produce a valid module: ${indexOutFileTemp}`)
-  process.exit(1)
-}
-// swap temp → final
-await fs.remove(indexOutFilepath)
-await fs.rename(indexOutFileTemp, indexOutFilepath)
-await fs.remove(`${indexOutFilepath}.map`)
-if (await fs.pathExists(`${indexOutFileTemp}.map`)) {
-  await fs.rename(`${indexOutFileTemp}.map`, `${indexOutFilepath}.map`)
-}
+
 // create bin wrapper for cross-platform npx support
-await fs.outputFile(upath.joinSafe(distDirpath, 'cli.mjs'), `#!/usr/bin/env node\nimport("./${wsDirname}.cjs");\n`)
+await fs.outputFile(indexOutMjsFilepath, `#!/usr/bin/env node\nimport("./${wsDirname}.cjs");\n`)
+
 await fs.outputFile(
-  upath.joinSafe(distDirpath, 'package.json'),
+  upath.joinSafe(distDir, 'package.json'),
   JSON.stringify(
     {
       ...pkg,
-      name: `@bemoje/${wsDirname}`,
-      bin: './cli.mjs',
-      files: ['cli.mjs', `${wsDirname}.cjs`, `${wsDirname}.cjs.map`],
-      publishConfig: { access: 'public' },
-      repository: { type: 'git', url: 'https://github.com/bemoje/mono.git', directory: `apps/${wsDirname}` },
-      author: { name: 'Benjamin Moller Jensen', email: 'bemoje@bemoje.net', url: 'https://github.com/bemoje/' },
-      license: 'MIT',
-      scripts: [],
+      name: distPkgName,
+      bin: { [wsDirname]: `./${wsDirname}.cjs` },
+      main: `./${wsDirname}.cjs`,
+      module: `./${wsDirname}.mjs`,
+      files: [`${wsDirname}.mjs`, `${wsDirname}.cjs`],
+      license: rootPkg.license,
+      author: rootPkg.author,
+      repository: { ...rootPkg.repository, directory: `apps/${wsDirname}` },
+      scripts: undefined,
+      dependencies: undefined,
+      devDependencies: undefined,
+      packageManager: undefined,
+      publishConfig: undefined,
     },
     null,
     2
@@ -125,17 +95,37 @@ await fs.outputFile(
 
 console.log(colors.green('✓ Build completed'))
 
-if (!process.env.CI) {
-  cp.execSync('npx --yes publint --level warning --pack npm', {
-    cwd: distDirpath,
-    stdio: 'inherit',
+cp.execSync('npx --yes publint --level warning --pack npm', {
+  cwd: distDir,
+  stdio: 'inherit',
+})
+
+// CJS
+const cjsFilepath = upath.joinSafe(distDir, `${wsDirname}.cjs`)
+const cjsOut = cp
+  .execSync(`node ${cjsFilepath} --help`, {
+    cwd: repoRootDirpath,
     encoding: 'utf8',
-    // shell: 'powershell',
   })
-  cp.execSync('npx --yes @arethetypeswrong/cli --pack dist', {
-    stdio: 'inherit',
-    encoding: 'utf8',
-    // shell: 'powershell', //
-  })
-  console.log(colors.green('✓ Build validation success'))
+  .trim()
+if (!cjsOut.includes(wsDirname)) {
+  console.log({ cjsOut })
+  console.error(`CJS build did not produce a valid module: ${cjsFilepath}`)
+  process.exit(1)
 }
+
+// ESM
+const mjsFilepath = upath.joinSafe(distDir, `${wsDirname}.mjs`)
+const mjsOut = cp
+  .execSync(`node ${mjsFilepath} --help`, {
+    cwd: repoRootDirpath,
+    encoding: 'utf8',
+  })
+  .trim()
+if (!mjsOut.includes(wsDirname)) {
+  console.log({ mjsOut })
+  console.error(`ESM build did not produce a valid module: ${mjsFilepath}`)
+  process.exit(1)
+}
+
+console.log(colors.green('✓ Build validation success'))

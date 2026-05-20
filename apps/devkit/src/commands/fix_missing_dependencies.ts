@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
 
 import type { Logger } from '@mono/node'
-import { confirmPrompt } from '../lib/confirmPrompt'
+import { confirmPrompt } from '@mono/terminal'
 import cp from 'child_process'
 import fs from 'fs-extra'
 import { getImportsRecursively } from '@mono/monorepo'

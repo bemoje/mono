@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Configuration file management with JSON persistence and TypeBox schema validation.",
   "keywords": [
     "config",
@@ -29,7 +33,8 @@
   },
   "dependencies": {
     "@sinclair/typebox": "^0.34.48",
-    "fs-extra": "^11.3.4"
+    "fs-extra": "^11.3.4",
+    "upath": "^2.0.1"
   },
   "exports": {
     ".": "./src/index.ts",

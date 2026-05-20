@@ -3,16 +3,34 @@ import cp from 'node:child_process'
 import fs from 'fs-extra'
 import upath from 'upath'
 
+// const repoRootDirpath = (() => {
+//   const parts = upath.normalizeSafe(import.meta.dirname).split('/')
+//   const i = parts.lastIndexOf('mono')
+//   if (i === -1) {
+//     throw new Error('Could not find repo root directory')
+//   }
+//   return parts.slice(0, i + 1).join('/')
+// })()
+
 const wsDirpath = process.cwd()
 const distDir = upath.joinSafe(wsDirpath, 'dist')
 const wsDirname = upath.basename(wsDirpath)
 const rootDirpath = upath.joinSafe(wsDirpath, '..', '..')
+const pkg = await fs.readJson(upath.joinSafe(wsDirpath, 'package.json'))
+
+const distPkgName = [
+  pkg.publishConfig?.scope ?? (pkg.name.includes('/') ? pkg.name.split('/')[0] : undefined),
+  pkg.publishConfig?.name ?? (pkg.name.includes('/') ? pkg.name.split('/').slice(1).join('/') : pkg.name),
+]
+  .filter(Boolean)
+  .join('/')
 
 ////
 
 if (process.env.CI) {
   console.log('CI environment detected, skipping build hash check')
   await build()
+  await validateBuild()
 } else {
   const saveBuildHash = await createBuildHash()
   await build()
@@ -40,7 +58,7 @@ async function createBuildHash() {
     process.exit(0)
   }
 
-  const buildHashFilepath = upath.joinSafe(wsDirpath, '.cache', '.build.hash')
+  const buildHashFilepath = upath.joinSafe(rootDirpath, '.cache', `${wsDirname}.build.hash`)
 
   console.log(colors.green(`Changes detected. New hash: ${buildHash}`))
 
@@ -56,6 +74,21 @@ async function createBuildHash() {
 async function build() {
   const rootPkg = await fs.readJson(upath.joinSafe(rootDirpath, 'package.json'))
   const pkg = await fs.readJson(upath.joinSafe(wsDirpath, 'package.json'))
+
+  if (process.env.CI) {
+    let npmVersion
+    try {
+      npmVersion = cp.execSync(`npm view ${distPkgName} version`, { encoding: 'utf8' })
+    } catch (_) {
+      console.error(`Package @bemoje/${wsDirname} not found in npm registry.`)
+      process.exit(1)
+    }
+
+    if (npmVersion.toString().trim() === pkg.version) {
+      console.log(colors.green(`Package ${distPkgName}@${pkg.version} is already published. Skipping build.`))
+      process.exit(0)
+    }
+  }
 
   await fs.emptyDir(distDir)
 
@@ -142,7 +175,7 @@ async function build() {
   await fs.outputJson(
     upath.joinSafe(distDir, 'package.json'),
     {
-      name: `@bemoje/${wsDirname}`,
+      name: distPkgName,
       version: pkg.version,
       description: pkg.description,
       type: 'module',
@@ -181,13 +214,37 @@ async function validateBuild() {
   cp.execSync('npx --yes publint --level warning --pack npm', {
     cwd: distDir,
     stdio: 'inherit',
-    encoding: 'utf8',
-    // shell: 'powershell',
   })
+
   cp.execSync('npx --yes @arethetypeswrong/cli --pack dist', {
     stdio: 'inherit',
-    encoding: 'utf8',
-    // shell: 'powershell', //
   })
+
+  // CJS
+  const cjsFilepath = upath.joinSafe(distDir, 'index.cjs')
+  const cjsOut = cp
+    .execSync(`node --require ./dist/lib/index.cjs -e "console.log('OK')"`, {
+      encoding: 'utf8',
+    })
+    .trim()
+  if (cjsOut !== 'OK') {
+    console.log({ cjsOut })
+    console.error(`CJS build did not produce a valid module: ${cjsFilepath}`)
+    process.exit(1)
+  }
+
+  // ESM
+  const mjsFilepath = upath.joinSafe(distDir, 'index.js')
+  const mjsOut = cp
+    .execSync(`node --import ./dist/lib/index.js -e "console.log('OK')"`, {
+      encoding: 'utf8',
+    })
+    .trim()
+  if (mjsOut !== 'OK') {
+    console.log({ mjsOut })
+    console.error(`ESM build did not produce a valid module: ${mjsFilepath}`)
+    process.exit(1)
+  }
+
   console.log(colors.green('✓ Build validation success'))
 }

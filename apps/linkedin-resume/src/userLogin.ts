@@ -10,6 +10,8 @@ import puppeteer from 'puppeteer'
  * and only opening a visible browser window if the user needs to log in.
  */
 export async function userLogin(options: CliOptions, logger: Logger): Promise<void> {
+  let isLoggedIn = false
+
   if (options.headless) {
     // First, check login status with a headless browser
     const headlessBrowser: Browser = await puppeteer.launch({
@@ -17,7 +19,6 @@ export async function userLogin(options: CliOptions, logger: Logger): Promise<vo
       userDataDir: CHROME_PROFILE_PATH,
     })
 
-    let isLoggedIn = false
     try {
       const page = await headlessBrowser.newPage()
       await page.goto('https://www.linkedin.com/feed/?locale=en_US', {
@@ -35,12 +36,11 @@ export async function userLogin(options: CliOptions, logger: Logger): Promise<vo
       logger.info('Already logged in to LinkedIn.')
       return
     }
-
-    // Not logged in - open a visible browser for the user to log in
-    logger.info('You are not logged in to LinkedIn.')
-    logger.info('Please log in using the browser window that will open.')
-    logger.info('The process will continue once you are logged in...')
   }
+
+  logger.info('You are not logged in to LinkedIn.')
+  logger.info('Please log in using the browser window that will open.')
+  logger.info('The process will continue once you are logged in...')
 
   const browser: Browser = await puppeteer.launch({
     headless: false,
@@ -64,10 +64,11 @@ export async function userLogin(options: CliOptions, logger: Logger): Promise<vo
     )
 
     logger.info('LinkedIn login detected. You are now logged in.')
+  } catch (error) {
+    logger.error('Failed to log in to LinkedIn.')
+    throw error
   } finally {
-    if (!options.keepOpen) {
-      await closeBrowserPages(browser)
-      await browser.close()
-    }
+    await closeBrowserPages(browser)
+    await browser.close()
   }
 }

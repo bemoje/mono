@@ -9,6 +9,8 @@ if (!process.argv[2]) {
 }
 
 const wsDirpath = upath.normalize(process.argv[2])
+const wsDirname = upath.basename(wsDirpath)
+const rootDirpath = upath.joinSafe(wsDirpath, '..', '..')
 
 if (!fs.existsSync(wsDirpath)) {
   throw new Error('Invalid workspace directory path. Usage: node createWorkspaceHash.ts <workspace-dirpath>')
@@ -78,7 +80,7 @@ const sourceFileContents = await mapAsync(sorted, async (filepath) => {
 
 const buildHash = objectHash(sourceFileContents)
 
-const buildHashFilepath = upath.joinSafe(wsDirpath, '.cache', '.build.hash')
+const buildHashFilepath = upath.joinSafe(rootDirpath, '.cache', `${wsDirname}.build.hash`)
 const currentBuildHash = fs.existsSync(buildHashFilepath)
   ? (await fs.readFile(buildHashFilepath, 'utf8')).trim()
   : ''

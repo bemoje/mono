@@ -1,0 +1,14 @@
+mutation UpdateArticleDebaited($articleId: Int!, $heading: String, $summary: String) {
+  updateArticles(
+    where: { id: { eq: $articleId } }
+    set: { debaitedHeading: $heading, debaitedSummary: $summary }
+  ) {
+    id
+  }
+}
+
+query GetArticles {
+  articles {
+    id
+  }
+}

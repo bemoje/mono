@@ -2,6 +2,7 @@ import { CHROME_PROFILE_PATH } from './constants'
 import type { CliOptions } from './types/CliOptions'
 import type { Logger } from '@mono/node'
 import { closeBrowserPages } from './utils/closeBrowserPages'
+import { forEachAsync } from 'es-toolkit'
 import puppeteer from 'puppeteer'
 import { scrapeEducation } from './linkedin/scrapeEducation'
 import { scrapeExperience } from './linkedin/scrapeExperience'
@@ -28,10 +29,12 @@ export async function scrapeLinkedIn(options: CliOptions, logger: Logger): Promi
   ]
 
   try {
-    await Promise.all(
-      scrapers.map((fn) => {
+    await forEachAsync(
+      scrapers,
+      (fn) => {
         return fn(browser, options, logger)
-      })
+      },
+      { concurrency: 10 }
     )
   } finally {
     if (!options.keepOpen) {

@@ -6,7 +6,6 @@ import { configDirpathHook } from './commands/config'
 import { configFile } from './core/config/config'
 import { configFilepathHook } from './commands/config'
 import { createLibsWorkspaceAction } from './commands/create_workspace'
-import description from './core/description'
 import { fixDashCharsAction } from './commands/fix_dash_chars'
 import { fixEmptyFilesAction } from './commands/fix_empty_files'
 import { fixIndexTsAction } from './commands/fix_index_ts'
@@ -25,13 +24,17 @@ import { listTopImportStatementsAction } from './commands/list_top_import_statem
 import { missingCoverageFilesAction } from './commands/missing_coverage_files'
 import { missingTsdocFilesAction } from './commands/missing_tsdoc_files'
 import { runInteractive2 } from './runInteractive2'
-import version from './core/version'
+import upath from 'upath'
+
+const pkg = fs.readJsonSync(
+  upath.joinSafe(upath.dirname(process.argv[1]), ...(process.argv[1].endsWith('ts') ? ['..'] : []), 'package.json')
+)
 
 const libDirnames = fs.readdirSync('libs')
 configFile.load()
 const cli = new Command('devkit')
-  .setVersion(version)
-  .setDescription(description)
+  .setVersion(pkg.version)
+  .setDescription(pkg.description)
 
   // config
   .addCommand('config', (cmd) => {

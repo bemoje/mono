@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Lightweight date and time utilities for formatting, time-unit conversion, and duration measurement.",
   "keywords": [
     "date",

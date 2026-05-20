@@ -56,7 +56,7 @@ export async function renderResumeHtml(logger: Logger): Promise<void> {
 function renderProfile(resume: Resume): string {
   const b = resume.basics
   const loc = b.location
-  const locationStr = [loc.city, loc.region, loc.countryCode].filter(Boolean).join(', ')
+  const locationStr = [loc?.city, loc?.region, loc?.countryCode].filter(Boolean).join(', ')
   return `
   <div class="profile-card card">
     <div class="profile-banner"></div>

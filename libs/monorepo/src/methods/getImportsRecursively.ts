@@ -6,7 +6,7 @@ import { MonoRepo } from '../MonoRepo'
 import type { TsFile } from '../file/TsFile'
 import fs from 'fs-extra'
 import { getAllWorkspacePackageJsonPaths } from './getAllWorkspacePackageJsonPaths'
-import { getRepoPackageJson } from './getRepoPackageJson'
+import { getRootPackageJson } from './getRootPackageJson'
 import { resolveModuleImportPath } from '../util/resolveModuleImportPath'
 import { toCwdRelative } from '@mono/path'
 import upath from 'upath'
@@ -28,7 +28,7 @@ export async function getImportsRecursively(entryPoints: string[]): Promise<Resu
   }
   const wsDirpath = Array.from(entryPointWsDirpaths)[0]
 
-  const rootPkg = await getRepoPackageJson()
+  const rootPkg = await getRootPackageJson()
   const allPkgJsonPaths = await getAllWorkspacePackageJsonPaths()
   const allPkgJsons = allPkgJsonPaths.map((p) => {
     return fs.readJsonSync(p)

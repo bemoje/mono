@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Operating system detection and platform-specific utilities.",
   "keywords": [
     "os",
@@ -25,8 +29,8 @@
   },
   "dependencies": {
     "command-exists": "^1.2.9",
+    "es-toolkit": "^1.45.1",
     "fs-extra": "^11.3.4",
-    "onetime": "^7.0.0",
     "upath": "^2.0.1"
   },
   "exports": {

@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Performance profiling utilities for measuring execution time of functions, class methods, and modules.",
   "keywords": [
     "profiler",
@@ -27,6 +31,7 @@
     "tsup": "^8.5.1"
   },
   "dependencies": {
+    "ansi-colors": "^4.1.3",
     "es-toolkit": "^1.45.1"
   },
   "exports": {

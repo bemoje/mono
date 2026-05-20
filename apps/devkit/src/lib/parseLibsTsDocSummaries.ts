@@ -4,10 +4,10 @@ import { getNamedExportTsDocSummary } from './tsdoc'
 import { getRepoRootDirpath } from './getRepoRootDirpath'
 import { glob } from 'glob'
 import { importLibs } from './importLibs'
-import onetime from 'onetime'
+import { once } from 'es-toolkit'
 import upath from 'upath'
 
-export const parseLibsTsDocSummaries = onetime(async () => {
+export const parseLibsTsDocSummaries = once(async () => {
   const logActions: ((log: Logger | Console) => void)[] = []
   const printLogs = (log: Logger | Console = console) => {
     logActions.forEach((f) => {

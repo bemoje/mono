@@ -1,12 +1,10 @@
 {
   "name": "linkedin-resume",
   "description": "A CLI tool to generate a LinkedIn resume in PDF, HTML, and Markdown formats.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "yarn@4.3.1",
   "type": "module",
-  "main": "dist/cli.mjs",
-  "bin": "dist/cli.mjs",
-  "license": "MIT",
+  "preferGlobal": true,
   "keywords": [
     "linkedin",
     "resume",
@@ -16,29 +14,19 @@
     "scraper",
     "puppeteer"
   ],
-  "engines": {
-    "node": ">=18"
-  },
-  "files": [
-    "dist/cli.mjs",
-    "dist/linkedin-resume.cjs",
-    "resume.schema.json"
-  ],
   "publishConfig": {
     "access": "public"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bemoje/mono.git",
-    "directory": "apps/linkedin-resume"
-  },
   "scripts": {
     "build": "node esbuild.mjs",
-    "npmPublish": "npm publish && cd ../../"
+    "npmPublish": "cd dist && npm publish"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.34.48",
+    "ansi-colors": "^4.1.3",
     "commander": "^14.0.3",
+    "es-toolkit": "^1.45.1",
+    "esbuild": "^0.25.12",
     "fs-extra": "^11.3.4",
     "puppeteer": "^24.38.0",
     "upath": "^2.0.1"
@@ -50,6 +38,8 @@
     "@mono/os": "workspace:^",
     "@mono/stacktrace": "workspace:^",
     "@mono/types": "workspace:^",
-    "@types/fs-extra": "^11.0.4"
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.3.1",
+    "typescript": "^5.5.4"
   }
 }

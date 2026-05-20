@@ -6,9 +6,11 @@ import { toError } from '@mono/node'
 
 export function onScrapeError(e: unknown, section: ResumeSection, options: CliOptions, logger: Logger) {
   if (e === 'ignore') {
-    return
+    return e
   }
   const error = toError(e)
   error.message = `Error scraping ${section}: ${error.message}`
-  logger.error(options.debug ? prettyStackTrace(error) : error.message)
+  error.stack = prettyStackTrace(error)
+  logger.error(error)
+  throw error
 }

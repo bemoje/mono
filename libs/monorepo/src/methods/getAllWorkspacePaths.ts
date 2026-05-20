@@ -1,4 +1,4 @@
-import { getRepoPackageJson } from './getRepoPackageJson'
+import { getRootPackageJson } from './getRootPackageJson'
 import { glob } from 'glob'
 import upath from 'upath'
 
@@ -6,7 +6,7 @@ import upath from 'upath'
  * Returns an array of all workspace directory paths.
  */
 export async function getAllWorkspacePaths(): Promise<string[]> {
-  const pkg = await getRepoPackageJson()
+  const pkg = await getRootPackageJson()
   return (
     await Promise.all(
       pkg.workspaces

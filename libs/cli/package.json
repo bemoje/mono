@@ -6,6 +6,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "keywords": [
     "cli",
     "command-line",
@@ -36,7 +40,7 @@
     "@mono/node": "workspace:^",
     "@mono/object": "workspace:^",
     "tsup": "^8.5.1",
-    "type-fest": "5.4.4"
+    "type-fest": "^5.4.4"
   },
   "exports": {
     ".": "./src/index.ts",

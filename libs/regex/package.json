@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Regular expression utilities for escaping special characters and performing detailed regex execution with match metadata.",
   "keywords": [
     "regex",

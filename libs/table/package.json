@@ -5,6 +5,10 @@
   "type": "module",
   "module": "src/index.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "scope": "@bemoje"
+  },
   "description": "Table formatting and string processing utilities.",
   "keywords": [
     "table",
@@ -26,7 +30,9 @@
     "tsup": "^8.5.1"
   },
   "dependencies": {
-    "ansi-colors": "^4.1.3"
+    "ansi-colors": "^4.1.3",
+    "date-fns": "^4.1.0",
+    "es-toolkit": "^1.45.1"
   },
   "exports": {
     ".": "./src/index.ts",

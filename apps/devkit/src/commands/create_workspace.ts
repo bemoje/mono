@@ -1,4 +1,4 @@
-import { cliExecSync } from '../lib/cliExec'
+import { cliExec } from '../lib/cliExec'
 import fs from 'fs-extra'
 import { repoRootPackageJsonPath } from '../core/constants/paths'
 import { templates } from '../core/templates/templates'
@@ -18,7 +18,7 @@ export interface CreateWorkspaceOptions {
  *
  * @param workspaceName - The name of the library to create.
  */
-export function createLibsWorkspaceAction(workspaceName: string, options: CreateWorkspaceOptions = {}) {
+export async function createLibsWorkspaceAction(workspaceName: string, options: CreateWorkspaceOptions = {}) {
   // lib dirpaths
   const CWD = upath.normalize(process.cwd())
   const rootPath = upath.join(CWD, 'libs', workspaceName)
@@ -74,6 +74,6 @@ export function createLibsWorkspaceAction(workspaceName: string, options: Create
     templates.files.indexTs.renderString()
   )
 
-  cliExecSync(`yarn install`, { ...options, cwd: rootPath })
-  cliExecSync(`yarn install`, { ...options, cwd: CWD })
+  await cliExec(`yarn install`, { ...options, cwd: rootPath })
+  await cliExec(`yarn install`, { ...options, cwd: CWD })
 }

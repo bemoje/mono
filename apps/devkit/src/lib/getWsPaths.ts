@@ -5,11 +5,11 @@ import upath from 'upath'
  * Gets workspace-related paths for build operations.
  */
 export function getWsPaths(importMetaDirname: string) {
-  importMetaDirname = upath.normalizeSafe(importMetaDirname)
-  const wsDirname = upath.basename(importMetaDirname)
-  const tsconfig = upath.joinSafe(importMetaDirname, 'tsconfig.json')
-  const pkg = upath.joinSafe(importMetaDirname, 'package.json')
-  const srcDir = upath.joinSafe(importMetaDirname, 'src')
+  const wsDir = upath.normalizeSafe(importMetaDirname)
+  const wsDirname = upath.basename(wsDir)
+  const tsconfig = upath.joinSafe(wsDir, 'tsconfig.json')
+  const pkg = upath.joinSafe(wsDir, 'package.json')
+  const srcDir = upath.joinSafe(wsDir, 'src')
 
   const repoRootDir = getRepoRootDirpath()
   const distDir = upath.joinSafe(repoRootDir, '.dist', 'libs')
@@ -19,16 +19,5 @@ export function getWsPaths(importMetaDirname: string) {
   const toRelative = (path: string) => {
     return upath.relative(repoRootDir, path)
   }
-  return {
-    wsDir: importMetaDirname,
-    wsDirname,
-    distDir,
-    tsconfig,
-    pkg,
-    srcDir,
-    indexTs,
-    indexCjs,
-    indexMjs,
-    toRelative,
-  }
+  return { wsDir, wsDirname, distDir, tsconfig, pkg, srcDir, indexTs, indexCjs, indexMjs, toRelative }
 }

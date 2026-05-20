@@ -27,8 +27,11 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
   try {
     await page.goto(getPageUrl(username, 'profile'), { waitUntil: 'domcontentloaded', timeout: 20_000 })
 
+    await patchEsbuildHelpers(page)
+    await injectBrowserHelpers(page)
+
     // Wait for the profile top card to load
-    await page.waitForSelector('h1', { timeout: 15_000 })
+    // await page.waitForSelector('h1', { timeout: 15_000 })
 
     // Expand all "...see more" buttons so truncated sections (About, etc.) are fully visible
     await page.evaluate(() => {
@@ -41,12 +44,10 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
       }
     })
     await new Promise((r) => {
-      return setTimeout(r, 250)
+      return setTimeout(r, 2500)
     })
 
     await autoScroll(page)
-    await patchEsbuildHelpers(page)
-    await injectBrowserHelpers(page)
 
     // Scrape profile top card
     const scraped = await page.evaluate(() => {
@@ -187,17 +188,9 @@ export async function scrapeProfile(browser: Browser, options: CliOptions, logge
     })
 
     // Wait for the modal to appear
-    await page
-      .waitForSelector('[class*="contact-info"]', { timeout: 5000 })
-      .catch(() => {
-        return page.waitForSelector('.artdeco-modal', { timeout: 3000 })
-      })
-      .catch(() => {
-        return page.waitForSelector('.pv-contact-info', { timeout: 3000 })
-      })
 
     await new Promise((r) => {
-      return setTimeout(r, 1500)
+      return setTimeout(r, 2500)
     })
 
     const contactInfo = await page.evaluate(() => {

@@ -1,9 +1,9 @@
 import type { Logger } from '@mono/node'
-import { arrayTableToMarkdown } from './arrayTableToMarkdown'
+import { arrTableToMarkdown } from '@mono/array'
 import cp from 'child_process'
 import fs from 'fs-extra'
 import { getLinesOfCode } from './getLinesOfCode'
-import { getRepoPackageJson } from './getRepoPackageJson'
+import { getRootPackageJson } from './getRootPackageJson'
 import { importLibs } from './importLibs'
 import { outputFileIfChanged } from './outputFileIfChanged'
 import { parseLibsTsDocSummaries } from './parseLibsTsDocSummaries'
@@ -119,7 +119,7 @@ export async function renderLibsExportedModules({ logger: log }: { logger: Logge
     }
 
     libsExports.push(
-      `- [**libs/${libName}**](./libs/${libName}/README.md): ${
+      `- [**libs/${libName}**](/libs/${libName}/README.md): ${
         (await fs.readJson(`libs/${libName}/package.json`)).description
       }`
     )
@@ -175,11 +175,11 @@ export async function getNpmPkgDescription(name: string): Promise<string> {
 }
 
 export async function getRepoDescription(): Promise<string> {
-  return (await getRepoPackageJson()).description
+  return (await getRootPackageJson()).description
 }
 
 export async function getRepoName(): Promise<string> {
-  return (await getRepoPackageJson()).name
+  return (await getRootPackageJson()).name
 }
 
 export async function renderCoverageSummary(): Promise<string> {
@@ -190,7 +190,7 @@ export async function renderCoverageSummary(): Promise<string> {
   const coverageData = await fs.readJson(coverageJsonPath)
   const { total } = coverageData
 
-  return arrayTableToMarkdown([
+  return arrTableToMarkdown([
     ['Metric', 'Total', 'Covered', 'Percentage'],
     ['Lines', total.lines.total, total.lines.covered, `${total.lines.pct}%`].map(String),
     ['Functions', total.functions.total, total.functions.covered, `${total.functions.pct}%`].map(String),
@@ -208,7 +208,7 @@ export async function getNpmPkgDescriptions(placeholders: [string, string][]) {
 
 export async function renderLinesOfCodeTable(): Promise<string> {
   const counts = await getLinesOfCode()
-  return arrayTableToMarkdown([
+  return arrTableToMarkdown([
     ['file type', 'files', 'lines of code'],
     ...Object.entries(counts).map(([k, v]) => {
       return [k, String(v.files), String(v.lines)]
